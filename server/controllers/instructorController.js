@@ -1,12 +1,9 @@
-const ThesisSubmission = require('../models/ThesisSubmission');
-const Notification = require('../models/Notification');
-const Message = require('../models/Message');
-const Instructor = require('../models/Instructor'); // Import the Instructor model
+const Instructor = require('../models/Instructor');
 
 // Submissions
 exports.getAllSubmissions = async (req, res) => {
     try {
-        const instructors = await Instructor.find(); // Retrieve all instructors
+        const instructors = await Instructor.find();
         res.json(instructors);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -15,7 +12,7 @@ exports.getAllSubmissions = async (req, res) => {
 
 exports.getSubmissionById = async (req, res) => {
     try {
-        const instructor = await Instructor.findById(req.params.id); // Retrieve instructor by ID
+        const instructor = await Instructor.findById(req.params.id);
         if (!instructor) return res.status(404).json({ message: "Instructor not found" });
         res.json(instructor);
     } catch (error) {
@@ -25,7 +22,7 @@ exports.getSubmissionById = async (req, res) => {
 
 // Add a new instructor
 exports.addInstructor = async (req, res) => {
-    const { instructor_id, first_name, last_name, email, password_hash, contact_number, department, position, profile_picture, total_reviews, created_at, updated_at } = req.body;
+    const { instructor_id, first_name, last_name, email, password_hash, contact_number, birthday, gender, department, position, profile_picture, total_reviews, created_at, updated_at } = req.body;
 
     const newInstructor = new Instructor({
         instructor_id,
@@ -34,6 +31,8 @@ exports.addInstructor = async (req, res) => {
         email,
         password_hash,
         contact_number,
+        birthday,           // Include birthday
+        gender,             // Include gender
         department,
         position,
         profile_picture,
