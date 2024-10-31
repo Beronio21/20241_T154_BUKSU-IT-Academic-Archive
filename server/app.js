@@ -4,12 +4,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 // Import route files
-const studentRoutes = require('./routes/studentRoutes');
+const authRoutes = require('./routes/authRoutes');
+const studentRoutes = require('./routes/studentRoutes');// error
 const thesisRoutes = require('./routes/thesisRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const submissionHistoryRoutes = require('./routes/submissionHistoryRoutes');
-const instructorRoutes = require('./routes/instructorRoutes'); // Make sure this is correct
+const instructorRoutes = require('./routes/instructorRoutes');
 // Admin
 const adminRoutes = require('./routes/adminRoutes');
 const userManagementRoutes = require('./routes/userManagementRoutes');
@@ -20,9 +21,13 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 // Initialize the Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
+const cors = require('cors');
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173' // Adjust this port if your frontend runs on a different one
+}));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -46,6 +51,9 @@ app.use('/api/theses', thesisRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/submissionhistories', submissionHistoryRoutes);
+
+// Authentication Routes
+app.use('/api/auth', authRoutes); // Set up login route at /api/auth/login
 
 // Basic route
 app.get('/', (req, res) => {
