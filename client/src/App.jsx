@@ -1,21 +1,19 @@
-// client/src/App.jsx
-import { useEffect, useState } from 'react';
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
-    const [message, setMessage] = useState('');
-    
-    useEffect(() => {
-        fetch('/api')
-            .then(response => response.json())
-            .then(data => setMessage(data.message))
-            .catch(error => console.error('Error:', error));
-    }, []);
-
-    return (
-        <div className="App">
-            <h1>{message}</h1>
-        </div>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

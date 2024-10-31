@@ -1,3 +1,4 @@
+// server/app.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -8,7 +9,7 @@ const thesisRoutes = require('./routes/thesisRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const submissionHistoryRoutes = require('./routes/submissionHistoryRoutes');
-const instructorRoutes = require('./routes/instructorRoutes');
+const instructorRoutes = require('./routes/instructorRoutes'); // Make sure this is correct
 // Admin
 const adminRoutes = require('./routes/adminRoutes');
 const userManagementRoutes = require('./routes/userManagementRoutes');
@@ -24,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 // Connect to MongoDB
-    mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected successfully'))
     .catch((err) => {
         console.error('MongoDB connection error:', err.message);
