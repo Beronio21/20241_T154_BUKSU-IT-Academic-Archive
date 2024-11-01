@@ -1,3 +1,4 @@
+// Imports
 const Student = require('../models/Student');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -12,7 +13,12 @@ exports.getStudents = async (req, res) => {
             .skip((page - 1) * limit)
             .exec();
         const count = await Student.countDocuments();
-        res.json({ total: count, pages: Math.ceil(count / limit), students });
+        
+        res.json({
+            total: count,
+            pages: Math.ceil(count / limit),
+            students,
+        });
     } catch (err) {
         res.status(500).json({ message: "Error retrieving students: " + err.message });
     }
@@ -32,7 +38,7 @@ exports.createStudent = async (req, res) => {
             birthday,
             department,
             course,
-            year_level
+            year_level,
         } = req.body;
 
         // Validate required fields
@@ -60,7 +66,7 @@ exports.createStudent = async (req, res) => {
             birthday,
             department,
             course,
-            year_level
+            year_level,
         });
 
         const savedStudent = await newStudent.save();
@@ -70,7 +76,7 @@ exports.createStudent = async (req, res) => {
     }
 };
 
-// Login Student
+// Login Student and generate JWT token
 exports.loginStudent = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -146,7 +152,7 @@ exports.searchStudents = async (req, res) => {
         const { name, department, student_id } = req.query;
         const query = {};
 
-        if (name) query.first_name = new RegExp(name, 'i');
+        if (name) query.first_name = new RegExp(name, 'i'); // case-insensitive search
         if (department) query.department = department;
         if (student_id) query.student_id = student_id;
 
