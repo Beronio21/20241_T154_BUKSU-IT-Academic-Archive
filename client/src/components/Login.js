@@ -7,7 +7,6 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        // Make an API call to your backend login endpoint
         const response = await fetch('http://localhost:5000/api/students/login', {
             method: 'POST',
             headers: {
@@ -20,9 +19,8 @@ const Login = () => {
 
         if (response.ok) {
             alert('Login successful!');
-            // Save token in localStorage or context for further authentication
-            localStorage.setItem('token', data.token);
-            // Optionally, redirect to a protected route
+            localStorage.setItem('token', data.token); // Store the token
+            // Redirect to a protected page or dashboard if needed
         } else {
             alert('Login failed: ' + data.message);
         }
