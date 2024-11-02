@@ -1,0 +1,189 @@
+/* Base styling for the register page */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #006BB2 10%, #0063A5 17%, #002E4C 100%);
+}
+
+/* Top left logo */
+.top-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.top-logo img {
+    width: 80px;
+    height: auto;
+}
+
+/* Container to hold left image and register box */
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Left Image Box */
+.left-image-box {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-image-box img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+/* Centering the container and adjusting position of register box */
+.register-container {
+    width: 50%; /* Adjust as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* Adjust the position of the register box */
+    margin-top: 50px; /* Moves the box down */
+}
+
+/* Alternatively, if you want to adjust specific margin/padding */
+.register-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+
+    /* Adjust the margins to move the box horizontally or vertically */
+    margin-left: 20px; /* Moves the box to the right */
+    margin-top: 250px; /* Moves the box down */
+}
+
+
+/* Logo Section inside the register box */
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Adjust styling for ThesEase logo title */
+.logo-container h1 {
+    font-size: 36px; /* Increase the font size */
+    color: #0063A5; /* Change the color */
+    font-weight: bold; /* Optional: Make it bold */
+    margin: 0;
+}
+
+/* Optional: You can adjust the subtitle as well */
+.logo-container p {
+    font-size: 18px; /* Adjust size of the subtitle text */
+    color: #333; /* Adjust subtitle color */
+    margin-top: 10px; /* Add some spacing */
+}
+
+/* Form headings */
+h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Input Group */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    outline: none;
+}
+
+/* Side-by-side layout for First Name and Last Name, Phone Number and Birthday */
+.side-by-side {
+    display: flex;
+    justify-content: space-between;
+}
+
+.side {
+    width: 48%;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Gender Section */
+.gender-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.gender-group input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Buttons */
+.register-btn, .google-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.register-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.register-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Separator */
+.separator {
+    text-align: center;
+    margin: 15px 0;
+    font-size: 14px;
+    color: #888;
+}
+
+/* Google Button */
+.google-btn {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.google-btn img {
+    width: 20px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #f2f2f2;
+}

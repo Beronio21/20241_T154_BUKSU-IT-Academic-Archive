@@ -1,0 +1,245 @@
+/* login.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    background: linear-gradient(90deg, #006BB2 10%, #0063A5 17%, #002E4C 100%);
+}
+
+/* Logo styling (Top Left) */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.logo img {
+    width: 100px;
+    height: auto;
+}
+
+/* Container for the left section (image + text) */
+.left-section {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-right: 30px; /* Space between the left and right sections */
+}
+
+/* Top text styling */
+.left-top-text {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.left-top-text h1 {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+/* Image box on the left side */
+.image-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.image-box img {
+    width: 100%;
+    height: auto;
+    max-width: 400px; /* Same width as login box */
+    max-height: 400px; /* Same height as login box */
+}
+
+/* Bottom text styling */
+.left-bottom-text {
+    text-align: center;
+    color: white;
+}
+
+.left-bottom-text h2 {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+/* Login Box */
+.login-container {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    width: 100%; /* Take full width of the viewport */
+    max-width: 1200px; /* Maximum width of the container */
+    padding: 0 30px;
+}
+
+.login-box {
+    background-color: #f5f5f5;
+    padding: 30px;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    width: 35%;
+    max-width: 400px;
+    min-width: 300px;
+    text-align: center;
+}
+
+/* Title of the website */
+.title-section h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #006CB2;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Input Fields (Email and Password) */
+.input-group input {
+    width: 70%; /* Set input field width to half of the original size */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Rounded corners */
+    outline: none;
+    display: block;
+    margin: 0 auto; /* Center the input fields */
+}
+
+.input-group input::placeholder {
+    color: #888;
+    font-style: italic;
+}
+
+/* Forgot Password Link */
+.forgot-password {
+    text-align: center;
+    margin-top: 10px; /* Add space between password input and forgot password link */
+    font-size: 14px;
+}
+
+.forgot-password a {
+    color: #0352a5;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+/* Image box on the left side */
+.image-box img {
+    width: 125%; /* Increase image size by 25% */
+    height: auto;
+    max-width: 500px; /* Ensure it doesn't grow too large */
+    max-height: 500px;
+}
+
+/* Login Button */
+.login-btn {
+    width: 25%; /* Set the button width to half of the original size */
+    padding: 10px;
+    font-size: 16px;
+    background-color: #022e5d;
+    color: white;
+    border: none;
+    border-radius: 25px; /* Rounded corners with radius of 25px */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 0 auto; /* Center the button */
+}
+
+.login-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* Separator for "or" */
+.separator {
+    text-align: center;
+    margin: 15px 0;
+    font-size: 14px;
+    color: #888;
+}
+
+/* Google Login Button */
+.google-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.google-btn img {
+    width: 20px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #f2f2f2;
+}
+
+.extra-options {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.extra-options a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.extra-options a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .login-box, .left-section {
+        width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-box, .left-section {
+        width: 80%;
+    }
+
+    .login-box h2 {
+        font-size: 20px;
+    }
+
+    .input-group input {
+        font-size: 14px;
+    }
+
+    .login-btn, .google-btn {
+        font-size: 14px;
+    }
+}

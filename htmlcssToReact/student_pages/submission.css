@@ -1,0 +1,125 @@
+/* Common Styles for All Pages */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    margin: 0;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #004080;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    position: fixed;
+    height: 100vh;
+  }
+  
+  .sidebar-logo {
+    width: 120px;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .sidebar-nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    transition: background-color 0.3s;
+  }
+  
+  .sidebar-nav a:hover {
+    background-color: #0059b3;
+  }
+  
+  .main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 20px;
+  }
+  
+  .dashboard-header {
+    /* Remove the background color */
+    background-color: transparent; /* This makes the background transparent */
+    color: blue; /* Change the text color to blue */
+    padding: 20px;
+    text-align: center;
+  }
+  
+  
+  .submission-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px; /* Adjust radius here */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Set a max width for the box */
+    margin: 20px auto; /* Center the box horizontally */
+  }
+  
+  .submission-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .submission-container label {
+    margin-bottom: 5px;
+  }
+  
+  .submission-container input[type="text"],
+  .submission-container input[type="file"],
+  .submission-container select {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Radius for input fields */
+  }
+  
+  .submission-container button {
+    background-color: #004080;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 8px; /* Radius for button */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submission-container button:hover {
+    background-color: #0059b3;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px;
+    }
+  
+    .main-content {
+      margin-left: 200px;
+      width: calc(100% - 200px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+    }
+  
+    .main-content {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+  
