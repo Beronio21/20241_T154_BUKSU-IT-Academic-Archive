@@ -1,5 +1,7 @@
+# Name of System: ONLINE THESIS SUBMISSION AND REVIEW SYSTEM
+
 Class Code: T154
-Name of System: ONLINE THESIS SUBMISSION AND REVIEW SYSTEM
+
 System Description:
 Overall Description of the Thesis Submission and Review System Product Perspective: This system is an independent application aimed at enhancing the manual thesis submission and review process at Bukidnon State University.
 
