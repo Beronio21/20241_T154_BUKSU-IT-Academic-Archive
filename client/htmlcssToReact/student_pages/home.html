@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <img src="../images/buksulogo.png" alt="Logo" class="sidebar-logo">
+    <nav class="sidebar-nav">
+      <a href="home.html">Home</a>
+      <a href="submission.html">Thesis Submissions</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="messages.html">Messages</a>
+      <a href="profile.html">Profile</a>
+      <a href="#logout">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="dashboard-header">
+      <h1>Welcome, John Doe</h1>
+      <div class="profile-pic">
+        <img src="../images/login1.png" alt="Profile Picture">
+      </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-content">
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <button>Submit New Thesis</button>
+        <button>View Submissions</button>
+        <button>Notifications</button>
+      </section>
+
+      <!-- Recent Submissions -->
+      <section class="recent-submissions">
+        <h2>Your Recent Thesis Submissions</h2>
+        <ul>
+          <li>
+            <h3>Machine Learning Approaches to Data Classification</h3>
+            <p>Status: Under Review</p>
+            <p>Last updated: 2024-10-15</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Notifications -->
+      <section class="notifications">
+        <h2>Notifications</h2>
+        <ul>
+          <li>Your thesis is currently under review. (2024-10-15)</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

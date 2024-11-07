@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thesis Submission</title>
+  <link rel="stylesheet" href="submission.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <img src="../images/buksulogo.png" alt="Logo" class="sidebar-logo">
+    <nav class="sidebar-nav">
+      <a href="home.html">Home</a>
+      <a href="submission.html">Thesis Submissions</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="messages.html">Messages</a>
+      <a href="profile.html">Profile</a>
+      <a href="#logout">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="dashboard-header">
+      <h1>Thesis Submission</h1>
+    </header>
+
+    <div class="submission-container">
+      <form>
+        <label for="thesis-title">Thesis Title:</label>
+        <input type="text" id="thesis-title" name="thesis-title" required>
+
+        <label for="instructor">Select Instructor:</label>
+        <select id="instructor" name="instructor" required>
+          <option value="" disabled selected>Select your instructor</option>
+          <option value="1001">Jane Smith</option>
+          <option value="1002">Mark Johnson</option>
+          <option value="1003">Emily Davis</option>
+          <!-- Add more instructors as needed -->
+        </select>
+
+        <label for="thesis-file">Upload Thesis:</label>
+        <input type="file" id="thesis-file" name="thesis-file" required>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

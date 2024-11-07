@@ -1,0 +1,116 @@
+/* Common Styles for All Pages */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    margin: 0;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #004080;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    position: fixed;
+    height: 100vh;
+}
+
+.sidebar-logo {
+    width: 120px;
+    margin-bottom: 20px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sidebar-nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.sidebar-nav a:hover {
+    background-color: #0059b3;
+}
+
+.sidebar-nav a.active {
+    background-color: #0059b3; /* Active link color */
+}
+
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 20px;
+}
+
+.dashboard-header {
+    background-color: transparent;
+    color: blue;
+    padding: 20px;
+    text-align: center;
+}
+
+.notification-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px; /* Container radius */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.notification {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 10px; /* Rounded notifications */
+    margin-bottom: 15px; /* Space between notifications */
+    transition: background-color 0.3s;
+}
+
+.notification:hover {
+    background-color: #e0e0e0; /* Change background on hover */
+}
+
+.notification-message {
+    margin: 0;
+}
+
+.notification-date {
+    font-size: 0.8em;
+    color: #555;
+    display: block; /* Block display for better spacing */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
