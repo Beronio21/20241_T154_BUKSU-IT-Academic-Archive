@@ -1,16 +1,29 @@
 {
-  "name": "2024_t154_online-thesis-submission-and-review-system",
+  "name": "server",
   "version": "1.0.0",
-  "description": "Overall Description of the Thesis Submission and Review System\r Product Perspective:\r This system is an independent application aimed at enhancing the manual thesis submission and review process at Bukidnon State University.",
   "main": "app.js",
   "scripts": {
-    "test": "node app"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app",
+    "dev": "nodemon app"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.7.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.7"
   }
 }
