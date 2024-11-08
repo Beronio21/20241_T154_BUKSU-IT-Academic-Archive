@@ -1,3 +1,6 @@
+//server/controllers/instructorController.js
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const Instructor = require('../models/Instructor');
 
 // GET: Retrieve all instructors
@@ -97,3 +100,34 @@ exports.deleteInstructor = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// POST: Login instructor
+// In the loginInstructor function
+exports.loginInstructor = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const instructor = await Instructor.findOne({ email });
+        if (!instructor) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Compare plain text password with the one stored (not hashed)
+        if (password !== instructor.password_hash) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Generate a JWT token
+        const token = jwt.sign(
+            { id: instructor._id, email: instructor.email },
+            process.env.JWT_SECRET, // Ensure you have this in your environment variables
+            { expiresIn: '1h' } // Expiration time (1 hour)
+        );
+
+        res.json({ token });
+    } catch (error) {
+        console.error('Error logging in instructor:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+

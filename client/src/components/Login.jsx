@@ -22,7 +22,13 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/students/login', {
+            // Determine if user is an instructor based on email
+            const isInstructor = email.includes('@instructor.com');
+            const endpoint = isInstructor
+                ? 'http://localhost:5000/api/instructors/login' // Instructor endpoint
+                : 'http://localhost:5000/api/students/login';    // Student endpoint
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,11 +38,21 @@ const Login = () => {
 
             const data = await response.json();
 
+            // Debugging logs for better error understanding
+            console.log('Response from server:', data);
+
             if (response.ok) {
-                localStorage.setItem('token', data.token);
-                login();
-                navigate('/student-dashboard'); // Updated path to student dashboard
+                localStorage.setItem('token', data.token);  // Save token
+                login();  // Update Auth context (if using context for auth)
+
+                // Navigate based on user type
+                if (isInstructor) {
+                    navigate('/instructor-dashboard');
+                } else {
+                    navigate('/student-dashboard');
+                }
             } else {
+                // Show error message if response is not ok
                 setError(data.message || 'Login failed. Please try again.');
             }
         } catch (error) {
@@ -71,8 +87,8 @@ const Login = () => {
                     <form onSubmit={handleLogin}>
                         <div className="input-group">
                             <input
-                                type="text"
-                                placeholder="Username or Email"
+                                type="email"  // Changed to 'email' type for validation
+                                placeholder="Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
