@@ -13,6 +13,10 @@ import ThesisSubmission from './src/components/ThesisSubmission';
 import Notification from './src/components/Notifications'; // Import the Notification component
 import Messages from './src/components/Messages'; // Import the Messages component
 import ProfileSettings from './src/components/ProfileSettings';
+import TeacherDashboard from './src/components/TeacherDashboard'; // Instructor dashboard
+import ThesisSubmissionsPage from './src/components/ThesisSubmissionsPage';
+import StudentSubmitThesis from './src/components/StudentSubmitThesis';
+import InstructorReviewThesis from './src/components/InstructorReviewThesis';
 
 const App = () => {
     return (
@@ -42,7 +46,11 @@ const Main = () => {
                 <Route path="/notifications" element={<Notification />} /> {/* Route for notifications */}
                 <Route path="/messages" element={<Messages />} /> {/* Route for Messages */}
                 <Route path="/profile-settings" element={<ProfileSettings />} />
-                
+                <Route path="/instructor-dashboard" element={<TeacherDashboard />} />
+                <Route path="/thesis-review" element={<ThesisSubmissionsPage />} />
+                <Route path="/student" element={<StudentSubmitThesis />} />
+                <Route path="/instructor" element={<InstructorReviewThesis />} />
+
             </Routes>
         </div>
     );

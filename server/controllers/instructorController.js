@@ -130,4 +130,21 @@ exports.loginInstructor = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+// GET: Retrieve all instructors with full name
+exports.getAllInstructors = async (req, res) => {
+    try {
+        const instructors = await Instructor.find();
+        
+        // Map through the instructors and create a new array with full name
+        const instructorsWithFullName = instructors.map(instructor => ({
+            _id: instructor._id,
+            name: `${instructor.first_name} ${instructor.last_name}` // Concatenate first and last name
+        }));
+
+        res.json(instructorsWithFullName); // Send the formatted response
+    } catch (error) {
+        console.error("Error retrieving instructors:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
 

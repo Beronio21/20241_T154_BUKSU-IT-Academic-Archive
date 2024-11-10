@@ -4,6 +4,36 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
+// POST: Login student
+exports.loginStudent = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const student = await Student.findOne({ email });
+        if (!student) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Compare plain text password with the one stored (hashed)
+        const isMatch = await bcrypt.compare(password, student.password_hash);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Create a JWT token (student_id is included in the payload)
+        const token = jwt.sign(
+            { student_id: student._id, email: student.email },
+            process.env.JWT_SECRET, // Ensure you have JWT_SECRET in your .env file
+            { expiresIn: '1h' } // Token expires in 1 hour
+        );
+
+        res.json({ token });
+    } catch (error) {
+        console.error('Error logging in student:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 // Get all students with optional pagination
 exports.getStudents = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;

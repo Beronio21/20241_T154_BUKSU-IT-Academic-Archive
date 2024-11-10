@@ -52,10 +52,11 @@ app.use('/api/admin_notifications', adminNotificationRoutes);
 app.use('/api/audit_logs', auditLogRoutes);
 app.use('/api/instructors', instructorRoutes);
 app.use('/api/students', studentRoutes);
-app.use('/api/theses', thesisRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/submissionhistories', submissionHistoryRoutes);
+app.use('/api/thesis', thesisRoutes);
+
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);

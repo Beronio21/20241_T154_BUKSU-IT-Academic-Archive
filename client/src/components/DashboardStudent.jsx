@@ -22,7 +22,7 @@ const DashboardStudent = () => {
       <div className="sidebar">
         <ul>
           <li><Link to="/student-dashboard">Dashboard Home</Link></li>
-          <li><Link to="/thesis-submission">Thesis Submission</Link></li> {/* Add this link */}
+          <li><Link to="/student">Thesis Submission</Link></li> {/* Add this link */}
           <li><Link to="/notifications">Notifications</Link></li> {/* Link to Notifications */}
           <li><Link to="/messages">Messages</Link></li>
           <li><Link to="/profile-settings">Profile Settings</Link></li>

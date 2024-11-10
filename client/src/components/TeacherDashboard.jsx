@@ -1,54 +1,79 @@
+// TeacherDashboard.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/TeacherDashboard.css';
 
 const TeacherDashboard = () => {
-  const [user, setUser] = useState({ name: 'Teacher Name' });
+    const [instructor, setInstructor] = useState(null);
+    const [submissions, setSubmissions] = useState([]);
 
-  // Simulate fetching user data (e.g., profile info)
-  useEffect(() => {
-    // Fetch teacher data from API or local storage here
-    setUser({ name: 'Dr. Jane Doe' });
-  }, []);
+    useEffect(() => {
+        // Fetch instructor data and submissions when component mounts
+        fetchInstructor();
+        fetchSubmissions();
+    }, []);
 
-  return (
-    <div className="teacher-dashboard">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <ul>
-          <li><Link to="/teacher-dashboard/home">Dashboard Home</Link></li>
-          <li><Link to="/teacher-dashboard/thesis-submissions">Thesis Submissions</Link></li>
-          <li><Link to="/teacher-dashboard/notifications">Notifications</Link></li>
-          <li><Link to="/teacher-dashboard/messages">Messages</Link></li>
-          <li><Link to="/teacher-dashboard/profile-settings">Profile Settings</Link></li>
-          <li><Link to="/logout">Log Out</Link></li>
-        </ul>
-      </div>
+    const fetchInstructor = async () => {
+        try {
+            const response = await fetch('/api/instructors/profile'); // Adjust API path as necessary
+            const data = await response.json();
+            setInstructor(data);
+        } catch (error) {
+            console.error('Error fetching instructor data:', error);
+        }
+    };
 
-      {/* Main Content */}
-      <div className="main-content">
-        {/* Top Navigation Bar */}
-        <div className="top-nav">
-          <div className="logo">University Logo</div>
-          <div className="nav-icons">
-            <div className="notifications">🔔</div>
-            <div className="settings">⚙️</div>
-            <div className="profile">
-              <img src="profile-pic.jpg" alt="Profile" />
-              <span>{user.name}</span>
-            </div>
-          </div>
+    const fetchSubmissions = async () => {
+        try {
+            const response = await fetch('/api/theses'); // Adjust API path as necessary
+            const data = await response.json();
+            setSubmissions(data);
+        } catch (error) {
+            console.error('Error fetching submissions:', error);
+        }
+    };
+
+    return (
+        <div className="teacher-dashboard">
+            {/* Top Navigation Bar */}
+            <header className="top-nav">
+                <h2>Instructor Dashboard</h2>
+                <div className="nav-items">
+                    <span>Welcome, {instructor ? instructor.first_name : "Instructor"}</span>
+                    <Link to="/profile">Profile Settings</Link>
+                    <Link to="/logout">Log Out</Link>
+                </div>
+            </header>
+
+            {/* Sidebar */}
+            <aside className="sidebar">
+                <ul>
+                    <li><Link to="/instructor-dashboard">Dashboard Home</Link></li>
+                    <li><Link to="/instructor">Thesis Submissions</Link></li>
+                    <li><Link to="/notifications">Notifications</Link></li>
+                    <li><Link to="/messages">Messages</Link></li>
+                </ul>
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="content">
+                {/* Dashboard Home */}
+                <section className="dashboard-home">
+                    <h3>Recent Submissions</h3>
+                    <ul>
+                        {submissions.map((submission) => (
+                            <li key={submission._id}>
+                                <span>{submission.title}</span>
+                                <span>Status: {submission.status}</span>
+                                <Link to={`/submissions/${submission._id}`}>View Details</Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            </main>
         </div>
-
-        {/* Main Content Section */}
-        <div className="content">
-          <h1>Welcome, {user.name}</h1>
-          <p>Select a section from the sidebar to get started.</p>
-          {/* Render different sections (e.g., Dashboard Home, Thesis Submissions) based on the route */}
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default TeacherDashboard;
