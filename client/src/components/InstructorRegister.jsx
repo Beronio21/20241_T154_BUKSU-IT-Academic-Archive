@@ -29,6 +29,16 @@ const InstructorRegister = () => {
         setLoading(true);
         setError('');
 
+<<<<<<< HEAD
+=======
+        // Simple form validation
+        if (!email || !password || !firstName || !lastName || !contactNumber || !gender || !birthday || !department || !position) {
+            setError('All fields are required');
+            setLoading(false);
+            return;
+        }
+
+>>>>>>> INTEGRATION
         try {
             const response = await fetch('http://localhost:5000/api/instructors', { // Adjusted endpoint
                 method: 'POST',
@@ -53,8 +63,13 @@ const InstructorRegister = () => {
 
             if (response.ok) {
                 localStorage.setItem('token', data.token); // Assuming you return a token
+<<<<<<< HEAD
                 login();
                 navigate('/dashboard'); // Redirect to dashboard
+=======
+                login(); // Login the user after registration
+                navigate('/dashboard'); // Redirect to the dashboard
+>>>>>>> INTEGRATION
             } else {
                 setError(data.message || 'Registration failed. Please try again.');
             }
@@ -124,7 +139,11 @@ const InstructorRegister = () => {
                             <span>or</span>
                         </div>
 
+<<<<<<< HEAD
                         <button type="button" className="google-btn">
+=======
+                        <button type="button" className="google-btn" onClick={() => window.location.href = '/api/auth/google'}>
+>>>>>>> INTEGRATION
                             <img src={googleLogo} alt="Google Logo" />
                             Register with Google
                         </button>

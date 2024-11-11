@@ -6,7 +6,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+<<<<<<< HEAD
     background: linear-gradient(90deg, #006BB2 10%, #0063A5 17%, #002E4C 100%);
+=======
+    background: white;
+>>>>>>> INTEGRATION
 }
 /* Change color of the title "ThesEase" */
 .login-box h1 {
