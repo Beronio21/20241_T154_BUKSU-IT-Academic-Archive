@@ -27,7 +27,7 @@ function StudentSubmitThesis() {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:5000/api/thesis/submit', {
-                student_id: 12345, // how to make this automatic change when login using student
+                student_id: 12345, // make automatically set the student_id based on the logged-in student
                 thesis_title: title,
                 file_url: fileUrl,
                 comments: comments,
