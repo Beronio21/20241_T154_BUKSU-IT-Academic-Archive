@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 //server/controllers/instructorController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
->>>>>>> INTEGRATION
 const Instructor = require('../models/Instructor');
 
 // GET: Retrieve all instructors
@@ -103,8 +100,6 @@ exports.deleteInstructor = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-<<<<<<< HEAD
-=======
 
 // POST: Login instructor
 // In the loginInstructor function
@@ -153,4 +148,3 @@ exports.getAllInstructors = async (req, res) => {
     }
 };
 
->>>>>>> INTEGRATION

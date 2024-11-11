@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-// server/controllers/authController.js
-const Student = require('../models/Student'); // Use the Student model
-const bcrypt = require('bcryptjs'); // Use bcryptjs instead of bcrypt
-const jwt = require('jsonwebtoken'); // Ensure this is installed
-
-exports.login = async (req, res) => {
-=======
 //authController.js
 const Student = require('../models/Student'); // Import the Student model
 const Instructor = require('../models/Instructor'); // Import the Instructor model
@@ -14,7 +6,6 @@ const jwt = require('jsonwebtoken'); // Ensure this is installed
 
 // Student login
 exports.studentLogin = async (req, res) => {
->>>>>>> INTEGRATION
     const { email, password } = req.body;
     try {
         // Find the student by email
@@ -29,12 +20,6 @@ exports.studentLogin = async (req, res) => {
         const token = jwt.sign({ studentId: student._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ success: true, token });
     } catch (error) {
-<<<<<<< HEAD
-        console.error("Login error:", error.message); // Log the error for debugging
-        res.status(500).json({ message: "Internal server error. Please try again later." });
-    }
-};
-=======
         console.error("Student login error:", error.message); // Log the error for debugging
         res.status(500).json({ message: "Internal server error. Please try again later." });
     }
@@ -67,4 +52,3 @@ exports.instructorLogin = async (req, res) => {
         res.status(500).json({ message: 'Internal server error. Please try again later.' });
     }
 };
->>>>>>> INTEGRATION

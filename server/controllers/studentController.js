@@ -4,8 +4,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
-<<<<<<< HEAD
-=======
 // POST: Login student
 exports.loginStudent = async (req, res) => {
     const { email, password } = req.body;
@@ -36,7 +34,6 @@ exports.loginStudent = async (req, res) => {
     }
 };
 
->>>>>>> INTEGRATION
 // Get all students with optional pagination
 exports.getStudents = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;

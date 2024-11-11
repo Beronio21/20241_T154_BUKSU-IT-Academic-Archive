@@ -43,8 +43,6 @@ mongoose.connect(process.env.MONGO_URI)
         console.error('MongoDB connection error:', err.message);
         process.exit(1); // Exit the app if the connection fails
     });
-<<<<<<< HEAD
-=======
 
 // Set up routes for various entities
 app.use('/api/admins', adminRoutes);
@@ -58,20 +56,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/submissionhistories', submissionHistoryRoutes);
 app.use('/api/thesis', thesisRoutes);
->>>>>>> INTEGRATION
 
-// Set up routes for various entities
-app.use('/api/admins', adminRoutes);
-app.use('/api/user_management', userManagementRoutes);
-app.use('/api/system_configurations', systemConfigRoutes);
-app.use('/api/admin_notifications', adminNotificationRoutes);
-app.use('/api/audit_logs', auditLogRoutes);
-app.use('/api/instructors', instructorRoutes);
-app.use('/api/students', studentRoutes);
-app.use('/api/theses', thesisRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/submissionhistories', submissionHistoryRoutes);
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
