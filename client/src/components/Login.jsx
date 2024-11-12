@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'; //
 import { useAuth } from '../AuthContext';
 import '../styles/login.css';
 
@@ -15,6 +16,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
+    const GOOGLE_CLIENT_ID = "736065879191-b45t9nomm8n44ifvnebg86o5veerr00e.apps.googleusercontent.com"; // Replace with your actual Client ID
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -22,13 +24,7 @@ const Login = () => {
         setError('');
 
         try {
-            // Determine if user is an instructor based on email
-            const isInstructor = email.includes('@instructor.com');
-            const endpoint = isInstructor
-                ? 'http://localhost:5000/api/instructors/login' // Instructor endpoint
-                : 'http://localhost:5000/api/students/login';    // Student endpoint
-
-            const response = await fetch(endpoint, {
+            const response = await fetch('http://localhost:5000/api/students/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,21 +34,11 @@ const Login = () => {
 
             const data = await response.json();
 
-            // Debugging logs for better error understanding
-            console.log('Response from server:', data);
-
             if (response.ok) {
-                localStorage.setItem('token', data.token);  // Save token
-                login();  // Update Auth context (if using context for auth)
-
-                // Navigate based on user type
-                if (isInstructor) {
-                    navigate('/instructor-dashboard');
-                } else {
-                    navigate('/student-dashboard');
-                }
+                sessionStorage.setItem('token', data.token);  // Use sessionStorage instead of localStorage for more security
+                login();
+                navigate('/dashboard');
             } else {
-                // Show error message if response is not ok
                 setError(data.message || 'Login failed. Please try again.');
             }
         } catch (error) {
@@ -62,73 +48,118 @@ const Login = () => {
         }
     };
 
+    const handleGoogleLoginSuccess = async (credentialResponse) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/students/google-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: credentialResponse.credential }), // This is the token sent to backend
+            });
+    
+            const data = await response.json();
+    
+            if (data.success) {
+                sessionStorage.setItem('token', data.token);  // Store the token securely
+                login();
+                navigate('/dashboard');
+            } else {
+                setError(data.message || 'Google login failed.');
+            }
+        } catch (error) {
+            console.error('Error during Google login:', error);  // Add logging for debugging
+            setError('An error occurred during Google login.');
+        }
+    };
+    
+
+    const handleGoogleLoginError = () => {
+        setError('Google login was unsuccessful. Please try again.');
+    };
+
     return (
-        <div className="login-page">
-            {/* Logo */}
-            <div className="logo">
-                <img src={logo} alt="ThesEase Logo" />
-            </div>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <div className="login-page">
+                {/* Logo */}
+                <div className="logo">
+                    <img src={logo} alt="ThesEase Logo" />
+                </div>
 
-            <div className="login-container">
-                {/* Left section */}
-                <div className="left-section">
-                    <h1>Your Research, Our Platform. Login and Begin.</h1>
-                    <div className="image-box">
-                        <img src={leftImage} alt="Left side image" />
+                <div className="login-container">
+                    {/* Left section */}
+                    <div className="left-section">
+                        <h1>Your Research, Our Platform. Login and Begin.</h1>
+                        <div className="image-box">
+                            <img src={leftImage} alt="Left side image" />
+                        </div>
+                        <h2>Redefining Academic Submissions for a Digital Age.</h2>
                     </div>
-                    <h2>Redefining Academic Submissions for a Digital Age.</h2>
-                </div>
 
-                {/* Login Box */}
-                <div className="login-box">
-                    <h1>ThesEase</h1>
-                    <h2>Login</h2>
-                    {error && <p className="error-message">{error}</p>}
-                    <form onSubmit={handleLogin}>
-                        <div className="input-group">
-                            <input
-                                type="email"  // Changed to 'email' type for validation
-                                placeholder="Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
+                    {/* Login Box */}
+                    <div className="login-box">
+                        <h1>ThesEase</h1>
+                        <h2>Login</h2>
+                        {error && <p className="error-message">{error}</p>}
+                        <form onSubmit={handleLogin}>
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    placeholder="Username or Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="input-group">
+                                <input
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <button type="submit" className="login-btn" disabled={loading}>
+                                {loading ? 'Logging in...' : 'Login'}
+                            </button>
+
+                            <div className="separator">
+                                <span>or</span>
+                            </div>
+
+                            <GoogleLogin
+                                onSuccess={handleGoogleLoginSuccess}
+                                onError={handleGoogleLoginError}
+                                useOneTap
+                                render={(renderProps) => (
+                                    <button 
+                                        type="button" 
+                                        className="google-btn" 
+                                        onClick={renderProps.onClick} 
+                                        disabled={renderProps.disabled}
+                                    >
+                                        <img src={googleLogo} alt="Google Logo" />
+                                        Login with Google
+                                    </button>
+                                )}
                             />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
 
-                        <button type="submit" className="login-btn" disabled={loading}>
-                            {loading ? 'Logging in...' : 'Login'}
-                        </button>
-
-                        <div className="separator">
-                            <span>or</span>
-                        </div>
-
-                        <button type="button" className="google-btn">
-                            <img src={googleLogo} alt="Google Logo" />
-                            Login with Google
-                        </button>
-
-                        <div className="extra-options">
-                            <a href="#">Forgot Password?</a>
-                            <p>
-                                Don't have an account? 
-                                <Link to="/select-user-type"> Register</Link>
-                            </p>
-                        </div>
-                    </form>
+                            <div className="extra-options">
+                                <a href="#">Forgot Password?</a>
+                                <p>
+                                    Don't have an account? 
+                                    <Link to="/select-user-type"> Register</Link>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </GoogleOAuthProvider>
     );
 };
 
 export default Login;
+// cant login using my existing account in mongodb
