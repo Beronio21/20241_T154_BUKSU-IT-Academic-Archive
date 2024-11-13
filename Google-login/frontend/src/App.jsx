@@ -10,7 +10,7 @@ import NotFound from './NotFound';
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const GoogleWrapper = ()=>(
-		<GoogleOAuthProvider clientId="763820276503-qsvg3g0r8ke2518g4co0pe6dl899l9h2.apps.googleusercontent.com">
+		<GoogleOAuthProvider clientId="1063044950961-ri426uf77m8u3gjoerju6qi581vle799.apps.googleusercontent.com">
 			<GoogleLogin></GoogleLogin>
 		</GoogleOAuthProvider>
 	)
