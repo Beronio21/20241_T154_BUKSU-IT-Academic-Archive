@@ -1,28 +1,28 @@
+// routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-const AdminController = require('../controllers/AdminController');
+const adminController = require('../controllers/AdminController');
+const authMiddleware = require('../middleware/auth'); // Authentication middleware for protected routes
 
-// Middleware to validate admin ID
-router.param('admin_id', (req, res, next, admin_id) => {
-    if (!admin_id || !admin_id.match(/^[0-9a-fA-F]{24}$/)) {
-        return res.status(400).json({ message: 'Invalid admin ID' });
-    }
-    next();
-});
+// POST: Register a new admin (createAdmin)
+router.post('/register', adminController.createAdmin);
 
-// Route to get all admins
-router.get('/', AdminController.getAllAdmins);
+// POST: Login an admin (loginAdmin)
+router.post('/login', adminController.loginAdmin);
 
-// Route to get admin by ID
-router.get('/:admin_id', AdminController.getAdminById);
+// GET: Retrieve all admins (requires authentication)
+router.get('/', authMiddleware, adminController.getAllAdmins);
 
-// Route to create a new admin (using '/register' endpoint)
-router.post('/register', AdminController.createAdmin); // Change here to '/register'
+// GET: Retrieve a specific admin by ID (requires authentication)
+router.get('/:admin_id', authMiddleware, adminController.getAdminById);
 
-// Route to update an admin
-router.put('/:admin_id', AdminController.updateAdmin);
+// PUT: Update an existing admin by ID (requires authentication)
+router.put('/:admin_id', authMiddleware, adminController.updateAdmin);
 
-// Route to delete an admin
-router.delete('/:admin_id', AdminController.deleteAdmin);
+// DELETE: Remove an admin by ID (requires authentication)
+router.delete('/:admin_id', authMiddleware, adminController.deleteAdmin);
+
+// Admin Logout route
+router.post('/logout', adminController.logoutAdmin);
 
 module.exports = router;

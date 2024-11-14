@@ -27,4 +27,7 @@ router.patch('/:student_id', authMiddleware, studentController.patchStudent);
 // GET: Search students based on criteria (name, department, student_id) (requires authentication)
 router.get('/search', authMiddleware, studentController.searchStudents);
 
+// Student Logout route
+router.post('/logout', studentController.logoutStudent);
+
 module.exports = router;

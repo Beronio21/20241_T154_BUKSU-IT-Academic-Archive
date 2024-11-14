@@ -1,23 +1,29 @@
+// routes/instructorRoutes.js
 const express = require('express');
 const router = express.Router();
 const instructorController = require('../controllers/instructorController');
+const authMiddleware = require('../middleware/auth'); // Adjust path as needed
 
-// GET: Retrieve all instructors
-router.get('/', instructorController.getAllInstructors);
+// Register a new instructor
+router.post('/register', instructorController.registerInstructor);
 
-// GET: Retrieve a specific instructor by ID
-router.get('/:id', instructorController.getInstructorById);
+// Login an instructor
+router.post('/login', instructorController.loginInstructor);
 
-// POST: Add a new instructor
-router.post('/', instructorController.addInstructor);
+// Get all instructors (protected route)
+router.get('/', authMiddleware, instructorController.getAllInstructors);
 
-// PATCH: Update an instructor's details
-router.patch('/:id', instructorController.updateInstructor);
+// Get an instructor by ID (protected route)
+router.get('/:id', authMiddleware, instructorController.getInstructorById);
 
-// DELETE: Remove an instructor by ID
-router.delete('/:id', instructorController.deleteInstructor);
+// Update an instructor (protected route)
+router.put('/:id', authMiddleware, instructorController.updateInstructor);
 
-// POST: Instructor login
-router.post('/login', instructorController.loginInstructor); // Added login route
+// Delete an instructor (protected route)
+router.delete('/:id', authMiddleware, instructorController.deleteInstructor);
+
+// Instructor Logout route
+router.post('/logout', instructorController.logoutInstructor);
+
 
 module.exports = router;

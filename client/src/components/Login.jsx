@@ -20,14 +20,27 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
-
+    
         try {
-            // Determine if user is an instructor based on email
-            const isInstructor = email.includes('@instructor.com');
-            const endpoint = isInstructor
-                ? 'http://localhost:5000/api/instructors/login' // Instructor endpoint
-                : 'http://localhost:5000/api/students/login';    // Student endpoint
-
+            // Determine if user is an instructor, student, or admin based on email
+            const isInstructor = email.includes('@buksu.edu.ph');
+            const isStudent = email.includes('@student.buksu.edu.ph');
+            const isAdmin = email.includes('@gmail.com');
+            
+            let endpoint;
+            
+            if (isInstructor) {
+                endpoint = 'http://localhost:5000/api/instructors/login';
+            } else if (isStudent) {
+                endpoint = 'http://localhost:5000/api/students/login';
+            } else if (isAdmin) {
+                endpoint = 'http://localhost:5000/api/admins/login';
+            } else {
+                setError('Please enter a valid email address for Instructor, Student, or Admin.');
+                setLoading(false);
+                return;
+            }
+    
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
@@ -35,24 +48,22 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
+    
             const data = await response.json();
-
-            // Debugging logs for better error understanding
-            console.log('Response from server:', data);
-
+    
             if (response.ok) {
-                localStorage.setItem('token', data.token);  // Save token
-                login();  // Update Auth context (if using context for auth)
-
+                localStorage.setItem('token', data.token);
+                login();
+    
                 // Navigate based on user type
                 if (isInstructor) {
                     navigate('/instructor-dashboard');
-                } else {
+                } else if (isStudent) {
                     navigate('/student-dashboard');
+                } else if (isAdmin) {
+                    navigate('/admin-dashboard');
                 }
             } else {
-                // Show error message if response is not ok
                 setError(data.message || 'Login failed. Please try again.');
             }
         } catch (error) {
@@ -61,7 +72,7 @@ const Login = () => {
             setLoading(false);
         }
     };
-
+    
     return (
         <div className="login-page">
             {/* Logo */}

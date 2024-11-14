@@ -1,38 +1,69 @@
-// Imports
+//controllers/studentController.js
 const Student = require('../models/Student');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
+const { OAuth2Client } = require('google-auth-library');
+const { JWT_SECRET, GOOGLE_CLIENT_ID, JWT_EXPIRY_TIME } = process.env;
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
-// POST: Login student
-exports.loginStudent = async (req, res) => {
-    const { email, password } = req.body;
-
+// Helper function to verify Google Token
+async function verifyGoogleToken(token) {
     try {
-        const student = await Student.findOne({ email });
-        if (!student) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Compare plain text password with the one stored (hashed)
-        const isMatch = await bcrypt.compare(password, student.password_hash);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Create a JWT token (student_id is included in the payload)
-        const token = jwt.sign(
-            { student_id: student._id, email: student.email },
-            process.env.JWT_SECRET, // Ensure you have JWT_SECRET in your .env file
-            { expiresIn: '1h' } // Token expires in 1 hour
-        );
-
-        res.json({ token });
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: GOOGLE_CLIENT_ID,
+        });
+        return ticket.getPayload();  // Return Google user data
     } catch (error) {
-        console.error('Error logging in student:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Google Token verification error:', error);
+        throw new Error('Google authentication failed');
+    }
+}
+
+// Google Register
+exports.googleRegister = async (req, res) => {
+    try {
+        const { token: googleToken } = req.body;
+
+        // Verify Google token
+        if (!googleToken) {
+            return res.status(400).json({ message: 'Google token is required' });
+        }
+
+        const googleUser = await verifyGoogleToken(googleToken);
+
+        // Check if a student already exists by email
+        let student = await Student.findOne({ email: googleUser.email });
+        if (student) {
+            return res.status(200).json({ message: 'Student already registered', student });
+        }
+
+        // Create a new student if not exists
+        student = new Student({
+            first_name: googleUser.given_name || 'Unknown',
+            last_name: googleUser.family_name || 'Unknown',
+            email: googleUser.email,
+            student_id: googleUser.sub,  // Use Google unique ID as student ID
+            gender: googleUser.gender || 'Unknown',
+            birthday: googleUser.birthdate || 'Not Provided',  // Optional field
+            department: 'Unknown',
+            course: 'Unknown',
+            year_level: 1,
+        });
+
+        // Save the new student to the database
+        await student.save();
+
+        // Generate JWT token for the student
+        const jwtToken = jwt.sign({ studentId: student._id }, JWT_SECRET, { expiresIn: JWT_EXPIRY_TIME || '1h' });
+
+        return res.status(201).json({ message: 'Student registered successfully', student, token: jwtToken });
+    } catch (error) {
+        console.error('Error during Google registration:', error);
+        res.status(500).json({ message: `Error during Google registration: ${error.message}` });
     }
 };
+
 
 // Get all students with optional pagination
 exports.getStudents = async (req, res) => {
@@ -201,5 +232,21 @@ exports.getStudentById = async (req, res) => {
         return res.json(student);
     } catch (error) {
         res.status(500).json({ message: "Error retrieving student: " + error.message });
+    }
+};
+
+
+
+const blacklist = new Set(); // In-memory store for blacklisted tokens
+
+// Student Logout
+exports.logoutStudent = (req, res) => {
+    const token = req.headers['authorization']?.split(' ')[1]; // Extract the token from the header
+
+    if (token) {
+        blacklist.add(token); // Add the token to the blacklist
+        return res.json({ message: 'Student logged out successfully' });
+    } else {
+        return res.status(400).json({ message: 'No token provided' });
     }
 };

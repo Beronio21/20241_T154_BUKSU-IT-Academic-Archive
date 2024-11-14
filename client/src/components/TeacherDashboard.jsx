@@ -1,12 +1,13 @@
 // TeacherDashboard.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import '../styles/TeacherDashboard.css';
 
 const TeacherDashboard = () => {
     const [instructor, setInstructor] = useState(null);
     const [submissions, setSubmissions] = useState([]);
+    const navigate = useNavigate(); // Initialize navigate for redirection
 
     useEffect(() => {
         // Fetch instructor data and submissions when component mounts
@@ -34,6 +35,12 @@ const TeacherDashboard = () => {
         }
     };
 
+    // Logout handler
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Clear the token from localStorage
+        navigate('/'); // Redirect to the login page
+    };
+
     return (
         <div className="teacher-dashboard">
             {/* Top Navigation Bar */}
@@ -42,7 +49,7 @@ const TeacherDashboard = () => {
                 <div className="nav-items">
                     <span>Welcome, {instructor ? instructor.first_name : "Instructor"}</span>
                     <Link to="/profile">Profile Settings</Link>
-                    <Link to="/logout">Log Out</Link>
+                    <button onClick={handleLogout} className="logout-button">Log Out</button> {/* Logout button */}
                 </div>
             </header>
 
@@ -53,6 +60,7 @@ const TeacherDashboard = () => {
                     <li><Link to="/instructor">Thesis Submissions</Link></li>
                     <li><Link to="/notifications">Notifications</Link></li>
                     <li><Link to="/messages">Messages</Link></li>
+                    <li onClick={handleLogout} className="logout-link">Log Out</li> {/* Sidebar Logout */}
                 </ul>
             </aside>
 
