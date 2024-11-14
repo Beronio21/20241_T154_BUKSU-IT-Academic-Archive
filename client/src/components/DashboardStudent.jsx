@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext'; // Import the auth context for logout handling
 import '../styles/DashboardStudent.css'; // Assuming the styles are in this file
+import { useNavigate } from 'react-router-dom';
 
 const DashboardStudent = () => {
   const { logout } = useAuth(); // Get logout function from the AuthContext
@@ -10,7 +11,7 @@ const DashboardStudent = () => {
   // Handle Logout
   const handleLogout = () => {
     logout(); // Clear the token and authentication state
-    navigate('/'); // Redirect to login page
+    navigate('/'); // Redirect to login page after logout
   };
 
   return (
@@ -32,11 +33,11 @@ const DashboardStudent = () => {
       <div className="sidebar">
         <ul>
           <li><Link to="/student-dashboard">Dashboard Home</Link></li>
-          <li><Link to="/student">Thesis Submission</Link></li> {/* Link to Thesis Submission */}
-          <li><Link to="/notifications">Notifications</Link></li> {/* Link to Notifications */}
+          <li><Link to="/student">Thesis Submission</Link></li>
+          <li><Link to="/notifications">Notifications</Link></li>
           <li><Link to="/messages">Messages</Link></li>
           <li><Link to="/profile-settings">Profile Settings</Link></li>
-          <li onClick={handleLogout}>Log Out</li>  {/* Logout functionality */}
+          <li><button onClick={handleLogout}>Logout</button></li> {/* Updated logout button */}
         </ul>
       </div>
 

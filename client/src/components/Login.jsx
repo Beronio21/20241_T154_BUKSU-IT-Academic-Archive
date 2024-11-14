@@ -20,15 +20,13 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
-    
+
         try {
-            // Determine if user is an instructor, student, or admin based on email
             const isInstructor = email.includes('@buksu.edu.ph');
             const isStudent = email.includes('@student.buksu.edu.ph');
             const isAdmin = email.includes('@gmail.com');
             
             let endpoint;
-            
             if (isInstructor) {
                 endpoint = 'http://localhost:5000/api/instructors/login';
             } else if (isStudent) {
@@ -40,7 +38,7 @@ const Login = () => {
                 setLoading(false);
                 return;
             }
-    
+
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
@@ -48,21 +46,17 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
-                localStorage.setItem('token', data.token);
-                login();
-    
-                // Navigate based on user type
-                if (isInstructor) {
-                    navigate('/instructor-dashboard');
-                } else if (isStudent) {
-                    navigate('/student-dashboard');
-                } else if (isAdmin) {
-                    navigate('/admin-dashboard');
-                }
+                // Use the login function from AuthContext to store token and update state
+                login(data.token);
+
+                // Redirect user based on their role
+                if (isInstructor) navigate('/instructor-dashboard');
+                else if (isStudent) navigate('/student-dashboard');
+                else if (isAdmin) navigate('/admin-dashboard');
             } else {
                 setError(data.message || 'Login failed. Please try again.');
             }
@@ -72,6 +66,7 @@ const Login = () => {
             setLoading(false);
         }
     };
+
     
     return (
         <div className="login-page">
@@ -98,7 +93,7 @@ const Login = () => {
                     <form onSubmit={handleLogin}>
                         <div className="input-group">
                             <input
-                                type="email"  // Changed to 'email' type for validation
+                                type="email"
                                 placeholder="Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
