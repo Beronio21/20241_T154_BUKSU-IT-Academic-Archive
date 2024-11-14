@@ -1,3 +1,4 @@
+//app.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,7 +8,7 @@ const morgan = require('morgan');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');  // Make sure to define the User model correctly
-
+const validateGoogleTokenMiddleware = require('./middleware/validateGoogleTokenMiddleware');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Import route files
@@ -18,55 +19,50 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const submissionHistoryRoutes = require('./routes/submissionHistoryRoutes');
 const instructorRoutes = require('./routes/instructorRoutes');
-const adminRoutes = require('./routes/adminRoutes');
+const adminRoutes = require('./routes/adminRoutes'); //  
 const userManagementRoutes = require('./routes/userManagementRoutes');
 const systemConfigRoutes = require('./routes/systemConfigRoutes');
 const adminNotificationRoutes = require('./routes/adminNotificationRoutes');
 const auditLogRoutes = require('./routes/auditLogRoutes');
 
+
+
+
 // Initialize the Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Google login route handler
-app.post('/api/students/google-register', async (req, res) => {
-    const { token } = req.body; // 
+// Google registration route with middleware
+app.post('/api/students/google-register', validateGoogleTokenMiddleware, async (req, res) => {
+    console.log("Google registration request payload:", req.googlePayload);  // Debugging output
+
+    const { email, name } = req.googlePayload;
 
     try {
-        // Verify the Google ID token
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID,  // Ensure the client ID matches
-        });
-        const payload = ticket.getPayload();
-        const { email, name } = payload;
-
-        // Check if the user already exists in the database
         const user = await User.findOne({ email });
         if (user) {
-            // User already exists
+            console.log(`User with email ${email} already registered.`);
             return res.status(400).json({ message: 'User already registered' });
         }
 
-        // Create a new user in the database
+        // Create new user
         const newUser = new User({
             email,
             first_name: name.split(' ')[0],
             last_name: name.split(' ')[1] || '',
-            // other fields can be added from the payload
+            // other fields as needed
         });
 
         await newUser.save();
 
-        // Generate a JWT token
-        const authToken = generateToken(newUser);  // This will generate a JWT token
-
+        const authToken = generateToken(newUser);
         res.json({ success: true, token: authToken });
     } catch (error) {
-        console.error(error);
+        console.error('Error in Google registration:', error.message);
         res.status(500).json({ message: 'Google registration failed. Please try again.' });
     }
 });
+
 
 // JWT Token generation function
 function generateToken(user) {
@@ -127,6 +123,6 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, () => { //Error: listen EADDRINUSE: address already in use :::5000
     console.log(`Server running on http://localhost:${PORT}`);
 });

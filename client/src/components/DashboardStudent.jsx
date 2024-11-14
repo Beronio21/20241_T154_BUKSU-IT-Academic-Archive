@@ -1,8 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useAuth } from '../AuthContext'; // Import the auth context for logout handling
 import '../styles/DashboardStudent.css'; // Assuming the styles are in this file
 
 const DashboardStudent = () => {
+  const { logout } = useAuth(); // Get logout function from the AuthContext
+  const navigate = useNavigate(); // Hook for navigation
+
+  // Handle Logout
+  const handleLogout = () => {
+    logout(); // Clear the token and authentication state
+    navigate('/'); // Redirect to login page
+  };
+
   return (
     <div className="dashboard-student">
       {/* Top Navigation Bar */}
@@ -22,18 +32,18 @@ const DashboardStudent = () => {
       <div className="sidebar">
         <ul>
           <li><Link to="/student-dashboard">Dashboard Home</Link></li>
-          <li><Link to="/student">Thesis Submission</Link></li> {/* Add this link */}
+          <li><Link to="/student">Thesis Submission</Link></li> {/* Link to Thesis Submission */}
           <li><Link to="/notifications">Notifications</Link></li> {/* Link to Notifications */}
           <li><Link to="/messages">Messages</Link></li>
           <li><Link to="/profile-settings">Profile Settings</Link></li>
-          <li>Log Out</li>
+          <li onClick={handleLogout}>Log Out</li>  {/* Logout functionality */}
         </ul>
       </div>
 
       {/* Main Content Area */}
       <div className="main-content">
         <h2>Welcome to Your Dashboard</h2>
-        {/* Add specific content for each section here */}
+        {/* You can add dynamic content for the student's dashboard here */}
       </div>
     </div>
   );

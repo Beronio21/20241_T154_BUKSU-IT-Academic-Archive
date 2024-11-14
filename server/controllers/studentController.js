@@ -234,3 +234,19 @@ exports.getStudentById = async (req, res) => {
         res.status(500).json({ message: "Error retrieving student: " + error.message });
     }
 };
+
+
+
+const blacklist = new Set(); // In-memory store for blacklisted tokens
+
+// Student Logout
+exports.logoutStudent = (req, res) => {
+    const token = req.headers['authorization']?.split(' ')[1]; // Extract the token from the header
+
+    if (token) {
+        blacklist.add(token); // Add the token to the blacklist
+        return res.json({ message: 'Student logged out successfully' });
+    } else {
+        return res.status(400).json({ message: 'No token provided' });
+    }
+};

@@ -5,6 +5,7 @@ const authController = require('../controllers/authController'); // Import the a
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const Student = require('../models/Student');
+const Admin = require('../models/Admin');  // Import Admin model
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
@@ -66,5 +67,9 @@ router.post('/student/login', authController.studentLogin); // Student login
 
 // Instructor login route
 router.post('/instructor/login', authController.instructorLogin); // Instructor login
+
+// Admin login route
+router.post('/admin/login', authController.adminLogin); // Admin login route
+
 
 module.exports = router;

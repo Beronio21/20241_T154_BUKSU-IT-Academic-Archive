@@ -88,7 +88,7 @@ const Register = () => {
             if (data.success) {
                 localStorage.setItem('token', data.token);
                 login();
-                navigate('/dashboard');
+                navigate('/student-dashboard');
             } else {
                 // Handle errors from Google registration
                 setError(data.message || 'Google registration failed.');

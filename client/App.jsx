@@ -17,6 +17,7 @@ import TeacherDashboard from './src/components/TeacherDashboard'; // Instructor 
 import ThesisSubmissionsPage from './src/components/ThesisSubmissionsPage';
 import StudentSubmitThesis from './src/components/StudentSubmitThesis';
 import InstructorReviewThesis from './src/components/InstructorReviewThesis';
+import AdminDashboard from './src/components/AdminDashboard'; // Import AdminDashboard
 
 const App = () => {
     return (
@@ -50,6 +51,8 @@ const Main = () => {
                 <Route path="/thesis-review" element={<ThesisSubmissionsPage />} />
                 <Route path="/student" element={<StudentSubmitThesis />} />
                 <Route path="/instructor" element={<InstructorReviewThesis />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                
 
             </Routes>
         </div>
