@@ -104,17 +104,3 @@ exports.deleteInstructor = async (req, res) => {
         res.status(500).json({ message: 'Error deleting instructor', error });
     }
 };
-
-const blacklist = new Set(); // In-memory store for blacklisted tokens
-
-// Instructor Logout
-exports.logoutInstructor = (req, res) => {
-    const token = req.headers['authorization']?.split(' ')[1]; // Extract the token from the header
-
-    if (token) {
-        blacklist.add(token); // Add the token to the blacklist
-        return res.json({ message: 'Instructor logged out successfully' });
-    } else {
-        return res.status(400).json({ message: 'No token provided' });
-    }
-};

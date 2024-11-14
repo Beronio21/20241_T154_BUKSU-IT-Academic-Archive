@@ -1,7 +1,7 @@
 // routes/instructorRoutes.js
 const express = require('express');
 const router = express.Router();
-const instructorController = require('../controllers/instructorController');
+const instructorController = require('../controllers/InstructorController');
 const authMiddleware = require('../middleware/auth'); // Adjust path as needed
 
 // Register a new instructor
@@ -21,9 +21,5 @@ router.put('/:id', authMiddleware, instructorController.updateInstructor);
 
 // Delete an instructor (protected route)
 router.delete('/:id', authMiddleware, instructorController.deleteInstructor);
-
-// Instructor Logout route
-router.post('/logout', instructorController.logoutInstructor);
-
 
 module.exports = router;
