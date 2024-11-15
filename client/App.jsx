@@ -19,6 +19,9 @@ import StudentSubmitThesis from './src/components/StudentSubmitThesis';
 import InstructorReviewThesis from './src/components/InstructorReviewThesis';
 import AdminDashboard from './src/components/AdminDashboard';
 import ProtectedRoute from './src/components/ProtectedRoute';
+import UserManagement from './src/components/UserManagement';
+
+
 
 const App = () => {
     return (
@@ -73,6 +76,7 @@ const Main = () => {
                 <Route path="/student" element={<StudentSubmitThesis />} />
                 <Route path="/instructor" element={<InstructorReviewThesis />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/user-management" element={<UserManagement />} />
             </Route>
         </Routes>
     );
