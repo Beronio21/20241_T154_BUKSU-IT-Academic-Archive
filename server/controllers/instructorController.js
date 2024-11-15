@@ -33,7 +33,7 @@ exports.addInstructor = async (req, res) => {
         first_name, 
         last_name, 
         email, 
-        password_hash, 
+        password_hash, // This will be hashed before saving
         contact_number, 
         birthday, 
         gender, 
@@ -47,24 +47,28 @@ exports.addInstructor = async (req, res) => {
         return res.status(400).json({ message: "Please provide all required fields." });
     }
 
-    const newInstructor = new Instructor({
-        instructor_id,
-        first_name,
-        last_name,
-        email,
-        password_hash,
-        contact_number,
-        birthday,
-        gender,
-        department,
-        position,
-        profile_picture,
-        total_reviews: 0, // Default value
-        created_at: Date.now(), // Default value
-        updated_at: Date.now() // Default value
-    });
-
     try {
+        // Hash the password before storing it
+        const hashedPassword = await bcrypt.hash(password_hash, 10);
+
+        // Create a new instructor instance with the hashed password
+        const newInstructor = new Instructor({
+            instructor_id,
+            first_name,
+            last_name,
+            email,
+            password_hash: hashedPassword, // Store the hashed password here
+            contact_number,
+            birthday,
+            gender,
+            department,
+            position,
+            profile_picture,
+            total_reviews: 0, // Default value
+            created_at: Date.now(), // Default value
+            updated_at: Date.now() // Default value
+        });
+
         const savedInstructor = await newInstructor.save();
         res.status(201).json(savedInstructor);
     } catch (error) {
@@ -72,6 +76,7 @@ exports.addInstructor = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // PATCH: Update an instructor's details
 exports.updateInstructor = async (req, res) => {
