@@ -59,7 +59,7 @@ const AdminRegister = () => {
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 login();
-                navigate('/dashboard');
+                navigate('/admin-dashboard');
             } else {
                 setError(data.message || 'Registration failed. Please try again.');
             }

@@ -9,17 +9,15 @@ import AdminRegister from './src/components/AdminRegister';
 import Dashboard from './src/components/Dashboard';
 import UserType from './src/components/UserType';
 import DashboardStudent from './src/components/DashboardStudent';
-import ThesisSubmission from './src/components/ThesisSubmission';
 import Notification from './src/components/Notifications';
 import Messages from './src/components/Messages';
 import ProfileSettings from './src/components/ProfileSettings';
 import TeacherDashboard from './src/components/TeacherDashboard';
-import ThesisSubmissionsPage from './src/components/ThesisSubmissionsPage';
-import StudentSubmitThesis from './src/components/StudentSubmitThesis';
 import InstructorReviewThesis from './src/components/InstructorReviewThesis';
 import AdminDashboard from './src/components/AdminDashboard';
 import ProtectedRoute from './src/components/ProtectedRoute';
 import UserManagement from './src/components/UserManagement';
+import ThesisSubmission from './src/components/ThesisSubmission';
 
 
 
@@ -67,16 +65,16 @@ const Main = () => {
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/student-dashboard" element={<DashboardStudent />} />
-                <Route path="/thesis-submission" element={<ThesisSubmission />} />
                 <Route path="/notifications" element={<Notification />} />
                 <Route path="/messages" element={<Messages />} />
                 <Route path="/profile-settings" element={<ProfileSettings />} />
                 <Route path="/instructor-dashboard" element={<TeacherDashboard />} />
-                <Route path="/thesis-review" element={<ThesisSubmissionsPage />} />
-                <Route path="/student" element={<StudentSubmitThesis />} />
                 <Route path="/instructor" element={<InstructorReviewThesis />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/user-management" element={<UserManagement />} />
+                <Route path="/student" element={<ThesisSubmission />} />
+
+
             </Route>
         </Routes>
     );
