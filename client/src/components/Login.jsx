@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import '../styles/login.css';
+
 
 // Import images
 import logo from '../images/buksulogo.png';
 import leftImage from '../images/login1.png';
 import googleLogo from '../images/google.jpg';
+import React, { useState, useEffect } from 'react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -16,13 +18,27 @@ const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
 
+    useEffect(() => {
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            const userType = localStorage.getItem('userType'); // Assuming you stored userType when logging in
+            if (userType === 'instructor') {
+                navigate('/instructor-dashboard');
+            } else if (userType === 'student') {
+                navigate('/student-dashboard');
+            } else if (userType === 'admin') {
+                navigate('/admin-dashboard');
+            }
+        }
+    }, [navigate]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-    
+
         try {
-            // Determine if user is an instructor, student, or admin based on email
             const isInstructor = email.includes('@buksu.edu.ph');
             const isStudent = email.includes('@student.buksu.edu.ph');
             const isAdmin = email.includes('@gmail.com');
@@ -40,7 +56,7 @@ const Login = () => {
                 setLoading(false);
                 return;
             }
-    
+
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
@@ -48,14 +64,15 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
+
                 login();
-    
-                // Navigate based on user type
+
                 if (isInstructor) {
                     navigate('/instructor-dashboard');
                 } else if (isStudent) {
@@ -72,6 +89,8 @@ const Login = () => {
             setLoading(false);
         }
     };
+
+
     
     return (
         <div className="login-page">
@@ -98,7 +117,7 @@ const Login = () => {
                     <form onSubmit={handleLogin}>
                         <div className="input-group">
                             <input
-                                type="email"  // Changed to 'email' type for validation
+                                type="email"
                                 placeholder="Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
