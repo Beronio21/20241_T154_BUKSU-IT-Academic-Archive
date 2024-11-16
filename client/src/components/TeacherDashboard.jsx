@@ -60,7 +60,7 @@ const TeacherDashboard = () => {
                     <li><Link to="/instructor">Thesis Submissions</Link></li>
                     <li><Link to="/notifications">Notifications</Link></li>
                     <li><Link to="/messages">Messages</Link></li>
-                    <li onClick={handleLogout} className="logout-link">Log Out</li> {/* Sidebar Logout */}
+                    <button onClick={handleLogout} className="logout-button">Log Out</button> {/* Logout button */}
                 </ul>
             </aside>
 

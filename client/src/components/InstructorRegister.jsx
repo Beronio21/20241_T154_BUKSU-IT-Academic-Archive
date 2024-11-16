@@ -28,26 +28,39 @@ const InstructorRegister = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
-
+    
+        // Log the form data to check if anything is missing
+        console.log({
+            email,
+            password,
+            firstName,
+            lastName,
+            contactNumber,
+            gender,
+            birthday,
+            department,
+            position,
+        });
+    
         // Simple form validation
         if (!email || !password || !firstName || !lastName || !contactNumber || !gender || !birthday || !department || !position) {
             setError('All fields are required');
             setLoading(false);
             return;
         }
-
+    
         try {
-            const response = await fetch('http://localhost:5000/api/instructors', { // Adjusted endpoint
+            const response = await fetch('http://localhost:5000/api/instructors', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    instructor_id: employeeId, // Ensure to match your backend schema
+                    instructor_id: employeeId, 
                     first_name: firstName,
                     last_name: lastName,
                     email,
-                    password_hash: password, // Assuming you will hash it in the backend
+                    password_hash: password, 
                     contact_number: contactNumber,
                     department,
                     position,
@@ -55,13 +68,13 @@ const InstructorRegister = () => {
                     birthday,
                 }),
             });
-
+    
             const data = await response.json();
-
+    
             if (response.ok) {
-                localStorage.setItem('token', data.token); // Assuming you return a token
-                login(); // Login the user after registration
-                navigate('/dashboard'); // Redirect to the dashboard
+                localStorage.setItem('token', data.token); 
+                login(); 
+                navigate('/instructor-dashboard');
             } else {
                 setError(data.message || 'Registration failed. Please try again.');
             }
@@ -71,7 +84,7 @@ const InstructorRegister = () => {
             setLoading(false);
         }
     };
-
+    
     return (
         <div className="login-page">
             <div className="logo">

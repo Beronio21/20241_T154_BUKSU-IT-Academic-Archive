@@ -1,29 +1,27 @@
-// routes/instructorRoutes.js
 const express = require('express');
 const router = express.Router();
 const instructorController = require('../controllers/instructorController');
-const authMiddleware = require('../middleware/auth'); // Adjust path as needed
+const authMiddleware = require('../middleware/auth'); // Authentication middleware for protected routes
 
-// Register a new instructor
-router.post('/register', instructorController.registerInstructor);
+// GET: Retrieve all instructors (can be open, or add authMiddleware if needed)
+router.get('/', instructorController.getAllInstructors);
 
-// Login an instructor
-router.post('/login', instructorController.loginInstructor);
-
-// Get all instructors (protected route)
-router.get('/', authMiddleware, instructorController.getAllInstructors);
-
-// Get an instructor by ID (protected route)
+// GET: Retrieve a specific instructor by ID (protected)
 router.get('/:id', authMiddleware, instructorController.getInstructorById);
 
-// Update an instructor (protected route)
-router.put('/:id', authMiddleware, instructorController.updateInstructor);
+// POST: Add a new instructor
+router.post('/', instructorController.addInstructor);
 
-// Delete an instructor (protected route)
+// PATCH: Update an instructor's details (protected)
+router.patch('/:id', authMiddleware, instructorController.updateInstructor);
+
+// DELETE: Remove an instructor by ID (protected)
 router.delete('/:id', authMiddleware, instructorController.deleteInstructor);
 
-// Instructor Logout route
-router.post('/logout', instructorController.logoutInstructor);
+// POST: Instructor login
+router.post('/login', instructorController.loginInstructor);
 
+// POST: Instructor logout
+router.post('/logout', authMiddleware, instructorController.logoutInstructor); // Added logout route (optional auth)
 
 module.exports = router;

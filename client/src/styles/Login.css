@@ -1,13 +1,48 @@
 /* Login.css */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    height: 100vh;
+/* Ensure the body spans the full width of the viewport */
+html, body {
+    height: 100%; /* Keep full height */
+    margin: 0; /* Remove default margin */
     display: flex;
     justify-content: center;
     align-items: center;
     background: white;
+    width: 100%; /* Ensure the body takes the full width */
 }
+
+/* Main login container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Set to 100% width */
+    max-width: 1400px; /* Increase the max-width to stretch more */
+    flex-grow: 1;
+}
+
+/* Left section */
+.left-section {
+    width: 45%; /* Increase width for left section */
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login box */
+.login-box {
+    background-color: #f5f5f5;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    width: 45%; /* Increase width of login box */
+    max-width: 500px; /* Increase max-width of login box */
+    text-align: center;
+}
+
+
 /* Change color of the title "ThesEase" */
 .login-box h1 {
     color: blue; /* Change the color to blue */
@@ -39,25 +74,13 @@ body {
     height: auto;
 }
 
-/* Main login container */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: stretch; /* Allow the sections to stretch equally */
-    width: 100%;
-    max-width: 1200px; /* Limit the maximum width */
+h2 {
+    color: rgb(0, 68, 255); /* Replace with any color you want */
 }
 
-/* Left section */
-.left-section {
-    width: 35%;
-    padding: 20px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+
+
+
 
 
 .left-section h1, .left-section h2 {
@@ -72,17 +95,6 @@ body {
     width: 100%;
     max-width: 400px;
     height: auto;
-}
-
-/* Login box */
-.login-box {
-    background-color: #f5f5f5;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-    width: 35%;
-    max-width: 400px;
-    text-align: center;
 }
 
 /* Form elements */

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import '../styles/login.css';
+
 
 // Import images
 import logo from '../images/buksulogo.png';
 import leftImage from '../images/login1.png';
 import googleLogo from '../images/google.jpg';
+import React, { useState, useEffect } from 'react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -15,6 +17,21 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    useEffect(() => {
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            const userType = localStorage.getItem('userType'); // Assuming you stored userType when logging in
+            if (userType === 'instructor') {
+                navigate('/instructor-dashboard');
+            } else if (userType === 'student') {
+                navigate('/student-dashboard');
+            } else if (userType === 'admin') {
+                navigate('/admin-dashboard');
+            }
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -50,6 +67,7 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
+<<<<<<< HEAD
                 // Use the login function from AuthContext to store token and update state
                 login(data.token);
 
@@ -57,6 +75,20 @@ const Login = () => {
                 if (isInstructor) navigate('/instructor-dashboard');
                 else if (isStudent) navigate('/student-dashboard');
                 else if (isAdmin) navigate('/admin-dashboard');
+=======
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
+
+                login();
+
+                if (isInstructor) {
+                    navigate('/instructor-dashboard');
+                } else if (isStudent) {
+                    navigate('/student-dashboard');
+                } else if (isAdmin) {
+                    navigate('/admin-dashboard');
+                }
+>>>>>>> DEVELOPER
             } else {
                 setError(data.message || 'Login failed. Please try again.');
             }
@@ -67,6 +99,10 @@ const Login = () => {
         }
     };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> DEVELOPER
     
     return (
         <div className="login-page">

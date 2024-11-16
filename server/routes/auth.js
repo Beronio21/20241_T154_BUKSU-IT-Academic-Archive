@@ -6,6 +6,8 @@ const Student = require('../models/Student');
 const Instructor = require('../models/Instructor');
 const Admin = require('../models/Admin'); // Import the Admin model
 const router = express.Router();
+const UserController = require('../controllers/UserController');
+const authMiddleware = require('../middleware/auth');
 
 const createToken = (user) => {
     return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -59,6 +61,16 @@ router.post('/login/admin', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Error logging in', error: error.message });
+    }
+});
+
+// Logout Route
+router.post('/logout', authMiddleware, (req, res) => {
+    try {
+        // Clear session or token (depends on how your authentication is handled)
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to logout', error });
     }
 });
 

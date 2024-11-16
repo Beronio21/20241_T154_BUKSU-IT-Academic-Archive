@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/UserType.css'; // Add your own styles if needed
+import '../styles/UserType.css'; 
 
 const UserType = () => {
     return (
