@@ -1,0 +1,180 @@
+/* Login.css */
+/* Ensure the body spans the full width of the viewport */
+html, body {
+    height: 100%; /* Keep full height */
+    margin: 0; /* Remove default margin */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    width: 100%; /* Ensure the body takes the full width */
+}
+
+/* Main login container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Set to 100% width */
+    max-width: 1400px; /* Increase the max-width to stretch more */
+    flex-grow: 1;
+}
+
+/* Left section */
+.left-section {
+    width: 45%; /* Increase width for left section */
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login box */
+.login-box {
+    background-color: #f5f5f5;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    width: 45%; /* Increase width of login box */
+    max-width: 500px; /* Increase max-width of login box */
+    text-align: center;
+}
+
+
+/* Change color of the title "ThesEase" */
+.login-box h1 {
+    color: blue; /* Change the color to blue */
+}
+
+/* Change color of the "Login" heading */
+.login-box h2 {
+    color: blue; /* Change the color to blue */
+}
+
+/* Change color of the "Don't have an account?" text */
+.extra-options p {
+    color: blue; /* Change the color to blue */
+}
+
+.google-btn {
+    color: blue; /* Change the text color to blue */
+}
+
+/* Logo styling */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.logo img {
+    width: 100px;
+    height: auto;
+}
+
+h2 {
+    color: rgb(0, 68, 255); /* Replace with any color you want */
+}
+
+
+
+
+
+
+.left-section h1, .left-section h2 {
+    text-align: center;
+}
+
+.image-box {
+    margin: 20px 0;
+}
+
+.image-box img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+}
+
+/* Form elements */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    outline: none;
+    margin: 0 auto;
+}
+
+.login-btn {
+    width: 40%; /* Adjust button width */
+    padding: 10px;
+    font-size: 16px;
+    background-color: #022e5d;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #0056b3;
+}
+
+.separator {
+    margin: 15px 0;
+    font-size: 14px;
+    color: #888;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.google-btn img {
+    width: 20px;
+    margin-right: 10px;
+}
+
+.extra-options {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.extra-options a {
+    color: #007bff;
+}
+
+.extra-options a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .login-box, .left-section {
+        width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-box, .left-section {
+        width: 80%;
+    }
+}
