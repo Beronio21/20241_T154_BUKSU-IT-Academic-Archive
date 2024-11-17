@@ -5,13 +5,17 @@ import '../styles/ThesisSubmission.css'; // Assuming the styles are in this file
 const ThesisSubmission = () => {
   const [file, setFile] = useState(null);
   const [comments, setComments] = useState('');
+  const [instructor, setInstructor] = useState(''); // For instructor selection
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      if (selectedFile.type === 'application/pdf' || selectedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      if (
+        selectedFile.type === 'application/pdf' ||
+        selectedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ) {
         setFile(selectedFile);
         setError('');
       } else {
@@ -20,7 +24,7 @@ const ThesisSubmission = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -30,13 +34,34 @@ const ThesisSubmission = () => {
       return;
     }
 
+    if (!instructor) {
+      setError('Please select an instructor.');
+      setLoading(false);
+      return;
+    }
+
     // Simulate file upload logic
     setTimeout(() => {
       // Simulate successful upload
       alert('Thesis submitted successfully!');
       setLoading(false);
+
+      // Create a text file confirmation
+      const confirmationContent = `Thesis Submission Confirmation:
+- Instructor: ${instructor}
+- Comments: ${comments || 'No additional comments'}
+- File: ${file.name}`;
+
+      const blob = new Blob([confirmationContent], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Thesis_Submission_Confirmation.txt`;
+      link.click();
+
+      // Reset form
       setFile(null);
       setComments('');
+      setInstructor('');
     }, 2000);
   };
 
@@ -45,9 +70,9 @@ const ThesisSubmission = () => {
       {/* Sidebar and Top Navigation Bar */}
       <div className="sidebar">
         <ul>
-        <li><Link to="/student-dashboard">Dashboard Home</Link></li>
-        <li><Link to="/student/thesis-submission">Thesis Submission</Link></li>
-          <li><Link to="/notifications">Notifications</Link></li> {/* Link to Notifications */}
+          <li><Link to="/student-dashboard">Dashboard Home</Link></li>
+          <li><Link to="/student/thesis-submission">Thesis Submission</Link></li>
+          <li><Link to="/notifications">Notifications</Link></li>
           <li><Link to="/messages">Messages</Link></li>
           <li><Link to="/profile-settings">Profile Settings</Link></li>
           <li>Log Out</li>
@@ -75,6 +100,20 @@ const ThesisSubmission = () => {
           {error && <p className="error-message">{error}</p>}
 
           <form onSubmit={handleSubmit} className="submission-form">
+            {/* Instructor Selection */}
+            <div className="form-group">
+              <label htmlFor="instructor">Select Instructor</label>
+              <select
+                id="instructor"
+                value={instructor}
+                onChange={(e) => setInstructor(e.target.value)}
+                required
+              >
+                <option value="">-- Choose an Instructor --</option>
+                
+              </select>
+            </div>
+
             {/* Upload Button */}
             <div className="file-upload">
               <label htmlFor="thesis-file" className="upload-label">

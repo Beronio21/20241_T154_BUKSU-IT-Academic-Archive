@@ -72,7 +72,7 @@ const Main = () => {
                 <Route path="/instructor" element={<InstructorReviewThesis />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/user-management" element={<UserManagement />} />
-                <Route path="/student" element={<ThesisSubmission />} />
+                <Route path="/student/thesis-submission" element={<ThesisSubmission />} />
 
 
             </Route>

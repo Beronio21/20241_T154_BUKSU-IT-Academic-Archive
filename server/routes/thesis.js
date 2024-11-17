@@ -1,53 +1,34 @@
 //routes/thesis.js
 const express = require('express');
-const ThesisController = require('../controllers/ThesisController');
-const authenticateUser = require('../middleware/auth');
-
 const router = express.Router();
+const ThesisController = require('../controllers/ThesisController');
+const { authenticateStudent, authenticateInstructor, authenticateAdmin } = require('../middleware/auth');
 
-// Route to submit a thesis (no authentication needed, but might be restricted to students in the future)
-router.post('/submit', authenticateUser, ThesisController.submitThesis);
+// Student Routes
+// Submit a thesis
+router.post('/submit', authenticateStudent, ThesisController.submitThesis);
 
-// Route to get all submissions by a student (only for students)
-router.get('/student/:student_id', authenticateUser, ThesisController.getStudentSubmissions);
+// Get all submissions by a specific student
+router.get('/student/:student_id', authenticateStudent, ThesisController.getStudentSubmissions);
 
-// Route to update thesis status and provide feedback (instructor only)
-router.put('/update/:thesis_id', authenticateUser, ThesisController.updateThesis);
+// Upload a revision for a thesis
+router.post('/:thesis_id/revision', authenticateStudent, ThesisController.uploadRevision);
 
-// Route to upload a revision (only for students)
-router.post('/revision/:thesis_id', authenticateUser, ThesisController.uploadRevision);
+// Instructor Routes
+// Get all thesis submissions
+router.get('/instructor/submissions', authenticateInstructor, ThesisController.getThesisSubmissions);
 
-// Route to get thesis submissions with filtering (only for instructors)
-router.get('/submissions', authenticateUser, ThesisController.getThesisSubmissions);
+// Review a thesis
+router.put('/:thesis_id/review', authenticateInstructor, ThesisController.reviewThesis);
 
-// Route to get a specific thesis by ID (public access, or restricted based on role)
-router.get('/:thesis_id', ThesisController.getThesisById);
+// Admin and Instructor Routes
+// Get all theses
+router.get('/all', [authenticateInstructor, authenticateAdmin], ThesisController.getAllTheses);
 
-// Route to review a thesis (only for instructors)
-router.post('/review/:thesis_id', authenticateUser, (req, res, next) => {
-    if (req.user.role === 'Instructor') {
-        ThesisController.reviewThesis(req, res);
-    } else {
-        res.status(403).json({ message: 'Access denied' });
-    }
-});
+// Get a specific thesis by ID
+router.get('/:thesis_id', [authenticateInstructor, authenticateAdmin], ThesisController.getThesisById);
 
-// Get student theses (only for students)
-router.get('/student', authenticateUser, (req, res, next) => {
-    if (req.user.role === 'Student') {
-        ThesisController.getStudentTheses(req, res);
-    } else {
-        res.status(403).json({ message: 'Access denied' });
-    }
-});
-
-// Get all theses (only for instructors)
-router.get('/instructor', authenticateUser, (req, res, next) => {
-    if (req.user.role === 'Instructor') {
-        ThesisController.getAllTheses(req, res);
-    } else {
-        res.status(403).json({ message: 'Access denied' });
-    }
-});
+// Update thesis status and feedback
+router.put('/:thesis_id', authenticateInstructor, ThesisController.updateThesis);
 
 module.exports = router;
