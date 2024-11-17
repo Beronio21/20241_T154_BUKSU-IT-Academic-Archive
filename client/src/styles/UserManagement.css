@@ -42,3 +42,64 @@
     background-color: #f44336;
     color: white;
 }
+
+.table-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-container h4 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.user-management-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.user-management-table th, .user-management-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-management-table th {
+    background-color: #f1f1f1;
+}
+
+.delete {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.delete:hover {
+    background-color: darkred;
+}
+
+.error {
+    color: red;
+    font-size: 1rem;
+    margin: 20px 0;
+}
+
+.password-tooltip {
+    display: inline-block;
+    background: #f9f9f9;
+    color: #333;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 10;
+    white-space: nowrap;
+}
