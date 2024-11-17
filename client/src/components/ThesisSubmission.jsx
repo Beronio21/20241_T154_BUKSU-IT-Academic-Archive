@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import '../styles/ThesisSubmission.css'; // Assuming the styles are in this file
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios'; // You can use Axios for making API requests
+import '../styles/ThesisSubmission.css';
 
 const ThesisSubmission = () => {
   const [file, setFile] = useState(null);
   const [comments, setComments] = useState('');
-  const [instructor, setInstructor] = useState(''); // For instructor selection
+  const [instructor, setInstructor] = useState('');
+  const [instructors, setInstructors] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Fetch instructors when component mounts
+  useEffect(() => {
+    const fetchInstructors = async () => {
+      try {
+        const response = await axios.get('/api/instructors'); // API call to fetch instructors
+        setInstructors(response.data); // Set fetched instructors in state
+      } catch (error) {
+        setError('Failed to load instructors');
+      }
+    };
+
+    fetchInstructors();
+  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -67,7 +83,6 @@ const ThesisSubmission = () => {
 
   return (
     <div className="thesis-submission-container">
-      {/* Sidebar and Top Navigation Bar */}
       <div className="sidebar">
         <ul>
           <li><Link to="/student-dashboard">Dashboard Home</Link></li>
@@ -80,7 +95,6 @@ const ThesisSubmission = () => {
       </div>
 
       <div className="main-content">
-        {/* Top Navigation Bar */}
         <div className="top-nav">
           <div className="logo">University Logo</div>
           <div className="nav-icons">
@@ -96,7 +110,6 @@ const ThesisSubmission = () => {
         <div className="thesis-submission">
           <h2>Submit Your Thesis</h2>
 
-          {/* Error Message */}
           {error && <p className="error-message">{error}</p>}
 
           <form onSubmit={handleSubmit} className="submission-form">
@@ -110,7 +123,11 @@ const ThesisSubmission = () => {
                 required
               >
                 <option value="">-- Choose an Instructor --</option>
-                
+                {instructors.map((inst) => (
+                  <option key={inst._id} value={inst._id}>
+                    {inst.first_name} {inst.last_name}
+                  </option>
+                ))}
               </select>
             </div>
 
