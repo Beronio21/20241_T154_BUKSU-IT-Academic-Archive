@@ -16,10 +16,10 @@ router.get('/', studentController.getStudents);
 router.get('/:id', authMiddleware, studentController.getStudentById);
 
 // PUT: Update an existing student by ID (requires authentication)
-router.put('/:id', authMiddleware, studentController.updateStudent);
+router.put('/update/:id', studentController.updateStudent);
 
 // DELETE: Remove a student by ID (requires authentication)
-router.delete('/:id', authMiddleware, studentController.deleteStudent);
+router.delete('/delete/:id', studentController.deleteStudent);
 
 // PATCH: Partially update student fields by student_id (requires authentication)
 router.patch('/:student_id', authMiddleware, studentController.patchStudent);

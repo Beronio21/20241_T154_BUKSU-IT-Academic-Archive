@@ -152,33 +152,71 @@ exports.loginStudent = async (req, res) => {
 // Update an existing student by ID
 exports.updateStudent = async (req, res) => {
     try {
-        const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        // Validate request body to ensure that required fields are provided
+        const { first_name, last_name, email, contact_number, gender, birthday, department, course, year_level } = req.body;
+
+        // Make sure 'student_id' is not included in the update body (immutable field)
+        const { student_id, ...updateFields } = req.body;
+
+        if (!first_name || !last_name || !email || !contact_number || !gender || !birthday || !department || !course || !year_level) {
+            return res.status(400).json({ message: 'All fields must be provided' });
+        }
+
+        // Find and update the student by ID
+        const updatedStudent = await Student.findByIdAndUpdate(req.params.id, updateFields, { new: true });
+
+        // If no student was found with the given ID
         if (!updatedStudent) {
             return res.status(404).json({ message: 'Student not found' });
         }
+
+        // Return the updated student data in the response
         return res.json(updatedStudent);
+
     } catch (err) {
-        res.status(400).json({ message: "Error updating student: " + err.message });
+        console.error("Error updating student:", err); // Log the error on the server for debugging purposes
+        return res.status(400).json({ message: "Error updating student: " + err.message });
     }
 };
 
-// Delete a student by ID
+
+
 exports.deleteStudent = async (req, res) => {
+    const studentId = req.params.id;
+    console.log(`DELETE request for student with ID: ${studentId}`);
+
+    // Check if the ID is valid
+
     try {
-        const deletedStudent = await Student.findByIdAndDelete(req.params.id);
+        const deletedStudent = await Student.findByIdAndDelete(studentId);
+
         if (!deletedStudent) {
             return res.status(404).json({ message: 'Student not found' });
         }
+
         return res.json({ message: 'Student deleted successfully' });
     } catch (err) {
-        res.status(500).json({ message: "Error deleting student: " + err.message });
+        console.error('Error deleting student:', err);
+        res.status(500).json({ message: 'Error deleting student: ' + err.message });
     }
 };
 
+
+// PATCH: Update specific fields of a student by student_id
 // PATCH: Update specific fields of a student by student_id
 exports.patchStudent = async (req, res) => {
     const { student_id } = req.params;
     const updateData = req.body;
+
+    // Manually setting CORS headers for this route
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    // If this is a preflight (OPTIONS) request, respond immediately.
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
 
     try {
         const updatedStudent = await Student.findOneAndUpdate(

@@ -43,9 +43,13 @@ function generateToken(user) {
 
 // Middleware to parse JSON, enable CORS, and set security headers
 app.use(express.json());
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173'  // Ensure this matches your frontend URL
+    origin: 'http://localhost:5173', // Allow the frontend URL
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'], // Allow specific methods
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allow specific headers
 }));
+  
 app.use(helmet());
 app.use(morgan('combined')); // Logs all requests
 
@@ -83,11 +87,18 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Online Thesis Submission and Review System API');
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    const statusCode = err.status || 500;
-    res.status(statusCode).json({ message: statusCode === 500 ? 'Something went wrong!' : err.message });
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Allow the frontend URL
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE'); // Allow methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow headers
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // If you need credentials (cookies, etc.)
+
+    // Handle pre-flight request (OPTIONS)
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
+    next(); // Pass control to the next middleware or route
 });
 
 // Start the server
