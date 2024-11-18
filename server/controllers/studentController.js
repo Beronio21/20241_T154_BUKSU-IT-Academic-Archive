@@ -89,40 +89,54 @@ exports.createStudent = async (req, res) => {
             birthday,
             department,
             course,
-            year_level,
+            year_level
         } = req.body;
 
-        // Validate required fields
-        if (!student_id || !first_name || !last_name || !email || !password || !department || !course || !year_level) {
-            return res.status(400).json({ message: "Please fill in all required fields." });
+        // Validate all required fields
+        if (!student_id || !first_name || !last_name || !email || !password ||
+            !contact_number || !gender || !birthday || !department || !course || !year_level) {
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Check if email already exists
-        const existingStudent = await Student.findOne({ email });
+        // Check if student_id or email already exists
+        const existingStudent = await Student.findOne({
+            $or: [{ student_id }, { email }]
+        });
+
         if (existingStudent) {
-            return res.status(400).json({ message: "Email already in use." });
+            return res.status(400).json({ 
+                message: 'Student ID or email already exists' 
+            });
         }
 
-        // Hash the password before saving
-        const password_hash = await bcrypt.hash(password, 10);
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Create new student
         const newStudent = new Student({
             student_id,
             first_name,
             last_name,
             email,
-            password_hash, // Store hashed password here
+            password_hash: hashedPassword,
             contact_number,
             gender,
             birthday,
             department,
             course,
-            year_level,
+            year_level: parseInt(year_level)
         });
 
-        const savedStudent = await newStudent.save();
-        return res.status(201).json(savedStudent);
+        await newStudent.save();
+        
+        // Remove password_hash from response
+        const studentResponse = newStudent.toObject();
+        delete studentResponse.password_hash;
+        
+        res.status(201).json(studentResponse);
+
     } catch (err) {
+        console.error("Error creating student:", err);
         res.status(400).json({ message: "Error creating student: " + err.message });
     }
 };
@@ -152,18 +166,19 @@ exports.loginStudent = async (req, res) => {
 // Update an existing student by ID
 exports.updateStudent = async (req, res) => {
     try {
-        // Validate request body to ensure that required fields are provided
-        const { first_name, last_name, email, contact_number, gender, birthday, department, course, year_level } = req.body;
-
-        // Make sure 'student_id' is not included in the update body (immutable field)
-        const { student_id, ...updateFields } = req.body;
-
-        if (!first_name || !last_name || !email || !contact_number || !gender || !birthday || !department || !course || !year_level) {
-            return res.status(400).json({ message: 'All fields must be provided' });
-        }
+        const updateFields = req.body;
+        
+        // Remove immutable fields if present
+        delete updateFields.student_id;
+        delete updateFields._id;
+        delete updateFields.password_hash;
 
         // Find and update the student by ID
-        const updatedStudent = await Student.findByIdAndUpdate(req.params.id, updateFields, { new: true });
+        const updatedStudent = await Student.findByIdAndUpdate(
+            req.params.id, 
+            { $set: updateFields },
+            { new: true }
+        );
 
         // If no student was found with the given ID
         if (!updatedStudent) {
@@ -174,7 +189,7 @@ exports.updateStudent = async (req, res) => {
         return res.json(updatedStudent);
 
     } catch (err) {
-        console.error("Error updating student:", err); // Log the error on the server for debugging purposes
+        console.error("Error updating student:", err);
         return res.status(400).json({ message: "Error updating student: " + err.message });
     }
 };

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const studentController = require('../controllers/studentController');
-const authMiddleware = require('../middleware/auth'); // Corrected path
 
 // POST: Register a new student
 router.post('/register', studentController.createStudent);
@@ -15,8 +14,8 @@ router.get('/', studentController.getStudents);
 // GET: Retrieve a specific student by ID (requires authentication)
 router.get('/:id', authMiddleware, studentController.getStudentById);
 
-// PUT: Update an existing student by ID (requires authentication)
-router.put('/update/:id', studentController.updateStudent);
+// PATCH: Update an existing student by ID (requires authentication)
+router.patch('/update/:id', studentController.updateStudent);
 
 // DELETE: Remove a student by ID (requires authentication)
 router.delete('/delete/:id', studentController.deleteStudent);
@@ -29,5 +28,8 @@ router.get('/search', authMiddleware, studentController.searchStudents);
 
 // Student Logout route
 router.post('/logout', studentController.logoutStudent);
+
+// POST: Create a new student
+router.post('/create', studentController.createStudent);
 
 module.exports = router;

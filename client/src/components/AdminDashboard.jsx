@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext';
 import '../styles/UserManagement.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import CreateStudentForm from './CreateStudentForm';
 
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
@@ -14,6 +15,7 @@ const UserManagement = () => {
     const [updateFormVisible, setUpdateFormVisible] = useState(false); // State to toggle the update form visibility
     const [selectedStudent, setSelectedStudent] = useState(null); // State to store the selected student for update
     const [loading, setLoading] = useState(true); // Loading state for fetching data
+    const [createFormVisible, setCreateFormVisible] = useState(false);
     const { logout } = useAuth();
     const navigate = useNavigate();
 
@@ -72,6 +74,16 @@ const UserManagement = () => {
         navigate('/');
     };
 
+    // Add this new function to refresh students data
+    const refreshStudents = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/Students/');
+            setStudents(response.data);
+        } catch (err) {
+            setError('Failed to refresh students data');
+        }
+    };
+
     return (
         <div className="user-management-container">
             <aside className="sidebar">
@@ -93,6 +105,12 @@ const UserManagement = () => {
             <div className="main-content">
                 <header className="topbar">
                     <h2>User Management</h2>
+                    <button 
+                        className="create-button"
+                        onClick={() => setCreateFormVisible(true)}
+                    >
+                        Add New Student
+                    </button>
                 </header>
 
                 <div className="tables-container">
@@ -220,15 +238,26 @@ const UserManagement = () => {
                     </div>
                 </div>
 
+                {createFormVisible && (
+                    <CreateStudentForm 
+                        onClose={() => setCreateFormVisible(false)}
+                        onStudentCreated={refreshStudents}
+                    />
+                )}
+
                 {updateFormVisible && selectedStudent && (
-                    <UpdateStudentForm student={selectedStudent} onClose={() => setUpdateFormVisible(false)} />
+                    <UpdateStudentForm 
+                        student={selectedStudent} 
+                        onClose={() => setUpdateFormVisible(false)}
+                        onUpdate={refreshStudents} // Pass the refresh function
+                    />
                 )}
             </div>
         </div>
     );
 };
 
-const UpdateStudentForm = ({ student, onClose }) => {
+const UpdateStudentForm = ({ student, onClose, onUpdate }) => {
     const [updatedData, setUpdatedData] = useState(student);
     const [error, setError] = useState('');
 
@@ -253,6 +282,7 @@ const UpdateStudentForm = ({ student, onClose }) => {
 
         try {
             await axios.patch(`http://localhost:5000/api/Students/update/${student._id}`, updatedData);
+            await onUpdate(); // Refresh the students list after successful update
             alert('Student updated successfully');
             onClose(); // Close the form after successful update
         } catch (err) {
