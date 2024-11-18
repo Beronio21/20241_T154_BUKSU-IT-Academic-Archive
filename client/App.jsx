@@ -18,8 +18,10 @@ import AdminDashboard from './src/components/AdminDashboard';
 import ProtectedRoute from './src/components/ProtectedRoute';
 import UserManagement from './src/components/UserManagement';
 import ThesisSubmission from './src/components/ThesisSubmission';
+import axios from 'axios';
 
-
+// Set the base URL for Axios
+axios.defaults.baseURL = 'http://localhost:5000';
 
 const App = () => {
     return (

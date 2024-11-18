@@ -1,7 +1,11 @@
+//ThesisSubmission.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'; // You can use Axios for making API requests
 import '../styles/ThesisSubmission.css';
+
+// Set Axios base URL
+axios.defaults.baseURL = 'http://localhost:5000';
 
 const ThesisSubmission = () => {
   const [file, setFile] = useState(null);
@@ -40,46 +44,59 @@ const ThesisSubmission = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     if (!file) {
       setError('Please select a file to upload.');
       setLoading(false);
       return;
     }
-
+  
     if (!instructor) {
       setError('Please select an instructor.');
       setLoading(false);
       return;
     }
-
-    // Simulate file upload logic
-    setTimeout(() => {
-      // Simulate successful upload
-      alert('Thesis submitted successfully!');
-      setLoading(false);
-
+  
+    // Create form data to send file and metadata
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('studentId', '12345'); // Replace with the logged-in student's ID
+    formData.append('instructorId', instructor);
+    formData.append('comments', comments);
+  
+    try {
+      const response = await axios.post('/api/thesis', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+  
+      alert(response.data.message); // Show success message
+  
       // Create a text file confirmation
       const confirmationContent = `Thesis Submission Confirmation:
-- Instructor: ${instructor}
-- Comments: ${comments || 'No additional comments'}
-- File: ${file.name}`;
-
+  - Instructor: ${instructor}
+  - Comments: ${comments || 'No additional comments'}
+  - File: ${file.name}`;
+  
       const blob = new Blob([confirmationContent], { type: 'text/plain' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `Thesis_Submission_Confirmation.txt`;
       link.click();
-
+  
       // Reset form
       setFile(null);
       setComments('');
       setInstructor('');
-    }, 2000);
+    } catch (error) {
+      setError('Failed to submit thesis. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   return (
     <div className="thesis-submission-container">
