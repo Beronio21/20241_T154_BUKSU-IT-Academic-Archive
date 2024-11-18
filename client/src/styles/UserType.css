@@ -1,81 +1,195 @@
-/* Reset body */
+/* General container for the user type selection page */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5 !important; 
+  flex-direction: column; /* Ensures the login box stays centered */
 }
 
-/* Container */
-.container {
-    text-align: center;
-    background-color: #ffffff;
-    padding: 40px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 500px;
+
+.user-type-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  opacity: 0;
+  animation: fadeIn 1s forwards; /* Fade in animation */
 }
 
-/* Heading */
-h1 {
-    font-size: 24px;
-    color: #004080;
-    margin-bottom: 30px;
+/* Fade-in animation */
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
 }
 
-/* User Type Buttons */
-.user-type-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* Heading with blue underline */
+h2 {
+  font-size: 1.2rem;
+  margin-bottom: 25px !important;
+  color: #333;
+  text-align: left;
+  padding-left: 10px;
+  position: relative;
 }
 
-.user-type-btn {
-    display: block;
-    text-decoration: none;
-    color: white;
-    padding: 15px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 8px;
-    transition: background-color 0.3s;
-    text-align: center;
+/* Underline effect */
+.partial-underline {
+  position: relative;
+  color: #333;
+  font-weight: bold;
 }
 
-/* Individual Styles for Each Button */
-.student-btn {
-    background-color: #4caf50;
+.partial-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 3px;
+  background-color: #006BB2;
+  border-radius: 2px;
 }
 
-.instructor-btn {
-    background-color: #2196f3;
+/* Layout for user type options */
+.user-type-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
 }
 
-.admin-btn {
-    background-color: #ff5722;
+/* User type card styling */
+.user-type-card {
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #e3e3e3;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Hover Effects */
-.user-type-btn:hover {
-    opacity: 0.9;
+/* Hover effect for the cards */
+.user-type-card:hover {
+  transform: translateY(-5px);
+  background-color: #d1d1d1;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive */
-@media (max-width: 500px) {
-    .container {
-        width: 90%;
-    }
+/* Add a smooth animation when selecting a card */
+.user-type-card.selected {
+  border: 2px solid #006BB2;
+  background-color: #c1c1c1;
+  transform: scale(1.05); /* Slightly enlarge the selected card */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  animation: pulse 0.5s infinite alternate; /* Add pulse animation */
+}
 
-    h1 {
-        font-size: 20px;
-    }
+/* Pulse animation for the selected card */
+@keyframes pulse {
+  0% {
+      transform: scale(1.05);
+  }
+  100% {
+      transform: scale(1.1);
+  }
+}
 
-    .user-type-btn {
-        font-size: 16px;
-        padding: 12px 15px;
-    }
+/* Image size and styling inside the user-type-card */
+.user-type-card img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease; /* Smooth transform */
+}
+
+/* Smooth transition for image when hovering */
+.user-type-card:hover img {
+  transform: scale(1.1); /* Enlarge image on hover */
+}
+
+/* Error message styling */
+.error-message {
+  color: red;
+  margin-top: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Layout for navigation buttons */
+.user-type-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* General button styles */
+button {
+  padding: 8px 25px;
+  font-size: 0.9rem;
+  color: white;
+  border: 2px solid #333;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Back button styling */
+.back-button {
+  background-color: #333;
+}
+
+/* Next button styling */
+.next-button {
+  background-color: #006BB2;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #555;
+  border-color: #222;
+}
+
+button:active {
+  background-color: #222;
+}
+
+/* Next button active state */
+.next-button.active {
+  background-color: #4c51af;
+  border-color: #006BB2;
+}
+
+.next-button.active:hover {
+  background-color: #45a049;
+}
+
+/* Arrow icon styling */
+.arrow-icon {
+  font-size: 1rem;
+  color: white;
 }

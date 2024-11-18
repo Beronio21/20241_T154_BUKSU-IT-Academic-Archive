@@ -1,37 +1,21 @@
-
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../AuthContext';
-import '../styles/login.css';
+import '../styles/Login.css';
 
-
-// Import images
-import logo from '../images/buksulogo.png';
-import leftImage from '../images/login1.png';
-import googleLogo from '../images/google.jpg';
-import React, { useState, useEffect } from 'react';
+import seenIcon from '../images/seen.png';
+import hideIcon from '../images/hide.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false); // For toggling password visibility
     const navigate = useNavigate();
     const { login } = useAuth();
-
-    useEffect(() => {
-        // Check if user is already logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-            const userType = localStorage.getItem('userType'); // Assuming you stored userType when logging in
-            if (userType === 'instructor') {
-                navigate('/instructor-dashboard');
-            } else if (userType === 'student') {
-                navigate('/student-dashboard');
-            } else if (userType === 'admin') {
-                navigate('/admin-dashboard');
-            }
-        }
-    }, [navigate]);
+    const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // Replace with your actual Client ID
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -39,25 +23,7 @@ const Login = () => {
         setError('');
 
         try {
-            const isInstructor = email.includes('@buksu.edu.ph');
-            const isStudent = email.includes('@student.buksu.edu.ph');
-            const isAdmin = email.includes('@gmail.com');
-            
-            let endpoint;
-            
-            if (isInstructor) {
-                endpoint = 'http://localhost:5000/api/instructors/login';
-            } else if (isStudent) {
-                endpoint = 'http://localhost:5000/api/students/login';
-            } else if (isAdmin) {
-                endpoint = 'http://localhost:5000/api/admins/login';
-            } else {
-                setError('Please enter a valid email address for Instructor, Student, or Admin.');
-                setLoading(false);
-                return;
-            }
-
-            const response = await fetch(endpoint, {
+            const response = await fetch('http://localhost:5000/api/students/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,18 +34,9 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
-
+                sessionStorage.setItem('token', data.token);
                 login();
-
-                if (isInstructor) {
-                    navigate('/instructor-dashboard');
-                } else if (isStudent) {
-                    navigate('/student-dashboard');
-                } else if (isAdmin) {
-                    navigate('/admin-dashboard');
-                }
+                navigate('/dashboard');
             } else {
                 setError(data.message || 'Login failed. Please try again.');
             }
@@ -90,74 +47,111 @@ const Login = () => {
         }
     };
 
+    const handleGoogleLoginSuccess = async (credentialResponse) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/students/google-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: credentialResponse.credential }),
+            });
 
-    
+            const data = await response.json();
+
+            if (data.success) {
+                sessionStorage.setItem('token', data.token);
+                login();
+                navigate('/dashboard');
+            } else {
+                setError(data.message || 'Google login failed.');
+            }
+        } catch (error) {
+            console.error('Error during Google login:', error);
+            setError('An error occurred during Google login.');
+        }
+    };
+
+    const handleGoogleLoginError = () => {
+        setError('Google login was unsuccessful. Please try again.');
+    };
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
+
     return (
-        <div className="login-page">
-            {/* Logo */}
-            <div className="logo">
-                <img src={logo} alt="ThesEase Logo" />
-            </div>
-
-            <div className="login-container">
-                {/* Left section */}
-                <div className="left-section">
-                    <h1>Your Research, Our Platform. Login and Begin.</h1>
-                    <div className="image-box">
-                        <img src={leftImage} alt="Left side image" />
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <div className="login-box">
+                <h2>Login to open your Account</h2>
+                {error && <p className="error-message">{error}</p>}
+                <form onSubmit={handleLogin}>
+                    <div className="input-group">
+                        <input
+                            type="email"
+                            placeholder="Institutional Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
                     </div>
-                    <h2>Redefining Academic Submissions for a Digital Age.</h2>
-                </div>
-
-                {/* Login Box */}
-                <div className="login-box">
-                    <h1>ThesEase</h1>
-                    <h2>Login</h2>
-                    {error && <p className="error-message">{error}</p>}
-                    <form onSubmit={handleLogin}>
-                        <div className="input-group">
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
+                    <div className="input-group password-group">
+                        <input
+                            type={isPasswordVisible ? 'text' : 'password'} // Toggle password visibility
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <span 
+                            className="password-toggle" 
+                            onClick={togglePasswordVisibility}
+                        >
+                            {/* Use image for eye toggle */}
+                            <img 
+                                src={isPasswordVisible ? seenIcon : hideIcon}
+                                alt="Toggle password visibility"
+                                className="eye-icon"
                             />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+                        </span>
+                    </div>
 
-                        <button type="submit" className="login-btn" disabled={loading}>
-                            {loading ? 'Logging in...' : 'Login'}
-                        </button>
+                    <button type="submit" className="login-btn" disabled={loading}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
 
-                        <div className="separator">
-                            <span>or</span>
-                        </div>
+                    <div className="forgot-password">
+                        <Link to="/forgot-password">Forgot password?</Link>
+                    </div>
 
-                        <button type="button" className="google-btn">
-                            <img src={googleLogo} alt="Google Logo" />
-                            Login with Google
-                        </button>
+                    <div className="separator">
+                        <span>OR</span>
+                    </div>
 
-                        <div className="extra-options">
-                            <a href="#">Forgot Password?</a>
-                            <p>
-                                Don't have an account? 
-                                <Link to="/select-user-type"> Register</Link>
-                            </p>
-                        </div>
-                    </form>
-                </div>
+                    <GoogleLogin
+                        onSuccess={handleGoogleLoginSuccess}
+                        onError={handleGoogleLoginError}
+                        useOneTap
+                        render={(renderProps) => (
+                            <button
+                                type="button"
+                                className="google-btn"
+                                onClick={renderProps.onClick}
+                                disabled={renderProps.disabled}
+                            >
+                                Login with Google
+                            </button>
+                        )}
+                    />
+
+                    <div className="extra-options">
+                        <p>
+                            Don’t have an account? <Link to="/select-user-type">Register here</Link>
+                        </p>
+                    </div>
+                </form>
             </div>
-        </div>
+        </GoogleOAuthProvider>
     );
 };
 
