@@ -5,11 +5,16 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #f5f5f5 !important;
+    background: linear-gradient(135deg, #0061ff, #60efff) !important;
+    background-repeat: no-repeat; /* Ensures no tiling */
+    background-attachment: fixed; /* Keeps gradient in place during scrolling */
+    background-size: cover; /* Ensures gradient covers the viewport */
 }
 
+
+
 .login-box {
-    background-color: #fff;
+    background-color: #e6f7ff;
     padding: 20px;
     border-radius: 8px;
     width: 100% !important;
