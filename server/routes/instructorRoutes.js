@@ -4,13 +4,21 @@ const instructorController = require('../controllers/instructorController');
 const authMiddleware = require('../middleware/auth'); // Authentication middleware for protected routes
 
 // GET: Retrieve all instructors (can be open, or add authMiddleware if needed)
+<<<<<<< HEAD
 router.get('/', instructorController.getAllInstructors);
+=======
+router.get('/', instructorController.getInstructors);
+>>>>>>> DEVELOPER2
 
 // GET: Retrieve a specific instructor by ID (protected)
 router.get('/:id', authMiddleware, instructorController.getInstructorById);
 
 // POST: Add a new instructor
+<<<<<<< HEAD
 router.post('/', instructorController.addInstructor);
+=======
+router.post('/add', instructorController.addInstructor);
+>>>>>>> DEVELOPER2
 
 // PATCH: Update an instructor's details (protected)
 router.patch('/:id', authMiddleware, instructorController.updateInstructor);

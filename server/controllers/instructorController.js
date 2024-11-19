@@ -4,7 +4,11 @@ const jwt = require('jsonwebtoken');
 const Instructor = require('../models/Instructor');
 
 // GET: Retrieve all instructors
+<<<<<<< HEAD
 exports.getAllInstructors = async (req, res) => {
+=======
+exports.getInstructors = async (req, res) => {
+>>>>>>> DEVELOPER2
     try {
         const instructors = await Instructor.find();
         res.json(instructors);
@@ -135,6 +139,7 @@ exports.loginInstructor = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+<<<<<<< HEAD
 // GET: Retrieve all instructors with full name
 exports.getAllInstructors = async (req, res) => {
     try {
@@ -152,6 +157,9 @@ exports.getAllInstructors = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+=======
+
+>>>>>>> DEVELOPER2
 
 exports.logoutInstructor = (req, res) => {
     const token = req.headers['authorization']?.split(' ')[1]; // Extract the token from the header

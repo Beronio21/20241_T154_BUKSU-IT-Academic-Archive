@@ -67,6 +67,7 @@ exports.googleRegister = async (req, res) => {
 
 // Get all students with optional pagination
 exports.getStudents = async (req, res) => {
+<<<<<<< HEAD
     const { page = 1, limit = 10 } = req.query;
     try {
         const students = await Student.find()
@@ -80,6 +81,11 @@ exports.getStudents = async (req, res) => {
             pages: Math.ceil(count / limit),
             students,
         });
+=======
+    try {
+        const students = await Student.find()
+        res.json(students);
+>>>>>>> DEVELOPER2
     } catch (err) {
         res.status(500).json({ message: "Error retrieving students: " + err.message });
     }
@@ -99,6 +105,7 @@ exports.createStudent = async (req, res) => {
             birthday,
             department,
             course,
+<<<<<<< HEAD
             year_level,
         } = req.body;
 
@@ -116,23 +123,69 @@ exports.createStudent = async (req, res) => {
         // Hash the password before saving
         const password_hash = await bcrypt.hash(password, 10);
 
+=======
+            year_level
+        } = req.body;
+
+        // Validate all required fields
+        if (!student_id || !first_name || !last_name || !email || !password ||
+            !contact_number || !gender || !birthday || !department || !course || !year_level) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        // Check if student_id or email already exists
+        const existingStudent = await Student.findOne({
+            $or: [{ student_id }, { email }]
+        });
+
+        if (existingStudent) {
+            return res.status(400).json({ 
+                message: 'Student ID or email already exists' 
+            });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create new student
+>>>>>>> DEVELOPER2
         const newStudent = new Student({
             student_id,
             first_name,
             last_name,
             email,
+<<<<<<< HEAD
             password_hash, // Store hashed password here
+=======
+            password_hash: hashedPassword,
+>>>>>>> DEVELOPER2
             contact_number,
             gender,
             birthday,
             department,
             course,
+<<<<<<< HEAD
             year_level,
         });
 
         const savedStudent = await newStudent.save();
         return res.status(201).json(savedStudent);
     } catch (err) {
+=======
+            year_level: parseInt(year_level)
+        });
+
+        await newStudent.save();
+        
+        // Remove password_hash from response
+        const studentResponse = newStudent.toObject();
+        delete studentResponse.password_hash;
+        
+        res.status(201).json(studentResponse);
+
+    } catch (err) {
+        console.error("Error creating student:", err);
+>>>>>>> DEVELOPER2
         res.status(400).json({ message: "Error creating student: " + err.message });
     }
 };
@@ -162,6 +215,7 @@ exports.loginStudent = async (req, res) => {
 // Update an existing student by ID
 exports.updateStudent = async (req, res) => {
     try {
+<<<<<<< HEAD
         const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedStudent) {
             return res.status(404).json({ message: 'Student not found' });
@@ -185,11 +239,78 @@ exports.deleteStudent = async (req, res) => {
     }
 };
 
+=======
+        const updateFields = req.body;
+        
+        // Remove immutable fields if present
+        delete updateFields.student_id;
+        delete updateFields._id;
+        delete updateFields.password_hash;
+
+        // Find and update the student by ID
+        const updatedStudent = await Student.findByIdAndUpdate(
+            req.params.id, 
+            { $set: updateFields },
+            { new: true }
+        );
+
+        // If no student was found with the given ID
+        if (!updatedStudent) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        // Return the updated student data in the response
+        return res.json(updatedStudent);
+
+    } catch (err) {
+        console.error("Error updating student:", err);
+        return res.status(400).json({ message: "Error updating student: " + err.message });
+    }
+};
+
+
+
+exports.deleteStudent = async (req, res) => {
+    const studentId = req.params.id;
+    console.log(`DELETE request for student with ID: ${studentId}`);
+
+    // Check if the ID is valid
+
+    try {
+        const deletedStudent = await Student.findByIdAndDelete(studentId);
+
+        if (!deletedStudent) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        return res.json({ message: 'Student deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting student:', err);
+        res.status(500).json({ message: 'Error deleting student: ' + err.message });
+    }
+};
+
+
+// PATCH: Update specific fields of a student by student_id
+>>>>>>> DEVELOPER2
 // PATCH: Update specific fields of a student by student_id
 exports.patchStudent = async (req, res) => {
     const { student_id } = req.params;
     const updateData = req.body;
 
+<<<<<<< HEAD
+=======
+    // Manually setting CORS headers for this route
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    // If this is a preflight (OPTIONS) request, respond immediately.
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
+>>>>>>> DEVELOPER2
     try {
         const updatedStudent = await Student.findOneAndUpdate(
             { student_id },

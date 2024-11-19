@@ -44,6 +44,10 @@ const Login = () => {
             const isAdmin = email.includes('@gmail.com');
             
             let endpoint;
+<<<<<<< HEAD
+=======
+            
+>>>>>>> DEVELOPER2
             if (isInstructor) {
                 endpoint = 'http://localhost:5000/api/instructors/login';
             } else if (isStudent) {
@@ -68,6 +72,7 @@ const Login = () => {
 
             if (response.ok) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 // Use the login function from AuthContext to store token and update state
                 login(data.token);
 
@@ -76,6 +81,8 @@ const Login = () => {
                 else if (isStudent) navigate('/student-dashboard');
                 else if (isAdmin) navigate('/admin-dashboard');
 =======
+=======
+>>>>>>> DEVELOPER2
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
 
@@ -88,7 +95,10 @@ const Login = () => {
                 } else if (isAdmin) {
                     navigate('/admin-dashboard');
                 }
+<<<<<<< HEAD
 >>>>>>> DEVELOPER
+=======
+>>>>>>> DEVELOPER2
             } else {
                 setError(data.message || 'Login failed. Please try again.');
             }
@@ -100,9 +110,13 @@ const Login = () => {
     };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> DEVELOPER
+=======
+
+>>>>>>> DEVELOPER2
     
     return (
         <div className="login-page">
