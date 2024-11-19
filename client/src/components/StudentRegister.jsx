@@ -26,7 +26,7 @@ const Register = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
-    const GOOGLE_CLIENT_ID = "736065879191-b45t9nomm8n44ifvnebg86o5veerr00e.apps.googleusercontent.com";
+    const GOOGLE_CLIENT_ID = "736065879191-b45t9nomm8n44ifvnebg86o5veerr00e.apps.googleusercontent.com"; //
 
     const handleRegister = async (e) => {
         e.preventDefault();
