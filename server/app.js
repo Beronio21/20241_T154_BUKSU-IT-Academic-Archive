@@ -43,11 +43,6 @@ function generateToken(user) {
 
 // Middleware to parse JSON, enable CORS, and set security headers
 app.use(express.json());
-<<<<<<< HEAD
-app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173'  // Ensure this matches your frontend URL
-}));
-=======
 
 app.use(cors({
     origin: 'http://localhost:5173', // Allow the frontend URL
@@ -55,7 +50,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'] // Allow specific headers
 }));
   
->>>>>>> DEVELOPER2
 app.use(helmet());
 app.use(morgan('combined')); // Logs all requests
 
@@ -81,11 +75,7 @@ app.use('/api/instructors', instructorRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
-<<<<<<< HEAD
-app.use('/api/submissionhistories', submissionHistoryRoutes);
-=======
 app.use('/api/submissionhistories', submissionHistoryRoutes);   
->>>>>>> DEVELOPER2
 app.use('/api/thesis', thesisRoutes);
 app.use('/api/users', userRoutes); // Link the route to the '/api/users' path
 
@@ -97,13 +87,6 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Online Thesis Submission and Review System API');
 });
 
-<<<<<<< HEAD
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    const statusCode = err.status || 500;
-    res.status(statusCode).json({ message: statusCode === 500 ? 'Something went wrong!' : err.message });
-=======
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Allow the frontend URL
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE'); // Allow methods
@@ -116,14 +99,10 @@ app.use((req, res, next) => {
     }
 
     next(); // Pass control to the next middleware or route
->>>>>>> DEVELOPER2
 });
 
 // Start the server
 app.listen(PORT, () => { 
     console.log(`Server running on http://localhost:${PORT}`);
 });
-<<<<<<< HEAD
-=======
 
->>>>>>> DEVELOPER2
