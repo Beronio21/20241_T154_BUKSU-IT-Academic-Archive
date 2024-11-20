@@ -1,31 +1,60 @@
 import axios from 'axios';
 
-const api = axios.create({
-    baseURL: 'http://localhost:8080',
+const API_URL = 'http://localhost:8080';
+
+// Create axios instance
+const axiosInstance = axios.create({
+    baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json'
     }
 });
 
-export const googleAuth = async (access_token) => {
-    try {
-        console.log('Sending auth request with access token:', access_token);
-        const response = await api.post('/auth/google', { access_token });
-        return response.data;
-    } catch (error) {
-        console.error('API Error:', error.response?.data || error);
-        throw error;
-    }
-};
-
+// Email login
 export const emailLogin = async (email, password) => {
     try {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await axiosInstance.post('/auth/login', {
+            email,
+            password
+        });
         return response.data;
     } catch (error) {
-        console.error('Auth error:', error.response?.data || error);
-        throw error;
+        console.error('Auth error:', error.response?.data);
+        throw error.response?.data || error;
     }
 };
 
-export default api;
+// Google auth
+export const googleAuth = async (accessToken) => {
+    try {
+        const response = await axiosInstance.post('/auth/google', {
+            access_token: accessToken
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Google auth error:', error.response?.data);
+        throw error.response?.data || error;
+    }
+};
+
+// Verify token
+export const verifyToken = async (token) => {
+    try {
+        const response = await axiosInstance.post('/auth/verify-token', { token });
+        return response.data;
+    } catch (error) {
+        console.error('Token verification error:', error.response?.data);
+        throw error.response?.data || error;
+    }
+};
+
+// Add auth token to requests
+export const setAuthToken = (token) => {
+    if (token) {
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+        delete axiosInstance.defaults.headers.common['Authorization'];
+    }
+};
+
+export default axiosInstance;

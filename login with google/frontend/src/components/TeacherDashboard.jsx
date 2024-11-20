@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './TeacherDashboard.css';  // We'll use the same CSS file
+import TeacherProfile from './TeacherProfile';
+import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
+    const [currentView, setCurrentView] = useState('dashboard');
+    const [submissions, setSubmissions] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,9 +24,141 @@ const TeacherDashboard = () => {
         setUserInfo(userData);
     }, [navigate]);
 
+    // Fetch submissions when userInfo is available
+    useEffect(() => {
+        if (userInfo?.email) {
+            fetchSubmissions();
+        }
+    }, [userInfo]);
+
+    const fetchSubmissions = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/thesis/submissions/adviser?email=${encodeURIComponent(userInfo.email)}`
+            );
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                setSubmissions(data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching submissions:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('user-info');
         navigate('/login');
+    };
+
+    // Handle menu item clicks
+    const handleMenuClick = (view) => {
+        setCurrentView(view);
+    };
+
+    // Render content based on current view
+    const renderContent = () => {
+        switch(currentView) {
+            case 'profile':
+                return <TeacherProfile />;
+            case 'dashboard':
+            default:
+                return (
+                    <>
+                        <header className="header">
+                            <div className="user-info">
+                                <h1>Welcome, {userInfo?.name}</h1>
+                                <p>Teacher ID: {userInfo?.teacherId || 'N/A'}</p>
+                            </div>
+                            <img className="profile-picture" src={userInfo?.image} alt={userInfo?.name} />
+                        </header>
+
+                        <section className="status-cards">
+                            <div className="status-card">
+                                <h3>Pending Reviews</h3>
+                                <p className="count">
+                                    {submissions.filter(sub => sub.status === 'pending').length}
+                                </p>
+                            </div>
+                            <div className="status-card">
+                                <h3>Students Assigned</h3>
+                                <p className="count">{submissions.length}</p>
+                            </div>
+                            <div className="status-card">
+                                <h3>Upcoming Defenses</h3>
+                                <p className="count">3</p>
+                            </div>
+                        </section>
+
+                        <section className="submissions-section">
+                            <h2>Recent Submissions to Review</h2>
+                            {loading ? (
+                                <p>Loading submissions...</p>
+                            ) : (
+                                <table className="submissions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Members</th>
+                                            <th>Submission Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {submissions.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="5" style={{textAlign: 'center'}}>
+                                                    No submissions to review
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            submissions.map((submission) => (
+                                                <tr key={submission._id}>
+                                                    <td>{submission.title}</td>
+                                                    <td>{submission.members.join(', ')}</td>
+                                                    <td>{formatDate(submission.createdAt)}</td>
+                                                    <td>
+                                                        <span className={`status-${submission.status.toLowerCase()}`}>
+                                                            {submission.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a 
+                                                            href={submission.docsLink}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="btn-view"
+                                                        >
+                                                            View
+                                                        </a>
+                                                        <button 
+                                                            className="btn-review"
+                                                            onClick={() => handleReview(submission._id)}
+                                                        >
+                                                            Review
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            )}
+                        </section>
+                    </>
+                );
+        }
     };
 
     return (
@@ -31,117 +167,31 @@ const TeacherDashboard = () => {
             <aside className="sidebar">
                 <h2>Teacher Menu</h2>
                 <ul>
-                    <li>Dashboard</li>
+                    <li 
+                        className={currentView === 'dashboard' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('dashboard')}
+                    >
+                        Dashboard
+                    </li>
                     <li>Review Submissions</li>
                     <li>Student List</li>
                     <li>Defense Schedule</li>
                     <li>Messages</li>
                     <li>Notifications</li>
-                    <li>My Profile</li>
+                    <li 
+                        className={currentView === 'profile' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('profile')}
+                    >
+                        My Profile
+                    </li>
                     <li onClick={handleLogout}>Log Out</li>
                 </ul>
             </aside>
 
             {/* Main Content */}
             <main className="main-content">
-                <header className="header">
-                    <div className="user-info">
-                        <h1>Welcome, {userInfo?.name}</h1>
-                        <p>Teacher ID: {userInfo?.teacherId || 'N/A'}</p>
-                    </div>
-                    <img className="profile-picture" src={userInfo?.image} alt={userInfo?.name} />
-                </header>
-
-                {/* Status Overview */}
-                <section className="status-cards">
-                    <div className="status-card">
-                        <h3>Pending Reviews</h3>
-                        <p className="count">5</p>
-                    </div>
-                    <div className="status-card">
-                        <h3>Students Assigned</h3>
-                        <p className="count">12</p>
-                    </div>
-                    <div className="status-card">
-                        <h3>Upcoming Defenses</h3>
-                        <p className="count">3</p>
-                    </div>
-                </section>
-
-                {/* Recent Submissions to Review */}
-                <section className="submissions-section">
-                    <h2>Recent Submissions to Review</h2>
-                    <table className="submissions-table">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Chapter</th>
-                                <th>Submission Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>Chapter 1 - Introduction</td>
-                                <td>2024-02-20</td>
-                                <td><span className="status-pending">Pending Review</span></td>
-                                <td>
-                                    <button className="btn-view">View</button>
-                                    <button className="btn-review">Review</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>Chapter 2 - Literature Review</td>
-                                <td>2024-02-19</td>
-                                <td><span className="status-in-progress">In Progress</span></td>
-                                <td>
-                                    <button className="btn-view">View</button>
-                                    <button className="btn-review">Continue Review</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-
-                {/* Upcoming Defense Schedule */}
-                <section className="defense-schedule">
-                    <h2>Upcoming Defense Schedule</h2>
-                    <table className="submissions-table">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Venue</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Alice Johnson</td>
-                                <td>March 15, 2024</td>
-                                <td>10:00 AM</td>
-                                <td>Room 301</td>
-                                <td>
-                                    <button className="btn-view">View Details</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Bob Wilson</td>
-                                <td>March 17, 2024</td>
-                                <td>2:00 PM</td>
-                                <td>Room 405</td>
-                                <td>
-                                    <button className="btn-view">View Details</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-            </main>
+                {renderContent()}
+            </main> 
         </div>
     );
 };

@@ -3,8 +3,8 @@ const User = require('../models/userModel');
 
 const auth = async (req, res, next) => {
     try {
-        // Get token from header
         const authHeader = req.headers.authorization;
+        console.log('Auth header:', authHeader);
         
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({
@@ -13,28 +13,20 @@ const auth = async (req, res, next) => {
             });
         }
 
-        // Extract token
         const token = authHeader.split(' ')[1];
-
-        if (!token) {
-            return res.status(401).json({
-                status: 'error',
-                message: 'Authentication required'
-            });
-        }
+        console.log('Token:', token);
 
         try {
-            // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log('Decoded token:', decoded);
             
-            // Find user
             const user = await User.findById(decoded.userId);
+            console.log('Found user:', user);
             
             if (!user) {
                 throw new Error('User not found');
             }
 
-            // Add user info to request
             req.user = user;
             req.token = token;
             

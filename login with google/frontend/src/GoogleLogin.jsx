@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { googleAuth, emailLogin } from "./api";
+import { googleAuth, emailLogin } from './api';
 import { useNavigate } from 'react-router-dom';
 import React from "react";
 import './App.css';

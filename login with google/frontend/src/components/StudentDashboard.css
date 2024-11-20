@@ -95,4 +95,76 @@ html, body {
     color: #3498db;
     margin: 10px 0;
 }
+
+.submissions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.submissions-table th,
+.submissions-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.submissions-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.status-pending {
+    background-color: #ffd700;
+    color: #856404;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.btn-view,
+.btn-edit {
+    padding: 6px 12px;
+    margin: 0 4px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+
+.btn-view {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-edit {
+    background-color: #6c757d;
+    color: white;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
   

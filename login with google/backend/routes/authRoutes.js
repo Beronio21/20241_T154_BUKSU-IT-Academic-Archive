@@ -3,7 +3,9 @@ const router = express.Router();
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const Teacher = require('../models/Teacher');
 
+// Google OAuth login
 router.post('/google', async (req, res) => {
     try {
         const { access_token } = req.body;
@@ -57,19 +59,7 @@ router.post('/google', async (req, res) => {
                 role,
                 isProfileComplete: false
             });
-            try {
-                await user.save();
-                console.log('New user created:', user);
-            } catch (error) {
-                console.error('User creation error:', error);
-                throw new Error('Failed to create user');
-            }
-        }
-
-        // Generate JWT token
-        if (!process.env.JWT_SECRET) {
-            console.error('JWT_SECRET is not defined');
-            throw new Error('Server configuration error');
+            await user.save();
         }
 
         const token = jwt.sign(
@@ -80,13 +70,9 @@ router.post('/google', async (req, res) => {
                 isProfileComplete: user.isProfileComplete
             },
             process.env.JWT_SECRET,
-            { 
-                expiresIn: '24h',
-                algorithm: 'HS256'
-            }
+            { expiresIn: '24h' }
         );
 
-        // Update last login
         user.lastLogin = new Date();
         await user.save();
 
@@ -99,14 +85,7 @@ router.post('/google', async (req, res) => {
                     email: user.email,
                     image: user.image,
                     role: user.role,
-                    isProfileComplete: user.isProfileComplete,
-                    student_id: user.student_id,
-                    contact_number: user.contact_number,
-                    location: user.location,
-                    birthday: user.birthday,
-                    gender: user.gender,
-                    course: user.course,
-                    year: user.year
+                    isProfileComplete: user.isProfileComplete
                 },
                 token
             }
@@ -121,7 +100,104 @@ router.post('/google', async (req, res) => {
     }
 });
 
-// Verify token route
+// Email/Password login
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log('Login attempt for:', email);
+
+        // First try to find a teacher
+        let teacher = await Teacher.findOne({ email });
+        
+        if (teacher) {
+            // Check teacher password
+            if (teacher.password !== password) {
+                console.log('Teacher password mismatch');
+                return res.status(401).json({
+                    status: 'error',
+                    message: 'Invalid email or password'
+                });
+            }
+
+            const token = jwt.sign(
+                { 
+                    userId: teacher._id,
+                    email: teacher.email,
+                    role: 'teacher'
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            return res.json({
+                status: 'success',
+                data: {
+                    user: {
+                        id: teacher._id,
+                        name: teacher.name,
+                        email: teacher.email,
+                        role: 'teacher',
+                        image: teacher.image
+                    },
+                    token
+                }
+            });
+        }
+
+        // If no teacher found, try student
+        const student = await User.findOne({ email });
+        if (!student) {
+            console.log('No user found with email:', email);
+            return res.status(401).json({
+                status: 'error',
+                message: 'Invalid email or password'
+            });
+        }
+
+        // Check student password
+        if (student.password !== password) {
+            console.log('Student password mismatch');
+            return res.status(401).json({
+                status: 'error',
+                message: 'Invalid email or password'
+            });
+        }
+
+        const token = jwt.sign(
+            { 
+                userId: student._id,
+                email: student.email,
+                role: student.role
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            status: 'success',
+            data: {
+                user: {
+                    id: student._id,
+                    name: student.name,
+                    email: student.email,
+                    role: student.role,
+                    image: student.image
+                },
+                token
+            }
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Login failed',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// Verify token
 router.post('/verify-token', async (req, res) => {
     try {
         const { token } = req.body;
@@ -159,63 +235,6 @@ router.post('/verify-token', async (req, res) => {
         res.status(401).json({
             status: 'error',
             message: 'Invalid token'
-        });
-    }
-});
-
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        console.log('Login attempt:', { email });
-
-        // Find user by email
-        const user = await User.findOne({ email });
-        
-        if (!user) {
-            return res.status(401).json({
-                status: 'error',
-                message: 'Invalid email or password'
-            });
-        }
-
-        // Simple password check
-        if (user.password !== password) {
-            return res.status(401).json({
-                status: 'error',
-                message: 'Invalid email or password'
-            });
-        }
-
-        // Generate token
-        const token = jwt.sign(
-            { 
-                userId: user._id,
-                email: user.email,
-                role: user.role
-            },
-            process.env.JWT_SECRET || 'your-secret-key',
-            { expiresIn: '24h' }
-        );
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                    image: user.image
-                },
-                token
-            }
-        });
-
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({
-            status: 'error',
-            message: 'Login failed'
         });
     }
 });
