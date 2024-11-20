@@ -1,0 +1,297 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.teacher-dashboard {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar Styles */
+.teacher-sidebar {
+    width: 280px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sidebar-menu li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu li.active {
+    background-color: #3498db;
+}
+
+/* Main Content Styles */
+.teacher-main {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* Header Styles */
+.teacher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+.header-content p {
+    color: #7f8c8d;
+    margin-top: 0.5rem;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.notifications {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.profile-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Dashboard Stats */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card h3 {
+    color: #7f8c8d;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    color: #95a5a6;
+    font-size: 0.9rem;
+}
+
+/* Recent Submissions Section */
+.recent-submissions {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.view-all-btn {
+    padding: 0.5rem 1rem;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.view-all-btn:hover {
+    background: #2980b9;
+}
+
+/* Table Styles */
+.submissions-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.submissions-table th {
+    text-align: left;
+    padding: 1rem;
+    color: #7f8c8d;
+    font-weight: 600;
+}
+
+.submissions-table td {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-top: 1px solid #ecf0f1;
+}
+
+.status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+}
+
+.status.pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status.reviewed {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn.review {
+    background: #3498db;
+}
+
+.action-btn.view {
+    background: #2ecc71;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.defense-schedule {
+    margin-top: 30px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-review {
+    background-color: #9b59b6;
+    color: white;
+    padding: 5px 15px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.status-in-progress {
+    color: #9b59b6;
+    background-color: #f3e5f5;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+/* Add hover effects for buttons */
+.btn-view:hover,
+.btn-review:hover,
+.btn-edit:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    transition: all 0.2s;
+}
+
+/* Add some spacing between tables */
+.submissions-section + .defense-schedule {
+    margin-top: 30px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .status-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .status-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .submissions-table {
+        overflow-x: auto;
+        display: block;
+    }
+} 
