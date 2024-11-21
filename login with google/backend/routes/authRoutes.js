@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
 router.post('/google', async (req, res) => {
     try {
@@ -178,8 +179,9 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Simple password check
-        if (user.password !== password) {
+        // Use bcrypt to compare the password
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) {
             return res.status(401).json({
                 status: 'error',
                 message: 'Invalid email or password'

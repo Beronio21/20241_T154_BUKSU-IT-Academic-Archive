@@ -5,6 +5,11 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 
+const studentRoutes = require('./routes/studentRoutes');
+const instructorRoutes = require('./routes/instructorRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
+
 const app = express();
 
 // Middleware
@@ -27,7 +32,9 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
-
+app.use('/api/admins', adminRoutes);
+app.use('/api/instructors', instructorRoutes);
+app.use('/api/students', studentRoutes);
 // Start server
 const PORT = process.env.PORT || 8080;
 mongoose.connect(process.env.MONGODB_URI)

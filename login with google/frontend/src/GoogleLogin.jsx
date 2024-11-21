@@ -23,12 +23,15 @@ const GoogleLogin = () => {
             const result = await emailLogin(email, password);
             
             if (result.status === 'success') {
-                const { user, token } = result.data;
+                const { user, token } = result;
                 
+                if (!token) {
+                    throw new Error('Token not received');
+                }
+
                 localStorage.setItem('user-info', JSON.stringify({
-                    name: user.name,
+                    name: user.first_name + ' ' + user.last_name,
                     email: user.email,
-                    image: user.image,
                     role: user.role,
                     token
                 }));
@@ -46,6 +49,8 @@ const GoogleLogin = () => {
                     default:
                         setErrorMessage('Invalid user role');
                 }
+            } else {
+                setErrorMessage('Invalid email or password');
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -110,6 +115,18 @@ const GoogleLogin = () => {
         scope: 'email profile',
     });
 
+    const navigateToStudentRegister = () => {
+        navigate('/student-register');
+    };
+
+    const navigateToInstructorRegister = () => {
+        navigate('/instructor-register');
+    };
+
+    const navigateToAdminRegister = () => {
+        navigate('/admin-register');
+    };
+
     return (
         <section className="background-radial-gradient overflow-hidden">
             <div className="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
@@ -131,7 +148,6 @@ const GoogleLogin = () => {
                         <div className="card bg-glass">
                             <div className="card-body px-4 py-5 px-md-5">
                                 <form onSubmit={handleSubmit}>
-
                                     {/* Email input */}
                                     <div className="form-outline mb-4">
                                         <input
@@ -182,19 +198,47 @@ const GoogleLogin = () => {
                                         </button>
                                     </div>
 
+                                    {/* Register buttons */}
+                                    <div className="d-flex justify-content-center mb-4">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary w-100"
+                                            onClick={navigateToStudentRegister}
+                                        >
+                                            Student Register
+                                        </button>
+                                    </div>
+                                    <div className="d-flex justify-content-center mb-4">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary w-100"
+                                            onClick={navigateToInstructorRegister}
+                                        >
+                                            Instructor Register
+                                        </button>
+                                    </div>
+                                    <div className="d-flex justify-content-center mb-4">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary w-100"
+                                            onClick={navigateToAdminRegister}
+                                        >
+                                            Admin Register
+                                        </button>
+                                    </div>
+
                                     {/* Social media sign-in buttons */}
                                     <div className="text-center">
                                         <p>or sign up with:</p>
-                                            {/* Google Sign-in Button */}
+                                        {/* Google Sign-in Button */}
                                         <button
                                             type="button"
-                                            className="btn btn-primary mb-4 w-100" // Added w-100 class here
+                                            className="btn btn-primary mb-4 w-100"
                                             onClick={googleLogin}
                                             disabled={loading}
                                         >
-                                            Sign in with Google<i className="bi bi-google me-2"></i> {/* Google Icon */}
+                                            Sign in with Google<i className="bi bi-google me-2"></i>
                                         </button>
-                     
                                     </div>
                                 </form>
                             </div>

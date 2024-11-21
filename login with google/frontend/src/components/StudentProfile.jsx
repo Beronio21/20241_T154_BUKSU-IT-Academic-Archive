@@ -49,6 +49,12 @@ const StudentProfile = () => {
     };
 
     const fetchUserProfile = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
         try {
             // Check server connection first
             const isServerConnected = await checkServerConnection();

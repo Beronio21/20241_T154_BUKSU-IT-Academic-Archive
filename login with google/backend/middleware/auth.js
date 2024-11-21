@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
+const Student = require('../models/Student');  
+const Instructor = require('../models/Instructor');
+const Admin = require('../models/Admin');
+
+
 const auth = async (req, res, next) => {
     try {
         // Get token from header
