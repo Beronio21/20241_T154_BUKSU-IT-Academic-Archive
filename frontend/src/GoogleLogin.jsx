@@ -6,6 +6,64 @@ import { googleAuth, emailLogin } from "./api";
 import { useNavigate } from 'react-router-dom';
 import React from "react";
 import './App.css';
+import ReCAPTCHA from "react-google-recaptcha";
+
+const handleLogin = async (e, setLoading, setError) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+        const isInstructor = email.includes('@buksu.edu.ph');
+        const isStudent = email.includes('@student.buksu.edu.ph');
+        const isAdmin = email.includes('@gmail.com');
+        
+        let endpoint;
+        
+        if (isInstructor) {
+            endpoint = 'http://localhost:8080/api/instructors/login';
+        } else if (isStudent) {
+            endpoint = 'http://localhost:8080/api/students/login';
+        } else if (isAdmin) {
+            endpoint = 'http://localhost:8080/api/admins/login';
+        } else {
+            setError('Please enter a valid email address for Instructor, Student, or Admin.');
+            setLoading(false);
+            return;
+        }
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
+
+            login();
+
+            if (isInstructor) {
+                navigate('/instructor-dashboard');
+            } else if (isStudent) {
+                navigate('/student-dashboard');
+            } else if (isAdmin) {
+                navigate('/admin-dashboard');
+            }
+        } else {
+            setError(data.message || 'Login failed. Please try again.');
+        }
+    } catch (error) {
+        setError('An error occurred. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+};
 
 const GoogleLogin = () => {
     const [email, setEmail] = useState('');
@@ -13,45 +71,39 @@ const GoogleLogin = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [error, setError] = useState('');
+    const [recaptchaToken, setRecaptchaToken] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
         setLoading(true);
 
+        if (!recaptchaToken) {
+            setErrorMessage('Please complete the reCAPTCHA.');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const result = await emailLogin(email, password);
-            
-            if (result.status === 'success') {
-                const { user, token } = result;
-                
-                if (!token) {
-                    throw new Error('Token not received');
-                }
+            // Verify reCAPTCHA token with your server
+            const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `secret=6LfREoYqAAAAABeiFjQn6YfvDeW-ZlQCdTuF1a3T&response=${recaptchaToken}`,
+            });
 
-                localStorage.setItem('user-info', JSON.stringify({
-                    name: user.first_name + ' ' + user.last_name,
-                    email: user.email,
-                    role: user.role,
-                    token
-                }));
+            const recaptchaData = await recaptchaResponse.json();
 
-                switch(user.role) {
-                    case 'student':
-                        navigate('/student-dashboard');
-                        break;
-                    case 'teacher':
-                        navigate('/teacher-dashboard');
-                        break;
-                    case 'admin':
-                        navigate('/admin-dashboard');
-                        break;
-                    default:
-                        setErrorMessage('Invalid user role');
-                }
-            } else {
-                setErrorMessage('Invalid email or password');
+            if (!recaptchaData.success) {
+                setErrorMessage('reCAPTCHA verification failed. Please try again.');
+                setLoading(false);
+                return;
             }
+
+            await handleLogin(e, setLoading);
         } catch (error) {
             console.error('Login error:', error);
             setErrorMessage(
@@ -186,6 +238,14 @@ const GoogleLogin = () => {
                                             {errorMessage}
                                         </div>
                                     )}
+
+                                    {/* reCAPTCHA widget */}
+                                    <div className="d-flex justify-content-center mb-4">
+                                        <ReCAPTCHA
+                                            sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
+                                            onChange={(token) => setRecaptchaToken(token)}
+                                        />
+                                    </div>
 
                                     {/* Submit button */}
                                     <div className="d-flex justify-content-center mb-4">

@@ -33,6 +33,7 @@ exports.registerStudent = async (req, res) => {
         });
 
         await student.save();
+        console.log('Student registered:', student);
 
         res.status(201).json({ message: 'Student registered successfully' });
     } catch (error) {
@@ -54,20 +55,20 @@ exports.loginStudent = async (req, res) => {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
 
-        // Check password
+        // Check password using bcrypt.compare
         const isMatch = await bcrypt.compare(password, student.password_hash);
         if (!isMatch) {
             console.log('Password mismatch for email:', email);
             return res.status(400).json({ message: 'Invalid email or password' });
         }
 
-        // Generate JWT with the same structure as Google login
+        // Generate JWT
         const token = jwt.sign(
             { 
                 userId: student._id, 
                 email: student.email,
                 role: 'student',
-                isProfileComplete: true // Assuming profile is complete upon registration
+                isProfileComplete: true 
             },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
