@@ -28,14 +28,46 @@ exports.googleAuth = async (req, res, next) => {
             process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_TIMEOUT,
         });
+        console.log('Google auth response:', {
+            message: 'success',
+            token,
+            user: {
+                _id,
+                name,
+                email,
+                image: picture,
+            },
+        });
         res.status(200).json({
             message: 'success',
             token,
-            user,
+            user: {
+                _id,
+                name,
+                email,
+                image: picture,
+            },
         });
+        const storedInfo = JSON.parse(localStorage.getItem('user-info'));
+        console.log('Stored user info:', storedInfo);
     } catch (err) {
         res.status(500).json({
             message: "Internal Server Error"
         })
     }
 };
+
+// Add this somewhere in your component
+const debugUserInfo = () => {
+    const userInfo = JSON.parse(localStorage.getItem('user-info'));
+    console.log('Current user info:', userInfo);
+};
+
+// Add this button for testing (you can remove it later)
+<button 
+    type="button" 
+    onClick={debugUserInfo}
+    className="btn btn-secondary mb-2"
+>
+    Debug: Show User Info
+</button>

@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const thesisRoutes = require('./routes/thesisRoutes');
-const studentRoutes = require('./routes/StudentRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -44,14 +44,15 @@ app.use('/auth', authRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/thesis', thesisRoutes);
-app.use('/api/students', studentRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error('Error:', err);
+    console.error('Server Error:', err);
     res.status(500).json({
         status: 'error',
-        message: 'Internal server error'
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
 });
 
@@ -68,7 +69,6 @@ const PORT = process.env.PORT || 8080;
 
 // Start server only after DB connection
 mongoose.connection.once('open', () => {
-    console.log('MongoDB connection established successfully');
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`MongoDB connected: ${mongoose.connection.host}`);

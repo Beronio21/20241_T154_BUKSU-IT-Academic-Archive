@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SubmitThesis.css';
 
 const SubmitThesis = () => {
@@ -6,28 +6,37 @@ const SubmitThesis = () => {
         title: '',
         members: [''],
         adviserEmail: '',
-        docsLink: '',
-        status: 'pending'
+        docsLink: ''
     });
-
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState({ text: '', type: '' });
+    const [error, setError] = useState(null);
 
-    const handleInputChange = (e) => {
+    useEffect(() => {
+        const userInfoString = localStorage.getItem('user-info');
+        console.log('Raw user info from localStorage:', userInfoString);
+        
+        if (userInfoString) {
+            const userInfo = JSON.parse(userInfoString);
+            console.log('Parsed user info:', userInfo);
+        }
+    }, []);
+
+    const handleInputChange = (e, index = null) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleMemberChange = (index, value) => {
-        const newMembers = [...formData.members];
-        newMembers[index] = value;
-        setFormData(prev => ({
-            ...prev,
-            members: newMembers
-        }));
+        
+        if (name === 'members' && index !== null) {
+            const updatedMembers = [...formData.members];
+            updatedMembers[index] = value;
+            setFormData(prev => ({
+                ...prev,
+                members: updatedMembers
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const addMember = () => {
@@ -47,42 +56,48 @@ const SubmitThesis = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setMessage({ text: '', type: '' });
+        setError(null);
 
         try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            
+            const submissionData = {
+                title: formData.title,
+                members: formData.members.filter(member => member.trim() !== ''),
+                adviserEmail: formData.adviserEmail,
+                docsLink: formData.docsLink,
+                email: userInfo.email
+            };
+
+            console.log('Submitting thesis data:', submissionData);
+
             const response = await fetch('http://localhost:8080/api/thesis/submit', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userInfo.token}`
                 },
-                body: JSON.stringify({
-                    title: formData.title,
-                    members: formData.members.filter(member => member.trim() !== ''),
-                    adviserEmail: formData.adviserEmail,
-                    docsLink: formData.docsLink
-                })
+                body: JSON.stringify(submissionData)
             });
 
             const data = await response.json();
+            console.log('Server response:', data);
 
-            if (response.ok) {
-                setMessage({ text: 'Thesis submitted successfully!', type: 'success' });
-                setFormData({
-                    title: '',
-                    members: [''],
-                    adviserEmail: '',
-                    docsLink: '',
-                    status: 'pending'
-                });
-            } else {
+            if (!response.ok) {
                 throw new Error(data.message || 'Failed to submit thesis');
             }
+
+            alert('Thesis submitted successfully!');
+            setFormData({
+                title: '',
+                members: [''],
+                adviserEmail: '',
+                docsLink: ''
+            });
         } catch (error) {
             console.error('Submission error:', error);
-            setMessage({ 
-                text: error.message || 'Failed to submit thesis', 
-                type: 'error' 
-            });
+            setError(error.message);
+            alert('Failed to submit thesis: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -91,112 +106,100 @@ const SubmitThesis = () => {
     return (
         <div className="submit-thesis-container">
             <h2>Submit Thesis</h2>
-            
-            {message.text && (
-                <div className={`alert ${message.type === 'error' ? 'alert-danger' : 'alert-success'}`}>
-                    {message.text}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="thesis-form">
+            <button
+                type="button"
+                onClick={() => {
+                    const userInfo = JSON.parse(localStorage.getItem('user-info'));
+                    console.log('Current user info:', userInfo);
+                    alert(`
+                        User ID: ${userInfo?.id || 'Not found'}
+                        User _id: ${userInfo?._id || 'Not found'}
+                        userId: ${userInfo?.userId || 'Not found'}
+                        Role: ${userInfo?.role || 'Not found'}
+                    `);
+                }}
+                className="btn btn-secondary mb-3"
+            >
+                Debug User Info
+            </button>
+            <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="title">Thesis Title</label>
+                    <label>Thesis Title:</label>
                     <input
                         type="text"
-                        id="title"
                         name="title"
                         value={formData.title}
                         onChange={handleInputChange}
                         required
-                        className="form-control"
-                        placeholder="Enter your thesis title"
+                        placeholder="Enter thesis title"
                     />
                 </div>
 
                 <div className="form-group">
-                    <label>Members</label>
+                    <label>Members:</label>
                     {formData.members.map((member, index) => (
                         <div key={index} className="member-input">
                             <input
                                 type="text"
+                                name="members"
                                 value={member}
-                                onChange={(e) => handleMemberChange(index, e.target.value)}
-                                className="form-control"
+                                onChange={(e) => handleInputChange(e, index)}
                                 placeholder="Enter member name"
                                 required
                             />
-                            {index > 0 && (
-                                <button
-                                    type="button"
+                            {formData.members.length > 1 && (
+                                <button 
+                                    type="button" 
                                     onClick={() => removeMember(index)}
-                                    className="btn btn-danger btn-sm"
+                                    className="remove-member"
                                 >
                                     Remove
                                 </button>
                             )}
                         </div>
                     ))}
-                    <button
-                        type="button"
+                    <button 
+                        type="button" 
                         onClick={addMember}
-                        className="btn btn-secondary btn-sm"
+                        className="add-member"
                     >
                         Add Member
                     </button>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="adviserEmail">Adviser Email</label>
+                    <label>Adviser Email:</label>
                     <input
                         type="email"
-                        id="adviserEmail"
                         name="adviserEmail"
                         value={formData.adviserEmail}
                         onChange={handleInputChange}
                         required
-                        className="form-control"
-                        placeholder="Enter adviser's email address"
+                        placeholder="Enter adviser's email"
                     />
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="docsLink">Google Docs Link</label>
+                    <label>Document Link:</label>
                     <input
                         type="url"
-                        id="docsLink"
                         name="docsLink"
                         value={formData.docsLink}
                         onChange={handleInputChange}
                         required
-                        className="form-control"
-                        placeholder="Paste your Google Docs link here"
+                        placeholder="Enter Google Docs link"
                     />
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="status">Status</label>
-                    <select
-                        id="status"
-                        name="status"
-                        value={formData.status}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        disabled
-                    >
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="revision">Needs Revision</option>
-                    </select>
-                </div>
-
-                <button
-                    type="submit"
-                    className="btn btn-primary"
+                <button 
+                    type="submit" 
+                    className="submit-button"
                     disabled={loading}
                 >
                     {loading ? 'Submitting...' : 'Submit Thesis'}
                 </button>
+
+                {error && <div className="error-message">{error}</div>}
             </form>
         </div>
     );

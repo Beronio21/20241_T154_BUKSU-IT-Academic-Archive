@@ -13,6 +13,10 @@ const thesisSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     docsLink: {
         type: String,
         required: true
@@ -21,7 +25,17 @@ const thesisSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'approved', 'rejected', 'revision'],
         default: 'pending'
-    }
+    },
+    feedback: [{
+        comment: String,
+        status: String,
+        teacherName: String,
+        teacherEmail: String,
+        dateSubmitted: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 }, {
     timestamps: true
 });

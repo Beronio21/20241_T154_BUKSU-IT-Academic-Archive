@@ -6,7 +6,6 @@ import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import NotFound from './NotFound';
-import StudentRegister from './components/StudentRegister';
 
 function App() {
 	return (
@@ -19,7 +18,6 @@ function App() {
 					<Route path="/teacher-dashboard" element={<TeacherDashboard />} />
 					<Route path="/admin-dashboard" element={<AdminDashboard />} />
 					<Route path="*" element={<NotFound />} />
-					<Route path="/student-register" element={<StudentRegister />} />
 				</Routes>
 			</BrowserRouter>
 		</GoogleOAuthProvider>
