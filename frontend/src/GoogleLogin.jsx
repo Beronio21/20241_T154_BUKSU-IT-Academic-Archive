@@ -8,68 +8,13 @@ import React from "react";
 import './App.css';
 import ReCAPTCHA from "react-google-recaptcha";
 
-const handleLogin = async (e, setLoading, setError, email, password, navigate) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-        const isInstructor = email.includes('@buksu.edu.ph');
-        const isStudent = email.includes('@student.buksu.edu.ph');
-        const isAdmin = email.includes('@gmail.com');
-        
-        let endpoint;
-        
-        if (isInstructor) {
-            endpoint = 'http://localhost:8080/api/instructors/login';
-        } else if (isStudent) {
-            endpoint = 'http://localhost:8080/api/students/login';
-        } else if (isAdmin) {
-            endpoint = 'http://localhost:8080/api/admins/login';
-        } else {
-            setError('Please enter a valid email address for Instructor, Student, or Admin.');
-            setLoading(false);
-            return;
-        }
-
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
-
-            if (isInstructor) {
-                navigate('/instructor-dashboard');
-            } else if (isStudent) {
-                navigate('/student-dashboard');
-            } else if (isAdmin) {
-                navigate('/admin-dashboard');
-            }
-        } else {
-            setError(data.message || 'Login failed. Please try again.');
-        }
-    } catch (error) {
-        setError('An error occurred. Please try again.');
-    } finally {
-        setLoading(false);
-    }
-};
-
 const GoogleLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const [recaptchaToken, setRecaptchaToken] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -83,8 +28,9 @@ const GoogleLogin = () => {
         }
 
         try {
-            // Send the recaptchaToken to your server for verification
-            const response = await fetch('http://localhost:8080/api/verify-recaptcha', {
+
+             // Send the recaptchaToken to your server for verification
+             const response = await fetch('http://localhost:8080/api/verify-recaptcha', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,11 +46,40 @@ const GoogleLogin = () => {
                 return;
             }
 
-            // Proceed with login logic
-            await handleLogin(e, setLoading, setErrorMessage, email, password, navigate);
+            const result = await emailLogin(email, password);
+            
+            if (result.status === 'success') {
+                const { user, token } = result.data;
+                
+                localStorage.setItem('user-info', JSON.stringify({
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    image: user.image,
+                    role: user.role,
+                    token
+                }));
+
+                switch(user.role) {
+                    case 'student':
+                        navigate('/student-dashboard');
+                        break;
+                    case 'teacher':
+                        navigate('/teacher-dashboard');
+                        break;
+                    case 'admin':
+                        navigate('/admin-dashboard');
+                        break;
+                    default:
+                        setErrorMessage('Invalid user role');
+                }
+            }
         } catch (error) {
             console.error('Login error:', error);
-            setErrorMessage('An error occurred. Please try again.');
+            setErrorMessage(
+                error.response?.data?.message || 
+                'Invalid email or password'
+            );
         } finally {
             setLoading(false);
         }
@@ -123,6 +98,7 @@ const GoogleLogin = () => {
                     const { user, token } = result.data;
                     
                     localStorage.setItem('user-info', JSON.stringify({
+                        id: user._id,
                         name: user.name,
                         email: user.email,
                         image: user.image,
@@ -162,18 +138,6 @@ const GoogleLogin = () => {
         scope: 'email profile',
     });
 
-    const navigateToStudentRegister = () => {
-        navigate('/student-register');
-    };
-
-    const navigateToInstructorRegister = () => {
-        navigate('/instructor-register');
-    };
-
-    const navigateToAdminRegister = () => {
-        navigate('/admin-register');
-    };
-
     return (
         <section className="background-radial-gradient overflow-hidden">
             <div className="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
@@ -195,6 +159,7 @@ const GoogleLogin = () => {
                         <div className="card bg-glass">
                             <div className="card-body px-4 py-5 px-md-5">
                                 <form onSubmit={handleSubmit}>
+
                                     {/* Email input */}
                                     <div className="form-outline mb-4">
                                         <input
@@ -234,8 +199,7 @@ const GoogleLogin = () => {
                                         </div>
                                     )}
 
-                                    {/* reCAPTCHA widget */}
-                                    <div className="d-flex justify-content-center mb-4">
+                                        <div className="d-flex justify-content-center mb-4">
                                         <ReCAPTCHA
                                             sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
                                             onChange={(token) => setRecaptchaToken(token)}
@@ -253,47 +217,19 @@ const GoogleLogin = () => {
                                         </button>
                                     </div>
 
-                                    {/* Register buttons */}
-                                    <div className="d-flex justify-content-center mb-4">
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-secondary w-100"
-                                            onClick={navigateToStudentRegister}
-                                        >
-                                            Student Register
-                                        </button>
-                                    </div>
-                                    <div className="d-flex justify-content-center mb-4">
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-secondary w-100"
-                                            onClick={navigateToInstructorRegister}
-                                        >
-                                            Instructor Register
-                                        </button>
-                                    </div>
-                                    <div className="d-flex justify-content-center mb-4">
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-secondary w-100"
-                                            onClick={navigateToAdminRegister}
-                                        >
-                                            Admin Register
-                                        </button>
-                                    </div>
-
                                     {/* Social media sign-in buttons */}
                                     <div className="text-center">
                                         <p>or sign up with:</p>
-                                        {/* Google Sign-in Button */}
+                                            {/* Google Sign-in Button */}
                                         <button
                                             type="button"
-                                            className="btn btn-primary mb-4 w-100"
+                                            className="btn btn-primary mb-4 w-100" // Added w-100 class here
                                             onClick={googleLogin}
                                             disabled={loading}
                                         >
-                                            Sign in with Google<i className="bi bi-google me-2"></i>
+                                            Sign in with Google<i className="bi bi-google me-2"></i> {/* Google Icon */}
                                         </button>
+                     
                                     </div>
                                 </form>
                             </div>

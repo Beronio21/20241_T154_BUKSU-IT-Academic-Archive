@@ -41,28 +41,26 @@ const StudentDashboard = () => {
 
     const fetchSubmissions = async () => {
         try {
+            setLoading(true);
+            setError(null);
+
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
-            if (!userInfo) {
+            if (!userInfo || !userInfo.email) {
                 throw new Error('User info not found');
             }
 
-            console.log('User info:', userInfo);
-
-            const response = await fetch('http://localhost:8080/api/submissions', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userInfo.token}`
-                }
-            });
+            const response = await fetch(
+                `http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`
+            );
 
             if (!response.ok) {
                 throw new Error('Failed to fetch submissions');
             }
 
             const data = await response.json();
-            console.log('Submissions:', data);
-            setSubmissions(data.data);
+            if (data.status === 'success') {
+                setSubmissions(data.data);
+            }
         } catch (error) {
             console.error('Error fetching submissions:', error);
             setError(error.message);
