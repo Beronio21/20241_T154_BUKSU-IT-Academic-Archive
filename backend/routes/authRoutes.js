@@ -4,6 +4,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Teacher = require('../models/Teacher');
+const bcrypt = require('bcrypt');
 
 // Google OAuth login
 router.post('/google', async (req, res) => {
@@ -111,7 +112,8 @@ router.post('/login', async (req, res) => {
         
         if (teacher) {
             // Check teacher password
-            if (teacher.password !== password) {
+            const isMatch = await bcrypt.compare(password, teacher.password);
+            if (!isMatch) {
                 console.log('Teacher password mismatch');
                 return res.status(401).json({
                     status: 'error',
@@ -155,7 +157,8 @@ router.post('/login', async (req, res) => {
         }
 
         // Check student password
-        if (student.password !== password) {
+        const isMatch = await bcrypt.compare(password, student.password);
+        if (!isMatch) {
             console.log('Student password mismatch');
             return res.status(401).json({
                 status: 'error',

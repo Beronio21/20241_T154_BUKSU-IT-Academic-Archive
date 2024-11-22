@@ -229,7 +229,31 @@ const GoogleLogin = () => {
                                         >
                                             Sign in with Google<i className="bi bi-google me-2"></i> {/* Google Icon */}
                                         </button>
-                     
+
+                                        {/* Registration buttons */}
+                                        <div className="d-flex justify-content-between">
+                                            <button
+                                                type="button"
+                                                className="btn btn-secondary"
+                                                onClick={() => navigate('/student-register')}
+                                            >
+                                                Register as Student
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-secondary"
+                                                onClick={() => navigate('/instructor-register')}
+                                            >
+                                                Register as Instructor
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-secondary"
+                                                onClick={() => navigate('/admin-register')}
+                                            >
+                                                Register as Admin
+                                            </button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
