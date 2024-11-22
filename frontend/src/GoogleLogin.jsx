@@ -86,16 +86,16 @@ const GoogleLogin = () => {
         }
 
         try {
-            // Verify reCAPTCHA token with your server
-            const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+            // Send the recaptchaToken to your server for verification
+            const response = await fetch('http://localhost:8080/api/verify-recaptcha', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `secret=6LfREoYqAAAAABeiFjQn6YfvDeW-ZlQCdTuF1a3T&response=${recaptchaToken}`,
+                body: JSON.stringify({ recaptchaToken }),
             });
 
-            const recaptchaData = await recaptchaResponse.json();
+            const recaptchaData = await response.json();
 
             if (!recaptchaData.success) {
                 setErrorMessage('reCAPTCHA verification failed. Please try again.');
@@ -103,13 +103,11 @@ const GoogleLogin = () => {
                 return;
             }
 
+            // Proceed with login logic
             await handleLogin(e, setLoading);
         } catch (error) {
             console.error('Login error:', error);
-            setErrorMessage(
-                error.response?.data?.message || 
-                'Invalid email or password'
-            );
+            setErrorMessage('An error occurred. Please try again.');
         } finally {
             setLoading(false);
         }

@@ -20,9 +20,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         validate: {
             validator: function(v) {
-                return !v || /^\d{10}$/.test(v);
+                return !v || /^\d{1,20}$/.test(v);
             },
-            message: 'Student ID must be 10 digits'
+            message: 'Student ID must be between 1 and 20 digits'
         }
     },
     contact_number: {
@@ -53,6 +53,13 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+userSchema.methods.validateRoleFields = function() {
+    if (this.role === 'student' && !this.student_id) {
+        return false;
+    }
+    return true;
+};
 
 const User = mongoose.model('User', userSchema);
 

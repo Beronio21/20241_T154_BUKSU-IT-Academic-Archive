@@ -2,11 +2,16 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
 const auth = require('../middleware/auth');
+const bcrypt = require('bcrypt');
 
 // Register new user
 router.post('/register', async (req, res) => {
     try {
-        const user = new User(req.body);
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user = new User({
+            ...req.body,
+            password: hashedPassword
+        });
         if (!user.validateRoleFields()) {
             return res.status(400).json({ message: 'Missing required fields for role' });
         }

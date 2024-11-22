@@ -8,6 +8,8 @@ const profileRoutes = require('./routes/profileRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const thesisRoutes = require('./routes/thesisRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const userRoutes = require('./routes/userRoutes');
+const recaptchaRoutes = require('./routes/recaptchaRoutes');
 
 const app = express();
 
@@ -45,6 +47,8 @@ app.use('/api/teacher', teacherRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/thesis', thesisRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api', userRoutes);
+app.use('/api', recaptchaRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
