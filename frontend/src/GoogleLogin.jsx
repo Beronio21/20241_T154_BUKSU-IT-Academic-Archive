@@ -8,7 +8,7 @@ import React from "react";
 import './App.css';
 import ReCAPTCHA from "react-google-recaptcha";
 
-const handleLogin = async (e, setLoading, setError) => {
+const handleLogin = async (e, setLoading, setError, email, password, navigate) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -46,8 +46,6 @@ const handleLogin = async (e, setLoading, setError) => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('userType', isInstructor ? 'instructor' : isStudent ? 'student' : 'admin'); // Storing userType
 
-            login();
-
             if (isInstructor) {
                 navigate('/instructor-dashboard');
             } else if (isStudent) {
@@ -71,7 +69,6 @@ const GoogleLogin = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const [error, setError] = useState('');
     const [recaptchaToken, setRecaptchaToken] = useState('');
 
     const handleSubmit = async (e) => {
@@ -104,7 +101,7 @@ const GoogleLogin = () => {
             }
 
             // Proceed with login logic
-            await handleLogin(e, setLoading);
+            await handleLogin(e, setLoading, setErrorMessage, email, password, navigate);
         } catch (error) {
             console.error('Login error:', error);
             setErrorMessage('An error occurred. Please try again.');
