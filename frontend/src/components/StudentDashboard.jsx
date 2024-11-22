@@ -4,6 +4,7 @@ import './StudentDashboard.css';
 import StudentProfile from './StudentProfile';
 import SubmitThesis from './SubmitThesis';
 import Docs from './Docs';
+import Calendar from './Calendar';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -344,6 +345,8 @@ const StudentDashboard = () => {
                 );
             case 'docs':
                 return <Docs />;
+            case 'calendar':
+                return <Calendar />;
             default:
                 return null;
         }
@@ -384,6 +387,12 @@ const StudentDashboard = () => {
                         onClick={() => setActiveSection('docs')}
                     >
                         Docs
+                    </li>
+                    <li 
+                        className={activeSection === 'calendar' ? 'active' : ''} 
+                        onClick={() => setActiveSection('calendar')}
+                    >
+                        Calendar
                     </li>
                     <li>My Submissions</li>
                     <li>Schedule</li>
