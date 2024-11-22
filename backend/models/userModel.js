@@ -49,6 +49,24 @@ const userSchema = new mongoose.Schema({
     isProfileComplete: {
         type: Boolean,
         default: false
+    },
+    teacher_id: {
+        type: String,
+        validate: {
+            validator: function(v) {
+                return !v || /^\d{1,20}$/.test(v);
+            },
+            message: 'Teacher ID must be between 1 and 20 digits'
+        }
+    },
+    admin_id: {
+        type: String,
+        validate: {
+            validator: function(v) {
+                return !v || /^\d{1,20}$/.test(v);
+            },
+            message: 'Admin ID must be between 1 and 20 digits'
+        }
     }
 }, {
     timestamps: true

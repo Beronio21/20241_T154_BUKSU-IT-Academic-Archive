@@ -10,7 +10,8 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             ...req.body,
-            password: hashedPassword
+            password: hashedPassword,
+            admin_id: req.body.adminId
         });
         if (!user.validateRoleFields()) {
             return res.status(400).json({ message: 'Missing required fields for role' });
@@ -46,6 +47,16 @@ router.get('/profile', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Get all students
+router.get('/students', auth, async (req, res) => {
+    try {
+        const students = await User.find({ role: 'student' });
+        res.json(students);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

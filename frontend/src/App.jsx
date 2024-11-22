@@ -7,6 +7,8 @@ import TeacherDashboard from './components/TeacherDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import NotFound from './NotFound';
 import StudentRegister from './components/StudentRegister';
+import TeacherRegister from './components/TeacherRegister';
+import AdminRegister from './components/AdminRegister';
 
 function App() {
 	return (
@@ -19,6 +21,8 @@ function App() {
 					<Route path="/teacher-dashboard" element={<TeacherDashboard />} />
 					<Route path="/admin-dashboard" element={<AdminDashboard />} />
 					<Route path="/student-register" element={<StudentRegister />} />
+					<Route path="/teacher-register" element={<TeacherRegister />} />
+					<Route path="/admin-register" element={<AdminRegister />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>

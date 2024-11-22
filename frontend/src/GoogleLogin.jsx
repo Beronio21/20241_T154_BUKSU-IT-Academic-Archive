@@ -242,7 +242,7 @@ const GoogleLogin = () => {
                                             <button
                                                 type="button"
                                                 className="btn btn-secondary"
-                                                onClick={() => navigate('/instructor-register')}
+                                                onClick={() => navigate('/teacher-register')}
                                             >
                                                 Register as Instructor
                                             </button>
