@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './StudentDashboard.css';
 import StudentProfile from './StudentProfile';
 import SubmitThesis from './SubmitThesis';
+import Docs from './Docs';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -341,6 +342,8 @@ const StudentDashboard = () => {
                         </section>
                     </>
                 );
+            case 'docs':
+                return <Docs />;
             default:
                 return null;
         }
@@ -375,6 +378,12 @@ const StudentDashboard = () => {
                     >
                         Notifications
                         {unreadCount > 0 && <span className="menu-notification-badge">{unreadCount}</span>}
+                    </li>
+                    <li 
+                        className={activeSection === 'docs' ? 'active' : ''} 
+                        onClick={() => setActiveSection('docs')}
+                    >
+                        Docs
                     </li>
                     <li>My Submissions</li>
                     <li>Schedule</li>
