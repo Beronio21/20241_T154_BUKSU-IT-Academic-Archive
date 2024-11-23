@@ -9,6 +9,7 @@ const Docs = () => {
             </div>
             <iframe 
                 className="large-iframe"
+                style={{ width: '2000px', height: '900px' }}
                 src="https://docs.google.com/document/d/1inG2Q_kf-yLEY7_CLJN7EZXBjsjHYJljm-dNx2leeC8/edit?usp=sharing" 
                 title="Document Viewer"
             ></iframe>
