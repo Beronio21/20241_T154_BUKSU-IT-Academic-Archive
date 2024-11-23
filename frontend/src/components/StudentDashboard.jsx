@@ -341,6 +341,13 @@ const StudentDashboard = () => {
                                 </table>
                             )}
                         </section>
+
+                        <section className="calendar-link">
+                            <h2>Google Calendar</h2>
+                            <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">
+                                View your events on Google Calendar
+                            </a>
+                        </section>
                     </>
                 );
             case 'docs':
