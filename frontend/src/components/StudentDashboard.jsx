@@ -399,7 +399,7 @@ const StudentDashboard = () => {
                         className={activeSection === 'calendar' ? 'active' : ''} 
                         onClick={() => setActiveSection('calendar')}
                     >
-                        Calendar
+                        Create Event
                     </li>
                     <li>My Submissions</li>
                     <li>Schedule</li>
