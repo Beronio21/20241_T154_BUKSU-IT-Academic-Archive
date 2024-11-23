@@ -1,71 +1,78 @@
-import React, { useEffect, useState } from 'react';
+import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
+import DateTimePicker from 'react-datetime-picker';
+import { useState } from 'react';
 
-const Calendar = () => {
-    const [events, setEvents] = useState([]);
-    const [error, setError] = useState(null);
+function Calendar() {
+  const [ start, setStart ] = useState(new Date());
+  const [ end, setEnd ] = useState(new Date());
+  const [ eventName, setEventName ] = useState("");
+  const [ eventDescription, setEventDescription ] = useState("");
 
-    useEffect(() => {
-        const loadGapi = () => {
-            if (window.gapi) {
-                window.gapi.load('client:auth2', initClient);
-            } else {
-                setError("Google API client library not loaded");
-            }
-        };
+  const session = useSession(); // tokens, when session exists we have a user
+  const supabase = useSupabaseClient(); // talk to supabase!
+  const { isLoading } = useSessionContext();
+  
+  if(isLoading) {
+    return <></>
+  }
 
-        const initClient = () => {
-            window.gapi.client.init({
-                apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-                clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-                scope: "https://www.googleapis.com/auth/calendar.readonly"
-            }).then(() => {
-                if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-                    listUpcomingEvents();
-                } else {
-                    window.gapi.auth2.getAuthInstance().signIn().then(listUpcomingEvents);
-                }
-            }).catch(error => {
-                console.error("Error initializing Google API client", error);
-                setError("Failed to initialize Google API client");
-            });
-        };
+  async function signOut() {
+    await supabase.auth.signOut();
+  }
 
-        const listUpcomingEvents = () => {
-            window.gapi.client.calendar.events.list({
-                calendarId: 'primary',
-                timeMin: (new Date()).toISOString(),
-                maxResults: 10,
-                singleEvents: true,
-                orderBy: 'startTime'
-            }).then(response => {
-                const events = response.result.items;
-                setEvents(events);
-            }).catch(error => {
-                console.error("Error fetching events", error);
-                setError("Failed to fetch events");
-            });
-        };
+  async function createCalendarEvent() {
+    console.log("Creating calendar event");
+    const event = {
+      'summary': eventName,
+      'description': eventDescription,
+      'start': {
+        'dateTime': start.toISOString(),
+        'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
+      },
+      'end': {
+        'dateTime': end.toISOString(),
+        'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
+      }
+    }
+    await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
+      method: "POST",
+      headers: {
+        'Authorization':'Bearer ' + session.provider_token
+      },
+      body: JSON.stringify(event)
+    }).then((data) => {
+      return data.json();
+    }).then((data) => {
+      console.log(data);
+      alert("Event created, check your Google Calendar!");
+    });
+  }
 
-        loadGapi();
-    }, []);
-
-    return (
-        <div className="calendar-container">
-            <h2>Calendar</h2>
-            {error ? (
-                <p className="error-message">{error}</p>
-            ) : (
-                <ul>
-                    {events.map(event => (
-                        <li key={event.id}>
-                            {event.summary} - {new Date(event.start.dateTime || event.start.date).toLocaleString()}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
-};
+  return (
+    <div className="App">
+      <div style={{width: "400px", margin: "30px auto"}}>
+        {session ?
+          <>
+            <h2>Hey there {session.user.email}</h2>
+            <p>Start of your event</p>
+            <DateTimePicker onChange={setStart} value={start} />
+            <p>End of your event</p>
+            <DateTimePicker onChange={setEnd} value={end} />
+            <p>Event name</p>
+            <input type="text" onChange={(e) => setEventName(e.target.value)} />
+            <p>Event description</p>
+            <input type="text" onChange={(e) => setEventDescription(e.target.value)} />
+            <hr />
+            <button onClick={() => createCalendarEvent()}>Create Calendar Event</button>
+            <p></p>
+            <button onClick={() => signOut()}>Sign Out</button>
+          </>
+          :
+          <p>Please log in through the main application.</p>
+        }
+      </div>
+    </div>
+  );
+}
 
 export default Calendar;

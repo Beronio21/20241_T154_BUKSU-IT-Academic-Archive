@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
 const auth = require('../middleware/auth');
+const bcrypt = require('bcrypt');
 
 // Get profile
 router.get('/', auth, async (req, res) => {
@@ -48,6 +49,11 @@ router.put('/', auth, async (req, res) => {
         // Format date if provided
         if (updates.birthday) {
             updates.birthday = new Date(updates.birthday);
+        }
+
+        // Hash the password if it is being updated
+        if (updates.password) {
+            updates.password = await bcrypt.hash(updates.password, 10);
         }
 
         const user = await User.findByIdAndUpdate(
