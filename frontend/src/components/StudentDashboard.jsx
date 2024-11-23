@@ -5,6 +5,7 @@ import StudentProfile from './StudentProfile';
 import SubmitThesis from './SubmitThesis';
 import Docs from './Docs';
 import Calendar from './Calendar';
+import SendGmail from './SendGmail';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -354,6 +355,8 @@ const StudentDashboard = () => {
                 return <Docs />;
             case 'calendar':
                 return <Calendar />;
+            case 'send-gmail':
+                return <SendGmail />;
             default:
                 return null;
         }
@@ -396,10 +399,10 @@ const StudentDashboard = () => {
                         Docs
                     </li>
                     <li 
-                        className={activeSection === 'calendar' ? 'active' : ''} 
-                        onClick={() => setActiveSection('calendar')}
+                        className={activeSection === 'send-gmail' ? 'active' : ''} 
+                        onClick={() => setActiveSection('send-gmail')}
                     >
-                        Create Event
+                        Send Gmail
                     </li>
                     <li>My Submissions</li>
                     <li>Schedule</li>
