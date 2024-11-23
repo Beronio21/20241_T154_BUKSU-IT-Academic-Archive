@@ -11,6 +11,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const userRoutes = require('./routes/userRoutes');
 const recaptchaRoutes = require('./routes/recaptchaRoutes');
 const studentRoutes = require('./routes/studentRoutes');
+const { google } = require('googleapis');
 
 const app = express();
 
@@ -51,6 +52,52 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api', userRoutes);
 app.use('/api', recaptchaRoutes);
 app.use('/api/students', studentRoutes);
+
+const oauth2Client = new google.auth.OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+);
+
+const scopes = ['https://www.googleapis.com/auth/gmail.readonly'];
+
+app.get('/api/gmail/auth', (req, res) => {
+    const url = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: scopes
+    });
+    res.redirect(url);
+});
+
+app.get('/google-callback', async (req, res) => {
+    const { code } = req.query;
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+    res.redirect('/api/gmail/emails');
+});
+
+app.get('/api/gmail/emails', async (req, res) => {
+    try {
+        const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+        const response = await gmail.users.messages.list({
+            userId: 'me',
+            maxResults: 10
+        });
+
+        const messages = response.data.messages || [];
+        const emails = await Promise.all(messages.map(async (message) => {
+            const email = await gmail.users.messages.get({ userId: 'me', id: message.id });
+            const subject = email.data.payload.headers.find(header => header.name === 'Subject').value;
+            const from = email.data.payload.headers.find(header => header.name === 'From').value;
+            return { from, subject };
+        }));
+
+        res.json(emails);
+    } catch (error) {
+        console.error('Error fetching emails:', error);
+        res.status(500).send('Error fetching emails');
+    }
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
