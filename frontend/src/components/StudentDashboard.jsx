@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import './StudentDashboard.css';
 import StudentProfile from './StudentProfile';
 import SubmitThesis from './SubmitThesis';
+import Docs from './Docs';
+import Calendar from './Calendar';
+import SendGmail from './SendGmail';
+import GmailReader from './GmailReader';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -339,8 +343,23 @@ const StudentDashboard = () => {
                                 </table>
                             )}
                         </section>
+
+                        <section className="calendar-link">
+                            <h2>Google Calendar</h2>
+                            <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">
+                                View your events on Google Calendar
+                            </a>
+                        </section>
                     </>
                 );
+            case 'docs':
+                return <Docs />;
+            case 'calendar':
+                return <Calendar />;
+            case 'send-gmail':
+                return <SendGmail />;
+            case 'gmail-reader':
+                return <GmailReader />;
             default:
                 return null;
         }
@@ -375,6 +394,24 @@ const StudentDashboard = () => {
                     >
                         Notifications
                         {unreadCount > 0 && <span className="menu-notification-badge">{unreadCount}</span>}
+                    </li>
+                    <li 
+                        className={activeSection === 'docs' ? 'active' : ''} 
+                        onClick={() => setActiveSection('docs')}
+                    >
+                        Docs
+                    </li>
+                    <li 
+                        className={activeSection === 'send-gmail' ? 'active' : ''} 
+                        onClick={() => setActiveSection('send-gmail')}
+                    >
+                        Send Gmail
+                    </li>
+                    <li 
+                        className={activeSection === 'gmail-reader' ? 'active' : ''} 
+                        onClick={() => setActiveSection('gmail-reader')}
+                    >
+                        Gmail Reader
                     </li>
                     <li>My Submissions</li>
                     <li>Schedule</li>

@@ -1,0 +1,30 @@
+.large-iframe {
+    width: 100%;
+    max-width: 100%;
+    height: 80vh;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: auto;
+}
+
+.docs-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.docs-header, .docs-footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.docs-footer {
+    font-size: 0.9em;
+    color: #666;
+}

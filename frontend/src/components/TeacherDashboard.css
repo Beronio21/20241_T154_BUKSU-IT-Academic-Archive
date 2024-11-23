@@ -3,7 +3,10 @@
     display: flex;
     min-height: 100vh;
     width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     background-color: #f8f9fa;
+    padding: 0;
 }
 
 /* Sidebar styles */
@@ -14,6 +17,9 @@
     padding: 2rem;
     height: 100vh;
     position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .sidebar h2 {
@@ -48,9 +54,10 @@
 
 /* Main content styles */
 .main-content {
-    margin-left: 250px;
-    padding: 2rem 3rem;
-    width: calc(100% - 250px);
+    flex: 1;
+    padding: 20px;
+    background-color: #f5f6fa;
+    width: 100%;
 }
 
 /* Header styles */
