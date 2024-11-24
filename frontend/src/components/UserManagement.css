@@ -1,0 +1,87 @@
+.user-management-container {
+    display: flex;
+}
+
+
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.user-table {
+    margin-bottom: 40px;
+}
+
+.user-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th, .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.user-table th {
+    background-color: #f2f2f2;
+}
+
+.user-management-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.students-table, .teachers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.students-table th, .teachers-table th,
+.students-table td, .teachers-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.students-table th, .teachers-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.students-table tr:nth-child(even), .teachers-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.students-table tr:hover, .teachers-table tr:hover {
+    background-color: #ddd;
+}
+
+.btn-view, .btn-edit {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-view {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-edit {
+    background-color: #008CBA;
+    color: white;
+}

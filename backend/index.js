@@ -45,7 +45,7 @@ app.get('/health', (req, res) => {
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/api/teacher', teacherRoutes);
+app.use('/api/teachers', teacherRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/thesis', thesisRoutes);
 app.use('/api/notifications', notificationRoutes);
