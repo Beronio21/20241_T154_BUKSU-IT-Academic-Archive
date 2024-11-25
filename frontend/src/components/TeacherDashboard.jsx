@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TeacherProfile from './TeacherProfile';
 import './TeacherDashboard.css';
+import Calendar from './Calendar';
+import DefenseSchedule from './DefenseSchedule';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -161,6 +163,10 @@ const TeacherDashboard = () => {
         switch(currentView) {
             case 'profile':
                 return <TeacherProfile />;
+            case 'eventmaker':
+                return <Calendar />;
+            case 'defenseschedule':
+                return <DefenseSchedule />;
             case 'dashboard':
             default:
                 return (
@@ -334,7 +340,18 @@ const TeacherDashboard = () => {
                     </li>
                     <li>Review Submissions</li>
                     <li>Student List</li>
-                    <li>Defense Schedule</li>
+                    <li 
+                        className={currentView === 'eventmaker' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('eventmaker')}
+                    >
+                        EventMaker
+                    </li>
+                    <li 
+                        className={currentView === 'defenseschedule' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('defenseschedule')}
+                    >
+                        Defense Schedule
+                    </li>
                     <li>Messages</li>
                     <li 
                         onClick={() => setShowNotifications(!showNotifications)}
