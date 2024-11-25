@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 const DefenseSchedule = () => {
   const [schedules, setSchedules] = useState([]);
+  const [newSchedule, setNewSchedule] = useState({
+    student_id: '',
+    Title: '',
+    Name: '',
+    Date: '',
+  });
+  const [editingSchedule, setEditingSchedule] = useState(null);
 
   useEffect(() => {
     readGoogleSheet();
@@ -27,7 +34,10 @@ const DefenseSchedule = () => {
       body: JSON.stringify({ data: updatedData }),
     })
       .then((response) => response.json())
-      .then(() => readGoogleSheet())
+      .then(() => {
+        readGoogleSheet();
+        setEditingSchedule(null);
+      })
       .catch((error) => console.error('Error updating schedule:', error));
   };
 
@@ -44,18 +54,25 @@ const DefenseSchedule = () => {
       .catch((error) => console.error('Error deleting schedule:', error));
   };
 
-  const createGoogleSheet = (newData) => {
+  const createGoogleSheet = () => {
     fetch("https://sheetdb.io/api/v1/59dowe84yclm3", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ data: [newData] }),
+      body: JSON.stringify({ data: [newSchedule] }),
     })
       .then((response) => response.json())
-      .then(() => readGoogleSheet())
+      .then(() => {
+        readGoogleSheet();
+        setNewSchedule({ student_id: '', Title: '', Name: '', Date: '' });
+      })
       .catch((error) => console.error('Error creating schedule:', error));
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditingSchedule({ ...editingSchedule, [field]: value });
   };
 
   return (
@@ -67,16 +84,70 @@ const DefenseSchedule = () => {
         ) : (
           schedules.map((schedule) => (
             <li key={schedule.student_id}>
-              {schedule.Title} - {schedule.Date} - {schedule.Name}
-              <button onClick={() => updateGoogleSheet(schedule.student_id, { Title: 'Updated Title' })}>Update</button>
-              <button onClick={() => deleteGoogleSheet(schedule.student_id)}>Delete</button>
+              {editingSchedule && editingSchedule.student_id === schedule.student_id ? (
+                <div>
+                  <input
+                    type="text"
+                    value={editingSchedule.student_id}
+                    onChange={(e) => handleEditChange('student_id', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={editingSchedule.Title}
+                    onChange={(e) => handleEditChange('Title', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={editingSchedule.Name}
+                    onChange={(e) => handleEditChange('Name', e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    value={editingSchedule.Date}
+                    onChange={(e) => handleEditChange('Date', e.target.value)}
+                  />
+                  <button onClick={() => updateGoogleSheet(schedule.student_id, editingSchedule)}>Save</button>
+                  <button onClick={() => setEditingSchedule(null)}>Cancel</button>
+                </div>
+              ) : (
+                <>
+                  {schedule.Title} - {schedule.Date} - {schedule.Name}
+                  <button onClick={() => setEditingSchedule(schedule)}>Update</button>
+                  <button onClick={() => deleteGoogleSheet(schedule.student_id)}>Delete</button>
+                </>
+              )}
             </li>
           ))
         )}
       </ul>
-      <button onClick={() => createGoogleSheet({ student_id: 'new', Title: 'New Defense', Name: 'New Name', Date: '2023-12-01' })}>
-        Add New Schedule
-      </button>
+      <div>
+        <input
+          type="text"
+          placeholder="Student ID"
+          value={newSchedule.student_id}
+          onChange={(e) => setNewSchedule({ ...newSchedule, student_id: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Title"
+          value={newSchedule.Title}
+          onChange={(e) => setNewSchedule({ ...newSchedule, Title: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Name"
+          value={newSchedule.Name}
+          onChange={(e) => setNewSchedule({ ...newSchedule, Name: e.target.value })}
+        />
+        <input
+          type="date"
+          value={newSchedule.Date}
+          onChange={(e) => setNewSchedule({ ...newSchedule, Date: e.target.value })}
+        />
+        <button onClick={createGoogleSheet}>
+          Add New Schedule
+        </button>
+      </div>
     </div>
   );
 };
