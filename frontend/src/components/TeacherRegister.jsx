@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 const TeacherRegister = () => {
     const [formData, setFormData] = useState({
+        teacher_id: '',
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
         contactNumber: '',
         department: '',
-        teacher_id: '',
         role: 'teacher'
     });
     const [error, setError] = useState('');
@@ -63,6 +63,13 @@ const TeacherRegister = () => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
+                    name="teacher_id"
+                    placeholder="Teacher ID"
+                    value={formData.teacher_id}
+                    onChange={handleChange}
+                />
+                <input
+                    type="text"
                     name="name"
                     placeholder="Name"
                     value={formData.name}
@@ -105,13 +112,6 @@ const TeacherRegister = () => {
                     name="department"
                     placeholder="Department"
                     value={formData.department}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="teacher_id"
-                    placeholder="Teacher ID"
-                    value={formData.teacher_id}
                     onChange={handleChange}
                 />
                 <button type="submit" disabled={loading}>

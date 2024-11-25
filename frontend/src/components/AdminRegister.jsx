@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 const AdminRegister = () => {
     const [formData, setFormData] = useState({
+        adminId: '',
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
         contactNumber: '',
-        role: 'admin',
-        adminId: ''
+        role: 'admin'      
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -62,6 +62,14 @@ const AdminRegister = () => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
+                    name="adminId"
+                    placeholder="Admin ID"
+                    value={formData.adminId}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="text"
                     name="name"
                     placeholder="Name"
                     value={formData.name}
@@ -98,14 +106,6 @@ const AdminRegister = () => {
                     placeholder="Contact Number"
                     value={formData.contactNumber}
                     onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="adminId"
-                    placeholder="Admin ID"
-                    value={formData.adminId}
-                    onChange={handleChange}
-                    required
                 />
                 <button type="submit" disabled={loading}>
                     {loading ? 'Registering...' : 'Register'}
