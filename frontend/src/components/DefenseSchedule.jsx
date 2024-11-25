@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './DefenseSchedule.css';
 
 const DefenseSchedule = () => {
   const [schedules, setSchedules] = useState([]);
@@ -106,14 +107,18 @@ const DefenseSchedule = () => {
                     value={editingSchedule.Date}
                     onChange={(e) => handleEditChange('Date', e.target.value)}
                   />
-                  <button onClick={() => updateGoogleSheet(schedule.student_id, editingSchedule)}>Save</button>
-                  <button onClick={() => setEditingSchedule(null)}>Cancel</button>
+                  <div className="button-container">
+                    <button onClick={() => updateGoogleSheet(schedule.student_id, editingSchedule)}>Save</button>
+                    <button onClick={() => setEditingSchedule(null)}>Cancel</button>
+                  </div>
                 </div>
               ) : (
                 <>
                   {schedule.Title} - {schedule.Date} - {schedule.Name}
-                  <button onClick={() => setEditingSchedule(schedule)}>Update</button>
-                  <button onClick={() => deleteGoogleSheet(schedule.student_id)}>Delete</button>
+                  <div className="button-container">
+                    <button onClick={() => setEditingSchedule(schedule)}>Update</button>
+                    <button onClick={() => deleteGoogleSheet(schedule.student_id)}>Delete</button>
+                  </div>
                 </>
               )}
             </li>
@@ -144,9 +149,11 @@ const DefenseSchedule = () => {
           value={newSchedule.Date}
           onChange={(e) => setNewSchedule({ ...newSchedule, Date: e.target.value })}
         />
-        <button onClick={createGoogleSheet}>
-          Add New Schedule
-        </button>
+        <div className="button-container">
+          <button onClick={createGoogleSheet}>
+            Add New Schedule
+          </button>
+        </div>
       </div>
     </div>
   );

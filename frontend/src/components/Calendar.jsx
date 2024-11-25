@@ -1,6 +1,7 @@
 import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
 import DateTimePicker from 'react-datetime-picker';
 import { useState } from 'react';
+import './calendar.css';
 
 function Calendar() {
   const [ start, setStart ] = useState(new Date());
@@ -50,7 +51,7 @@ function Calendar() {
 
   return (
     <div className="App">
-      <div style={{width: "400px", margin: "30px auto"}}>
+      <div className="calendar-container">
         {session ?
           <>
             <h2>Hey there {session.user.email}</h2>
