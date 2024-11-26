@@ -1,6 +1,7 @@
 import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
 import DateTimePicker from 'react-datetime-picker';
 import { useState } from 'react';
+import './calendar.css';
 
 function Calendar() {
   const [ start, setStart ] = useState(new Date());
@@ -18,6 +19,13 @@ function Calendar() {
 
   async function signOut() {
     await supabase.auth.signOut();
+  }
+
+  async function signIn() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    if (error) console.error('Error logging in:', error.message);
   }
 
   async function createCalendarEvent() {
@@ -50,7 +58,7 @@ function Calendar() {
 
   return (
     <div className="App">
-      <div style={{width: "400px", margin: "30px auto"}}>
+      <div className="calendar-container">
         {session ?
           <>
             <h2>Hey there {session.user.email}</h2>
@@ -68,7 +76,10 @@ function Calendar() {
             <button onClick={() => signOut()}>Sign Out</button>
           </>
           :
-          <p>Please log in through the main application.</p>
+          <>
+            <p>Please log in through the main application.</p>
+            <button onClick={() => signIn()}>Log In</button>
+          </>
         }
       </div>
     </div>
