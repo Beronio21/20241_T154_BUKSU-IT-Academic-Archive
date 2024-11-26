@@ -21,6 +21,13 @@ function Calendar() {
     await supabase.auth.signOut();
   }
 
+  async function signIn() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    if (error) console.error('Error logging in:', error.message);
+  }
+
   async function createCalendarEvent() {
     console.log("Creating calendar event");
     const event = {
@@ -69,7 +76,10 @@ function Calendar() {
             <button onClick={() => signOut()}>Sign Out</button>
           </>
           :
-          <p>Please log in through the main application.</p>
+          <>
+            <p>Please log in through the main application.</p>
+            <button onClick={() => signIn()}>Log In</button>
+          </>
         }
       </div>
     </div>
