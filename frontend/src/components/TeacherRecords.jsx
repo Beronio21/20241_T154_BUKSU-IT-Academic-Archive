@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './StudentRecords.css';
+import './TeacherRecords.css';
 
-const StudentRecords = () => {
-    const [students, setStudents] = useState([]);
+const TeacherRecords = () => {
+    const [teachers, setTeachers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
 
     useEffect(() => {
-        fetchStudentRecords();
+        fetchTeacherRecords();
     }, []);
 
-    const fetchStudentRecords = async () => {
+    const fetchTeacherRecords = async () => {
         try {
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
             const config = {
@@ -23,30 +23,30 @@ const StudentRecords = () => {
                 }
             };
 
-            const response = await axios.get('http://localhost:8080/api/students', config);
-            console.log('Fetched students:', response.data);
-            setStudents(response.data);
+            const response = await axios.get('http://localhost:8080/api/teachers', config);
+            console.log('Fetched teachers:', response.data);
+            setTeachers(response.data);
             setLoading(false);
         } catch (error) {
-            console.error('Error fetching student records:', error);
-            setError('Failed to fetch student records');
+            console.error('Error fetching teacher records:', error);
+            setError('Failed to fetch teacher records');
             setLoading(false);
         }
     };
 
-    const handleViewDetails = (student) => {
-        setSelectedStudent(student);
+    const handleViewDetails = (teacher) => {
+        setSelectedTeacher(teacher);
     };
 
-    const filteredStudents = students.filter(student => 
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.student_id.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredTeachers = teachers.filter(teacher => 
+        teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        teacher.teacher_id.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-        <div className="student-records-container">
+        <div className="teacher-records-container">
             <header className="records-header">
-                <h2>Student Records</h2>
+                <h2>Teacher Records</h2>
                 <div className="header-actions">
                     <div className="search-bar">
                         <input
@@ -60,51 +60,45 @@ const StudentRecords = () => {
             </header>
 
             {loading ? (
-                <div className="loading">Loading student records...</div>
+                <div className="loading">Loading teacher records...</div>
             ) : error ? (
                 <div className="error">
                     {error}
-                    <button onClick={fetchStudentRecords}>Retry</button>
+                    <button onClick={fetchTeacherRecords}>Retry</button>
                 </div>
-            ) : students.length === 0 ? (
+            ) : teachers.length === 0 ? (
                 <div className="no-records">
-                    No student records found.
+                    No teacher records found.
                 </div>
             ) : (
                 <div className="records-content">
                     <table className="records-table">
                         <thead>
                             <tr>
-                                <th>Student ID</th>
+                                <th>Teacher ID</th>
                                 <th>Name</th>
-                                <th>Course</th>
-                                <th>Year Level</th>
-                                <th>Thesis Status</th>
-                                <th>Academic Status</th>
+                                <th>Department</th>
+                                <th>Contact Number</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredStudents.map(student => (
-                                <tr key={student._id}>
-                                    <td>{student.student_id}</td>
-                                    <td>{student.name}</td>
-                                    <td>{student.course}</td>
-                                    <td>{student.year}</td>
+                            {filteredTeachers.map(teacher => (
+                                <tr key={teacher._id}>
+                                    <td>{teacher.teacher_id}</td>
+                                    <td>{teacher.name}</td>
+                                    <td>{teacher.department}</td>
+                                    <td>{teacher.contact_number || 'Not provided'}</td>
                                     <td>
-                                        <span className={`status ${student.thesis_status?.toLowerCase()}`}>
-                                            {student.thesis_status || 'Not Started'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className={`status ${student.academic_status?.toLowerCase()}`}>
-                                            {student.academic_status || 'Active'}
+                                        <span className={`status ${teacher.status?.toLowerCase()}`}>
+                                            {teacher.status || 'Active'}
                                         </span>
                                     </td>
                                     <td>
                                         <button
                                             className="btn-view"
-                                            onClick={() => handleViewDetails(student)}
+                                            onClick={() => handleViewDetails(teacher)}
                                         >
                                             View Details
                                         </button>
@@ -114,47 +108,47 @@ const StudentRecords = () => {
                         </tbody>
                     </table>
 
-                    {selectedStudent && (
-                        <div className="student-details-modal">
+                    {selectedTeacher && (
+                        <div className="teacher-details-modal">
                             <div className="modal-content">
-                                <h3>Student Details</h3>
+                                <h3>Teacher Details</h3>
                                 <div className="details-grid">
                                     <div className="detail-item">
-                                        <label>Student ID:</label>
-                                        <span>{selectedStudent.student_id}</span>
+                                        <label>Teacher ID:</label>
+                                        <span>{selectedTeacher.teacher_id}</span>
                                     </div>
                                     <div className="detail-item">
                                         <label>Name:</label>
-                                        <span>{selectedStudent.name}</span>
+                                        <span>{selectedTeacher.name}</span>
                                     </div>
                                     <div className="detail-item">
                                         <label>Email:</label>
-                                        <span>{selectedStudent.email}</span>
+                                        <span>{selectedTeacher.email}</span>
                                     </div>
                                     <div className="detail-item">
-                                        <label>Course:</label>
-                                        <span>{selectedStudent.course}</span>
+                                        <label>Department:</label>
+                                        <span>{selectedTeacher.department}</span>
                                     </div>
                                     <div className="detail-item">
-                                        <label>Year Level:</label>
-                                        <span>{selectedStudent.year}</span>
+                                        <label>Specialization:</label>
+                                        <span>{selectedTeacher.specialization}</span>
                                     </div>
                                     <div className="detail-item">
-                                        <label>Thesis Title:</label>
-                                        <span>{selectedStudent.thesis_title || 'Not yet assigned'}</span>
+                                        <label>Contact Number:</label>
+                                        <span>{selectedTeacher.contact_number || 'Not provided'}</span>
                                     </div>
                                     <div className="detail-item">
-                                        <label>Advisor:</label>
-                                        <span>{selectedStudent.advisor || 'Not yet assigned'}</span>
+                                        <label>Office Location:</label>
+                                        <span>{selectedTeacher.office_location || 'Not provided'}</span>
                                     </div>
                                     <div className="detail-item">
-                                        <label>Defense Schedule:</label>
-                                        <span>{selectedStudent.defense_schedule || 'Not yet scheduled'}</span>
+                                        <label>Advisees Count:</label>
+                                        <span>{selectedTeacher.advisees_count || '0'}</span>
                                     </div>
                                 </div>
                                 <button
                                     className="btn-close"
-                                    onClick={() => setSelectedStudent(null)}
+                                    onClick={() => setSelectedTeacher(null)}
                                 >
                                     Close
                                 </button>
@@ -167,4 +161,4 @@ const StudentRecords = () => {
     );
 };
 
-export default StudentRecords;  
+export default TeacherRecords; 
