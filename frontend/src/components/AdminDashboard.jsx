@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
 import UserManagement from './UserManagement'; // Import UserManagement component
+import StudentRecords from './StudentRecords';
 
 const AdminDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -31,6 +32,8 @@ const AdminDashboard = () => {
         switch (activeSection) {
             case 'user-management':
                 return <UserManagement />;
+            case 'student-records':
+                return <StudentRecords />;
             case 'dashboard':
             default:
                 return (
@@ -151,7 +154,7 @@ const AdminDashboard = () => {
                 <ul>
                     <li onClick={() => setActiveSection('dashboard')}>Dashboard</li>
                     <li onClick={() => setActiveSection('user-management')}>User Management</li>
-                    <li>Student Records</li>
+                    <li onClick={() => setActiveSection('student-records')}>Student Records</li>
                     <li>Teacher Records</li>
                     <li>Defense Schedule</li>
                     <li>System Settings</li>
