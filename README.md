@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Name of System: ONLINE THESIS SUBMISSION AND REVIEW SYSTEM
 
 Class Code: T154
@@ -12,6 +13,8 @@ User Classes: Students: Can submit theses and track their progress. Adviser: Res
 
 Name of Student: Beronio, Philip Venje V., Rebato, Ivan Ric F., Sedo, Julian Blaze L.
 =======
+=======
+>>>>>>> QA
 # Class Code: T154
 # Name of System: ONLINE THESIS SUBMISSION AND REVIEW SYSTEM
 # System Description:
@@ -34,4 +37,7 @@ Instructor: Manage users and submissions.
           
                 
           
+<<<<<<< HEAD
 >>>>>>> DEVELOPER2
+=======
+>>>>>>> QA

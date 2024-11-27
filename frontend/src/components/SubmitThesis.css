@@ -73,4 +73,18 @@
     padding: 10px;
     background-color: #f8d7da;
     border-radius: 4px;
+}
+
+.document-link-container {
+    display: flex;
+    align-items: center;
+}
+
+.document-link-container input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.document-link-container button {
+    white-space: nowrap;
 } 

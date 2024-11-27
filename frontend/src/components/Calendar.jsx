@@ -1,22 +1,30 @@
+<<<<<<< HEAD
 import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
 import DateTimePicker from 'react-datetime-picker';
 import { useState } from 'react';
 import './calendar.css';
+=======
+import React, { useState } from "react";
+import Fullcalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+>>>>>>> QA
 
 function Calendar() {
-  const [ start, setStart ] = useState(new Date());
-  const [ end, setEnd ] = useState(new Date());
-  const [ eventName, setEventName ] = useState("");
-  const [ eventDescription, setEventDescription ] = useState("");
+  const [events, setEvents] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [eventTitle, setEventTitle] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
-  const session = useSession(); // tokens, when session exists we have a user
-  const supabase = useSupabaseClient(); // talk to supabase!
-  const { isLoading } = useSessionContext();
-  
-  if(isLoading) {
-    return <></>
-  }
+  const handleSelect = (selectInfo) => {
+    const calendarApi = selectInfo.view.calendar;
+    calendarApi.unselect(); // Clear the selection
+  };
 
+<<<<<<< HEAD
   async function signOut() {
     await supabase.auth.signOut();
   }
@@ -41,22 +49,27 @@ function Calendar() {
         'dateTime': end.toISOString(),
         'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone
       }
+=======
+  const handleCreateEvent = () => {
+    if (eventTitle && startDate && endDate && startTime && endTime) {
+      setEvents([
+        ...events,
+        {
+          title: eventTitle,
+          start: new Date(`${startDate}T${startTime}`),
+          end: new Date(`${endDate}T${endTime}`),
+          allDay: false,
+        },
+      ]);
+      setEventTitle("");
+      setStartTime("");
+      setEndTime("");
+>>>>>>> QA
     }
-    await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-      method: "POST",
-      headers: {
-        'Authorization':'Bearer ' + session.provider_token
-      },
-      body: JSON.stringify(event)
-    }).then((data) => {
-      return data.json();
-    }).then((data) => {
-      console.log(data);
-      alert("Event created, check your Google Calendar!");
-    });
-  }
+  };
 
   return (
+<<<<<<< HEAD
     <div className="App">
       <div className="calendar-container">
         {session ?
@@ -81,6 +94,54 @@ function Calendar() {
             <button onClick={() => signIn()}>Log In</button>
           </>
         }
+=======
+    <div>
+      <Fullcalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView={"dayGridMonth"}
+        headerToolbar={{
+          start: "today prev,next",
+          center: "title",
+          end: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        height={"90vh"}
+        events={events}
+        selectable={true} // Enable date selection
+        select={handleSelect} // Handle date selection
+      />
+      <div style={{ marginTop: "20px" }}>
+        <input
+          type="text"
+          value={eventTitle}
+          onChange={(e) => setEventTitle(e.target.value)}
+          placeholder="Event Title"
+        />
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          placeholder="Start Date"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          placeholder="End Date"
+        />
+        <input
+          type="time"
+          value={startTime} 
+          onChange={(e) => setStartTime(e.target.value)}
+          placeholder="Start Time"
+        />
+        <input
+          type="time"
+          value={endTime}
+          onChange={(e) => setEndTime(e.target.value)}
+          placeholder="End Time"
+        />
+        <button onClick={handleCreateEvent}>Create Event</button>
+>>>>>>> QA
       </div>
     </div>
   );

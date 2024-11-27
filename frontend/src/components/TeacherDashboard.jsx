@@ -4,6 +4,9 @@ import TeacherProfile from './TeacherProfile';
 import './TeacherDashboard.css';
 import Calendar from './Calendar';
 import DefenseSchedule from './DefenseSchedule';
+import ReviewSubmission from './ReviewSubmission';
+import StudentList from './StudentList';
+import TeacherNotification from './TeacherNotification';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -167,6 +170,10 @@ const TeacherDashboard = () => {
                 return <Calendar />;
             case 'defenseschedule':
                 return <DefenseSchedule />;
+            case 'review-submissions':
+                return <ReviewSubmission />;
+            case 'student-list':
+                return <StudentList />;
             case 'dashboard':
             default:
                 return (
@@ -177,33 +184,6 @@ const TeacherDashboard = () => {
                                 <p>Teacher ID: {userInfo?.teacherId || 'N/A'}</p>
                             </div>
                             <img className="profile-picture" src={userInfo?.image} alt={userInfo?.name} />
-                            <div className="notifications-wrapper">
-                                <button 
-                                    className="notifications-button"
-                                    onClick={() => setShowNotifications(!showNotifications)}
-                                >
-                                    Notifications {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
-                                </button>
-                                {showNotifications && (
-                                    <div className="notifications-dropdown">
-                                        {notifications.length === 0 ? (
-                                            <p>No notifications</p>
-                                        ) : (
-                                            notifications.map(notification => (
-                                                <div 
-                                                    key={notification._id}
-                                                    className={`notification-item ${!notification.read ? 'unread' : ''}`}
-                                                    onClick={() => markAsRead(notification._id)}
-                                                >
-                                                    <h4>{notification.title}</h4>
-                                                    <p>{notification.message}</p>
-                                                    <small>{new Date(notification.createdAt).toLocaleDateString()}</small>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-                                )}
-                            </div>
                         </header>
 
                         <section className="status-cards">
@@ -223,63 +203,67 @@ const TeacherDashboard = () => {
                             </div>
                         </section>
 
-                        <section className="submissions-section">
-                            <h2>Recent Submissions to Review</h2>
-                            {loading ? (
-                                <p>Loading submissions...</p>
-                            ) : (
-                                <table className="submissions-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Members</th>
-                                            <th>Student Email</th>
-                                            <th>Submission Date</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {submissions.length === 0 ? (
+                        <section className="dashboard-sections">
+                            <section className="submissions-section">
+                                <h2>Recent Submissions to Review</h2>
+                                {loading ? (
+                                    <p>Loading submissions...</p>
+                                ) : (
+                                    <table className="submissions-table">
+                                        <thead>
                                             <tr>
-                                                <td colSpan="6" style={{textAlign: 'center'}}>
-                                                    No submissions to review
-                                                </td>
+                                                <th>Title</th>
+                                                <th>Members</th>
+                                                <th>Student Email</th>
+                                                <th>Submission Date</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        ) : (
-                                            submissions.map((submission) => (
-                                                <tr key={submission._id}>
-                                                    <td>{submission.title}</td>
-                                                    <td>{submission.members.join(', ')}</td>
-                                                    <td>{submission.email || 'N/A'}</td>
-                                                    <td>{formatDate(submission.createdAt)}</td>
-                                                    <td>
-                                                        <span className={`status-${submission.status.toLowerCase()}`}>
-                                                            {submission.status}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <a 
-                                                            href={submission.docsLink}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="btn-view"
-                                                        >
-                                                            View
-                                                        </a>
-                                                        <button 
-                                                            className="btn-feedback"
-                                                            onClick={() => setFeedbackForm({ ...feedbackForm, thesisId: submission._id })}
-                                                        >
-                                                            Add Feedback
-                                                        </button>
+                                        </thead>
+                                        <tbody>
+                                            {submissions.filter(sub => sub.status === 'pending').length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="6" style={{textAlign: 'center'}}>
+                                                        No pending submissions to review
                                                     </td>
                                                 </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            )}
+                                            ) : (
+                                                submissions
+                                                    .filter(sub => sub.status === 'pending')
+                                                    .map((submission) => (
+                                                        <tr key={submission._id}>
+                                                            <td>{submission.title}</td>
+                                                            <td>{submission.members.join(', ')}</td>
+                                                            <td>{submission.email || 'N/A'}</td>
+                                                            <td>{formatDate(submission.createdAt)}</td>
+                                                            <td>
+                                                                <span className={`status-${submission.status.toLowerCase()}`}>
+                                                                    {submission.status}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <a 
+                                                                    href={submission.docsLink}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="btn-view"
+                                                                >
+                                                                    View
+                                                                </a>
+                                                                <button 
+                                                                    className="btn-feedback"
+                                                                    onClick={() => setFeedbackForm({ ...feedbackForm, thesisId: submission._id })}
+                                                                >
+                                                                    Add Feedback
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </section>
                         </section>
 
                         {feedbackForm.thesisId && (
@@ -338,8 +322,18 @@ const TeacherDashboard = () => {
                     >
                         Dashboard
                     </li>
-                    <li>Review Submissions</li>
-                    <li>Student List</li>
+                    <li 
+                        className={currentView === 'review-submissions' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('review-submissions')}
+                    >
+                        Review Submissions
+                    </li>
+                    <li 
+                        className={currentView === 'student-list' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('student-list')}
+                    >
+                        Student List
+                    </li>
                     <li 
                         className={currentView === 'eventmaker' ? 'active' : ''} 
                         onClick={() => handleMenuClick('eventmaker')}
@@ -355,7 +349,8 @@ const TeacherDashboard = () => {
                     <li>Messages</li>
                     <li 
                         onClick={() => setShowNotifications(!showNotifications)}
-                        style={{ position: 'relative' }}
+                        className={showNotifications ? 'active' : ''}
+                        style={{ position: 'relative', cursor: 'pointer' }}
                     >
                         Notifications
                         {unreadCount > 0 && (
@@ -374,34 +369,18 @@ const TeacherDashboard = () => {
 
             {/* Main Content */}
             <main className="main-content">
-                <div className="notifications-container">
-                    {showNotifications && (
-                        <div className="notifications-dropdown">
-                            <div className="notifications-header">
-                                <h3>Notifications</h3>
-                                <button onClick={() => setShowNotifications(false)}>×</button>
-                            </div>
-                            {notifications.length === 0 ? (
-                                <p className="no-notifications">No notifications</p>
-                            ) : (
-                                <div className="notifications-list">
-                                    {notifications.map(notification => (
-                                        <div 
-                                            key={notification._id}
-                                            className={`notification-item ${!notification.read ? 'unread' : ''}`}
-                                            onClick={() => markAsRead(notification._id)}
-                                        >
-                                            <h4>{notification.title}</h4>
-                                            <p>{notification.message}</p>
-                                            <small>{new Date(notification.createdAt).toLocaleDateString()}</small>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-                {renderContent()}
+                {showNotifications ? (
+                    
+                    <TeacherNotification 
+                        notifications={notifications}
+                        unreadCount={unreadCount}
+                        showNotifications={showNotifications}
+                        setShowNotifications={setShowNotifications}
+                        markAsRead={markAsRead}
+                    />
+                ) : (
+                    renderContent()
+                )}
             </main>
         </div>
     );

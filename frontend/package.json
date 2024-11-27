@@ -11,11 +11,19 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
     "@react-oauth/google": "^0.12.1",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "^2.46.1",
     "axios": "^1.7.3",
     "bootstrap": "^5.3.3",
+<<<<<<< HEAD
+=======
+    "gapi-script": "^1.2.0",
+>>>>>>> QA
     "googleapis": "^144.0.0",
     "react": "^18.3.1",
     "react-calendar": "^5.1.0",

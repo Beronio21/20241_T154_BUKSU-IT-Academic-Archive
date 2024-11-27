@@ -204,6 +204,7 @@ const SubmitThesis = () => {
 
                 <div className="form-group">
                     <label>Document Link:</label>
+<<<<<<< HEAD
                     <input
                         type="url"
                         name="docsLink"
@@ -219,6 +220,20 @@ const SubmitThesis = () => {
                     >
                         Select from Google Drive
                     </button>
+=======
+                    <div className="document-link-container">
+                        <span className="docs-link-display">
+                            {formData.docsLink || 'No document selected'}
+                        </span>
+                        <button 
+                            type="button" 
+                            onClick={handleOpenPicker}
+                            className="btn btn-primary mt-2"
+                        >
+                            Select from Google Drive
+                        </button>
+                    </div>
+>>>>>>> QA
                 </div>
 
                 <button 
