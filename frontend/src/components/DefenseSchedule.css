@@ -1,0 +1,55 @@
+/* frontend/src/components/DefenseSchedule.css */
+
+.defense-schedule {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .defense-schedule h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .defense-schedule ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .defense-schedule li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .defense-schedule input {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .defense-schedule button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .defense-schedule button:hover {
+    background-color: #0056b3;
+  }
+  
+  .defense-schedule .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
