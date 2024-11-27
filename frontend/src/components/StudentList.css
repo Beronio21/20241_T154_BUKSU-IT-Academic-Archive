@@ -1,0 +1,114 @@
+.student-list-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.search-bar input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 250px;
+}
+
+.student-list-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.student-list-table th,
+.student-list-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.student-list-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.btn-view {
+    padding: 6px 12px;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.student-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+}
+
+.details-grid {
+    display: grid;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.detail-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: #666;
+}
+
+.btn-close {
+    width: 100%;
+    padding: 8px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.status-pending,
+.status-approved,
+.status-rejected,
+.status-revision {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+.status-pending { background-color: #fff3e0; color: #e65100; }
+.status-approved { background-color: #e8f5e9; color: #2e7d32; }
+.status-rejected { background-color: #ffebee; color: #c62828; }
+.status-revision { background-color: #e3f2fd; color: #1565c0; } 
