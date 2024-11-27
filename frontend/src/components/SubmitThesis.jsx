@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import useDrivePicker from 'react-google-drive-picker';
 import './SubmitThesis.css';
 
 const SubmitThesis = () => {
@@ -11,7 +10,6 @@ const SubmitThesis = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [openPicker] = useDrivePicker();
 
     useEffect(() => {
         const userInfoString = localStorage.getItem('user-info');
@@ -53,27 +51,6 @@ const SubmitThesis = () => {
             ...prev,
             members: prev.members.filter((_, i) => i !== index)
         }));
-    };
-
-    const handleOpenPicker = () => {
-        openPicker({
-            clientId: "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com",
-            developerKey: "AIzaSyBefZhoxSibx9ORWrmhrH3I8L_Cz1OB33E",
-            viewId: "DOCS",
-            showUploadView: true,
-            showUploadFolders: true,
-            supportDrives: true,
-            multiselect: false,
-            callbackFunction: (data) => {
-                if (data.action === 'picked') {
-                    const docUrl = data.docs[0].url;
-                    setFormData(prev => ({
-                        ...prev,
-                        docsLink: docUrl
-                    }));
-                }
-            },
-        });
     };
 
     const handleSubmit = async (e) => {
@@ -204,18 +181,14 @@ const SubmitThesis = () => {
 
                 <div className="form-group">
                     <label>Document Link:</label>
-                    <div className="document-link-container">
-                        <span className="docs-link-display">
-                            {formData.docsLink || 'No document selected'}
-                        </span>
-                        <button 
-                            type="button" 
-                            onClick={handleOpenPicker}
-                            className="btn btn-primary mt-2"
-                        >
-                            Select from Google Drive
-                        </button>
-                    </div>
+                    <input
+                        type="url"
+                        name="docsLink"
+                        value={formData.docsLink}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Enter Google Docs link"
+                    />
                 </div>
 
                 <button 

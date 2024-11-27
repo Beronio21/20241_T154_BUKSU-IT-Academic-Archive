@@ -26,14 +26,18 @@
 }
 
 .sidebar li {
-    padding: 12px 15px;
     cursor: pointer;
+    padding: 12px 24px;
     transition: background-color 0.3s;
-    border-radius: 5px;
 }
 
 .sidebar li:hover {
-    background-color: #283593;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar li.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #4caf50;
 }
 
 .main-content {
@@ -148,4 +152,60 @@
         overflow-x: auto;
         display: block;
     }
+}
+
+.recent-accounts {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recent-accounts h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.recent-accounts table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recent-accounts th,
+.recent-accounts td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.recent-accounts th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.role-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.role-badge.student {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.role-badge.teacher {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.recent-accounts tr:hover {
+    background-color: #f8f9fa;
 } 
