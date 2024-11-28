@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+/* Apply Poppins font globally */
+* {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure body takes full height */
+body {
+  background-color: #f8f9fa !important;
+  height: 100%;
+}
+
+/* Login container */
+.login-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Custom input style */
+.custom-input {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Button style */
+button {
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 500;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* Style for 'Sign Up' button */
+.btn-link {
+  background-color: transparent;
+  border: none;
+  color: #006bb2;  /* Use the same blue as your primary color */
+  font-weight: 500;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-link:hover {
+  background-color: #e9f5fe; /* Light blue hover effect */
+  cursor: pointer;
+}
+
+.btn-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+/* Modal Styles */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Button spacing in modal */
+.modal-container .btn {
+  margin-bottom: 10px;
+}
+
+/* ReCAPTCHA custom style */
+.recaptcha-container {
+  margin-bottom: 20px;
+}
+
+/* Error message styling */
+.alert-danger {
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Apply Poppins font globally */
+* {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure body takes full height */
+body {
+  background-color: #f8f9fa;
+  height: 100%;
+}
+
+/* Login container */
+.login-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Custom input style */
+.custom-input {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Button style */
+button {
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 500;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* Style for 'Register' link */
+.register-link {
+  color: #006bb2;  /* Primary blue color */
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease; /* Smooth transition for color */
+}
+
+/* Change color of Register link on hover */
+.register-link:hover {
+  color: #0056b3; /* Darker blue on hover */
+  text-decoration: underline; /* Optionally add underline on hover */
+}
+
+/* Modal Styles */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Button spacing in modal */
+.modal-container .btn {
+  margin-bottom: 10px;
+}
+
+/* ReCAPTCHA custom style */
+.recaptcha-container {
+  margin-bottom: 20px;
+}
+
+/* Error message styling */
+.alert-danger {
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 10px;
+}

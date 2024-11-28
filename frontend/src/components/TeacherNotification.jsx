@@ -1,5 +1,5 @@
 import React from 'react';
-import './TeacherNotification.css';
+import '../Styles/TeacherNotification.css';
 
 const TeacherNotification = ({ notifications, markAsRead }) => {
     return (

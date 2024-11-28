@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './StudentDashboard.css';
+import '../Styles/StudentDashboard.css';
 import StudentProfile from './StudentProfile';
 import SubmitThesis from './SubmitThesis';
 import Docs from './Docs';

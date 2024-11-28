@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useDrivePicker from 'react-google-drive-picker';
-import './SubmitThesis.css';
+import '../Styles/SubmitThesis.css';
 
 const SubmitThesis = () => {
     const [formData, setFormData] = useState({

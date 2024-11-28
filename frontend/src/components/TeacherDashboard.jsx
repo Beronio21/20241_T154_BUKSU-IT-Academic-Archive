@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TeacherProfile from './TeacherProfile';
-import './TeacherDashboard.css';
+import '../Styles/TeacherDashboard.css';
 import Calendar from './Calendar';
 import DefenseSchedule from './DefenseSchedule';
 import ReviewSubmission from './ReviewSubmission';

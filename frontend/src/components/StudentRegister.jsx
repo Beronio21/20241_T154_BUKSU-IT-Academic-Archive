@@ -1,133 +1,193 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../Styles/StudentRegister.css";
 
 const StudentRegister = () => {
-    const [formData, setFormData] = useState({
-        student_id: '',
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        contactNumber: '',
-        course: '',
-        year: '',   
-        role: 'student'
-    });
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    student_id: "",
+    name: "",
+    email: "",
+    contactNumber: "",
+    course: "",
+    year: "",
+    password: "",
+    confirmPassword: "",
+    role: "student", // Default role
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            setLoading(false);
-            return;
-        }
+    // Password validation
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
-        try {
-            const response = await fetch('http://localhost:8080/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+    try {
+      const response = await fetch("http://localhost:8080/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-            const data = await response.json();
+      const data = await response.json();
 
-            if (response.ok) {
-                alert('Registration successful!');
-                navigate('/login');
-            } else {
-                setError(data.message || 'Registration failed. Please try again.');
-            }
-        } catch (error) {
-            setError('An error occurred. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+      if (response.ok) {
+        alert("Registration successful!");
+        navigate("/login");
+      } else {
+        setError(data.message || "Registration failed. Please try again.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <div className="register-container">
-            <h2>Student Registration</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="student_id"
-                    placeholder="Student ID"
-                    value={formData.student_id}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm Password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="contactNumber"
-                    placeholder="Contact Number"
-                    value={formData.contactNumber}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="course"
-                    placeholder="Course"
-                    value={formData.course}
-                    onChange={handleChange}
-                />
-                <input
-                    type="number"
-                    name="year"
-                    placeholder="Year"
-                    value={formData.year}
-                    onChange={handleChange}
-                />
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Registering...' : 'Register'}
-                </button>
-            </form>
+  const handleGoogleRegister = () => {
+    // Implement your Google registration logic here
+    alert("Google registration coming soon!");
+  };
+
+  return (
+    <div className="container-fluid d-flex align-items-center justify-content-center vh-100">
+      <div className="row w-100">
+        {/* Left Container: Image */}
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
+          <div className="left-container d-flex justify-content-center align-items-center h-100">
+          <img
+            src="src/images/buksulogo.png" // Assuming 'buksulogo.png' is in the public/images folder
+            alt="Illustration"
+            className="img-fluid rounded"
+            style={{ maxHeight: "80%", width: "auto" }}
+            />
+          </div>
         </div>
-    );
+
+        {/* Right Container: Form */}
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
+          <div className="card p-5 shadow-lg rounded" style={{ width: "90%" }}>
+            <h2 className="text-center mb-4">Student Registration</h2>
+            {error && <div className="alert alert-danger">{error}</div>}
+            <form onSubmit={handleSubmit} className="row g-3">
+              {/* Input Fields */}
+              {[
+                {
+                  id: "student_id",
+                  type: "text",
+                  label: "Student ID",
+                  placeholder: "Enter your student ID",
+                  required: true,
+                },
+                {
+                  id: "name",
+                  type: "text",
+                  label: "Name",
+                  placeholder: "Enter your full name",
+                  required: true,
+                },
+                {
+                  id: "email",
+                  type: "email",
+                  label: "Email",
+                  placeholder: "Enter your email",
+                  required: true,
+                },
+                {
+                  id: "contactNumber",
+                  type: "text",
+                  label: "Contact Number",
+                  placeholder: "Enter your contact number",
+                  required: false,
+                },
+                {
+                  id: "course",
+                  type: "text",
+                  label: "Course",
+                  placeholder: "Enter your course",
+                  required: false,
+                },
+                {
+                  id: "year",
+                  type: "number",
+                  label: "Year",
+                  placeholder: "Enter your year level",
+                  required: false,
+                },
+                {
+                  id: "password",
+                  type: "password",
+                  label: "Password",
+                  placeholder: "Create a password",
+                  required: true,
+                },
+                {
+                  id: "confirmPassword",
+                  type: "password",
+                  label: "Confirm Password",
+                  placeholder: "Confirm your password",
+                  required: true,
+                },
+              ].map((input, index) => (
+                <div className="col-12 col-md-6" key={index}>
+                  <label className="form-label" htmlFor={input.id}>
+                    {input.label}
+                  </label>
+                  <input
+                    type={input.type}
+                    id={input.id}
+                    name={input.id}
+                    className="form-control"
+                    placeholder={input.placeholder}
+                    value={formData[input.id]}
+                    onChange={handleChange}
+                    required={input.required}
+                  />
+                </div>
+              ))}
+
+              {/* Submit Button */}
+              <div className="col-12">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100"
+                  disabled={loading}
+                >
+                  {loading ? "Registering..." : "Register"}
+                </button>
+              </div>
+
+              {/* Google Register Button */}
+              <div className="col-12 text-center mt-3">
+                <button
+                  type="button"
+                  className="btn btn-outline-danger w-100"
+                  onClick={handleGoogleRegister}
+                >
+                  Or Register With Google
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default StudentRegister;

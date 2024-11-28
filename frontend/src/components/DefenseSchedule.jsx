@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './DefenseSchedule.css';
+import '../Styles/DefenseSchedule.css';
 
 const DefenseSchedule = () => {
   const [schedules, setSchedules] = useState([]);

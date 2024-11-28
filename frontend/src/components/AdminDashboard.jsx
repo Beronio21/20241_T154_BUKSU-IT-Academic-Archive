@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './AdminDashboard.css';
+import '../Styles/AdminDashboard.css';
 import UserManagement from './UserManagement';
 import StudentRecords from './StudentRecords';
 import TeacherRecords from './TeacherRecords';

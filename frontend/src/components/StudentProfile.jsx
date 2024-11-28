@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './StudentProfile.css';
+import '../Styles/StudentProfile.css';
 
 const StudentProfile = () => {
     // Initialize all form fields with empty strings

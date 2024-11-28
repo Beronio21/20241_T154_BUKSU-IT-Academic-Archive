@@ -1,0 +1,79 @@
+/* General setup */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 1rem;
+  }
+  
+  .register-card {
+    width: 80%;
+    max-width: 700px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  /* Image section */
+  .register-image-container {
+    width: 100%;
+    background-color: #006bb2;
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .register-image {
+    width: 80%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  /* Form section */
+  .register-form-container {
+    padding: 2rem;
+  }
+  
+  .register-form-container h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Form styles */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+  
+  .form-control:focus {
+    border-color: #006bb2;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #006bb2;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn:disabled {
+    background-color: #ccc;
+  }
+  

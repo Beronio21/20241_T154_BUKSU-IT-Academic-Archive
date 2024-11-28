@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './TeacherProfile.css';
+import '../Styles/TeacherProfile.css';
 
 const departments = [
     'Computer Science',
