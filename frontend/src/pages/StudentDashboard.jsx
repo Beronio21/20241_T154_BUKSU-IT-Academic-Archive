@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/StudentDashboard.css';
-import StudentProfile from './StudentProfile';
-import SubmitThesis from './SubmitThesis';
-import Docs from './Docs';
-import Calendar from './Calendar';
-import SendGmail from './SendGmail';
-import GmailReader from './GmailReader';
+import StudentProfile from '../Profile/StudentProfile';
+import SubmitThesis from '../components/SubmitThesis';
+import Docs from '../components/Docs';
+import Calendar from '../components/Calendar';
+import SendGmail from '../Communication/SendGmail';
+import GmailReader from '../Communication/GmailReader';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');

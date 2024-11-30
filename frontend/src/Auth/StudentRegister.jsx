@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import "../Styles/StudentRegister.css";
 
 const StudentRegister = () => {
@@ -27,6 +28,13 @@ const StudentRegister = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    // Validate year selection
+    if (!formData.year) {
+      setError("Please select a year.");
+      setLoading(false);
+      return;
+    }
 
     // Password validation
     if (formData.password !== formData.confirmPassword) {
@@ -59,10 +67,41 @@ const StudentRegister = () => {
     }
   };
 
-  const handleGoogleRegister = () => {
-    // Implement your Google registration logic here
-    alert("Google registration coming soon!");
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
+        const result = await googleAuth(tokenResponse.access_token);
+        if (result.status === "success") {
+          const { user, token } = result.data;
+          localStorage.setItem(
+            "user-info",
+            JSON.stringify({
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              role: user.role,
+              token,
+            })
+          );
+          navigate(`/${user.role}-dashboard`);
+        }
+      } catch (error) {
+        console.error("Google registration error:", error);
+        setError("Google registration failed");
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.error("Google registration error:", error);
+      setError("Google registration failed");
+      setLoading(false);
+    },
+    scope: "email profile",
+  });
 
   return (
     <div className="container-fluid d-flex align-items-center justify-content-center vh-100">
@@ -70,11 +109,11 @@ const StudentRegister = () => {
         {/* Left Container: Image */}
         <div className="col-md-6 d-flex justify-content-center align-items-center">
           <div className="left-container d-flex justify-content-center align-items-center h-100">
-          <img
-            src="src/images/buksulogo.png" // Assuming 'buksulogo.png' is in the public/images folder
-            alt="Illustration"
-            className="img-fluid rounded"
-            style={{ maxHeight: "80%", width: "auto" }}
+            <img
+              src="src/images/buksulogo.png" // Assuming 'buksulogo.png' is in the public/images folder
+              alt="Illustration"
+              className="img-fluid rounded"
+              style={{ maxHeight: "80%", width: "auto" }}
             />
           </div>
         </div>
@@ -122,27 +161,6 @@ const StudentRegister = () => {
                   placeholder: "Enter your course",
                   required: false,
                 },
-                {
-                  id: "year",
-                  type: "number",
-                  label: "Year",
-                  placeholder: "Enter your year level",
-                  required: false,
-                },
-                {
-                  id: "password",
-                  type: "password",
-                  label: "Password",
-                  placeholder: "Create a password",
-                  required: true,
-                },
-                {
-                  id: "confirmPassword",
-                  type: "password",
-                  label: "Confirm Password",
-                  placeholder: "Confirm your password",
-                  required: true,
-                },
               ].map((input, index) => (
                 <div className="col-12 col-md-6" key={index}>
                   <label className="form-label" htmlFor={input.id}>
@@ -161,6 +179,61 @@ const StudentRegister = () => {
                 </div>
               ))}
 
+              {/* Year Dropdown */}
+              <div className="col-12 col-md-6">
+                <label className="form-label" htmlFor="year">
+                  Year
+                </label>
+                <select
+                  id="year"
+                  name="year"
+                  className="form-control"
+                  value={formData.year}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    Select Year
+                  </option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+
+              {/* Password and Confirm Password */}
+              <div className="col-12 col-md-6">
+                <label className="form-label" htmlFor="password">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className="form-control"
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                <label className="form-label" htmlFor="confirmPassword">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="form-control"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
               {/* Submit Button */}
               <div className="col-12">
                 <button
@@ -172,14 +245,25 @@ const StudentRegister = () => {
                 </button>
               </div>
 
-              {/* Google Register Button */}
+              {/* Divider Text */}
               <div className="col-12 text-center mt-3">
+                <p className="mb-0">or Register With</p>
+              </div>
+
+              {/* Google Register Button */}
+              <div className="col-12 text-center mt-2">
                 <button
                   type="button"
-                  className="btn btn-outline-danger w-100"
-                  onClick={handleGoogleRegister}
+                  className="google-login-btn"
+                  onClick={googleLogin}
+                  disabled={loading}
                 >
-                  Or Register With Google
+                  <img
+                    src="../src/Images/Googlelogo.png"
+                    alt="Google logo"
+                    style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                  />
+                  {loading ? "Signing in..." : "Register with Google"}
                 </button>
               </div>
             </form>

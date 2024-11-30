@@ -2,16 +2,16 @@ import './App.css'
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLogin from './GoogleLogin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import StudentDashboard from './components/StudentDashboard';
-import TeacherDashboard from './components/TeacherDashboard';
-import AdminDashboard from './components/AdminDashboard';
+import StudentDashboard from './pages/StudentDashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './NotFound';
-import StudentRegister from './components/StudentRegister';
-import TeacherRegister from './components/TeacherRegister';
-import AdminRegister from './components/AdminRegister';
-import reportWebVitals from './components/reportWebVitals';
+import StudentRegister from './Auth/StudentRegister';
+import TeacherRegister from './Auth/TeacherRegister';
+import AdminRegister from './Auth/AdminRegister';
 import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import AccountType from './components/accounttype';
 
 const supabase = createClient(
   "https://knhjeoyqyyjcbozxqcew.supabase.co",
@@ -25,7 +25,7 @@ function App() {
 				<BrowserRouter>
 					<Routes>
 						<Route path="/" element={<GoogleLogin />} />
-						<Route path="/login" element={<GoogleLogin />} />
+						<Route path="/accountType" element={<AccountType />} />
 						<Route path="/student-dashboard" element={<StudentDashboard />} />
 						<Route path="/teacher-dashboard" element={<TeacherDashboard />} />
 						<Route path="/admin-dashboard" element={<AdminDashboard />} />

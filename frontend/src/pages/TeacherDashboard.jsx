@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TeacherProfile from './TeacherProfile';
+import TeacherProfile from '../Profile/TeacherProfile';
 import '../Styles/TeacherDashboard.css';
-import Calendar from './Calendar';
-import DefenseSchedule from './DefenseSchedule';
-import ReviewSubmission from './ReviewSubmission';
-import StudentList from './StudentList';
-import TeacherNotification from './TeacherNotification';
+import Calendar from '../components/Calendar';
+import DefenseSchedule from '../components/DefenseSchedule';
+import ReviewSubmission from '../components/ReviewSubmission';
+import StudentList from '../components/StudentList';
+import TeacherNotification from '../components/TeacherNotification';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);

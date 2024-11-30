@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import "../Styles/TeacherRegister.css"; // Make sure to create a separate CSS file for teacher registration.
 
 const TeacherRegister = () => {
@@ -11,6 +12,7 @@ const TeacherRegister = () => {
     contactNumber: "",
     department: "",
     teacher_id: "",
+    gender: "", // Default to empty to force selection
     role: "teacher", // Default role
   });
   const [error, setError] = useState("");
@@ -26,6 +28,13 @@ const TeacherRegister = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    // Validate gender selection
+    if (!formData.gender) {
+      setError("Please select a gender.");
+      setLoading(false);
+      return;
+    }
 
     // Password validation
     if (formData.password !== formData.confirmPassword) {
@@ -58,10 +67,41 @@ const TeacherRegister = () => {
     }
   };
 
-  const handleGoogleRegister = () => {
-    // Implement your Google registration logic here
-    alert("Google registration coming soon!");
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
+        const result = await googleAuth(tokenResponse.access_token);
+        if (result.status === "success") {
+          const { user, token } = result.data;
+          localStorage.setItem(
+            "user-info",
+            JSON.stringify({
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              role: user.role,
+              token,
+            })
+          );
+          navigate(`/${user.role}-dashboard`);
+        }
+      } catch (error) {
+        console.error("Google registration error:", error);
+        setError("Google registration failed");
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.error("Google registration error:", error);
+      setError("Google registration failed");
+      setLoading(false);
+    },
+    scope: "email profile",
+  });
 
   return (
     <div className="container-fluid d-flex align-items-center justify-content-center vh-100">
@@ -85,7 +125,7 @@ const TeacherRegister = () => {
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit} className="row g-3">
               {/* Input Fields with teacher_id first */}
-              {[ 
+              {[
                 {
                   id: "teacher_id",
                   type: "text",
@@ -108,20 +148,6 @@ const TeacherRegister = () => {
                   required: true,
                 },
                 {
-                  id: "password",
-                  type: "password",
-                  label: "Password",
-                  placeholder: "Create a password",
-                  required: true,
-                },
-                {
-                  id: "confirmPassword",
-                  type: "password",
-                  label: "Confirm Password",
-                  placeholder: "Confirm your password",
-                  required: true,
-                },
-                {
                   id: "contactNumber",
                   type: "text",
                   label: "Contact Number",
@@ -129,29 +155,88 @@ const TeacherRegister = () => {
                   required: false,
                 },
                 {
+                  id: "gender",
+                  type: "select",
+                  label: "Gender",
+                  options: ["", "Male", "Female", "I prefer not to say"],
+                  required: true,
+                },
+                {
                   id: "department",
                   type: "text",
                   label: "Department",
                   placeholder: "Enter your department",
                   required: false,
-                }
+                },
               ].map((input, index) => (
                 <div className="col-12 col-md-6" key={index}>
                   <label className="form-label" htmlFor={input.id}>
                     {input.label}
                   </label>
-                  <input
-                    type={input.type}
-                    id={input.id}
-                    name={input.id}
-                    className="form-control"
-                    placeholder={input.placeholder}
-                    value={formData[input.id]}
-                    onChange={handleChange}
-                    required={input.required}
-                  />
+                  {input.type === "select" ? (
+                    <select
+                      id={input.id}
+                      name={input.id}
+                      className="form-control"
+                      value={formData[input.id]}
+                      onChange={handleChange}
+                      required={input.required}
+                    >
+                      <option value="" disabled>
+                        Select Gender
+                      </option>
+                      {input.options.slice(1).map((option, idx) => (
+                        <option key={idx} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={input.type}
+                      id={input.id}
+                      name={input.id}
+                      className="form-control"
+                      placeholder={input.placeholder}
+                      value={formData[input.id]}
+                      onChange={handleChange}
+                      required={input.required}
+                    />
+                  )}
                 </div>
               ))}
+
+              {/* Password and Confirm Password */}
+              <div className="col-12 col-md-6">
+                <label className="form-label" htmlFor="password">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className="form-control"
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                <label className="form-label" htmlFor="confirmPassword">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="form-control"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
               {/* Submit Button */}
               <div className="col-12">
@@ -164,14 +249,25 @@ const TeacherRegister = () => {
                 </button>
               </div>
 
-              {/* Google Register Button */}
+              {/* Divider Text */}
               <div className="col-12 text-center mt-3">
+                <p className="mb-0">or Register with</p>
+              </div>
+
+              {/* Google Register Button */}
+              <div className="col-12 text-center mt-2">
                 <button
                   type="button"
-                  className="btn btn-outline-danger w-100"
-                  onClick={handleGoogleRegister}
+                  className="google-login-btn"
+                  onClick={googleLogin}
+                  disabled={loading}
                 >
-                  Or Register With Google
+                  <img
+                    src="../src/Images/Googlelogo.png"
+                    alt="Google logo"
+                    style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                  />
+                  {loading ? "Signing in..." : "Register with Google"}
                 </button>
               </div>
             </form>

@@ -3,7 +3,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth, emailLogin } from "./api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../src/Styles/GoogleLogin.css";
 
@@ -152,19 +152,21 @@ const GoogleLogin = () => {
         </div>
         <button
           type="button"
-          className="btn btn-outline-danger w-100 mb-3"
+          className="google-login-btn"
           onClick={googleLogin}
           disabled={loading}
         >
+          <img
+            src="../src/Images/Googlelogo.png"
+            alt="Google logo"
+            style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+          />
           {loading ? "Signing in..." : "Sign in with Google"}
         </button>
         <div className="d-flex justify-content-center align-items-center mt-4">
           <p className="text-center mb-0">
             Don't have an account?{" "}
-            <span
-              className="register-link"
-              onClick={() => setShowModal(true)}
-            >
+            <span className="register-link" onClick={() => setShowModal(true)}>
               Register
             </span>
           </p>
@@ -175,24 +177,16 @@ const GoogleLogin = () => {
         <div className="modal-container">
           <div className="modal-content">
             <h4 className="modal-title">Choose Your Account Type</h4>
-            <button
-              className="btn btn-secondary w-100 mb-2"
-              onClick={() => navigate("/student-register")}
-            >
-              Student Register
-            </button>
-            <button
-              className="btn btn-secondary w-100 mb-2"
-              onClick={() => navigate("/teacher-register")}
-            >
-              Teacher Register
-            </button>
-            <button
-              className="btn btn-secondary w-100 mb-2"
-              onClick={() => navigate("/admin-register")}
-            >
-              Admin Register
-            </button>
+            <div className="user-type-options">
+              <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
+                <div className="user-type-icon"> {/* Add your teacher icon here */}</div>
+                <p>Teacher</p>
+              </div>
+              <div className="user-type-card" onClick={() => navigate("/student-register")}>
+                <div className="user-type-icon"> {/* Add your student icon here */}</div>
+                <p>Student</p>
+              </div>
+            </div>
             <button
               className="btn btn-danger w-100 mt-3"
               onClick={() => setShowModal(false)}
