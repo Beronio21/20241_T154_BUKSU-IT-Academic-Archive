@@ -3,7 +3,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth, emailLogin } from "./api";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../src/Styles/GoogleLogin.css";
 
@@ -179,11 +179,15 @@ const GoogleLogin = () => {
             <h4 className="modal-title">Choose Your Account Type</h4>
             <div className="user-type-options">
               <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
-                <div className="user-type-icon"> {/* Add your teacher icon here */}</div>
+                <div className="user-type-icon">
+                  <img src="./Images/Teacher.png" alt="Teacher" />
+                </div>
                 <p>Teacher</p>
               </div>
               <div className="user-type-card" onClick={() => navigate("/student-register")}>
-                <div className="user-type-icon"> {/* Add your student icon here */}</div>
+                <div className="user-type-icon">
+                  <img src="../Images/user.png" alt="Student" />
+                </div>
                 <p>Student</p>
               </div>
             </div>

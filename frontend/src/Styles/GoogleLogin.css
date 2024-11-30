@@ -84,26 +84,71 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background-color: #fff;
-  padding: 20px;
+  padding: 30px;
   border-radius: 12px;
   width: 90%;
-  max-width: 350px;
+  max-width: 400px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .modal-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 20px;
+  text-align: left;
 }
 
-/* Button spacing in modal */
-.modal-container .btn {
+.user-type-options {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.user-type-card {
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-type-card:hover {
+  background-color: #d0d0d0;
+  transform: translateY(-5px);
+}
+
+.user-type-icon img {
+  width: 50px;
+  height: 50px;
   margin-bottom: 10px;
+}
+
+.btn-close-modal {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-close-modal:hover {
+  background-color: #0056b3;
 }
 
 /* ReCAPTCHA custom style */
