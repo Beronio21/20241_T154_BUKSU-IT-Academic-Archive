@@ -11,7 +11,6 @@ import TeacherRegister from './Auth/TeacherRegister';
 import AdminRegister from './Auth/AdminRegister';
 import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
-import AccountType from './components/accounttype';
 
 const supabase = createClient(
   "https://knhjeoyqyyjcbozxqcew.supabase.co",
@@ -25,7 +24,6 @@ function App() {
 				<BrowserRouter>
 					<Routes>
 						<Route path="/" element={<GoogleLogin />} />
-						<Route path="/accountType" element={<AccountType />} />
 						<Route path="/student-dashboard" element={<StudentDashboard />} />
 						<Route path="/teacher-dashboard" element={<TeacherDashboard />} />
 						<Route path="/admin-dashboard" element={<AdminDashboard />} />
