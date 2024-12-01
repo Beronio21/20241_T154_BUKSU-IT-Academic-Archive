@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import '../Styles/StudentDashboard.css';
 import StudentProfile from '../Profile/StudentProfile';
 import SubmitThesis from '../components/SubmitThesis';
@@ -18,6 +18,7 @@ const StudentDashboard = () => {
     const [showNotifications, setShowNotifications] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -31,7 +32,11 @@ const StudentDashboard = () => {
             return;
         }
         setUserInfo(userData);
-    }, [navigate]);
+        
+        if (location.pathname === '/student-dashboard') {
+            navigate('/student-dashboard/dashboard');
+        }
+    }, [navigate, location]);
 
     useEffect(() => {
         fetchSubmissions();
@@ -365,6 +370,11 @@ const StudentDashboard = () => {
         }
     };
 
+    const handleSectionChange = (section) => {
+        setActiveSection(section);
+        navigate(`/student-dashboard/${section}`);
+    };
+
     return (
         <div className="dashboard-container">
             <aside className="sidebar">
@@ -372,44 +382,44 @@ const StudentDashboard = () => {
                 <ul>
                     <li 
                         className={activeSection === 'dashboard' ? 'active' : ''} 
-                        onClick={() => setActiveSection('dashboard')}
+                        onClick={() => handleSectionChange('dashboard')}
                     >
                         Dashboard
                     </li>
                     <li 
                         className={activeSection === 'profile' ? 'active' : ''} 
-                        onClick={() => setActiveSection('profile')}
+                        onClick={() => handleSectionChange('profile')}
                     >
                         My Profile
                     </li>
                     <li 
                         className={activeSection === 'submit-thesis' ? 'active' : ''} 
-                        onClick={() => setActiveSection('submit-thesis')}
+                        onClick={() => handleSectionChange('submit-thesis')}
                     >
                         Submit Thesis
                     </li>
                     <li 
                         className={activeSection === 'notifications' ? 'active' : ''} 
-                        onClick={() => setActiveSection('notifications')}
+                        onClick={() => handleSectionChange('notifications')}
                     >
                         Notifications
                         {unreadCount > 0 && <span className="menu-notification-badge">{unreadCount}</span>}
                     </li>
                     <li 
                         className={activeSection === 'docs' ? 'active' : ''} 
-                        onClick={() => setActiveSection('docs')}
+                        onClick={() => handleSectionChange('docs')}
                     >
                         Docs
                     </li>
                     <li 
                         className={activeSection === 'send-gmail' ? 'active' : ''} 
-                        onClick={() => setActiveSection('send-gmail')}
+                        onClick={() => handleSectionChange('send-gmail')}
                     >
                         Send Gmail
                     </li>
                     <li 
                         className={activeSection === 'gmail-reader' ? 'active' : ''} 
-                        onClick={() => setActiveSection('gmail-reader')}
+                        onClick={() => handleSectionChange('gmail-reader')}
                     >
                         Gmail Reader
                     </li>
@@ -448,7 +458,18 @@ const StudentDashboard = () => {
                         )}
                     </div>
                 )}
-                {renderContent()}
+
+                <Routes>
+                    <Route path="/dashboard" element={renderContent()} />
+                    <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
+                    <Route path="/submit-thesis" element={<SubmitThesis />} />
+                    <Route path="/notifications" element={renderNotificationsPage()} />
+                    <Route path="/docs" element={<Docs />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/send-gmail" element={<SendGmail />} />
+                    <Route path="/gmail-reader" element={<GmailReader />} />
+                    <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
+                </Routes>
             </main>
         </div>
     );

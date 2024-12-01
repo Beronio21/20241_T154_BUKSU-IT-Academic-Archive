@@ -2,10 +2,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { googleAuth, emailLogin } from "./api";
+import { googleAuth, emailLogin } from "../api";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
-import "../src/Styles/GoogleLogin.css";
+import "../Styles/GoogleLogin.css";
 
 const GoogleLogin = () => {
   const [email, setEmail] = useState("");
