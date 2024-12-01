@@ -89,7 +89,7 @@ button:hover {
 
 .modal-content {
   background-color: #fff;
-  padding: 30px;
+  padding: 40px;
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
@@ -224,8 +224,7 @@ button:hover {
 
 /* Change color of Register link on hover */
 .register-link:hover {
-  color: #0056b3; /* Darker blue on hover */
-  text-decoration: underline; /* Optionally add underline on hover */
+  color: #0056b3;
 }
 
 /* Modal Styles */
@@ -266,9 +265,4 @@ button:hover {
   margin-bottom: 20px;
 }
 
-/* Error message styling */
-.alert-danger {
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 10px;
-}
+

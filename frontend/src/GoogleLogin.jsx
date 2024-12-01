@@ -180,19 +180,19 @@ const GoogleLogin = () => {
             <div className="user-type-options">
               <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
                 <div className="user-type-icon">
-                  <img src="./Images/Teacher.png" alt="Teacher" />
+                  <img src="./src/Images/Teacher.png" alt="Teacher" />
                 </div>
                 <p>Teacher</p>
               </div>
               <div className="user-type-card" onClick={() => navigate("/student-register")}>
                 <div className="user-type-icon">
-                  <img src="../Images/user.png" alt="Student" />
+                  <img src="./src/Images/user.png" alt="Student" />
                 </div>
                 <p>Student</p>
               </div>
             </div>
             <button
-              className="btn btn-danger w-100 mt-3"
+              className="btn w-100 mt-3"
               onClick={() => setShowModal(false)}
             >
               Close
