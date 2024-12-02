@@ -70,8 +70,11 @@ const TeacherDashboard = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('user-info');
-        navigate('/login');
+        if (window.confirm('Are you sure you want to logout?')) {
+            localStorage.clear();
+            sessionStorage.clear();
+            navigate('/', { replace: true });
+        }
     };
 
     // Handle menu item clicks
@@ -309,6 +312,20 @@ const TeacherDashboard = () => {
                 );
         }
     };
+
+    useEffect(() => {
+        // Prevent back navigation
+        const handlePopState = () => {
+            window.history.pushState(null, null, window.location.pathname);
+        };
+
+        window.history.pushState(null, null, window.location.pathname);
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
 
     return (
         <div className="dashboard-container">

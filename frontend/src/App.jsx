@@ -20,15 +20,20 @@ import NotFound from './NotFound';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
-  const checkAuth = () => {
-    const userInfo = localStorage.getItem('user-info');
-    if (!userInfo) return false;
-    
+  const userInfo = localStorage.getItem('user-info');
+  if (!userInfo) {
+    return <Navigate to="/" replace />;
+  }
+  
+  try {
     const userData = JSON.parse(userInfo);
-    return userData?.role === allowedRole;
-  };
-
-  return checkAuth() ? Element : <Navigate to="/" replace />;
+    if (userData?.role !== allowedRole) {
+      return <Navigate to="/" replace />;
+    }
+    return Element;
+  } catch {
+    return <Navigate to="/" replace />;
+  }
 };
 
 // Supabase Configuration

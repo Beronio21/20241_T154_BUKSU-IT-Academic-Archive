@@ -23,6 +23,18 @@ const AdminDashboard = () => {
             setUserInfo(JSON.parse(storedUserInfo));
         }
         fetchStats();
+
+        // Prevent back navigation
+        const handlePopState = () => {
+            window.history.pushState(null, null, window.location.pathname);
+        };
+
+        window.history.pushState(null, null, window.location.pathname);
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
     }, []);
 
     const fetchStats = async () => {
@@ -55,8 +67,11 @@ const AdminDashboard = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('user-info');
-        navigate('/login');
+        if (window.confirm('Are you sure you want to logout?')) {
+            localStorage.clear();
+            sessionStorage.clear();
+            navigate('/', { replace: true });
+        }
     };
 
     const renderContent = () => {
