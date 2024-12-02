@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 
 // Auth Components
-import GoogleLogin from './components/Login';
+import GoogleLogin from './Auth/Login';
 import StudentRegister from './Auth/StudentRegister';
 import TeacherRegister from './Auth/TeacherRegister';
 import AdminRegister from './Auth/AdminRegister';
