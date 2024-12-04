@@ -5,6 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import '../Styles/Calendar.css';
 import axios from 'axios';
+import { gapi } from 'gapi-script';
 
 function Calendar() {
   const [events, setEvents] = useState([]);
@@ -24,6 +25,16 @@ function Calendar() {
       }
     };
 
+    const initClient = () => {
+      gapi.load('client:auth2', () => {
+        gapi.client.init({
+          clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/calendar.events'
+        });
+      });
+    };
+
+    initClient();
     fetchEvents();
   }, []);
 
@@ -83,6 +94,34 @@ function Calendar() {
         console.error('Error updating event:', error);
       }
     }
+  };
+
+  const saveToGoogleCalendar = (event) => {
+    const { title, start, end } = event;
+    const eventData = {
+      summary: title,
+      start: {
+        dateTime: start.toISOString(),
+        timeZone: 'America/Los_Angeles',
+      },
+      end: {
+        dateTime: end.toISOString(),
+        timeZone: 'America/Los_Angeles',
+      },
+    };
+
+    const request = gapi.client.calendar.events.insert({
+      calendarId: 'primary',
+      resource: eventData,
+    });
+
+    request.execute((event) => {
+      if (event.htmlLink) {
+        window.open(event.htmlLink);
+      } else {
+        console.error('Error saving event to Google Calendar:', event);
+      }
+    });
   };
 
   return (
@@ -149,6 +188,11 @@ function Calendar() {
                   setStartTime(new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
                   setEndTime(new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
                 }}>Edit</button>
+                <button className="calendar-button" onClick={() => saveToGoogleCalendar({
+                  title: event.title,
+                  start: new Date(event.start),
+                  end: new Date(event.end),
+                })}>Save to Google Calendar</button>
               </div>
             </li>
           ))}
