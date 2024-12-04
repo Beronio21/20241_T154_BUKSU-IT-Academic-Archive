@@ -12,6 +12,7 @@ const userRoutes = require('./routes/userRoutes');
 const recaptchaRoutes = require('./routes/recaptchaRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const { google } = require('googleapis');
+const calendarRoutes = require('./routes/calendarRoutes');
 
 const app = express();
 
@@ -50,8 +51,10 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/thesis', thesisRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api', userRoutes);
-app.use('/api', recaptchaRoutes);
+app.use('/api/recaptchaRoutes', recaptchaRoutes);
 app.use('/api/students', studentRoutes);
+app.use('/api/calendar', calendarRoutes);
+
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,

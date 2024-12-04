@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Fullcalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import '../Styles/Calendar.css';
+import axios from 'axios';
 
 function Calendar() {
   const [events, setEvents] = useState([]);
@@ -13,25 +14,74 @@ function Calendar() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/calendar');
+        setEvents(response.data.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   const handleSelect = (selectInfo) => {
     const calendarApi = selectInfo.view.calendar;
     calendarApi.unselect(); // Clear the selection
   };
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     if (eventTitle && startDate && endDate && startTime && endTime) {
-      setEvents([
-        ...events,
-        {
-          title: eventTitle,
-          start: new Date(`${startDate}T${startTime}`),
-          end: new Date(`${endDate}T${endTime}`),
-          allDay: false,
-        },
-      ]);
-      setEventTitle("");
-      setStartTime("");
-      setEndTime("");
+      const newEvent = {
+        title: eventTitle,
+        start: new Date(`${startDate}T${startTime}`),
+        end: new Date(`${endDate}T${endTime}`),
+        allDay: false,
+        userEmail: "user@example.com"
+      };
+
+      try {
+        const response = await axios.post('http://localhost:8080/api/calendar', newEvent);
+        setEvents([...events, response.data.data]);
+        setEventTitle("");
+        setStartTime("");
+        setEndTime("");
+      } catch (error) {
+        console.error('Error creating event:', error);
+      }
+    }
+  };
+
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/calendar/${eventId}`);
+      setEvents(events.filter(event => event._id !== eventId)); // Update the events state
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+  };
+
+  const handleEditEvent = async (eventId) => {
+    if (window.confirm("Are you sure you want to edit this event?")) {
+      const updatedEvent = {
+        title: eventTitle,
+        start: new Date(`${startDate}T${startTime}`),
+        end: new Date(`${endDate}T${endTime}`),
+        allDay: false,
+        userEmail: "user@example.com"
+      };
+
+      try {
+        const response = await axios.put(`http://localhost:8080/api/calendar/${eventId}`, updatedEvent);
+        setEvents(events.map(event => event._id === eventId ? response.data.data : event)); // Update the events state
+        setEventTitle("");
+        setStartTime("");
+        setEndTime("");
+      } catch (error) {
+        console.error('Error updating event:', error);
+      }
     }
   };
 
@@ -82,6 +132,27 @@ function Calendar() {
           placeholder="End Time"
         />
         <button onClick={handleCreateEvent}>Create Event</button>
+      </div>
+      
+      <div style={{ marginTop: "20px" }}>
+        <h3>Event List</h3>
+        <ul>
+          {events.map(event => (
+            <li key={event._id}>
+              {event.title} - {new Date(event.start).toLocaleString()} to {new Date(event.end).toLocaleString()}
+              <div className="calendar-button-container">
+                <button className="calendar-button" onClick={() => handleDeleteEvent(event._id)}>Delete</button>
+                <button className="calendar-button" onClick={() => {
+                  setEventTitle(event.title);
+                  setStartDate(new Date(event.start).toISOString().split('T')[0]);
+                  setEndDate(new Date(event.end).toISOString().split('T')[0]);
+                  setStartTime(new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                  setEndTime(new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                }}>Edit</button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

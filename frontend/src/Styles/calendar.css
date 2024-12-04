@@ -36,3 +36,13 @@
 .calendar-container button:hover {
     background-color: #0056b3;
 }
+
+.calendar-button-container {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-button {
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
