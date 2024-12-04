@@ -363,17 +363,6 @@ const TeacherDashboard = () => {
                     >
                         Defense Schedule
                     </li>
-                    <li>Messages</li>
-                    <li 
-                        onClick={() => setShowNotifications(!showNotifications)}
-                        className={showNotifications ? 'active' : ''}
-                        style={{ position: 'relative', cursor: 'pointer' }}
-                    >
-                        Notifications
-                        {unreadCount > 0 && (
-                            <span className="notification-badge">{unreadCount}</span>
-                        )}
-                    </li>
                     <li 
                         className={currentView === 'profile' ? 'active' : ''} 
                         onClick={() => handleMenuClick('profile')}

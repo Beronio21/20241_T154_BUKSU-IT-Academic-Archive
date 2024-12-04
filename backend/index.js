@@ -51,7 +51,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/thesis', thesisRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api', userRoutes);
-app.use('/api/recaptchaRoutes', recaptchaRoutes);
+app.use('/api', recaptchaRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/calendar', calendarRoutes);
 

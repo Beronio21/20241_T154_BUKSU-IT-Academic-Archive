@@ -433,7 +433,6 @@ const StudentDashboard = () => {
                     </li>
                     <li>My Submissions</li>
                     <li>Schedule</li>
-                    <li>Messages</li>
                     <li onClick={handleLogout}>Log Out</li>
                 </ul>
             </aside>
