@@ -6,6 +6,7 @@ import SubmitThesis from '../components/SubmitThesis';
 import Docs from '../components/Docs';
 import Calendar from '../components/Calendar';
 import SendGmail from '../Communication/SendGmail';
+import ScheduleTable from '../components/ScheduleTable';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -379,6 +380,8 @@ const StudentDashboard = () => {
                 return <Calendar />;
             case 'send-gmail':
                 return <SendGmail />;
+            case 'schedule':
+                return <ScheduleTable />;
             default:
                 return null;
         }
@@ -431,8 +434,12 @@ const StudentDashboard = () => {
                     >
                         Send Gmail
                     </li>
-                    <li>My Submissions</li>
-                    <li>Schedule</li>
+                    <li 
+                        className={activeSection === 'schedule' ? 'active' : ''} 
+                        onClick={() => handleSectionChange('schedule')}
+                    >
+                        Schedule
+                    </li>
                     <li onClick={handleLogout}>Log Out</li>
                 </ul>
             </aside>
@@ -474,6 +481,7 @@ const StudentDashboard = () => {
                     <Route path="/docs" element={<Docs />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/send-gmail" element={<SendGmail />} />
+                    <Route path="/schedule" element={<ScheduleTable />} />
                     <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
                 </Routes>
             </main>
