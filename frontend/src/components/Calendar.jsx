@@ -4,8 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import '../Styles/Calendar.css';
-import axios from 'axios';
-import { gapi } from 'gapi-script';
 
 function Calendar() {
   const [events, setEvents] = useState([]);
@@ -16,26 +14,13 @@ function Calendar() {
   const [endTime, setEndTime] = useState("");
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/calendar');
-        setEvents(response.data.data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-
-    const initClient = () => {
-      gapi.load('client:auth2', () => {
-        gapi.client.init({
-          clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-          scope: 'https://www.googleapis.com/auth/calendar.events'
-        });
-      });
-    };
-
-    initClient();
-    fetchEvents();
+    // Fetch events from the backend
+    fetch("http://localhost:8080/api/calendar")
+      .then((response) => response.json())
+      .then((data) => {
+        setEvents(data.data);
+      })
+      .catch((error) => console.error('Error fetching events:', error));
   }, []);
 
   const handleSelect = (selectInfo) => {
@@ -43,85 +28,50 @@ function Calendar() {
     calendarApi.unselect(); // Clear the selection
   };
 
-  const handleCreateEvent = async () => {
+  const handleCreateEvent = () => {
     if (eventTitle && startDate && endDate && startTime && endTime) {
       const newEvent = {
         title: eventTitle,
         start: new Date(`${startDate}T${startTime}`),
         end: new Date(`${endDate}T${endTime}`),
         allDay: false,
-        userEmail: "user@example.com"
+        userEmail: "user@example.com" // Replace with actual user email
       };
 
-      try {
-        const response = await axios.post('http://localhost:8080/api/calendar', newEvent);
-        setEvents([...events, response.data.data]);
-        setEventTitle("");
-        setStartTime("");
-        setEndTime("");
-      } catch (error) {
-        console.error('Error creating event:', error);
-      }
+      // Send POST request to create event
+      fetch("http://localhost:8080/api/calendar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newEvent),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setEvents([...events, data.data]); // Update local state with new event
+          // Clear input fields
+          setEventTitle("");
+          setStartTime("");
+          setEndTime("");
+        })
+        .catch((error) => console.error('Error creating event:', error));
     }
   };
 
-  const handleDeleteEvent = async (eventId) => {
-    try {
-      await axios.delete(`http://localhost:8080/api/calendar/${eventId}`);
-      setEvents(events.filter(event => event._id !== eventId)); // Update the events state
-    } catch (error) {
-      console.error('Error deleting event:', error);
+  const handleDeleteEvent = (eventId) => {
+    // Ask for confirmation before deleting the event
+    if (window.confirm("Are you sure you want to delete this event?")) {
+        // Send DELETE request to remove event
+        fetch(`http://localhost:8080/api/calendar/${eventId}`, {
+            method: "DELETE",
+        })
+            .then((response) => {
+                if (response.ok) {
+                    setEvents(events.filter(event => event._id !== eventId)); // Update local state
+                }
+            })
+            .catch((error) => console.error('Error deleting event:', error));
     }
-  };
-
-  const handleEditEvent = async (eventId) => {
-    if (window.confirm("Are you sure you want to edit this event?")) {
-      const updatedEvent = {
-        title: eventTitle,
-        start: new Date(`${startDate}T${startTime}`),
-        end: new Date(`${endDate}T${endTime}`),
-        allDay: false,
-        userEmail: "user@example.com"
-      };
-
-      try {
-        const response = await axios.put(`http://localhost:8080/api/calendar/${eventId}`, updatedEvent);
-        setEvents(events.map(event => event._id === eventId ? response.data.data : event)); // Update the events state
-        setEventTitle("");
-        setStartTime("");
-        setEndTime("");
-      } catch (error) {
-        console.error('Error updating event:', error);
-      }
-    }
-  };
-
-  const saveToGoogleCalendar = (event) => {
-    const { title, start, end } = event;
-    const eventData = {
-      summary: title,
-      start: {
-        dateTime: start.toISOString(),
-        timeZone: 'America/Los_Angeles',
-      },
-      end: {
-        dateTime: end.toISOString(),
-        timeZone: 'America/Los_Angeles',
-      },
-    };
-
-    const request = gapi.client.calendar.events.insert({
-      calendarId: 'primary',
-      resource: eventData,
-    });
-
-    request.execute((event) => {
-      if (event.htmlLink) {
-        window.open(event.htmlLink);
-      } else {
-        console.error('Error saving event to Google Calendar:', event);
-      }
-    });
   };
 
   return (
@@ -135,9 +85,16 @@ function Calendar() {
           end: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
         height={"90vh"}
-        events={events}
+        events={events.map(event => ({
+          id: event._id, // Add id for deletion
+          title: event.title,
+          start: event.start,
+          end: event.end,
+          allDay: event.allDay,
+        }))}
         selectable={true} // Enable date selection
         select={handleSelect} // Handle date selection
+        eventClick={(info) => handleDeleteEvent(info.event.id)} // Handle event click to delete
       />
       <div style={{ marginTop: "20px" }}>
         <input
@@ -171,32 +128,6 @@ function Calendar() {
           placeholder="End Time"
         />
         <button onClick={handleCreateEvent}>Create Event</button>
-      </div>
-      
-      <div style={{ marginTop: "20px" }}>
-        <h3>Event List</h3>
-        <ul>
-          {events.map(event => (
-            <li key={event._id}>
-              {event.title} - {new Date(event.start).toLocaleString()} to {new Date(event.end).toLocaleString()}
-              <div className="calendar-button-container">
-                <button className="calendar-button" onClick={() => handleDeleteEvent(event._id)}>Delete</button>
-                <button className="calendar-button" onClick={() => {
-                  setEventTitle(event.title);
-                  setStartDate(new Date(event.start).toISOString().split('T')[0]);
-                  setEndDate(new Date(event.end).toISOString().split('T')[0]);
-                  setStartTime(new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-                  setEndTime(new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-                }}>Edit</button>
-                <button className="calendar-button" onClick={() => saveToGoogleCalendar({
-                  title: event.title,
-                  start: new Date(event.start),
-                  end: new Date(event.end),
-                })}>Save to Google Calendar</button>
-              </div>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
