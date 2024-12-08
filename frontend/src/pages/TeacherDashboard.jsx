@@ -7,6 +7,7 @@ import DefenseSchedule from '../components/DefenseSchedule';
 import ReviewSubmission from '../components/ReviewSubmission';
 import StudentList from '../components/StudentList';
 import TeacherNotification from '../components/TeacherNotification';
+import CommentDocs from '../components/CommentDocs';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -177,6 +178,8 @@ const TeacherDashboard = () => {
                 return <ReviewSubmission />;
             case 'student-list':
                 return <StudentList />;
+            case 'comment-docs':
+                return <CommentDocs />;
             case 'dashboard':
             default:
                 return (
@@ -362,6 +365,12 @@ const TeacherDashboard = () => {
                         onClick={() => handleMenuClick('defenseschedule')}
                     >
                         Defense Schedule
+                    </li>
+                    <li 
+                        className={currentView === 'comment-docs' ? 'active' : ''} 
+                        onClick={() => handleMenuClick('comment-docs')}
+                    >
+                        Comment Docs
                     </li>
                     <li 
                         className={currentView === 'profile' ? 'active' : ''} 
