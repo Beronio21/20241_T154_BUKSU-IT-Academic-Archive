@@ -560,12 +560,14 @@ const StudentDashboard = () => {
                                                                 href={submission.docsLink} 
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="btn-view"
+                                                                className="btn btn-primary btn-sm me-1"
+                                                                style={{ padding: '0.1rem 0.3rem' }}
                                                             >
                                                                 View
                                                             </a>
                                                             <button
                                                                 className="btn btn-danger btn-sm"
+                                                                style={{ padding: '0.1rem 0.3rem' }}
                                                                 onClick={() => handleDelete(submission._id)}
                                                             >
                                                                 Delete
@@ -613,244 +615,184 @@ const StudentDashboard = () => {
         navigate(`/student-dashboard/${section}`);
     };
 
-    // Define the handleNotificationsClick function
-    const handleNotificationsClick = () => {
-        setActiveSection('notifications');
-        navigate('/student-dashboard/notifications');
-    };
-
-    // Define the handleMessagesClick function
-    const handleMessagesClick = () => {
-        setActiveSection('send-gmail');
-        navigate('/student-dashboard/send-gmail');
-    };
-
     return (
-        <div className="d-flex flex-column">
-            {/* Top Bar - Adjusted to fit next to the sidebar */}
-            <div className="d-flex justify-content-between align-items-center p-3 bg-light shadow-sm" style={{ marginLeft: '250px' }}>
-                <div className="search-bar position-relative ms-2">
-                    <input 
-                        type="text" 
-                        placeholder="Search..." 
-                        className="form-control" 
-                        style={{ width: '300px', paddingLeft: '40px' }}
-                    />
-                    <i className="bi bi-search position-absolute" 
-                       style={{ left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#6c757d' }}></i>
-                </div>
-                <div className="icons d-flex align-items-center gap-3">
-                    <button 
-                        className="btn btn-link position-relative" 
-                        onClick={handleNotificationsClick}
-                        style={{ transition: 'color 0.3s' }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#007bff'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
-                    >
-                        <i className="bi bi-bell" style={{ fontSize: '1.5rem' }}></i>
-                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
-                        </span>
-                    </button>
-                    <button 
-                        className="btn btn-link" 
-                        onClick={handleMessagesClick}
-                        style={{ transition: 'color 0.3s' }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#007bff'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
-                    >
-                        <i className="bi bi-envelope" style={{ fontSize: '1.5rem' }}></i>
-                    </button>
-                    <button 
-                        className="btn btn-link" 
-                        onClick={() => handleSectionChange('profile')}
-                        style={{ transition: 'color 0.3s' }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#007bff'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
-                    >
-                        <i className="bi bi-person" style={{ fontSize: '1.5rem' }}></i>
-                    </button>
-                </div>
-            </div>
+        <div className="d-flex">
+            <div className="bg-dark position-fixed start-0 top-0" 
+                 style={{
+                     width: '250px', 
+                     height: '100vh', 
+                     overflowY: 'auto',
+                     boxShadow: '2px 0 5px rgba(0,0,0,0.2)'
+                 }}>
+                <div className="d-flex flex-column h-100">
+                    {/* Header */}
+                    <div className="p-4 text-center">
+                        <h5 className="text-white fw-bold mb-0">Student Portal</h5>
+                    </div>
 
-            <div className="d-flex">
-                <div className="bg-dark position-fixed start-0 top-0" 
-                     style={{
-                         width: '250px', 
-                         height: '100vh', 
-                         overflowY: 'auto',
-                         boxShadow: '2px 0 5px rgba(0,0,0,0.2)'
-                     }}>
-                    <div className="d-flex flex-column h-100">
-                        {/* Header */}
-                        <div className="p-4 text-center">
-                            <h5 className="text-white fw-bold mb-0">Student Portal</h5>
-                        </div>
-
-                        {/* Navigation Items */}
-                        <div className="px-3">
-                            <ul className="nav flex-column gap-1">
-                                {[
-                                    { name: 'Dashboard', section: 'dashboard', icon: '📊' },
-                                    { name: 'My Profile', section: 'profile', icon: '👤' },
-                                    { name: 'Send Gmail', section: 'send-gmail', icon: '📧' },
-                                ].map((item) => (
-                                    <li className="nav-item" key={item.section}>
-                                        <button 
-                                            className={`nav-link w-100 text-start rounded ${
-                                                activeSection === item.section 
-                                                ? 'active bg-primary text-white' 
-                                                : 'text-white-50'
-                                            }`}
-                                            onClick={() => handleSectionChange(item.section)}
-                                            style={{
-                                                transition: 'all 0.2s ease',
-                                                padding: '12px 16px',
-                                                border: 'none',
-                                                backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
-                                                cursor: 'pointer',
-                                                fontSize: '14px',
-                                                fontWeight: '500',
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                if (activeSection !== item.section) {
-                                                    e.target.style.backgroundColor = '#2c3034';
-                                                    e.target.classList.remove('text-white-50');
-                                                    e.target.classList.add('text-white');
-                                                }
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                if (activeSection !== item.section) {
-                                                    e.target.style.backgroundColor = 'transparent';
-                                                    e.target.classList.add('text-white-50');
-                                                    e.target.classList.remove('text-white');
-                                                }
-                                            }}
-                                        >
-                                            <span className="me-2">{item.icon}</span>
-                                            {item.name}
-                                        </button>
-                                    </li>
-                                ))}
-
-                                {/* Thesis Management Dropdown */}
-                                <li className="nav-item">
-                                    <div className="dropdown w-100">
-                                        <button 
-                                            className="nav-link w-100 text-start rounded text-white-50 dropdown-toggle"
-                                            data-bs-toggle="dropdown"
-                                            style={{
-                                                transition: 'all 0.2s ease',
-                                                padding: '12px 16px',
-                                                border: 'none',
-                                                backgroundColor: 'transparent',
-                                                cursor: 'pointer',
-                                                fontSize: '14px',
-                                                fontWeight: '500',
-                                            }}
-                                            onMouseEnter={(e) => {
+                    {/* Navigation Items */}
+                    <div className="px-3">
+                        <ul className="nav flex-column gap-1">
+                            {[
+                                { name: 'Dashboard', section: 'dashboard', icon: '📊' },
+                                { name: 'My Profile', section: 'profile', icon: '👤' },
+                                { name: 'Send Gmail', section: 'send-gmail', icon: '📧' },
+                            ].map((item) => (
+                                <li className="nav-item" key={item.section}>
+                                    <button 
+                                        className={`nav-link w-100 text-start rounded ${
+                                            activeSection === item.section 
+                                            ? 'active bg-primary text-white' 
+                                            : 'text-white-50'
+                                        }`}
+                                        onClick={() => handleSectionChange(item.section)}
+                                        style={{
+                                            transition: 'all 0.2s ease',
+                                            padding: '12px 16px',
+                                            border: 'none',
+                                            backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (activeSection !== item.section) {
                                                 e.target.style.backgroundColor = '#2c3034';
                                                 e.target.classList.remove('text-white-50');
                                                 e.target.classList.add('text-white');
-                                            }}
-                                            onMouseLeave={(e) => {
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (activeSection !== item.section) {
                                                 e.target.style.backgroundColor = 'transparent';
                                                 e.target.classList.add('text-white-50');
                                                 e.target.classList.remove('text-white');
-                                            }}
-                                        >
-                                            <span className="me-2">📚</span>
-                                            Thesis Management
-                                        </button>
-                                        <ul className="dropdown-menu dropdown-menu-dark">
-                                            <li>
-                                                <button 
-                                                    className="dropdown-item text-white-50"
-                                                    onClick={() => handleSectionChange('submit-thesis')}
-                                                    style={{
-                                                        fontSize: '14px',
-                                                        padding: '8px 16px',
-                                                    }}
-                                                >
-                                                    Submit Thesis
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                            }
+                                        }}
+                                    >
+                                        <span className="me-2">{item.icon}</span>
+                                        {item.name}
+                                    </button>
                                 </li>
+                            ))}
 
-                                {/* Remaining navigation items */}
-                                {[
-                                    { name: 'Calendar', section: 'calendar', icon: '📅' },
-                                    { name: 'Schedule', section: 'schedule', icon: '📋' },
-                                ].map((item) => (
-                                    <li className="nav-item" key={item.section}>
-                                        <button 
-                                            className={`nav-link w-100 text-start rounded ${
-                                                activeSection === item.section 
-                                                ? 'active bg-primary text-white' 
-                                                : 'text-white-50'
-                                            }`}
-                                            onClick={() => handleSectionChange(item.section)}
-                                            style={{
-                                                transition: 'all 0.2s ease',
-                                                padding: '12px 16px',
-                                                border: 'none',
-                                                backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
-                                                cursor: 'pointer',
-                                                fontSize: '14px',
-                                                fontWeight: '500',
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                if (activeSection !== item.section) {
-                                                    e.target.style.backgroundColor = '#2c3034';
-                                                    e.target.classList.remove('text-white-50');
-                                                    e.target.classList.add('text-white');
-                                                }
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                if (activeSection !== item.section) {
-                                                    e.target.style.backgroundColor = 'transparent';
-                                                    e.target.classList.add('text-white-50');
-                                                    e.target.classList.remove('text-white');
-                                                }
-                                            }}
-                                        >
-                                            <span className="me-2">{item.icon}</span>
-                                            {item.name}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                            {/* Thesis Management Dropdown */}
+                            <li className="nav-item">
+                                <div className="dropdown w-100">
+                                    <button 
+                                        className="nav-link w-100 text-start rounded text-white-50 dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        style={{
+                                            transition: 'all 0.2s ease',
+                                            padding: '12px 16px',
+                                            border: 'none',
+                                            backgroundColor: 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.backgroundColor = '#2c3034';
+                                            e.target.classList.remove('text-white-50');
+                                            e.target.classList.add('text-white');
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.backgroundColor = 'transparent';
+                                            e.target.classList.add('text-white-50');
+                                            e.target.classList.remove('text-white');
+                                        }}
+                                    >
+                                        <span className="me-2">📚</span>
+                                        Thesis Management
+                                    </button>
+                                    <ul className="dropdown-menu dropdown-menu-dark">
+                                        <li>
+                                            <button 
+                                                className="dropdown-item text-white-50"
+                                                onClick={() => handleSectionChange('submit-thesis')}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    padding: '8px 16px',
+                                                }}
+                                            >
+                                                Submit Thesis
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                        {/* Logout Button */}
-                        <div className="mt-auto p-3">
-                            <button 
-                                className="btn btn-danger w-100"
-                                onClick={handleLogout}
-                            >
-                                <span className="me-2">🚪</span>
-                                Logout
-                            </button>
-                        </div>
+                            {/* Remaining navigation items */}
+                            {[
+                                { name: 'Calendar', section: 'calendar', icon: '📅' },
+                                { name: 'Schedule', section: 'schedule', icon: '📋' },
+                            ].map((item) => (
+                                <li className="nav-item" key={item.section}>
+                                    <button 
+                                        className={`nav-link w-100 text-start rounded ${
+                                            activeSection === item.section 
+                                            ? 'active bg-primary text-white' 
+                                            : 'text-white-50'
+                                        }`}
+                                        onClick={() => handleSectionChange(item.section)}
+                                        style={{
+                                            transition: 'all 0.2s ease',
+                                            padding: '12px 16px',
+                                            border: 'none',
+                                            backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (activeSection !== item.section) {
+                                                e.target.style.backgroundColor = '#2c3034';
+                                                e.target.classList.remove('text-white-50');
+                                                e.target.classList.add('text-white');
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (activeSection !== item.section) {
+                                                e.target.style.backgroundColor = 'transparent';
+                                                e.target.classList.add('text-white-50');
+                                                e.target.classList.remove('text-white');
+                                            }
+                                        }}
+                                    >
+                                        <span className="me-2">{item.icon}</span>
+                                        {item.name}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Logout Button */}
+                    <div className="mt-auto p-3">
+                        <button 
+                            className="btn btn-danger w-100"
+                            onClick={handleLogout}
+                        >
+                            <span className="me-2">🚪</span>
+                            Logout
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                {/* Main Content */}
-                <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
-                    <Routes>
-                        <Route path="/dashboard" element={renderContent()} />
-                        <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
-                        <Route path="/submit-thesis" element={<SubmitThesis />} />
-                        <Route path="/notifications" element={renderNotificationsPage()} />
-                        <Route path="/docs" element={<Docs />} />
-                        <Route path="/calendar" element={<Calendar />} />
-                        <Route path="/send-gmail" element={<SendGmail />} />
-                        <Route path="/schedule" element={<ScheduleTable />} />
-                        <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
-                    </Routes>
-                </div>
+            {/* Main Content */}
+            <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
+                <Routes>
+                    <Route path="/dashboard" element={renderContent()} />
+                    <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
+                    <Route path="/submit-thesis" element={<SubmitThesis />} />
+                    <Route path="/notifications" element={renderNotificationsPage()} />
+                    <Route path="/docs" element={<Docs />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/send-gmail" element={<SendGmail />} />
+                    <Route path="/schedule" element={<ScheduleTable />} />
+                    <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
+                </Routes>
             </div>
         </div>
     );
