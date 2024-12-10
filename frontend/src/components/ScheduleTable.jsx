@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from '../components/Calendar';
-import './ScheduleTable.css';
 
 const ScheduleTable = () => {
     const [schedules, setSchedules] = useState([]);
@@ -25,10 +24,10 @@ const ScheduleTable = () => {
     }, []);
 
     return (
-        <div className="schedule-table">
-            <h2>Defense Schedule</h2>
-            <table>
-                <thead>
+        <div className="schedule-table container">
+            <h2 className="my-4">Defense Schedule</h2>
+            <table className="table table-bordered">
+                <thead className="thead-light">
                     <tr>
                         <th>Student ID</th>
                         <th>Title</th>
@@ -39,7 +38,7 @@ const ScheduleTable = () => {
                 <tbody>
                     {schedules.length === 0 ? (
                         <tr>
-                            <td colSpan="4" style={{ textAlign: 'center' }}>No schedules available</td>
+                            <td colSpan="4" className="text-center">No schedules available</td>
                         </tr>
                     ) : (
                         schedules.map((schedule) => (
@@ -54,9 +53,9 @@ const ScheduleTable = () => {
                 </tbody>
             </table>
 
-            <h2>Upcoming Events</h2>
-            <table>
-                <thead>
+            <h2 className="my-4">Upcoming Events</h2>
+            <table className="table table-bordered">
+                <thead className="thead-light">
                     <tr>
                         <th>Event Title</th>
                         <th>Start Time</th>
@@ -66,7 +65,7 @@ const ScheduleTable = () => {
                 <tbody>
                     {events.length === 0 ? (
                         <tr>
-                            <td colSpan="3" style={{ textAlign: 'center' }}>No events available</td>
+                            <td colSpan="3" className="text-center">No events available</td>
                         </tr>
                     ) : (
                         events.map((event) => (

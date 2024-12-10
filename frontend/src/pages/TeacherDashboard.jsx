@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import TeacherProfile from '../Profile/TeacherProfile';
-import '../Styles/TeacherDashboard.css';
+import SubmitThesis from '../components/SubmitThesis';
+import Docs from '../components/Docs';
 import Calendar from '../components/Calendar';
+import SendGmail from '../Communication/SendGmail';
+import ScheduleTable from '../components/ScheduleTable';
 import DefenseSchedule from '../components/DefenseSchedule';
 import ReviewSubmission from '../components/ReviewSubmission';
 import StudentList from '../components/StudentList';
@@ -10,19 +13,18 @@ import TeacherNotification from '../components/TeacherNotification';
 import CommentDocs from '../components/CommentDocs';
 
 const TeacherDashboard = () => {
+    const [activeSection, setActiveSection] = useState('dashboard');
     const [userInfo, setUserInfo] = useState(null);
-    const [currentView, setCurrentView] = useState('dashboard');
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [feedbackForm, setFeedbackForm] = useState({
-        thesisId: null,
-        comment: '',
-        status: 'pending'
-    });
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedInfo, setEditedInfo] = useState(null);
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -36,7 +38,11 @@ const TeacherDashboard = () => {
             return;
         }
         setUserInfo(userData);
-    }, [navigate]);
+        
+        if (location.pathname === '/teacher-dashboard') {
+            navigate('/teacher-dashboard/dashboard');
+        }
+    }, [navigate, location]);
 
     // Fetch submissions when userInfo is available
     useEffect(() => {
@@ -78,57 +84,9 @@ const TeacherDashboard = () => {
         }
     };
 
-    // Handle menu item clicks
-    const handleMenuClick = (view) => {
-        setCurrentView(view);
-    };
-
-    const handleSubmitFeedback = async (thesisId) => {
-        try {
-            if (!feedbackForm.comment.trim()) {
-                alert('Please enter a comment');
-                return;
-            }
-
-            const feedbackData = {
-                comment: feedbackForm.comment.trim(),
-                status: feedbackForm.status,
-                teacherName: userInfo.name,
-                teacherEmail: userInfo.email
-            };
-
-            console.log('Submitting feedback:', {
-                thesisId,
-                ...feedbackData
-            });
-
-            const response = await fetch(`http://localhost:8080/api/thesis/feedback/${thesisId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userInfo.token}`
-                },
-                body: JSON.stringify(feedbackData)
-            });
-
-            const data = await response.json();
-            console.log('Server response:', data);
-            
-            if (response.ok) {
-                alert('Feedback submitted successfully');
-                setFeedbackForm({
-                    thesisId: null,
-                    comment: '',
-                    status: 'pending'
-                });
-                await fetchSubmissions(); // Refresh the list
-            } else {
-                throw new Error(data.message || 'Failed to submit feedback');
-            }
-        } catch (error) {
-            console.error('Error submitting feedback:', error);
-            alert(`Failed to submit feedback: ${error.message}`);
-        }
+    const handleSectionChange = (section) => {
+        setActiveSection(section);
+        navigate(`/teacher-dashboard/${section}`);
     };
 
     // Add this useEffect to fetch notifications
@@ -165,11 +123,10 @@ const TeacherDashboard = () => {
         }
     };
 
-    // Render content based on current view
     const renderContent = () => {
-        switch(currentView) {
+        switch(activeSection) {
             case 'profile':
-                return <TeacherProfile />;
+                return <TeacherProfile userInfo={userInfo} />;
             case 'eventmaker':
                 return <Calendar />;
             case 'defenseschedule':
@@ -270,135 +227,196 @@ const TeacherDashboard = () => {
                                     </table>
                                 )}
                             </section>
-                        </section>
 
-                        {feedbackForm.thesisId && (
-                            <div className="feedback-modal">
-                                <div className="feedback-content">
-                                    <h3>Submit Feedback</h3>
-                                    <textarea
-                                        value={feedbackForm.comment}
-                                        onChange={(e) => setFeedbackForm({...feedbackForm, comment: e.target.value})}
-                                        placeholder="Enter your feedback..."
-                                        rows="4"
-                                        required
+                            <section className="notifications-section">
+                                <h2>Notifications ({unreadCount})</h2>
+                                <button className="btn-toggle-notifications" onClick={() => setShowNotifications(!showNotifications)}>
+                                    {showNotifications ? 'Hide' : 'Show'} Notifications
+                                </button>
+                                {showNotifications && (
+                                    <TeacherNotification
+                                        notifications={notifications}
+                                        markAsRead={markAsRead}
                                     />
-                                    <select
-                                        value={feedbackForm.status}
-                                        onChange={(e) => setFeedbackForm({...feedbackForm, status: e.target.value})}
-                                        required
-                                    >
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approve</option>
-                                        <option value="rejected">Reject</option>
-                                        <option value="revision">Needs Revision</option>
-                                    </select>
-                                    <div className="button-group">
-                                        <button 
-                                            onClick={() => handleSubmitFeedback(feedbackForm.thesisId)}
-                                            className="btn-submit"
-                                            disabled={!feedbackForm.comment.trim()}
-                                        >
-                                            Submit Feedback
-                                        </button>
-                                        <button 
-                                            onClick={() => setFeedbackForm({...feedbackForm, thesisId: null})}
-                                            className="btn-cancel"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                )}
+                            </section>
+                        </section>
                     </>
                 );
         }
     };
 
-    useEffect(() => {
-        // Prevent back navigation
-        const handlePopState = () => {
-            window.history.pushState(null, null, window.location.pathname);
-        };
-
-        window.history.pushState(null, null, window.location.pathname);
-        window.addEventListener('popstate', handlePopState);
-
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, []);
-
     return (
-        <div className="dashboard-container">
-            {/* Sidebar */}
-            <aside className="sidebar">
-                <h2>Teacher Menu</h2>
-                <ul>
-                    <li 
-                        className={currentView === 'dashboard' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('dashboard')}
-                    >
-                        Dashboard
-                    </li>
-                    <li 
-                        className={currentView === 'review-submissions' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('review-submissions')}
-                    >
-                        Review Submissions
-                    </li>
-                    <li 
-                        className={currentView === 'student-list' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('student-list')}
-                    >
-                        Student List
-                    </li>
-                    <li 
-                        className={currentView === 'eventmaker' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('eventmaker')}
-                    >
-                        EventMaker
-                    </li>
-                    <li 
-                        className={currentView === 'defenseschedule' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('defenseschedule')}
-                    >
-                        Defense Schedule
-                    </li>
-                    <li 
-                        className={currentView === 'comment-docs' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('comment-docs')}
-                    >
-                        Comment Docs
-                    </li>
-                    <li 
-                        className={currentView === 'profile' ? 'active' : ''} 
-                        onClick={() => handleMenuClick('profile')}
-                    >
-                        My Profile
-                    </li>
-                    <li onClick={handleLogout}>Log Out</li>
-                </ul>
-            </aside>
+        <div className="d-flex">
+            <div className="bg-dark position-fixed start-0 top-0" 
+                 style={{
+                     width: '250px', 
+                     height: '100vh', 
+                     overflowY: 'auto',
+                     boxShadow: '2px 0 5px rgba(0,0,0,0.2)'
+                 }}>
+                <div className="d-flex flex-column h-100">
+                    {/* Header */}
+                    <div className="p-4 text-center">
+                        <h5 className="text-white fw-bold mb-0">Teacher Portal</h5>
+                    </div>
+
+                    {/* Navigation Items */}
+                    <div className="px-3">
+                        <ul className="nav flex-column gap-1">
+                            {[
+                                { name: 'Dashboard', section: 'dashboard' },
+                                { name: 'My Profile', section: 'profile' },
+                                { name: 'Send Gmail', section: 'send-gmail' },
+                            ].map((item) => (
+                                <li className="nav-item" key={item.section}>
+                                    <button 
+                                        className={`nav-link w-100 text-start rounded ${
+                                            activeSection === item.section 
+                                            ? 'active bg-primary text-white' 
+                                            : 'text-white-50'
+                                        }`}
+                                        onClick={() => handleSectionChange(item.section)}
+                                        style={{
+                                            transition: 'all 0.2s ease',
+                                            padding: '12px 16px',
+                                            border: 'none',
+                                            backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                    >
+                                        {item.name}
+                                    </button>
+                                </li>
+                            ))}
+
+                            {/* Thesis Management Dropdown */}
+                            <li className="nav-item">
+                                <div className="dropdown w-100">
+                                    <button 
+                                        className="nav-link w-100 text-start rounded text-white-50 dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        style={{
+                                            transition: 'all 0.2s ease',
+                                            padding: '12px 16px',
+                                            border: 'none',
+                                            backgroundColor: 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                    >
+                                        Thesis Management
+                                    </button>
+                                    <ul className="dropdown-menu dropdown-menu-dark">
+                                        <li>
+                                            <button 
+                                                className="dropdown-item text-white-50"
+                                                onClick={() => handleSectionChange('defenseschedule')}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    padding: '8px 16px',
+                                                }}
+                                            >
+                                                Defense Schedule
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button 
+                                                className="dropdown-item text-white-50"
+                                                onClick={() => handleSectionChange('review-submissions')}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    padding: '8px 16px',
+                                                }}
+                                            >
+                                                Review Submissions
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button 
+                                                className="dropdown-item text-white-50"
+                                                onClick={() => handleSectionChange('comment-docs')}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    padding: '8px 16px',
+                                                }}
+                                            >
+                                                Comment Docs
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            {/* Remaining navigation items */}
+                            {[
+                                { name: 'Calendar', section: 'calendar' },
+                                { name: 'Schedule', section: 'schedule' },
+                            ].map((item) => (
+                                <li className="nav-item" key={item.section}>
+                                    <button 
+                                        className={`nav-link w-100 text-start rounded ${
+                                            activeSection === item.section 
+                                            ? 'active bg-primary text-white' 
+                                            : 'text-white-50'
+                                        }`}
+                                        onClick={() => handleSectionChange(item.section)}
+                                        style={{
+                                            transition: 'all 0.2s ease',
+                                            padding: '12px 16px',
+                                            border: 'none',
+                                            backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                    >
+                                        {item.name}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Logout Button */}
+                    <div className="mt-auto p-3">
+                        <button 
+                            className="btn btn-link text-white w-100"
+                            onClick={handleLogout}
+                            style={{
+                                border: 'none',
+                                background: 'none',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                textDecoration: 'none'
+                            }}
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             {/* Main Content */}
-            <main className="main-content">
-                {showNotifications ? (
-                    
-                    <TeacherNotification 
-                        notifications={notifications}
-                        unreadCount={unreadCount}
-                        showNotifications={showNotifications}
-                        setShowNotifications={setShowNotifications}
-                        markAsRead={markAsRead}
-                    />
-                ) : (
-                    renderContent()
-                )}
-            </main>
+            <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
+                <Routes>
+                    <Route path="/dashboard" element={renderContent()} />
+                    <Route path="/profile" element={<TeacherProfile userInfo={userInfo} />} />
+                    <Route path="/defenseschedule" element={<DefenseSchedule />} />
+                    <Route path="/review-submissions" element={<ReviewSubmission />} />
+                    <Route path="/comment-docs" element={<CommentDocs />} />
+                    <Route path="/docs" element={<Docs />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/send-gmail" element={<SendGmail />} />
+                    <Route path="/schedule" element={<ScheduleTable />} />
+                    <Route path="*" element={<Navigate to="/teacher-dashboard/dashboard" replace />} />
+                </Routes>
+            </div>
         </div>
     );
 };
 
-export default TeacherDashboard; 
+export default TeacherDashboard;
