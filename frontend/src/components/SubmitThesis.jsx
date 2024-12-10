@@ -76,6 +76,17 @@ const SubmitThesis = () => {
         });
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const fileUrl = URL.createObjectURL(file);
+            setFormData(prev => ({
+                ...prev,
+                docsLink: fileUrl
+            }));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -215,6 +226,17 @@ const SubmitThesis = () => {
                         >
                             Select from Google Drive
                         </button>
+                    </div>
+                    <span className="or-text">or</span>
+                    <div className="file-input-container">
+                        <label className="file-input-label">
+                            <input 
+                                type="file" 
+                                onChange={handleFileChange} 
+                                className="file-input"
+                            />
+                            Choose File
+                        </label>
                     </div>
                 </div>
 
