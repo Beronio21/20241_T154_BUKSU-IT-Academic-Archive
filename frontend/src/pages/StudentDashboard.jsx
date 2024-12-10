@@ -7,6 +7,7 @@ import Calendar from '../components/Calendar';
 import SendGmail from '../Communication/SendGmail';
 import ScheduleTable from '../components/ScheduleTable';
 
+
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
     const [userInfo, setUserInfo] = useState(null);
@@ -560,14 +561,12 @@ const StudentDashboard = () => {
                                                                 href={submission.docsLink} 
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="btn btn-primary btn-sm me-1"
-                                                                style={{ padding: '0.1rem 0.3rem' }}
+                                                                className="btn-view"
                                                             >
                                                                 View
                                                             </a>
                                                             <button
                                                                 className="btn btn-danger btn-sm"
-                                                                style={{ padding: '0.1rem 0.3rem' }}
                                                                 onClick={() => handleDelete(submission._id)}
                                                             >
                                                                 Delete
@@ -634,9 +633,9 @@ const StudentDashboard = () => {
                     <div className="px-3">
                         <ul className="nav flex-column gap-1">
                             {[
-                                { name: 'Dashboard', section: 'dashboard', icon: '📊' },
-                                { name: 'My Profile', section: 'profile', icon: '👤' },
-                                { name: 'Send Gmail', section: 'send-gmail', icon: '📧' },
+                                { name: 'Dashboard', section: 'dashboard' },
+                                { name: 'My Profile', section: 'profile' },
+                                { name: 'Send Gmail', section: 'send-gmail' },
                             ].map((item) => (
                                 <li className="nav-item" key={item.section}>
                                     <button 
@@ -670,7 +669,6 @@ const StudentDashboard = () => {
                                             }
                                         }}
                                     >
-                                        <span className="me-2">{item.icon}</span>
                                         {item.name}
                                     </button>
                                 </li>
@@ -702,7 +700,6 @@ const StudentDashboard = () => {
                                             e.target.classList.remove('text-white');
                                         }}
                                     >
-                                        <span className="me-2">📚</span>
                                         Thesis Management
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-dark">
@@ -718,14 +715,38 @@ const StudentDashboard = () => {
                                                 Submit Thesis
                                             </button>
                                         </li>
+                                        <li>
+                                            <button 
+                                                className="dropdown-item text-white-50"
+                                                onClick={() => handleSectionChange('view-thesis')}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    padding: '8px 16px',
+                                                }}
+                                            >
+                                                View Thesis
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button 
+                                                className="dropdown-item text-white-50"
+                                                onClick={() => handleSectionChange('edit-thesis')}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    padding: '8px 16px',
+                                                }}
+                                            >
+                                                Edit Thesis
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
 
                             {/* Remaining navigation items */}
                             {[
-                                { name: 'Calendar', section: 'calendar', icon: '📅' },
-                                { name: 'Schedule', section: 'schedule', icon: '📋' },
+                                { name: 'Calendar', section: 'calendar' },
+                                { name: 'Schedule', section: 'schedule' },
                             ].map((item) => (
                                 <li className="nav-item" key={item.section}>
                                     <button 
@@ -759,7 +780,6 @@ const StudentDashboard = () => {
                                             }
                                         }}
                                     >
-                                        <span className="me-2">{item.icon}</span>
                                         {item.name}
                                     </button>
                                 </li>
@@ -770,10 +790,16 @@ const StudentDashboard = () => {
                     {/* Logout Button */}
                     <div className="mt-auto p-3">
                         <button 
-                            className="btn btn-danger w-100"
+                            className="btn btn-link text-white w-100"
                             onClick={handleLogout}
+                            style={{
+                                border: 'none',
+                                background: 'none',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                textDecoration: 'none'
+                            }}
                         >
-                            <span className="me-2">🚪</span>
                             Logout
                         </button>
                     </div>

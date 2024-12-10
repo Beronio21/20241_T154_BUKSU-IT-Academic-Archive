@@ -19,7 +19,8 @@ const StudentProfile = () => {
         confirm_password: '',
         image: '',
         role: '',
-        isProfileComplete: false
+        isProfileComplete: false,
+        thesis_status: '',
     };
 
     const [formData, setFormData] = useState(initialFormState);
@@ -87,7 +88,8 @@ const StudentProfile = () => {
                     : '',
                 // Ensure password fields are empty when loading profile
                 password: '',
-                confirm_password: ''
+                confirm_password: '',
+                thesis_status: data.data.thesis_status || '',
             };
 
             setFormData(formattedData);
@@ -296,7 +298,7 @@ const StudentProfile = () => {
                         {/* Academic Information */}
                         <div className="card border-0 shadow-sm rounded-4 mb-4">
                             <div className="card-body p-4">
-                                <h5 className="card-title d-flex align-items-center mb-3">
+                                <h5 className="card-title d-flex align-items-center mb-3 ">
                                     <i className="bi bi-mortarboard-fill me-2 text-primary"></i>
                                     Academic Information
                                 </h5>
@@ -394,6 +396,20 @@ const StudentProfile = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Thesis Status */}
+                        <div className="card border-0 shadow-sm rounded-4 mb-4">
+                            <div className="card-body p-4">
+                                <h5 className="card-title d-flex align-items-center mb-3 p-2">
+                                    <i className="bi bi-file-earmark-text-fill me-2 text-primary"></i>
+                                    Thesis Status
+                                </h5>
+                                <div className="fw-medium">
+                                    {formData.thesis_status || 'Not set'}
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Edit Profile Section */}
                         <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
                             <Modal.Header className="text-black">
