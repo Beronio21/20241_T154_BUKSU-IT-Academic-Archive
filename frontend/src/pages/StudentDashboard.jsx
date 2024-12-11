@@ -6,6 +6,7 @@ import Docs from '../components/Docs';
 import Calendar from '../components/Calendar';
 import SendGmail from '../Communication/SendGmail';
 import ScheduleTable from '../components/ScheduleTable';
+import './StudentDashboard.css';
 
 
 const StudentDashboard = () => {
@@ -616,13 +617,30 @@ const StudentDashboard = () => {
 
     return (
         <div className="d-flex">
-            <div className="bg-dark position-fixed start-0 top-0" 
-                 style={{
-                     width: '250px', 
-                     height: '100vh', 
-                     overflowY: 'auto',
-                     boxShadow: '2px 0 5px rgba(0,0,0,0.2)'
-                 }}>
+            {/* Topbar Section */}
+            <header className="bg-dark text-white topbar">
+                <div className="topbar d-flex justify-content-between align-items-center p-3">
+                    <div className="logo">
+                        <a href="/"><img src="logo.png" alt="Website Logo" /></a>
+                    </div>
+                    <div className="topbar-menu">
+                        <ul className="nav">
+                            <li className="nav-item"><button onClick={() => handleSectionChange('dashboard')} className="nav-link text-white">Dashboard</button></li>
+                            <li className="nav-item"><button onClick={() => handleSectionChange('profile')} className="nav-link text-white">My Profile</button></li>
+                            <li className="nav-item"><button onClick={() => handleSectionChange('send-gmail')} className="nav-link text-white">Send Gmail</button></li>
+                        </ul>
+                    </div>
+                    <div className="user-area">
+                        <ul>
+                            <li><a href="/profile">My Profile</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            {/* End of Topbar Section */}
+            
+            <div className="bg-dark position-fixed start-0 top-0 sidebar">
                 <div className="d-flex flex-column h-100">
                     {/* Header */}
                     <div className="p-4 text-center">
