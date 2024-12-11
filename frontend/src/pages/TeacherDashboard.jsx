@@ -25,6 +25,7 @@ const TeacherDashboard = () => {
     const location = useLocation();
     const [isEditing, setIsEditing] = useState(false);
     const [editedInfo, setEditedInfo] = useState(null);
+    const [feedbackForm, setFeedbackForm] = useState({ thesisId: '', comment: '', status: '', teacherName: '', teacherEmail: '' });
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -122,6 +123,49 @@ const TeacherDashboard = () => {
             console.error('Error marking notification as read:', error);
         }
     };
+
+    const handleFeedbackSubmit = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/thesis/feedback/${feedbackForm.thesisId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(feedbackForm),
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                // Optionally, refresh submissions or show a success message
+                fetchSubmissions();
+                setFeedbackForm({ thesisId: '', comment: '', status: '', teacherName: '', teacherEmail: '' }); // Reset form
+            } else {
+                console.error('Feedback submission failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+        }
+    };
+
+    const renderFeedbackForm = () => (
+        <div>
+            <h3>Add Feedback</h3>
+            <textarea
+                value={feedbackForm.comment}
+                onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
+                placeholder="Enter your feedback"
+            />
+            <select
+                value={feedbackForm.status}
+                onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
+            >
+                <option value="">Select Status</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="revision">Revision</option>
+            </select>
+            <button onClick={handleFeedbackSubmit}>Submit Feedback</button>
+        </div>
+    );
 
     const renderContent = () => {
         switch(activeSection) {
@@ -240,6 +284,8 @@ const TeacherDashboard = () => {
                                     />
                                 )}
                             </section>
+
+                            {feedbackForm.thesisId && renderFeedbackForm()}
                         </section>
                     </>
                 );
