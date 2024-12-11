@@ -6,8 +6,8 @@ import Docs from '../components/Docs';
 import Calendar from '../components/Calendar';
 import SendGmail from '../Communication/SendGmail';
 import ScheduleTable from '../components/ScheduleTable';
-import './StudentDashboard.css';
-
+import Topbar from '../Topbar/StudentTopbar';
+import StudentNavbar from '../Navbar/StudentNavbar';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -30,7 +30,7 @@ const StudentDashboard = () => {
             return;
         }
         const userData = JSON.parse(data);
-        if (userData?.role !== 'student') {
+        if (userData?.role !== 'student' || !userData.token) {
             navigate('/login');
             return;
         }
@@ -153,7 +153,7 @@ const StudentDashboard = () => {
         if (window.confirm('Are you sure you want to logout?')) {
             localStorage.clear();
             sessionStorage.clear();
-            navigate('/', { replace: true });
+            navigate('/login', { replace: true });
         }
     };
 
@@ -482,32 +482,58 @@ const StudentDashboard = () => {
             case 'dashboard':
                 return (
                     <>
-                        <header className="header">
-                            <div className="user-info">
-                                <h1>Welcome, {userInfo?.name}</h1>
-                                <p>Student ID: {userInfo?.student_id || 'N/A'}</p>
-                            </div>
-                            <img className="profile-picture" src={userInfo?.image} alt={userInfo?.name} />
-                        </header>
+                        <div className="container mt-4 p-1 ">
+                            <header className="d-flex justify-content-between align-items-center border rounded p-5 shadow-sm">
+                                <div className="user-info">
+                                    <h1 className="h4">Welcome, {userInfo?.name || 'Guest'}</h1>
+                                    <p className="mb-0 ">
+                                        Student ID: {userInfo?.student_id || 'N/A'}
+                                    </p>
+                                </div>
+                                <div className="profile-picture-container rounded-circle overflow-hidden" style={{ width: '80px', height: '80px' }}>
+                                {/* Add fallback for image if not available */}
+                                <img
+                                    className="img-fluid"
+                                    src={userInfo?.image || '/default-avatar.png'}
+                                    alt={userInfo?.name || 'User Avatar'}
+                                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                />
+                                </div>
+                            </header>
+                        </div>
+                        {/* 3 cards areas */}
 
-                        <section className="status-cards">
-                            <div className="status-card">
-                                <h3>Pending Reviews</h3>
-                                <p className="count">
-                                    {submissions.filter(sub => sub.status === 'pending').length}
-                                </p>
+                        <section className="row g-3">
+                            <div className="col-md-4">
+                                <div className="card text-center shadow-sm">
+                                    <div className="card-body">
+                                        <h5 className="card-title text-muted">Pending Reviews</h5>
+                                        <p className="display-6 fw-bold text-primary">
+                                            {submissions.filter(sub => sub.status === 'pending').length}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="status-card">
-                                <h3>Approved Chapters</h3>
-                                <p className="count">
-                                    {submissions.filter(sub => sub.status === 'approved').length}
-                                </p>
+                            <div className="col-md-4">
+                                <div className="card text-center shadow-sm">
+                                    <div className="card-body">
+                                        <h5 className="card-title text-muted">Approved Chapters</h5>
+                                        <p className="display-6 fw-bold text-primary">
+                                            {submissions.filter(sub => sub.status === 'approved').length}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="status-card">
-                                <h3>Upcoming Defense</h3>
-                                <p>March 15, 2024</p>
+                            <div className="col-md-4">
+                                <div className="card text-center shadow-sm">
+                                    <div className="card-body">
+                                        <h5 className="card-title text-muted">Upcoming Defense</h5>
+                                        <p className="display-6 fw-bold text-primary fs-3 p-2">March 15, 2024</p>
+                                    </div>
+                                </div>
                             </div>
                         </section>
+
 
                         <section className="submissions-section">
                             <h2>Recent Submissions</h2>
@@ -617,213 +643,18 @@ const StudentDashboard = () => {
 
     return (
         <div className="d-flex">
-            {/* Topbar Section */}
-            <header className="bg-dark text-white topbar">
-                <div className="topbar d-flex justify-content-between align-items-center p-3">
-                    <div className="logo">
-                        <a href="/"><img src="logo.png" alt="Website Logo" /></a>
-                    </div>
-                    <div className="topbar-menu">
-                        <ul className="nav">
-                            <li className="nav-item"><button onClick={() => handleSectionChange('dashboard')} className="nav-link text-white">Dashboard</button></li>
-                            <li className="nav-item"><button onClick={() => handleSectionChange('profile')} className="nav-link text-white">My Profile</button></li>
-                            <li className="nav-item"><button onClick={() => handleSectionChange('send-gmail')} className="nav-link text-white">Send Gmail</button></li>
-                        </ul>
-                    </div>
-                    <div className="user-area">
-                        <ul>
-                            <li><a href="/profile">My Profile</a></li>
-                            <li><a href="/logout">Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-            {/* End of Topbar Section */}
-            
-            <div className="bg-dark position-fixed start-0 top-0 sidebar">
-                <div className="d-flex flex-column h-100">
-                    {/* Header */}
-                    <div className="p-4 text-center">
-                        <h5 className="text-white fw-bold mb-0">Student Portal</h5>
-                    </div>
-
-                    {/* Navigation Items */}
-                    <div className="px-3">
-                        <ul className="nav flex-column gap-1">
-                            {[
-                                { name: 'Dashboard', section: 'dashboard' },
-                                { name: 'My Profile', section: 'profile' },
-                                { name: 'Send Gmail', section: 'send-gmail' },
-                            ].map((item) => (
-                                <li className="nav-item" key={item.section}>
-                                    <button 
-                                        className={`nav-link w-100 text-start rounded ${
-                                            activeSection === item.section 
-                                            ? 'active bg-primary text-white' 
-                                            : 'text-white-50'
-                                        }`}
-                                        onClick={() => handleSectionChange(item.section)}
-                                        style={{
-                                            transition: 'all 0.2s ease',
-                                            padding: '12px 16px',
-                                            border: 'none',
-                                            backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
-                                            cursor: 'pointer',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (activeSection !== item.section) {
-                                                e.target.style.backgroundColor = '#2c3034';
-                                                e.target.classList.remove('text-white-50');
-                                                e.target.classList.add('text-white');
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (activeSection !== item.section) {
-                                                e.target.style.backgroundColor = 'transparent';
-                                                e.target.classList.add('text-white-50');
-                                                e.target.classList.remove('text-white');
-                                            }
-                                        }}
-                                    >
-                                        {item.name}
-                                    </button>
-                                </li>
-                            ))}
-
-                            {/* Thesis Management Dropdown */}
-                            <li className="nav-item">
-                                <div className="dropdown w-100">
-                                    <button 
-                                        className="nav-link w-100 text-start rounded text-white-50 dropdown-toggle"
-                                        data-bs-toggle="dropdown"
-                                        style={{
-                                            transition: 'all 0.2s ease',
-                                            padding: '12px 16px',
-                                            border: 'none',
-                                            backgroundColor: 'transparent',
-                                            cursor: 'pointer',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.backgroundColor = '#2c3034';
-                                            e.target.classList.remove('text-white-50');
-                                            e.target.classList.add('text-white');
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.backgroundColor = 'transparent';
-                                            e.target.classList.add('text-white-50');
-                                            e.target.classList.remove('text-white');
-                                        }}
-                                    >
-                                        Thesis Management
-                                    </button>
-                                    <ul className="dropdown-menu dropdown-menu-dark">
-                                        <li>
-                                            <button 
-                                                className="dropdown-item text-white-50"
-                                                onClick={() => handleSectionChange('submit-thesis')}
-                                                style={{
-                                                    fontSize: '14px',
-                                                    padding: '8px 16px',
-                                                }}
-                                            >
-                                                Submit Thesis
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button 
-                                                className="dropdown-item text-white-50"
-                                                onClick={() => handleSectionChange('view-thesis')}
-                                                style={{
-                                                    fontSize: '14px',
-                                                    padding: '8px 16px',
-                                                }}
-                                            >
-                                                View Thesis
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button 
-                                                className="dropdown-item text-white-50"
-                                                onClick={() => handleSectionChange('edit-thesis')}
-                                                style={{
-                                                    fontSize: '14px',
-                                                    padding: '8px 16px',
-                                                }}
-                                            >
-                                                Edit Thesis
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            {/* Remaining navigation items */}
-                            {[
-                                { name: 'Calendar', section: 'calendar' },
-                                { name: 'Schedule', section: 'schedule' },
-                            ].map((item) => (
-                                <li className="nav-item" key={item.section}>
-                                    <button 
-                                        className={`nav-link w-100 text-start rounded ${
-                                            activeSection === item.section 
-                                            ? 'active bg-primary text-white' 
-                                            : 'text-white-50'
-                                        }`}
-                                        onClick={() => handleSectionChange(item.section)}
-                                        style={{
-                                            transition: 'all 0.2s ease',
-                                            padding: '12px 16px',
-                                            border: 'none',
-                                            backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
-                                            cursor: 'pointer',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (activeSection !== item.section) {
-                                                e.target.style.backgroundColor = '#2c3034';
-                                                e.target.classList.remove('text-white-50');
-                                                e.target.classList.add('text-white');
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (activeSection !== item.section) {
-                                                e.target.style.backgroundColor = 'transparent';
-                                                e.target.classList.add('text-white-50');
-                                                e.target.classList.remove('text-white');
-                                            }
-                                        }}
-                                    >
-                                        {item.name}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Logout Button */}
-                    <div className="mt-auto p-3">
-                        <button 
-                            className="btn btn-link text-white w-100"
-                            onClick={handleLogout}
-                            style={{
-                                border: 'none',
-                                background: 'none',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                textDecoration: 'none'
-                            }}
-                        >
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+            <Topbar 
+                userInfo={userInfo}
+                unreadCount={unreadCount}
+                setShowNotifications={setShowNotifications}
+                showNotifications={showNotifications}
+                notifications={notifications}
+                markAsRead={markAsRead}
+            />
+            <StudentNavbar 
+                activeSection={activeSection}
+                handleSectionChange={handleSectionChange}
+            />
             {/* Main Content */}
             <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
                 <Routes>

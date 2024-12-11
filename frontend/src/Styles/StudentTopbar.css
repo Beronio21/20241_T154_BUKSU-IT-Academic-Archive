@@ -1,0 +1,115 @@
+.notification-container {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+.notifications-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 10px;
+    z-index: 1000;
+}
+
+.notifications-header {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notifications-header h6 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.mark-all-read {
+    background: none;
+    border: none;
+    color: #0d6efd;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+    background-color: #f0f7ff;
+}
+
+.notification-item.unread:hover {
+    background-color: #e6f0ff;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.notification-message {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+.notifications-footer {
+    padding: 0.75rem;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.view-all {
+    background: none;
+    border: none;
+    color: #0d6efd;
+    font-size: 0.875rem;
+    cursor: pointer;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.view-all:hover {
+    background-color: #f8f9fa;
+}
+
+.no-notifications {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+} 
