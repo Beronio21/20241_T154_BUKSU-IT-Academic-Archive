@@ -150,7 +150,7 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
-                                <a className="dropdown-item" href="/profile">
+                                <a className="dropdown-item" href="/student-dashboard/profile">
                                     <i className="bi bi-person me-2 fs-5"></i>
                                     Profile
                                 </a>
