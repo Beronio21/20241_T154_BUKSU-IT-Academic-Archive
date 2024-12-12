@@ -30,20 +30,49 @@ const TeacherDashboard = () => {
     const [feedbackForm, setFeedbackForm] = useState({ thesisId: '', comment: '', status: '', teacherName: '', teacherEmail: '' });
 
     useEffect(() => {
+        // Prevent going back
+        window.history.pushState(null, null, window.location.pathname);
+        window.addEventListener('popstate', preventGoBack);
+
+        // Clean up the event listener
+        return () => {
+            window.removeEventListener('popstate', preventGoBack);
+        };
+    }, []);
+
+    // Prevent tab/browser closing
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+    const preventGoBack = (event) => {
+        window.history.pushState(null, null, window.location.pathname);
+    };
+
+    useEffect(() => {
         const data = localStorage.getItem('user-info');
         if (!data) {
-            navigate('/login');
+            navigate('/login', { replace: true });
             return;
         }
         const userData = JSON.parse(data);
         if (userData?.role !== 'teacher') {
-            navigate('/login');
+            navigate('/login', { replace: true });
             return;
         }
         setUserInfo(userData);
         
         if (location.pathname === '/teacher-dashboard') {
-            navigate('/teacher-dashboard/dashboard');
+            navigate('/teacher-dashboard/dashboard', { replace: true });
         }
     }, [navigate, location]);
 

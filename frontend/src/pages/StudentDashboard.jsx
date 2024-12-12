@@ -65,6 +65,31 @@ const StudentDashboard = () => {
         };
     }, []);
 
+    useEffect(() => {
+        // Prevent back button
+        const preventBackButton = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.history.forward();
+        };
+
+        // Prevent using backspace key to navigate back
+        const preventBackspaceKey = (e) => {
+            if (e.key === 'Backspace' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        };
+
+        window.history.pushState(null, null, window.location.pathname);
+        window.addEventListener('popstate', preventBackButton);
+        document.addEventListener('keydown', preventBackspaceKey);
+
+        return () => {
+            window.removeEventListener('popstate', preventBackButton);
+            document.removeEventListener('keydown', preventBackspaceKey);
+        };
+    }, []);
+
     const fetchSubmissions = async () => {
         try {
             setLoading(true);
@@ -655,15 +680,8 @@ const StudentDashboard = () => {
                 activeSection={activeSection}
                 handleSectionChange={handleSectionChange}
             />
-            {/* Updated main content div with proper spacing */}
-            <div style={{
-                marginLeft: '250px',
-                marginTop: '60px',
-                flexGrow: 1,
-                padding: '20px',
-                backgroundColor: '#f5f5f5',
-                minHeight: 'calc(100vh - 60px)'
-            }}>
+            {/* Main Content */}
+            <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
                 <Routes>
                     <Route path="/dashboard" element={renderContent()} />
                     <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />

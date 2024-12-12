@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifications }) => {
+const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifications, notifications, markAsRead }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -12,25 +12,105 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         }
     };
 
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const notificationStyles = {
+        dropdownMenu: {
+            width: '300px',
+            maxHeight: '400px',
+            overflowY: 'auto',
+            padding: '0'
+        },
+        notificationItem: {
+            padding: '10px 15px',
+            borderBottom: '1px solid #eee',
+            cursor: 'pointer'
+        },
+        unreadItem: {
+            backgroundColor: '#f8f9fa'
+        },
+        notificationText: {
+            marginBottom: '5px'
+        },
+        timeText: {
+            fontSize: '0.8rem',
+            color: '#6c757d'
+        }
+    };
+
     return (
         <nav className="navbar fixed-top navbar-expand-lg">
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
                     <button 
-                        className="btn p-0 me-4 text-black fs-4" 
+                        className="btn p-0 me-6 text-black fs-4" 
                         title="Messages"
                         onClick={() => navigate('/teacher-dashboard/send-gmail')}
                         style={{ background: 'none', border: 'none' }}
                     >
                         <i className="bi bi-envelope"></i>
                     </button>
-                    <button 
-                        className="btn p-0 me-4 text-black fs-4" 
-                        title="Notifications"
-                        style={{ background: 'none', border: 'none' }}
-                    >
-                        <i className="bi bi-bell"></i>
-                    </button>
+                    
+                    {/* Notifications Dropdown */}
+                    <div className="dropdown">
+                        <button 
+                            className="btn p-0 me-5 text-black fs-4 position-relative" 
+                            title="Notifications"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style={{ background: 'none', border: 'none' }}
+                        >
+                            <i className="bi bi-bell"></i>
+                            {unreadCount > 0 && (
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {unreadCount > 99 ? '99+' : unreadCount}
+                                    <span className="visually-hidden">unread notifications</span>
+                                </span>
+                            )}
+                        </button>
+                        
+                        {/* Notifications Menu */}
+                        <div className="dropdown-menu dropdown-menu-end shadow" 
+                             style={notificationStyles.dropdownMenu}>
+                            <h6 className="dropdown-header">Notifications</h6>
+                            {notifications && notifications.length > 0 ? (
+                                notifications.map((notification) => (
+                                    <div 
+                                        key={notification._id} 
+                                        className="dropdown-item"
+                                        onClick={() => markAsRead(notification._id)}
+                                        style={{
+                                            ...notificationStyles.notificationItem,
+                                            ...(notification.read ? {} : notificationStyles.unreadItem)
+                                        }}
+                                    >
+                                        <div className="d-flex flex-column">
+                                            <div style={notificationStyles.notificationText}>
+                                                {notification.message}
+                                            </div>
+                                            <small style={notificationStyles.timeText}>
+                                                {formatDate(notification.createdAt)}
+                                            </small>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="dropdown-item" style={notificationStyles.notificationItem}>
+                                    No notifications
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* User Profile Dropdown */}
                     <div className="dropdown">
                         <button 
                             className="btn p-0 dropdown-toggle d-flex align-items-center text-black"
