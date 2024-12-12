@@ -655,8 +655,15 @@ const StudentDashboard = () => {
                 activeSection={activeSection}
                 handleSectionChange={handleSectionChange}
             />
-            {/* Main Content */}
-            <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
+            {/* Updated main content div with proper spacing */}
+            <div style={{
+                marginLeft: '250px',
+                marginTop: '60px',
+                flexGrow: 1,
+                padding: '20px',
+                backgroundColor: '#f5f5f5',
+                minHeight: 'calc(100vh - 60px)'
+            }}>
                 <Routes>
                     <Route path="/dashboard" element={renderContent()} />
                     <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />

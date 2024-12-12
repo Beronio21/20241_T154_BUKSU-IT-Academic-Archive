@@ -295,20 +295,20 @@ const TeacherDashboard = () => {
     };
 
     return (
-        <div className="d-flex">
-            <TeacherNavbar 
-                activeSection={activeSection} 
-                handleSectionChange={handleSectionChange} 
+        <div className="d-flex flex-column min-vh-100">
+            <TeacherTopbar 
+                userInfo={userInfo}
+                unreadCount={unreadCount}
+                handleLogout={handleLogout}
             />
-            
-            {/* Main Content */}
-            <div style={{marginLeft: '250px'}} className="flex-grow-1">
-                <TeacherTopbar 
-                    userInfo={userInfo}
-                    unreadCount={unreadCount}
-                    handleLogout={handleLogout}
+            <div className="d-flex flex-grow-1">
+                <TeacherNavbar 
+                    activeSection={activeSection} 
+                    handleSectionChange={handleSectionChange} 
                 />
-                <div className="p-4">
+                
+                {/* Main Content */}
+                <div className="flex-grow-1 p-4">
                     <Routes>
                         <Route path="/dashboard" element={renderContent()} />
                         <Route path="/profile" element={<TeacherProfile userInfo={userInfo} />} />

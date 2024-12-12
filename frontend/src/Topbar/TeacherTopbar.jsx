@@ -20,12 +20,14 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                         className="btn p-0 me-4 text-black fs-4" 
                         title="Messages"
                         onClick={() => navigate('/teacher-dashboard/send-gmail')}
+                        style={{ background: 'none', border: 'none' }}
                     >
                         <i className="bi bi-envelope"></i>
                     </button>
                     <button 
                         className="btn p-0 me-4 text-black fs-4" 
                         title="Notifications"
+                        style={{ background: 'none', border: 'none' }}
                     >
                         <i className="bi bi-bell"></i>
                     </button>
@@ -36,6 +38,7 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                             id="teacherDropdown"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
+                            style={{ background: 'none', border: 'none' }}
                         >
                             <img
                                 src={userInfo?.image || 'https://via.placeholder.com/32'}

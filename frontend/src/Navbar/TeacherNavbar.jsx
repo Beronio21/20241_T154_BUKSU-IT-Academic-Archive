@@ -127,23 +127,6 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                         ))}
                     </ul>
                 </div>
-
-                {/* Logout Button */}
-                <div className="mt-auto p-3">
-                    <button 
-                        className="btn btn-link text-white w-100"
-                        onClick={handleLogout}
-                        style={{
-                            border: 'none',
-                            background: 'none',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            textDecoration: 'none'
-                        }}
-                    >
-                        Logout
-                    </button>
-                </div>
             </div>
         </div>
     );

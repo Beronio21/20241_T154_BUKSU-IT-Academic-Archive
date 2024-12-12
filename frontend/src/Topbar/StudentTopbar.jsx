@@ -56,7 +56,7 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         item: (read) => ({
             padding: '12px',
             borderBottom: '1px solid #eee',
-            backgroundColor: read ? '#fff' : '#f0f7ff',
+            backgroundColor: '#fff',
             cursor: 'pointer',
             transition: 'background-color 0.2s'
         }),
@@ -79,16 +79,21 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         <nav className="navbar fixed-top navbar-expand-lg">
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
-                    <button className="btn p-0 me-4 text-black fs-4" title="Messages">
-                        <i className="bi bi-envelope"></i>
+                    <button 
+                        className="p-0 me-3 position-relative" 
+                        title="Messages" 
+                        style={{ background: 'none', border: 'none', color: 'inherit' }}
+                    >
+                        <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: 'inherit' }}></i>
                     </button>
                     <div style={notificationStyles.container}>
                         <button 
-                            className="btn p-0 me-4 text-black fs-4 position-relative" 
+                            className="p-0 me-4 position-relative" 
                             title="Notifications"
+                            style={{ background: 'none', border: 'none', color: 'inherit' }}
                             onClick={() => setShowNotifications(!showNotifications)}
                         >
-                            <i className="bi bi-bell"></i>
+                            <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: 'inherit' }}></i>
                             {unreadCount > 0 && (
                                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={notificationStyles.badge}>
                                     {unreadCount}
@@ -127,11 +132,12 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                     </div>
                     <div className="dropdown">
                         <button 
-                            className="btn p-0 dropdown-toggle d-flex align-items-center text-black"
+                            className="p-0 dropdown-toggle d-flex align-items-center"
                             type="button"
                             id="userDropdown"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
+                            style={{ background: 'none', border: 'none', color: 'inherit' }}
                         >
                             <img
                                 src={userInfo?.image || 'https://via.placeholder.com/32'}
