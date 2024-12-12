@@ -65,31 +65,6 @@ const StudentDashboard = () => {
         };
     }, []);
 
-    useEffect(() => {
-        // Prevent back button
-        const preventBackButton = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.history.forward();
-        };
-
-        // Prevent using backspace key to navigate back
-        const preventBackspaceKey = (e) => {
-            if (e.key === 'Backspace' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-            }
-        };
-
-        window.history.pushState(null, null, window.location.pathname);
-        window.addEventListener('popstate', preventBackButton);
-        document.addEventListener('keydown', preventBackspaceKey);
-
-        return () => {
-            window.removeEventListener('popstate', preventBackButton);
-            document.removeEventListener('keydown', preventBackspaceKey);
-        };
-    }, []);
-
     const fetchSubmissions = async () => {
         try {
             setLoading(true);
@@ -609,20 +584,22 @@ const StudentDashboard = () => {
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <a 
-                                                                href={submission.docsLink} 
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="btn-view"
-                                                            >
-                                                                View
-                                                            </a>
-                                                            <button
-                                                                className="btn btn-danger btn-sm"
-                                                                onClick={() => handleDelete(submission._id)}
-                                                            >
-                                                                Delete
-                                                            </button>
+                                                            <div style={{ display: 'flex', gap: '5px' }}>
+                                                                <a 
+                                                                    href={submission.docsLink} 
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="btn-view"
+                                                                >
+                                                                    View
+                                                                </a>
+                                                                <button
+                                                                    className="btn btn-danger btn-sm btn-view"
+                                                                    onClick={() => handleDelete(submission._id)}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     {submission.feedback && submission.feedback.length > 0 && (
