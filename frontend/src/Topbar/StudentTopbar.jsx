@@ -79,10 +79,16 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         <nav className="navbar fixed-top navbar-expand-lg">
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
+                    <img 
+                        src="/path/to/logo.png"
+                        alt="Logo"
+                        style={{ height: '40px', marginRight: '55rem' }}
+                    />
                     <button 
                         className="p-0 me-3 position-relative" 
                         title="Messages" 
                         style={{ background: 'none', border: 'none', color: 'inherit' }}
+                        onClick={() => navigate('/student-dashboard/send-gmail')}
                     >
                         <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: 'inherit' }}></i>
                     </button>
@@ -102,11 +108,11 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                         </button>
 
                         {showNotifications && (
-                            <div style={notificationStyles.dropdown}>
-                                <div style={notificationStyles.header}>
+                            <div className="dropdown-menu show" style={notificationStyles.dropdown}>
+                                <div className="dropdown-header" style={notificationStyles.header}>
                                     <h6 className="m-0">Notifications</h6>
                                 </div>
-                                <div style={notificationStyles.list}>
+                                <div className="dropdown-list" style={notificationStyles.list}>
                                     {notifications.length === 0 ? (
                                         <div style={notificationStyles.emptyMessage}>
                                             No notifications
@@ -115,6 +121,7 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                                         notifications.map(notification => (
                                             <div 
                                                 key={notification._id}
+                                                className="dropdown-item"
                                                 style={notificationStyles.item(!notification.read)}
                                                 onClick={() => !notification.read && markAsRead(notification._id)}
                                             >

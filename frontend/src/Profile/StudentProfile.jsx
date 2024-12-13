@@ -281,10 +281,44 @@ const StudentProfile = () => {
                                         <div className="rounded-4 bg-primary bg-opacity-10 p-2">
                                             <i className="bi bi-facebook text-primary fs-5"></i>
                                         </div>
-                                        <div className="ms-2">
+                                        <div className="ms-2 flex-grow-1">
                                             <small className="text-muted text-uppercase">Facebook</small>
                                             <div className="fw-medium">
-                                                {formData.facebook || 'Not set'}
+                                                {formData.facebook ? (
+                                                    <a 
+                                                        href={formData.facebook.startsWith('http') ? formData.facebook : `https://${formData.facebook}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="d-inline-flex align-items-center text-decoration-none px-3 py-2 rounded-pill"
+                                                        style={{
+                                                            backgroundColor: 'rgba(24, 119, 242, 0.1)',
+                                                            color: '#1877F2',
+                                                            transition: 'all 0.3s ease',
+                                                            maxWidth: '250px',
+                                                            border: '1px solid rgba(24, 119, 242, 0.2)'
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.currentTarget.style.backgroundColor = 'rgba(24, 119, 242, 0.15)';
+                                                            e.currentTarget.style.transform = 'translateY(-1px)';
+                                                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 119, 242, 0.2)';
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.currentTarget.style.backgroundColor = 'rgba(24, 119, 242, 0.1)';
+                                                            e.currentTarget.style.transform = 'none';
+                                                            e.currentTarget.style.boxShadow = 'none';
+                                                        }}
+                                                    >
+                                                        <span className="text-truncate" style={{ maxWidth: '180px' }}>
+                                                            {formData.facebook.replace(/^https?:\/\/(www\.)?(facebook\.com\/)?/, '')}
+                                                        </span>
+                                                        <i className="bi bi-box-arrow-up-right ms-2 opacity-75"></i>
+                                                    </a>
+                                                ) : (
+                                                    <span className="text-muted fst-italic d-flex align-items-center">
+                                                        <i className="bi bi-dash-circle me-1"></i>
+                                                        Not connected
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

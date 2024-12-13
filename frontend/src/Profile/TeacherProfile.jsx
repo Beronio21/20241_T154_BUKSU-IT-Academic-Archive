@@ -24,7 +24,8 @@ const TeacherProfile = () => {
         confirm_password: '',
         image: '',
         role: '',
-        isProfileComplete: false
+        isProfileComplete: false,
+        facebook: '',
     };
 
     const [formData, setFormData] = useState(initialFormState);
@@ -139,6 +140,8 @@ const TeacherProfile = () => {
                     birthday: formData.birthday,
                     gender: formData.gender,
                     department: formData.department,
+                    subject: formData.subject,
+                    facebook: formData.facebook,
                     ...(formData.password && { password: formData.password })
                 })
             });
@@ -166,7 +169,7 @@ const TeacherProfile = () => {
 
     return (
         <div className="container-fluid py-2 px-4" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
-            <div className="row mb-2">
+            <div className="row mb-2 p-4">
                 <div className="col-12">
                     <div className={`alert ${serverStatus === 'connected' ? 'alert-success' : 'alert-warning'} 
                         d-flex align-items-center justify-content-between shadow-sm rounded-4 mb-0`}>
@@ -204,7 +207,7 @@ const TeacherProfile = () => {
             ) : (
                 <div className="row g-2" style={{ height: 'calc(100% - 60px)', overflowY: 'auto' }}>
                     <div className="col-lg-4">
-                        <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div className="container-fluid border-0 shadow-sm rounded-4 overflow-hidden">
                             <div className="card-body p-0">
                                 <div className="bg-primary bg-gradient p-3 text-white text-center">
                                     <div className="position-relative d-inline-block mb-2">
@@ -241,7 +244,7 @@ const TeacherProfile = () => {
                             </div>
                         </div>
 
-                        <div className="card border-0 shadow-sm rounded-4 mt-2">
+                        <div className="container-fluid border-0 shadow-sm rounded-4 mt-2">
                             <div className="card-body p-3">
                                 <h5 className="card-title d-flex align-items-center mb-2">
                                     <i className="bi bi-person-lines-fill me-2 text-primary"></i>
@@ -281,13 +284,58 @@ const TeacherProfile = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="d-flex align-items-center">
+                                        <div className="rounded-4 bg-primary bg-opacity-10 p-2">
+                                            <i className="bi bi-facebook text-primary fs-5"></i>
+                                        </div>
+                                        <div className="ms-2 flex-grow-1">
+                                            <small className="text-muted text-uppercase">Facebook</small>
+                                            <div className="fw-medium">
+                                                {formData.facebook ? (
+                                                    <a 
+                                                        href={formData.facebook.startsWith('http') ? formData.facebook : `https://${formData.facebook}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="d-inline-flex align-items-center text-decoration-none px-3 py-2 rounded-pill"
+                                                        style={{
+                                                            backgroundColor: 'rgba(24, 119, 242, 0.1)',
+                                                            color: '#1877F2',
+                                                            transition: 'all 0.3s ease',
+                                                            maxWidth: '250px',
+                                                            border: '1px solid rgba(24, 119, 242, 0.2)'
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.currentTarget.style.backgroundColor = 'rgba(24, 119, 242, 0.15)';
+                                                            e.currentTarget.style.transform = 'translateY(-1px)';
+                                                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 119, 242, 0.2)';
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.currentTarget.style.backgroundColor = 'rgba(24, 119, 242, 0.1)';
+                                                            e.currentTarget.style.transform = 'none';
+                                                            e.currentTarget.style.boxShadow = 'none';
+                                                        }}
+                                                    >
+                                                        <span className="text-truncate" style={{ maxWidth: '180px' }}>
+                                                            {formData.facebook.replace(/^https?:\/\/(www\.)?(facebook\.com\/)?/, '')}
+                                                        </span>
+                                                        <i className="bi bi-box-arrow-up-right ms-2 opacity-75"></i>
+                                                    </a>
+                                                ) : (
+                                                    <span className="text-muted fst-italic d-flex align-items-center">
+                                                        <i className="bi bi-dash-circle me-1"></i>
+                                                        Not connected
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="col-lg-8">
-                        <div className="card border-0 shadow-sm rounded-4 mb-4">
+                        <div className="container-fluid border-0 shadow-sm rounded-4 mb-4">
                             <div className="card-body p-4">
                                 <h5 className="card-title d-flex align-items-center mb-3">
                                     <i className="bi bi-mortarboard-fill me-2 text-primary"></i>
@@ -320,11 +368,24 @@ const TeacherProfile = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="col-md-6">
+                                        <div className="d-flex align-items-center">
+                                            <div className="rounded-4 bg-primary bg-opacity-10 p-2">
+                                                <i className="bi bi-envelope-fill text-primary fs-5"></i>
+                                            </div>
+                                            <div className="ms-2">
+                                                <small className="text-muted text-uppercase">Email</small>
+                                                <div className="fw-medium">
+                                                    {formData.email || 'Not set'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="card border-0 shadow-sm rounded-4 mb-4">
+                        <div className="container-fluid border-0 shadow-sm rounded-4 mb-4">
                             <div className="card-body p-4">
                                 <h5 className="card-title d-flex align-items-center mb-3">
                                     <i className="bi bi-person-fill me-2 text-primary"></i>
@@ -464,6 +525,18 @@ const TeacherProfile = () => {
                                                 <option value="female">Female</option>
                                                 <option value="other">Other</option>
                                             </select>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label htmlFor="facebook" className="form-label">Facebook</label>
+                                            <input 
+                                                type="text" 
+                                                className="form-control" 
+                                                id="facebook" 
+                                                name="facebook" 
+                                                value={formData.facebook} 
+                                                onChange={handleChange} 
+                                                placeholder="Facebook Profile URL"
+                                            />
                                         </div>
                                         <div className="col-12 d-flex gap-2 justify-content-end">
                                             <button type="submit" className="btn btn-primary px-4" onClick={handleSubmit}>

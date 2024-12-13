@@ -505,7 +505,7 @@ const StudentDashboard = () => {
 
                         <section className="row g-3">
                             <div className="col-md-4">
-                                <div className="card text-center shadow-sm">
+                                <div className="card text-center shadow-sm" style={{ height: '100%' }}>
                                     <div className="card-body">
                                         <h5 className="card-title text-muted">Pending Reviews</h5>
                                         <p className="display-6 fw-bold text-primary">
@@ -515,7 +515,7 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div className="card text-center shadow-sm">
+                                <div className="card text-center shadow-sm" style={{ height: '100%' }}>
                                     <div className="card-body">
                                         <h5 className="card-title text-muted">Approved Chapters</h5>
                                         <p className="display-6 fw-bold text-primary">
@@ -525,7 +525,7 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div className="card text-center shadow-sm">
+                                <div className="card text-center shadow-sm" style={{ height: '100%' }}>
                                     <div className="card-body">
                                         <h5 className="card-title text-muted">Upcoming Defense</h5>
                                         <p className="display-6 fw-bold text-primary fs-3 p-2">March 15, 2024</p>

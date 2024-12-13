@@ -44,7 +44,6 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard' },
         { name: 'My Profile', section: 'profile' },
-        { name: 'Send Gmail', section: 'send-gmail' },
     ];
 
     const thesisManagementItems = [
@@ -121,7 +120,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
             <div className="d-flex flex-column h-100">
                 {/* Header */}
                 <div className="p-4 text-center">
-                    <h5 className="text-white fw-bold mb-0">Student Portal</h5>
+                    <h5 className="text-white text-start fw-bold mb-0 ">Student Portal</h5>
                 </div>
 
                 {/* Navigation Items */}

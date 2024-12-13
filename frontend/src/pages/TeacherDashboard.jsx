@@ -216,7 +216,7 @@ const TeacherDashboard = () => {
             default:
                 return (
                     <>
-                        <header className="header">
+                        <header className="header p-4">
                             <div className="user-info">
                                 <h1>Welcome, {userInfo?.name}</h1>
                                 <p>Teacher ID: {userInfo?.teacherId || 'N/A'}</p>
@@ -302,20 +302,6 @@ const TeacherDashboard = () => {
                                     </table>
                                 )}
                             </section>
-
-                            <section className="notifications-section">
-                                <h2>Notifications ({unreadCount})</h2>
-                                <button className="btn-toggle-notifications" onClick={() => setShowNotifications(!showNotifications)}>
-                                    {showNotifications ? 'Hide' : 'Show'} Notifications
-                                </button>
-                                {showNotifications && (
-                                    <TeacherNotification
-                                        notifications={notifications}
-                                        markAsRead={markAsRead}
-                                    />
-                                )}
-                            </section>
-
                             {feedbackForm.thesisId && renderFeedbackForm()}
                         </section>
                     </>
