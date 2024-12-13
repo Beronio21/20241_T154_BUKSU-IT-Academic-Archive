@@ -275,17 +275,6 @@ const TeacherProfile = () => {
                                     </div>
                                     <div className="d-flex align-items-center">
                                         <div className="rounded-4 bg-primary bg-opacity-10 p-2">
-                                            <i className="bi bi-envelope-fill text-primary fs-5"></i>
-                                        </div>
-                                        <div className="ms-2">
-                                            <small className="text-muted text-uppercase">Email</small>
-                                            <div className="fw-medium">
-                                                {formData.email || 'Not set'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="d-flex align-items-center">
-                                        <div className="rounded-4 bg-primary bg-opacity-10 p-2">
                                             <i className="bi bi-facebook text-primary fs-5"></i>
                                         </div>
                                         <div className="ms-2 flex-grow-1">
