@@ -75,7 +75,7 @@ function Calendar() {
   };
 
   return (
-    <div>
+    <div style={{padding: "10px", marginTop: "20px"}}>
       <Fullcalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView={"dayGridMonth"}
@@ -84,7 +84,7 @@ function Calendar() {
           center: "title",
           end: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        height={"90vh"}
+        height={"75vh"}
         events={events.map(event => ({
           id: event._id, // Add id for deletion
           title: event.title,
