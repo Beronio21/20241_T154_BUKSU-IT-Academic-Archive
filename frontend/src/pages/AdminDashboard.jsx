@@ -5,6 +5,8 @@ import UserManagement from '../UserManagement/UserManagement';
 import StudentRecords from '../Records/StudentRecords';
 import TeacherRecords from '../Records/TeacherRecords';
 import AdminTopbar from '../Topbar/AdminTopbar';
+import AdminNavbar from '../Navbar/AdminNavbar';
+import '../Styles/adminpanel.css';
 
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -197,50 +199,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="d-flex">
-      <div
-        className="bg-dark position-fixed start-0 top-0 vh-100"
-        style={{ width: '250px', boxShadow: '2px 0 5px rgba(0,0,0,0.2)' }}
-      >
-        <div className="d-flex flex-column h-100">
-          <div className="p-4 text-center">
-            <h5 className="text-white fw-bold mb-0">Admin Panel</h5>
-          </div>
-
-          <div className="px-3">
-            <ul className="nav flex-column gap-1">
-              {[
-                { name: 'Dashboard', section: 'dashboard' },
-                { name: 'User Management', section: 'user-management' },
-                { name: 'Student Records', section: 'student-records' },
-                { name: 'Teacher Records', section: 'teacher-records' },
-              ].map((item) => (
-                <li className="nav-item" key={item.section}>
-                  <button
-                    className={`nav-link w-100 text-start rounded ${
-                      activeSection === item.section ? 'active bg-primary text-white' : 'text-white-50'
-                    }`}
-                    onClick={() => handleSectionChange(item.section)}
-                    style={{
-                      transition: 'all 0.2s ease',
-                      padding: '12px 16px',
-                      border: 'none',
-                      backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                    }}
-                  >
-                    {item.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mt-auto p-3" />
-        </div>
-      </div>
-
+      <AdminNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
       <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
         {renderContent()}
       </div>

@@ -416,6 +416,10 @@ const TeacherDashboard = () => {
                 userInfo={userInfo}
                 unreadCount={unreadCount}
                 handleLogout={handleLogout}
+                setShowNotifications={setShowNotifications}
+                showNotifications={showNotifications}
+                notifications={notifications}
+                markAsRead={markAsRead}
             />
             <TeacherNavbar 
                 activeSection={activeSection} 

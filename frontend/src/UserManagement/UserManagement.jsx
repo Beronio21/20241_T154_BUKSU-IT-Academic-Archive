@@ -117,137 +117,90 @@ const UserManagement = () => {
         }
     };
 
+    const renderTable = (users, type) => (
+        <div className="table-section">
+            <h3>{type === 'student' ? 'Students' : 'Teachers'}</h3>
+            <table className={`table table-striped table-bordered ${type}s-table`}>
+                <thead className="thead-dark">
+                    <tr>
+                        <th>{type === 'student' ? 'Student ID' : 'Teacher ID'}</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Password Hash</th>
+                        <th>{type === 'student' ? 'Course' : 'Department'}</th>
+                        {type === 'student' && <th>Year</th>}
+                        <th>Profile Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {Array.isArray(users) && users.map(user => (
+                        <tr key={user._id}>
+                            <td>{user[`${type}_id`] || 'Not set'}</td>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
+                            <td>
+                                <span className="password-hash" title={user.password}>
+                                    {user.password ? '********' : 'Not set'}
+                                </span>
+                            </td>
+                            <td>{user[type === 'student' ? 'course' : 'department'] || 'Not set'}</td>
+                            {type === 'student' && <td>{user.year || 'Not set'}</td>}
+                            <td>
+                                <span className={`badge ${user.isProfileComplete ? 'badge-success' : 'badge-warning'}`}>
+                                    {user.isProfileComplete ? 'Complete' : 'Incomplete'}
+                                </span>
+                            </td>
+                            <td className="action-buttons" style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                <button 
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() => handleView(user)}
+                                    title="View Details"
+                                >
+                                    <i className="fas fa-eye"></i> View
+                                </button>
+                                <button 
+                                    className="btn btn-warning btn-sm"
+                                    onClick={() => handleEdit(user, type)}
+                                    title="Edit User"
+                                >
+                                    <i className="fas fa-edit"></i> Edit
+                                </button>
+                                <button 
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => handleDelete(user._id, type)}
+                                    title="Delete User"
+                                >
+                                    <i className="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+
     const renderContent = () => {
         return (
             <section className="user-management-section">
-                {/* Students Table */}
-                <div className="table-section">
-                    <h3>Students</h3>
-                    <table className="students-table">
-                        <thead>
-                            <tr>
-                                <th>Student ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Password Hash</th>
-                                <th>Course</th>
-                                <th>Year</th>
-                                <th>Profile Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Array.isArray(students) && students.map(student => (
-                                <tr key={student._id}>
-                                    <td>{student.student_id || 'Not set'}</td>
-                                    <td>{student.name}</td>
-                                    <td>{student.email}</td>
-                                    <td>
-                                        <span className="password-hash" title={student.password}>
-                                            {student.password ? '********' : 'Not set'}
-                                        </span>
-                                    </td>
-                                    <td>{student.course || 'Not set'}</td>
-                                    <td>{student.year || 'Not set'}</td>
-                                    <td>
-                                        <span className={`status-badge ${student.isProfileComplete ? 'complete' : 'incomplete'}`}>
-                                            {student.isProfileComplete ? 'Complete' : 'Incomplete'}
-                                        </span>
-                                    </td>
-                                    <td className="action-buttons">
-                                        <button 
-                                            className="btn-view"
-                                            onClick={() => handleView(student)}
-                                            title="View Details"
-                                        >
-                                            <i className="fas fa-eye"></i> View
-                                        </button>
-                                        <button 
-                                            className="btn-edit"
-                                            onClick={() => handleEdit(student, 'student')}
-                                            title="Edit User"
-                                        >
-                                            <i className="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button 
-                                            className="btn-delete"
-                                            onClick={() => handleDelete(student._id, 'student')}
-                                            title="Delete User"
-                                        >
-                                            <i className="fas fa-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Teachers Table */}
-                <div className="table-section">
-                    <h3>Teachers</h3>
-                    <table className="teachers-table">
-                        <thead>
-                            <tr>
-                                <th>Teacher ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Password Hash</th>
-                                <th>Department</th>
-                                <th>Profile Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Array.isArray(teachers) && teachers.map(teacher => (
-                                <tr key={teacher._id}>
-                                    <td>{teacher.teacher_id || 'Not set'}</td>
-                                    <td>{teacher.name}</td>
-                                    <td>{teacher.email}</td>
-                                    <td>
-                                        <span className="password-hash" title={teacher.password}>
-                                            {teacher.password ? '********' : 'Not set'}
-                                        </span>
-                                    </td>
-                                    <td>{teacher.department || 'Not set'}</td>
-                                    <td>
-                                        <span className={`status-badge ${teacher.isProfileComplete ? 'complete' : 'incomplete'}`}>
-                                            {teacher.isProfileComplete ? 'Complete' : 'Incomplete'}
-                                        </span>
-                                    </td>
-                                    <td className="action-buttons">
-                                        <button 
-                                            className="btn-view"
-                                            onClick={() => handleView(teacher)}
-                                            title="View Details"
-                                        >
-                                            <i className="fas fa-eye"></i> View
-                                        </button>
-                                        <button 
-                                            className="btn-edit"
-                                            onClick={() => handleEdit(teacher, 'teacher')}
-                                            title="Edit User"
-                                        >
-                                            <i className="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button 
-                                            className="btn-delete"
-                                            onClick={() => handleDelete(teacher._id, 'teacher')}
-                                            title="Delete User"
-                                        >
-                                            <i className="fas fa-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                {renderTable(students, 'student')}
+                {renderTable(teachers, 'teacher')}
 
                 {isEditing && editingUser && (
                     <div className="edit-modal">
                         <div className="modal-content">
                             <h3>Edit {editingUser.type === 'student' ? 'Student' : 'Teacher'}</h3>
+                            <button 
+                                className="btn-close" 
+                                onClick={() => {
+                                    setIsEditing(false);
+                                    setEditingUser(null);
+                                }}
+                                title="Close"
+                            >
+                                &times; {/* Close icon */}
+                            </button>
                             <form onSubmit={(e) => {
                                 e.preventDefault();
                                 handleUpdate(editingUser._id, editingUser.type, editingUser);

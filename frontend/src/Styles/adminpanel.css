@@ -1,0 +1,51 @@
+.edit-modal {
+    position: fixed; /* Fixed positioning */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000; /* Ensure it appears above other content */
+    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+}
+
+.modal-content {
+    background-color: white; /* White background for the modal */
+    padding: 20px; /* Padding inside the modal */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    max-width: 500px; /* Maximum width of the modal */
+    width: 100%; /* Full width */
+    animation: slideIn 0.3s ease; /* Animation for modal appearance */
+}
+
+/* Keyframes for slide-in animation */
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Close button styles */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa; /* Light gray color */
+}
+
+.close-button:hover {
+    color: #000; /* Darker color on hover */
+}
