@@ -1,115 +1,76 @@
-.notification-container {
-    position: relative;
+/* StudentTopbar.css */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 60px;
+    z-index: 1030;
 }
 
-.notification-badge {
+.logo-container {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #dc3545;
-    color: white;
-    border-radius: 50%;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    min-width: 1.5rem;
-    text-align: center;
-}
-
-.notifications-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 320px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin-top: 10px;
-    z-index: 1000;
-}
-
-.notifications-header {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
+    left: 250px; /* Aligns with sidebar width */
+    height: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 }
 
-.notifications-header h6 {
-    margin: 0;
-    font-weight: 600;
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    max-width: 100%;
 }
 
-.mark-all-read {
+.navbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-icon-button {
     background: none;
     border: none;
-    color: #0d6efd;
-    font-size: 0.875rem;
-    cursor: pointer;
+    color: inherit;
+    padding: 0;
+    position: relative;
 }
 
-.notifications-list {
-    max-height: 400px;
-    overflow-y: auto;
+.nav-icon-button i {
+    font-size: 1.5rem;
 }
 
-.notification-item {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.notification-item:hover {
-    background-color: #f8f9fa;
-}
-
-.notification-item.unread {
-    background-color: #f0f7ff;
-}
-
-.notification-item.unread:hover {
-    background-color: #e6f0ff;
-}
-
-.notification-title {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.notification-message {
-    font-size: 0.875rem;
-    color: #666;
-    margin-bottom: 0.25rem;
-}
-
-.notification-time {
-    font-size: 0.75rem;
-    color: #999;
-}
-
-.notifications-footer {
-    padding: 0.75rem;
-    border-top: 1px solid #eee;
-    text-align: center;
-}
-
-.view-all {
+.profile-dropdown-toggle {
     background: none;
     border: none;
-    color: #0d6efd;
-    font-size: 0.875rem;
-    cursor: pointer;
-    width: 100%;
-    padding: 0.5rem;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    padding: 0;
 }
 
-.view-all:hover {
-    background-color: #f8f9fa;
+/* Keep your existing notification styles from StudentTopbar.css */
+.notification-container { /* ... */ }
+.notification-badge { /* ... */ }
+.notifications-dropdown { /* ... */ }
+/* ... rest of your notification styles ... */
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+    .logo-container {
+        left: 1rem;
+    }
+
+    .navbar-logo {
+        height: 35px;
+    }
 }
 
-.no-notifications {
-    padding: 2rem;
-    text-align: center;
-    color: #666;
-} 
+@media (max-width: 576px) {
+    .navbar-logo {
+        height: 30px;
+    }
+
+    .profile-dropdown-toggle span {
+        display: none;
+    }
+}

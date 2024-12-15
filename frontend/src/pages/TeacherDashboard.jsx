@@ -177,26 +177,99 @@ const TeacherDashboard = () => {
         }
     };
 
-    const renderFeedbackForm = () => (
-        <div>
-            <h3>Add Feedback</h3>
-            <textarea
-                value={feedbackForm.comment}
-                onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
-                placeholder="Enter your feedback"
-            />
-            <select
-                value={feedbackForm.status}
-                onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
-            >
-                <option value="">Select Status</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-                <option value="revision">Revision</option>
-            </select>
-            <button onClick={handleFeedbackSubmit}>Submit Feedback</button>
-        </div>
-    );
+    const renderFeedbackForm = () => {
+        const modalStyles = {
+            borderRadius: '10px',
+            overflow: 'hidden',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#ffffff',
+        };
+
+        const dialogStyles = {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+        };
+
+        const headerStyles = {
+            backgroundColor: '#f8f9fa',
+            borderBottom: 'none',
+            padding: '20px',
+        };
+
+        const titleStyles = {
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+        };
+
+        const textareaStyles = {
+            borderRadius: '5px',
+            border: '1px solid #ced4da',
+            padding: '10px',
+            fontSize: '1rem',
+            resize: 'none',
+            width: '100%',
+        };
+
+        const selectStyles = {
+            borderRadius: '5px',
+            border: '1px solid #ced4da',
+            padding: '10px',
+            fontSize: '1rem',
+            width: '100%',
+            marginTop: '1rem',
+        };
+
+        const footerStyles = {
+            borderTop: 'none',
+            padding: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+        };
+
+        const buttonPrimaryStyles = {
+            backgroundColor: '#007bff',
+            borderColor: '#007bff',
+            transition: 'background-color 0.3s ease',
+        };
+
+        return (
+            <div className="modal fade" id="feedbackModal" tabIndex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg" style={dialogStyles}>
+                    <div className="modal-content" style={modalStyles}>
+                        <div className="modal-header" style={headerStyles}>
+                            <h5 className="modal-title" id="feedbackModalLabel" style={titleStyles}>Add Feedback</h5>
+                        </div>
+                        <div className="modal-body">
+                            <textarea
+                                className="form-control"
+                                style={textareaStyles}
+                                value={feedbackForm.comment}
+                                onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
+                                placeholder="Enter your feedback"
+                            />
+                            <select
+                                className="form-select"
+                                style={selectStyles}
+                                value={feedbackForm.status}
+                                onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
+                            >
+                                <option value="">Select Status</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="revision">Revision</option>
+                            </select>
+                        </div>
+                        <div className="modal-footer" style={footerStyles}>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" style={buttonPrimaryStyles} onClick={handleFeedbackSubmit}>Submit Feedback</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     const renderContent = () => {
         switch(activeSection) {
@@ -216,127 +289,153 @@ const TeacherDashboard = () => {
             default:
                 return (
                     <>
-                        <header className="header p-4">
-                            <div className="user-info">
-                                <h1>Welcome, {userInfo?.name}</h1>
-                                <p>Teacher ID: {userInfo?.teacherId || 'N/A'}</p>
-                            </div>
-                            <img className="profile-picture" src={userInfo?.image} alt={userInfo?.name} />
-                        </header>
+                        <div className="container mt-0 p-1 py-3">
+                            <header className="d-flex justify-content-between align-items-center border rounded p-5 shadow-sm">
+                                <div className="user-info">
+                                    <h1 className="h4">Welcome, {userInfo?.name}</h1>
+                                    <p className="mb-0">Teacher ID: {userInfo?.teacherId || 'N/A'}</p>
+                                </div>
+                                <div className="profile-picture-container rounded-circle overflow-hidden" style={{ width: '80px', height: '80px' }}>
+                                    <img
+                                        className="img-fluid"
+                                        src={userInfo?.image || '/default-avatar.png'}
+                                        alt={userInfo?.name || 'User Avatar'}
+                                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                    />
+                                </div>
+                            </header>
+                        </div>
 
-                        <section className="status-cards">
-                            <div className="status-card">
-                                <h3>Pending Reviews</h3>
-                                <p className="count">
-                                    {submissions.filter(sub => sub.status === 'pending').length}
-                                </p>
+                        <section className="row g-3">
+                            <div className="col-md-4">
+                                <div className="card text-center shadow-sm" style={{ height: '100%' }}>
+                                    <div className="card-body">
+                                        <h5 className="card-title text-muted">Pending Reviews</h5>
+                                        <p className="display-6 fw-bold text-primary">
+                                            {submissions.filter(sub => sub.status === 'pending').length}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="status-card">
-                                <h3>Students Assigned</h3>
-                                <p className="count">{submissions.length}</p>
+                            <div className="col-md-4">
+                                <div className="card text-center shadow-sm" style={{ height: '100%' }}>
+                                    <div className="card-body">
+                                        <h5 className="card-title text-muted">Students Assigned</h5>
+                                        <p className="display-6 fw-bold text-primary">
+                                            {submissions.length}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="status-card">
-                                <h3>Upcoming Defenses</h3>
-                                <p className="count">3</p>
+                            <div className="col-md-4">
+                                <div className="card text-center shadow-sm" style={{ height: '100%' }}>
+                                    <div className="card-body">
+                                        <h5 className="card-title text-muted">Upcoming Defenses</h5>
+                                        <p className="display-6 fw-bold text-primary">3</p>
+                                    </div>
+                                </div>
                             </div>
                         </section>
 
-                        <section className="dashboard-sections">
-                            <section className="submissions-section">
-                                <h2>Recent Submissions to Review</h2>
-                                {loading ? (
-                                    <p>Loading submissions...</p>
-                                ) : (
-                                    <table className="submissions-table">
-                                        <thead>
+                        <section className="submissions-section">
+                            <h2>Recent Submissions to Review</h2>
+                            {loading ? (
+                                <div className="loading-spinner">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <table className="submissions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Members</th>
+                                            <th>Student Email</th>
+                                            <th>Submission Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {submissions.filter(sub => sub.status === 'pending').length === 0 ? (
                                             <tr>
-                                                <th>Title</th>
-                                                <th>Members</th>
-                                                <th>Student Email</th>
-                                                <th>Submission Date</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
+                                                <td colSpan="6" style={{textAlign: 'center'}}>
+                                                    No pending submissions to review
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {submissions.filter(sub => sub.status === 'pending').length === 0 ? (
-                                                <tr>
-                                                    <td colSpan="6" style={{textAlign: 'center'}}>
-                                                        No pending submissions to review
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                submissions
-                                                    .filter(sub => sub.status === 'pending')
-                                                    .map((submission) => (
-                                                        <tr key={submission._id}>
-                                                            <td>{submission.title}</td>
-                                                            <td>{submission.members.join(', ')}</td>
-                                                            <td>{submission.email || 'N/A'}</td>
-                                                            <td>{formatDate(submission.createdAt)}</td>
-                                                            <td>
-                                                                <span className={`status-${submission.status.toLowerCase()}`}>
-                                                                    {submission.status}
-                                                                </span>
-                                                            </td>
-                                                            <td>
+                                        ) : (
+                                            submissions
+                                                .filter(sub => sub.status === 'pending')
+                                                .map((submission) => (
+                                                    <tr key={submission._id}>
+                                                        <td>{submission.title}</td>
+                                                        <td>{submission.members.join(', ')}</td>
+                                                        <td>{submission.email || 'N/A'}</td>
+                                                        <td>{formatDate(submission.createdAt)}</td>
+                                                        <td>
+                                                            <span className={`status-${submission.status.toLowerCase()}`}>
+                                                                {submission.status}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div className="action-buttons" style={{ display: 'flex', gap: '5px' }}>
                                                                 <a 
                                                                     href={submission.docsLink}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="btn-view"
+                                                                    className="btn btn-primary"
                                                                 >
                                                                     View
                                                                 </a>
                                                                 <button 
-                                                                    className="btn-feedback"
+                                                                    className="btn btn-success"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#feedbackModal"
                                                                     onClick={() => setFeedbackForm({ ...feedbackForm, thesisId: submission._id })}
                                                                 >
-                                                                    Add Feedback
+                                                                    Feedback
                                                                 </button>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                            )}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </section>
-                            {feedbackForm.thesisId && renderFeedbackForm()}
+                                                            </div>
+                                                        </td>
+                                                    </tr>                                                ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            )}
                         </section>
+                        {feedbackForm.thesisId && renderFeedbackForm()}
                     </>
                 );
         }
     };
 
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex">
             <TeacherTopbar 
                 userInfo={userInfo}
                 unreadCount={unreadCount}
                 handleLogout={handleLogout}
             />
-            <div className="d-flex flex-grow-1">
-                <TeacherNavbar 
-                    activeSection={activeSection} 
-                    handleSectionChange={handleSectionChange} 
-                />
-                
-                {/* Main Content */}
-                <div className="flex-grow-1 p-4">
-                    <Routes>
-                        <Route path="/dashboard" element={renderContent()} />
-                        <Route path="/profile" element={<TeacherProfile userInfo={userInfo} />} />
-                        <Route path="/defenseschedule" element={<DefenseSchedule />} />
-                        <Route path="/review-submissions" element={<ReviewSubmission />} />
-                        <Route path="/comment-docs" element={<CommentDocs />} />
-                        <Route path="/docs" element={<Docs />} />
-                        <Route path="/calendar" element={<Calendar />} />
-                        <Route path="/send-gmail" element={<SendGmail />} />
-                        <Route path="/schedule" element={<ScheduleTable />} />
-                        <Route path="*" element={<Navigate to="/teacher-dashboard/dashboard" replace />} />
-                    </Routes>
-                </div>
+            <TeacherNavbar 
+                activeSection={activeSection} 
+                handleSectionChange={handleSectionChange} 
+            />
+            
+            {/* Main Content */}
+            <div style={{marginLeft: '250px'}} className="flex-grow-1 p-4">
+                <Routes>
+                    <Route path="/dashboard" element={renderContent()} />
+                    <Route path="/profile" element={<TeacherProfile userInfo={userInfo} />} />
+                    <Route path="/defenseschedule" element={<DefenseSchedule />} />
+                    <Route path="/review-submissions" element={<ReviewSubmission />} />
+                    <Route path="/comment-docs" element={<CommentDocs />} />
+                    <Route path="/docs" element={<Docs />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/send-gmail" element={<SendGmail />} />
+                    <Route path="/schedule" element={<ScheduleTable />} />
+                    <Route path="*" element={<Navigate to="/teacher-dashboard/dashboard" replace />} />
+                </Routes>
             </div>
         </div>
     );

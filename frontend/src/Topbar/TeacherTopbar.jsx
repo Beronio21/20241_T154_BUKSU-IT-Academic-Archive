@@ -67,7 +67,7 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                     {/* Notifications Dropdown */}
                     <div className="dropdown">
                         <button 
-                            className="btn p-0 me-5 text-black fs-4 position-relative" 
+                            className="btn p-0 me-5 text-black fs-5 position-relative" 
                             title="Notifications"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
@@ -75,7 +75,7 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                         >
                             <i className="bi bi-bell"></i>
                             {unreadCount > 0 && (
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span className="position-absolute top-0 fs-10 start-100 translate-middle badge rounded-pill bg-danger">
                                     {unreadCount > 99 ? '99+' : unreadCount}
                                     <span className="visually-hidden">unread notifications</span>
                                 </span>

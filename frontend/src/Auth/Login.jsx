@@ -106,6 +106,7 @@ const GoogleLogin = () => {
   return (
     <section className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="login-container shadow-lg p-4 rounded">
+        
         <h3 className="text-center mb-4 fw-bold">Login</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-group mb-3">
