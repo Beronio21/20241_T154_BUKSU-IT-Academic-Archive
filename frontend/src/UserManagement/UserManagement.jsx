@@ -8,6 +8,8 @@ const UserManagement = () => {
     const [editingUser, setEditingUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [isViewing, setIsViewing] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -52,8 +54,8 @@ const UserManagement = () => {
     };
 
     const handleView = (user) => {
-        // You can implement a modal or redirect to a detailed view
-        console.log('Viewing user:', user);
+        setSelectedUser(user);
+        setIsViewing(true);
     };
 
     const handleEdit = async (user, type) => {
@@ -319,6 +321,30 @@ const UserManagement = () => {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                )}
+
+                {isViewing && selectedUser && (
+                    <div className="view-modal">
+                        <div className="modal-content">
+                            <h3>User Details</h3>
+                            <div>
+                                <p><strong>ID:</strong> {selectedUser[`${selectedUser.type}_id`]}</p>
+                                <p><strong>Name:</strong> {selectedUser.name}</p>
+                                <p><strong>Email:</strong> {selectedUser.email}</p>
+                                <p><strong>Type:</strong> {selectedUser.type}</p>
+                                {/* Add more fields as necessary */}
+                            </div>
+                            <button 
+                                className="btn-close" 
+                                onClick={() => {
+                                    setIsViewing(false);
+                                    setSelectedUser(null);
+                                }}
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 )}
