@@ -16,7 +16,7 @@ const SubmitThesis = () => {
     useEffect(() => {
         const userInfoString = localStorage.getItem('user-info');
         console.log('Raw user info from localStorage:', userInfoString);
-        
+
         if (userInfoString) {
             const userInfo = JSON.parse(userInfoString);
             console.log('Parsed user info:', userInfo);
@@ -25,7 +25,7 @@ const SubmitThesis = () => {
 
     const handleInputChange = (e, index = null) => {
         const { name, value } = e.target;
-        
+
         if (name === 'members' && index !== null) {
             const updatedMembers = [...formData.members];
             updatedMembers[index] = value;
@@ -94,7 +94,7 @@ const SubmitThesis = () => {
 
         try {
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
-            
+
             const submissionData = {
                 title: formData.title,
                 members: formData.members.filter(member => member.trim() !== ''),
@@ -109,7 +109,7 @@ const SubmitThesis = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userInfo.token}`
+                    'Authorization': `Bearer ${userInfo.token}` // Authorization Logic
                 },
                 body: JSON.stringify(submissionData)
             });
@@ -138,120 +138,157 @@ const SubmitThesis = () => {
     };
 
     return (
-        <div className="submit-thesis-container">
-            <h2>Submit Thesis</h2>
-            <button
-                type="button"
-                onClick={() => {
-                    const userInfo = JSON.parse(localStorage.getItem('user-info'));
-                    console.log('Current user info:', userInfo);
-                    alert(`
-                        User ID: ${userInfo?.id || 'Not found'}
-                        User _id: ${userInfo?._id || 'Not found'}
-                        userId: ${userInfo?.userId || 'Not found'}
-                        Role: ${userInfo?.role || 'Not found'}
-                    `);
-                }}
-                className="btn btn-secondary mb-3"
-            >
-                Debug User Info
-            </button>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Thesis Title:</label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Enter thesis title"
-                    />
-                </div>
+        <div className="submit-thesis-container container mt-4">
+            <h2 className="mb-4">Submit Thesis</h2>
 
-                <div className="form-group">
-                    <label>Members:</label>
-                    {formData.members.map((member, index) => (
-                        <div key={index} className="member-input">
+            <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
+                <div className="row mb-3">
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label htmlFor="title">Thesis Title:</label>
                             <input
                                 type="text"
+                                id="title"
+                                name="title"
+                                className="form-control"
+                                value={formData.title}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="Enter thesis title"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label htmlFor="adviserEmail">Adviser Email:</label>
+                            <input
+                                type="email"
+                                id="adviserEmail"
+                                name="adviserEmail"
+                                className="form-control"
+                                value={formData.adviserEmail}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="Enter adviser's email"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-group mb-4">
+                    <label htmlFor="members" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Members:</label>
+                    {formData.members.map((member, index) => (
+                        <div key={index} className="mb-3 position-relative">
+                            <input
+                                type="text"
+                                className="form-control"
                                 name="members"
                                 value={member}
                                 onChange={(e) => handleInputChange(e, index)}
                                 placeholder="Enter member name"
                                 required
+                                style={{
+                                    borderRadius: '8px',
+                                    padding: '0.8rem 1.2rem',
+                                    border: '1px solid #ccc',
+                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                                    transition: 'border-color 0.3s ease',
+                                    outline: 'none',
+                                    fontSize: '1rem',
+                                }}
+                                onFocus={(e) => e.target.style.borderColor = '#007BFF'}
+                                onBlur={(e) => e.target.style.borderColor = '#ccc'}
                             />
-                            {formData.members.length > 1 && (
-                                <button 
-                                    type="button" 
-                                    onClick={() => removeMember(index)}
-                                    className="remove-member"
-                                >
-                                    Remove
-                                </button>
-                            )}
+                            <span
+                                onClick={() => removeMember(index)}
+                                className="text-danger position-absolute"
+                                style={{
+                                    top: '50%',
+                                    right: '10px',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '500',
+                                    textDecoration: 'none',
+                                    padding: '0.2rem 0.5rem',
+                                    transition: 'background-color 0.3s ease, color 0.3s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.color = '#fff';
+                                    e.target.style.backgroundColor = '#dc3545';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.color = 'red';
+                                    e.target.style.backgroundColor = 'transparent';
+                                }}
+                            >
+                                <i className="fas fa-trash-alt me-1"></i> Remove
+                            </span>
                         </div>
                     ))}
-                    <button 
-                        type="button" 
-                        onClick={addMember}
-                        className="add-member"
-                    >
-                        Add Member
-                    </button>
+                    <div className="d-flex justify-content-start mb-3">
+                        <button
+                            type="button"
+                            onClick={addMember}
+                            className="btn btn-outline-primary"
+                            style={{
+                                padding: '0.6rem 1.5rem',
+                                borderRadius: '8px',
+                                fontWeight: '600',
+                                fontSize: '1rem',
+                                backgroundColor: 'transparent',
+                                borderColor: '#007BFF',
+                                color: '#007BFF',
+                                transition: 'all 0.3s ease',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                            onMouseEnter={(e) => e.target.style.borderColor = '#0056b3'}
+                            onMouseLeave={(e) => e.target.style.borderColor = '#007BFF'}
+                        >
+                            <i className="fas fa-plus me-2"></i> Add Member
+                        </button>
+                    </div>
                 </div>
 
-                <div className="form-group">
-                    <label>Adviser Email:</label>
-                    <input
-                        type="email"
-                        name="adviserEmail"
-                        value={formData.adviserEmail}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Enter adviser's email"
-                    />
-                </div>
-
-                <div className="form-group">
+                <div className="form-group mb-3">
                     <label>Document Link:</label>
-                    <div className="document-link-container">
-                        <span className="docs-link-display">
+                    <div className="d-flex align-items-center">
+                        <span className="me-3">
                             {formData.docsLink || 'No document selected'}
                         </span>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={handleOpenPicker}
-                            className="btn btn-primary mt-2"
+                            className="btn btn-outline-info btn-sm"
                         >
                             Select from Google Drive
                         </button>
                     </div>
-                    <span className="or-text">or</span>
-                    <div className="file-input-container">
-                        <label className="file-input-label">
-                            <input 
-                                type="file" 
-                                onChange={handleFileChange} 
-                                className="file-input"
-                            />
-                            Choose File
-                        </label>
+                    <span className="d-block my-2 text-center">or</span>
+                    <div className="file-input-container text-center">
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            className="form-control-file"
+                        />
                     </div>
                 </div>
 
-                <button 
-                    type="submit" 
-                    className="submit-button"
+                <button
+                    type="submit"
+                    className="btn btn-success btn-lg w-100"
                     disabled={loading}
                 >
                     {loading ? 'Submitting...' : 'Submit Thesis'}
                 </button>
 
-                {error && <div className="error-message">{error}</div>}
+                {error && <div className="text-danger mt-3">{error}</div>}
             </form>
         </div>
     );
 };
 
-export default SubmitThesis; 
+export default SubmitThesis;
