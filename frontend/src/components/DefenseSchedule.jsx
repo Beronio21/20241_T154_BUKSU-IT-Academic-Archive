@@ -16,7 +16,7 @@ const DefenseSchedule = () => {
   }, []);
 
   const readGoogleSheet = () => {
-    fetch("https://sheetdb.io/api/v1/59dowe84yclm3")
+    fetch("https://sheetdb.io/api/v1/bchqlswcgjp3m")
       .then((response) => response.json())
       .then((data) => {
         console.log('Fetched data:', data);

@@ -7,7 +7,7 @@ const ScheduleTable = () => {
 
     useEffect(() => {
         // Fetch schedules from your API or data source
-        fetch("https://sheetdb.io/api/v1/59dowe84yclm3")
+        fetch("https://sheetdb.io/api/v1/bchqlswcgjp3m")
             .then((response) => response.json())
             .then((data) => {
                 setSchedules(data);
