@@ -6,6 +6,7 @@ import StudentRecords from '../Records/StudentRecords';
 import TeacherRecords from '../Records/TeacherRecords';
 import AdminTopbar from '../Topbar/AdminTopbar';
 import AdminNavbar from '../Navbar/AdminNavbar';
+import AdminRegister from '../Auth/AdminRegister';
 import '../Styles/adminpanel.css';
 
 const AdminDashboard = () => {
@@ -104,6 +105,8 @@ const AdminDashboard = () => {
         return <StudentRecords />;
       case 'teacher-records':
         return <TeacherRecords />;
+      case 'admin-register':
+        return <AdminRegister />;
       case 'dashboard':
       default:
         return (

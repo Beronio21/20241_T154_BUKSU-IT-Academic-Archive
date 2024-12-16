@@ -33,6 +33,7 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
     { name: 'User Management', section: 'user-management' },
     { name: 'Student Records', section: 'student-records' },
     { name: 'Teacher Records', section: 'teacher-records' },
+    { name: 'Admin Register', section: 'admin-register' },
   ];
 
   const renderNavItem = (item) => (
