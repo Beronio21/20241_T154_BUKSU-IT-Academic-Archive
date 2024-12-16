@@ -43,7 +43,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     ];
 
     const additionalNavItems = [
-        { name: 'Calendar', section: 'calendar' },
+        
         { name: 'Schedule', section: 'schedule' },
     ];
 
