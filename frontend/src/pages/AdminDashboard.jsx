@@ -36,9 +36,10 @@ const AdminDashboard = () => {
 
     const handlePopState = () => {
       window.history.pushState(null, null, window.location.pathname);
-      if (window.confirm('Are you sure you want to leave this page?')) {
-        handleLogout();
-      }
+      // Removed logout confirmation
+      // if (window.confirm('Are you sure you want to leave this page?')) {
+      //   handleLogout();
+      // }
     };
 
     window.history.pushState(null, null, window.location.pathname);
