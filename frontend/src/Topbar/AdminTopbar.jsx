@@ -19,7 +19,7 @@ const AdminTopbar = ({ userInfo }) => {
                 <img 
                         src="/path/to/logo.png"
                         alt="Logo"
-                        style={{ height: '40px', marginRight: '64rem' }}
+                        style={{ height: '40px', marginRight: '64crem' }}
                     />
                     {/* User Profile Dropdown */}
                     <div className="dropdown">
@@ -48,15 +48,6 @@ const AdminTopbar = ({ userInfo }) => {
                                 >
                                     <i className="bi bi-person me-2 fs-5"></i>
                                     Profile
-                                </button>
-                            </li>
-                            <li>
-                                <button 
-                                    className="dropdown-item" 
-                                    onClick={() => navigate('/admin-dashboard/settings')}
-                                >
-                                    <i className="bi bi-gear me-2 fs-5"></i>
-                                    Settings
                                 </button>
                             </li>
                             <li><hr className="dropdown-divider" /></li>
