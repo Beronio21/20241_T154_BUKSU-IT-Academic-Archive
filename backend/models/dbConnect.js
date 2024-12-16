@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI, {
+        const conn = await mongoose.connect(process.env.DB_URL, {
             serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
             socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
             autoIndex: true, // Build indexes
@@ -17,13 +17,14 @@ const connectDB = async () => {
         console.log(`MongoDB Connected: ${conn.connection.host}`);
         
         // Handle connection events
-        mongoose.connection.on('error22', err => {
+        mongoose.connection.on('error', err => {
             console.error('MongoDB connection error:', err);
         });
-2
+
         mongoose.connection.on('disconnected', () => {
             console.log('MongoDB disconnected');
         });
+    
 
         mongoose.connection.on('connected', () => {
             console.log('MongoDB connected');
