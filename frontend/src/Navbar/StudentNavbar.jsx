@@ -39,7 +39,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const thesisManagementItems = [
         { name: 'Submit Thesis', section: 'submit-thesis' },
         { name: 'View Thesis', section: 'docs' },
-        { name: 'Edit Thesis', section: 'edit-thesis' },
+        
     ];
 
     const additionalNavItems = [
