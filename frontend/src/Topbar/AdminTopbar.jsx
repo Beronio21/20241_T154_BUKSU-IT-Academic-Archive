@@ -16,11 +16,7 @@ const AdminTopbar = ({ userInfo }) => {
         <nav className="navbar fixed-top navbar-expand-lg">
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
-                <img 
-                        src="/path/to/logo.png"
-                        alt="Logo"
-                        style={{ height: '40px', marginRight: '64crem' }}
-                    />
+                
                     {/* User Profile Dropdown */}
                     <div className="dropdown">
                         <button 

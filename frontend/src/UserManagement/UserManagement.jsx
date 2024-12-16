@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
@@ -17,7 +16,6 @@ const UserManagement = () => {
 
     const fetchData = async () => {
         try {
-            // Get auth token from localStorage
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
             const config = {
                 headers: {
@@ -29,7 +27,6 @@ const UserManagement = () => {
             const studentRes = await axios.get('http://localhost:8080/api/students', config);
             const teacherRes = await axios.get('http://localhost:8080/api/teachers', config);
 
-            // Update to handle direct array responses
             if (Array.isArray(studentRes.data)) {
                 setStudents(studentRes.data);
             } else {
@@ -78,8 +75,6 @@ const UserManagement = () => {
                 : `http://localhost:8080/api/teachers/${userId}`;
 
             await axios.put(endpoint, updatedData, config);
-            
-            // Refresh the data after update
             fetchData();
             setIsEditing(false);
             setEditingUser(null);
@@ -109,8 +104,6 @@ const UserManagement = () => {
                 : `http://localhost:8080/api/teachers/${userId}`;
 
             await axios.delete(endpoint, config);
-            
-            // Refresh the data after successful deletion
             fetchData();
             alert('User deleted successfully');
         } catch (error) {
@@ -149,29 +142,38 @@ const UserManagement = () => {
                             <td>{user[type === 'student' ? 'course' : 'department'] || 'Not set'}</td>
                             {type === 'student' && <td>{user.year || 'Not set'}</td>}
                             <td>
-                                <span className={`badge ${user.isProfileComplete ? 'badge-success' : 'badge-warning'}`}>
+                                <span
+                                    className={`badge ${user.isProfileComplete ? 'badge-success' : 'badge-danger'}`}
+                                    style={{
+                                        fontSize: '1rem',  // Increase font size
+                                        color: user.isProfileComplete ? '' : 'black'  // Set color to black for Incomplete
+                                    }}
+                                >
                                     {user.isProfileComplete ? 'Complete' : 'Incomplete'}
                                 </span>
                             </td>
                             <td className="action-buttons" style={{ display: 'flex', justifyContent: 'space-around' }}>
                                 <button 
-                                    className="btn btn-primary btn-sm"
+                                    className="btn btn-primary btn-xs"
                                     onClick={() => handleView(user)}
                                     title="View Details"
+                                    style={{ marginRight: '5px', padding: '2px 5px' }}
                                 >
                                     <i className="fas fa-eye"></i> View
                                 </button>
                                 <button 
-                                    className="btn btn-warning btn-sm"
+                                    className="btn btn-warning btn-xs"
                                     onClick={() => handleEdit(user, type)}
                                     title="Edit User"
+                                    style={{ marginRight: '5px', padding: '2px 5px' }}
                                 >
                                     <i className="fas fa-edit"></i> Edit
                                 </button>
                                 <button 
-                                    className="btn btn-danger btn-sm"
+                                    className="btn btn-danger btn-xs"
                                     onClick={() => handleDelete(user._id, type)}
                                     title="Delete User"
+                                    style={{ padding: '2px 5px' }}
                                 >
                                     <i className="fas fa-trash"></i> Delete
                                 </button>
@@ -201,7 +203,7 @@ const UserManagement = () => {
                                 }}
                                 title="Close"
                             >
-                                &times; {/* Close icon */}
+                                &times;
                             </button>
                             <form onSubmit={(e) => {
                                 e.preventDefault();
@@ -306,12 +308,12 @@ const UserManagement = () => {
                                 </div>
 
                                 <div className="modal-buttons">
-                                    <button type="submit" className="btn-save">
+                                    <button type="submit" className="btn btn-save btn-sm">
                                         Save Changes
                                     </button>
                                     <button 
                                         type="button" 
-                                        className="btn-cancel"
+                                        className="btn btn-cancel btn-sm"
                                         onClick={() => {
                                             setIsEditing(false);
                                             setEditingUser(null);
@@ -334,7 +336,6 @@ const UserManagement = () => {
                                 <p><strong>Name:</strong> {selectedUser.name}</p>
                                 <p><strong>Email:</strong> {selectedUser.email}</p>
                                 <p><strong>Type:</strong> {selectedUser.type}</p>
-                                {/* Add more fields as necessary */}
                             </div>
                             <button 
                                 className="btn-close" 
@@ -353,14 +354,18 @@ const UserManagement = () => {
     };
 
     return (
-        <div className="dashboard-container">
-            <main className="main-content">
-                {students.length === 0 && teachers.length === 0 ? (
-                    <div className="loading">Loading users...</div>
-                ) : (
-                    renderContent()
-                )}
-            </main>
+        <div className="container-fluid">
+            <div className="row justify-content-center">
+                <div className="col-lg-10 col-md-12">
+                    <main className="main-content">
+                        {students.length === 0 && teachers.length === 0 ? (
+                            <div className="loading">Loading users...</div>
+                        ) : (
+                            renderContent()
+                        )}
+                    </main>
+                </div>
+            </div>
         </div>
     );
 };

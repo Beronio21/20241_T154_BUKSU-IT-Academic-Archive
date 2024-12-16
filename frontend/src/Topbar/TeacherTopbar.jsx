@@ -65,11 +65,7 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         <nav className="navbar fixed-top navbar-expand-lg">
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
-                    <img 
-                        src="/path/to/logo.png"
-                        alt="Logo"
-                        style={{ height: '40px', marginRight: '60rem' }}
-                    />
+                   
                     <button 
                         className="p-0 me-3 position-relative" 
                         title="Messages"

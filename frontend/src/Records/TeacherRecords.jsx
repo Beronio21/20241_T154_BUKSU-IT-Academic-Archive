@@ -48,13 +48,33 @@ const TeacherRecords = () => {
             <header className="records-header">
                 <h2>Teacher Records</h2>
                 <div className="header-actions">
-                    <div className="search-bar">
+                    <div className="search-bar" style={{ position: 'relative' }}>
                         <input
                             type="text"
                             placeholder="Search by name or ID..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                padding: '10px 15px 10px 35px', // Space for the icon
+                                fontSize: '16px',
+                                border: '1px solid #ccc',
+                                borderRadius: '25px',
+                                outline: 'none',
+                                width: '250px',
+                                backgroundColor: '#f9f9f9', // Light background
+                            }}
                         />
+                        <i
+                            className="bi bi-search"
+                            style={{
+                                position: 'absolute',
+                                left: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                fontSize: '18px',
+                                color: '#006BB2', // Icon color
+                            }}
+                        ></i>
                     </div>
                 </div>
             </header>
@@ -109,49 +129,54 @@ const TeacherRecords = () => {
                     </table>
 
                     {selectedTeacher && (
-                        <div className="teacher-details-modal">
-                            <div className="modal-content">
-                                <h3>Teacher Details</h3>
-                                <div className="details-grid">
-                                    <div className="detail-item">
-                                        <label>Teacher ID:</label>
-                                        <span>{selectedTeacher.teacher_id}</span>
+                        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title text-center py-56">Teacher Details</h5>
                                     </div>
-                                    <div className="detail-item">
-                                        <label>Name:</label>
-                                        <span>{selectedTeacher.name}</span>
+                                    <div className="modal-body text-center">
+                                        <div className="details-grid">
+                                            <div className="detail-item">
+                                                <label>Teacher ID:</label>
+                                                <span>{selectedTeacher.teacher_id}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Name:</label>
+                                                <span>{selectedTeacher.name}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Email:</label>
+                                                <span>{selectedTeacher.email}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Department:</label>
+                                                <span>{selectedTeacher.department}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Specialization:</label>
+                                                <span>{selectedTeacher.specialization}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Contact Number:</label>
+                                                <span>{selectedTeacher.contact_number || 'Not provided'}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Office Location:</label>
+                                                <span>{selectedTeacher.office_location || 'Not provided'}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <label>Advisees Count:</label>
+                                                <span>{selectedTeacher.advisees_count || '0'}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="detail-item">
-                                        <label>Email:</label>
-                                        <span>{selectedTeacher.email}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <label>Department:</label>
-                                        <span>{selectedTeacher.department}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <label>Specialization:</label>
-                                        <span>{selectedTeacher.specialization}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <label>Contact Number:</label>
-                                        <span>{selectedTeacher.contact_number || 'Not provided'}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <label>Office Location:</label>
-                                        <span>{selectedTeacher.office_location || 'Not provided'}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <label>Advisees Count:</label>
-                                        <span>{selectedTeacher.advisees_count || '0'}</span>
+                                    <div className="modal-footer">
+                                        <button className="btn btn-secondary" onClick={() => setSelectedTeacher(null)}>
+                                            Close
+                                        </button>
                                     </div>
                                 </div>
-                                <button
-                                    className="btn-close"
-                                    onClick={() => setSelectedTeacher(null)}
-                                >
-                                    Close
-                                </button>
                             </div>
                         </div>
                     )}
@@ -161,4 +186,4 @@ const TeacherRecords = () => {
     );
 };
 
-export default TeacherRecords; 
+export default TeacherRecords;
