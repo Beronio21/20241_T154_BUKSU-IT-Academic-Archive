@@ -154,15 +154,6 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                                     Profile
                                 </button>
                             </li>
-                            <li>
-                                <button 
-                                    className="dropdown-item" 
-                                    onClick={() => navigate('/teacher-dashboard/settings')}
-                                >
-                                    <i className="bi bi-gear me-2 fs-5"></i>
-                                    Settings
-                                </button>
-                            </li>
                             <li><hr className="dropdown-divider" /></li>
                             <li>
                                 <button className="dropdown-item text-danger" onClick={handleLogout}>

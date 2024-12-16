@@ -162,12 +162,6 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                                     Profile
                                 </a>
                             </li>
-                            <li>
-                                <a className="dropdown-item" href="/settings">
-                                    <i className="bi bi-gear me-2 fs-5"></i>
-                                    Settings
-                                </a>
-                            </li>
                             <li><hr className="dropdown-divider" /></li>
                             <li>
                                 <button className="dropdown-item text-danger" onClick={handleLogout}>
