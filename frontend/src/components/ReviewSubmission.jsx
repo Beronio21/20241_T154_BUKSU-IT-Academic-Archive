@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../Styles/ReviewSubmission.css';
+import { Modal } from 'react-bootstrap';
 
 const ReviewSubmission = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -12,6 +13,8 @@ const ReviewSubmission = () => {
         status: 'pending'
     });
     const [userInfo, setUserInfo] = useState(null);
+    const [feedbackForm, setFeedbackForm] = useState({ thesisId: '', comment: '', status: '' });
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -51,17 +54,22 @@ const ReviewSubmission = () => {
         });
     };
 
+    const handleAddFeedback = (submission) => {
+        setFeedbackForm({ ...feedbackForm, thesisId: submission._id });
+        setShowModal(true);
+    };
+
     const handleSubmitFeedback = async () => {
         try {
-            if (!feedback.comment.trim()) {
+            if (!feedbackForm.comment.trim()) {
                 alert('Please enter feedback comment');
                 return;
             }
 
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
             await axios.post(
-                `http://localhost:8080/api/thesis/feedback/${selectedSubmission._id}`,
-                feedback,
+                `http://localhost:8080/api/thesis/feedback/${feedbackForm.thesisId}`,
+                feedbackForm,
                 {
                     headers: {
                         'Authorization': `Bearer ${userInfo.token}`
@@ -75,6 +83,8 @@ const ReviewSubmission = () => {
         } catch (error) {
             console.error('Error submitting feedback:', error);
             alert('Failed to submit feedback');
+        } finally {
+            setShowModal(false);
         }
     };
 
@@ -130,8 +140,7 @@ const ReviewSubmission = () => {
                                                 </a>
                                                 <button 
                                                     className="btn btn-secondary btn-md"
-                                                    style={{ fontSize: '0.875rem', letterSpacing: '0.05em', lineHeight: '1' }} // Horizontal adjustment
-                                                    onClick={() => setFeedbackForm({ ...feedbackForm, thesisId: submission._id })}
+                                                    onClick={() => handleAddFeedback(submission)}
                                                 >
                                                     Add Feedback
                                                 </button>
@@ -143,45 +152,38 @@ const ReviewSubmission = () => {
                         </tbody>
                     </table>
 
-                    {selectedSubmission && (
-                        <div className="feedback-modal">
-                            <div className="feedback-content">
-                                <h3>Submit Feedback</h3>
-                                <textarea
-                                    value={feedback.comment}
-                                    onChange={(e) => setFeedback({...feedback, comment: e.target.value})}
-                                    placeholder="Enter your feedback..."
-                                    rows="4"
-                                    required
-                                />
-                                <select
-                                    value={feedback.status}
-                                    onChange={(e) => setFeedback({...feedback, status: e.target.value})}
-                                    required
-                                >
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approve</option>
-                                    <option value="rejected">Reject</option>
-                                    <option value="revision">Needs Revision</option>
-                                </select>
-                                <div className="button-group">
-                                    <button 
-                                        onClick={handleSubmitFeedback}
-                                        className="btn-submit"
-                                        disabled={!feedback.comment.trim()}
-                                    >
-                                        Submit Feedback
-                                    </button>
-                                    <button 
-                                        onClick={() => setSelectedSubmission(null)}
-                                        className="btn-cancel"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    <Modal show={showModal} onHide={() => setShowModal(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Submit Feedback</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <textarea
+                                value={feedbackForm.comment}
+                                onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
+                                placeholder="Enter your feedback..."
+                                rows="4"
+                                required
+                            />
+                            <select
+                                value={feedbackForm.status}
+                                onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
+                                required
+                            >
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approve</option>
+                                <option value="rejected">Reject</option>
+                                <option value="revision">Needs Revision</option>
+                            </select>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <button onClick={handleSubmitFeedback} className="btn-submit" disabled={!feedbackForm.comment.trim()}>
+                                Submit Feedback
+                            </button>
+                            <button onClick={() => setShowModal(false)} className="btn-cancel">
+                                Cancel
+                            </button>
+                        </Modal.Footer>
+                    </Modal>
                 </section>
             )}
         </div>
