@@ -119,20 +119,23 @@ const ReviewSubmission = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <a 
-                                                href={submission.docsLink}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="btn-view"
-                                            >
-                                                View
-                                            </a>
-                                            <button 
-                                                className="btn-feedback"
-                                                onClick={() => setFeedbackForm({ ...feedbackForm, thesisId: submission._id })}
-                                            >
-                                                Add Feedback
-                                            </button>
+                                            <div className="d-flex align-items-center">
+                                                <a 
+                                                    href={submission.docsLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn btn-primary btn-md me-2"
+                                                >
+                                                    View
+                                                </a>
+                                                <button 
+                                                    className="btn btn-secondary btn-md"
+                                                    style={{ fontSize: '0.875rem', letterSpacing: '0.05em', lineHeight: '1' }} // Horizontal adjustment
+                                                    onClick={() => setFeedbackForm({ ...feedbackForm, thesisId: submission._id })}
+                                                >
+                                                    Add Feedback
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
