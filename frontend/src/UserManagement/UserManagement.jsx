@@ -9,6 +9,7 @@ const UserManagement = () => {
     const [error, setError] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isViewing, setIsViewing] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchData();
@@ -112,6 +113,16 @@ const UserManagement = () => {
         }
     };
 
+    const filteredStudents = students.filter(student => 
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (student.student_id && student.student_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    const filteredTeachers = teachers.filter(teacher => 
+        teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (teacher.teacher_id && teacher.teacher_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
     const renderTable = (users, type) => (
         <div className="table-section">
             <h3>{type === 'student' ? 'Students' : 'Teachers'}</h3>
@@ -188,8 +199,38 @@ const UserManagement = () => {
     const renderContent = () => {
         return (
             <section className="user-management-section">
-                {renderTable(students, 'student')}
-                {renderTable(teachers, 'teacher')}
+                <div className="search-bar" style={{ position: 'relative', marginBottom: '20px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search by name or ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            padding: '10px 15px 10px 35px', // Space for the icon
+                            fontSize: '16px',
+                            border: '1px solid #ccc',
+                            borderRadius: '25px',
+                            outline: 'none',
+                            width: '250px',
+                            backgroundColor: '#f9f9f9', // Light background
+                            color: '#000', // Change text color to black
+                        }}
+                    />
+                    <i
+                        className="bi bi-search"
+                        style={{
+                            position: 'absolute',
+                            left: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            fontSize: '18px',
+                            color: '#006BB2', // Icon color
+                            pointerEvents: 'none', // Ensure icon doesn't block input
+                        }}
+                    ></i>
+                </div>
+                {renderTable(filteredStudents, 'student')}
+                {renderTable(filteredTeachers, 'teacher')}
 
                 {isEditing && editingUser && (
                     <div className="edit-modal">
