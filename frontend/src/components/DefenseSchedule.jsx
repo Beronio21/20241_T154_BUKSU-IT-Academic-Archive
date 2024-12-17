@@ -26,7 +26,7 @@ const DefenseSchedule = () => {
   };
 
   const updateGoogleSheet = (id, updatedData) => {
-    fetch(`https://sheetdb.io/api/v1/59dowe84yclm3/student_id/${id}`, {
+    fetch(`https://sheetdb.io/api/v1/bchqlswcgjp3m/student_id/${id}`, {
       method: "PATCH",
       headers: {
         Accept: "application/json",
@@ -43,7 +43,7 @@ const DefenseSchedule = () => {
   };
 
   const deleteGoogleSheet = (id) => {
-    fetch(`https://sheetdb.io/api/v1/59dowe84yclm3/student_id/${id}`, {
+    fetch(`https://sheetdb.io/api/v1/bchqlswcgjp3m/student_id/${id}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -56,7 +56,7 @@ const DefenseSchedule = () => {
   };
 
   const createGoogleSheet = () => {
-    fetch("https://sheetdb.io/api/v1/59dowe84yclm3", {
+    fetch("https://sheetdb.io/api/v1/bchqlswcgjp3m", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -65,7 +65,8 @@ const DefenseSchedule = () => {
       body: JSON.stringify({ data: [newSchedule] }),
     })
       .then((response) => response.json())
-      .then(() => {
+      .then((data) => {
+        console.log('Created schedule:', data);
         readGoogleSheet();
         setNewSchedule({ student_id: '', Title: '', Name: '', Date: '' });
       })
