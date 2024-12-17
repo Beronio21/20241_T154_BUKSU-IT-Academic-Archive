@@ -14,6 +14,7 @@ const StudentRegister = () => {
     password: "",
     confirmPassword: "",
     role: "student", // Default role
+    gender: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -199,6 +200,28 @@ const StudentRegister = () => {
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
+                </select>
+              </div>
+
+              {/* Gender Dropdown */}
+              <div className="col-12 col-md-6">
+                <label className="form-label" htmlFor="gender">
+                  Gender
+                </label>
+                <select
+                  id="gender"
+                  name="gender"
+                  className="form-control"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    Select Gender
+                  </option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 

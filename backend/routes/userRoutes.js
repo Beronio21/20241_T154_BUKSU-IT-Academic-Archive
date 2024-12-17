@@ -7,6 +7,10 @@ const bcrypt = require('bcrypt');
 // Register new user
 router.post('/register', async (req, res) => {
     try {
+        // Normalize gender to lowercase
+        if (req.body.gender) {
+            req.body.gender = req.body.gender.toLowerCase();
+        }
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             ...req.body,
