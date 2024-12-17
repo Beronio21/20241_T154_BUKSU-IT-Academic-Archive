@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth, emailLogin } from "../api";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +13,15 @@ const GoogleLogin = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState("");
-  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("user-info"));
+    if (userInfo && userInfo.googleDriveToken) {
+      console.log("Google Drive is already connected.");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,6 +90,7 @@ const GoogleLogin = () => {
               image: user.image,
               role: user.role,
               token,
+              googleDriveToken: tokenResponse.access_token,
             })
           );
           navigate(`/${user.role}-dashboard`);
@@ -100,13 +108,12 @@ const GoogleLogin = () => {
       setErrorMessage("Google login failed");
       setLoading(false);
     },
-    scope: "email profile",
+    scope: "email profile https://www.googleapis.com/auth/drive",
   });
 
   return (
     <section className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="login-container shadow-lg p-4 rounded">
-        
         <h3 className="text-center mb-4 fw-bold">Login</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-group mb-3">
