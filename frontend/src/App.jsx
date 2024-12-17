@@ -45,7 +45,7 @@ const supabaseConfig = {
 const supabase = createClient(supabaseConfig.url, supabaseConfig.apiKey);
 
 // Google OAuth Configuration
-const GOOGLE_CLIENT_ID = "1063044950961-ri426uf77m8u3gjoerju6qi581vle799.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com";
 
 function App() {
   return (
