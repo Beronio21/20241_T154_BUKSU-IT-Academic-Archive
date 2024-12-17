@@ -7,6 +7,14 @@ const Docs = () => {
     const [openPicker] = useDrivePicker();
 
     const handleOpenPicker = () => {
+        const userInfo = JSON.parse(localStorage.getItem('user-info'));
+        const googleDriveToken = userInfo?.googleDriveToken;
+    
+        if (!googleDriveToken) {
+            alert('Please log in with Google to access Drive files.');
+            return;
+        }
+    
         openPicker({
             clientId: "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com",
             developerKey: "AIzaSyBefZhoxSibx9ORWrmhrH3I8L_Cz1OB33E",
@@ -15,10 +23,14 @@ const Docs = () => {
             showUploadFolders: true,
             supportDrives: true,
             multiselect: false,
+            token: googleDriveToken, // Use the token here
             callbackFunction: (data) => {
                 if (data.action === 'picked') {
                     const docUrl = data.docs[0].url;
-                    setDocSrc(docUrl);
+                    setFormData(prev => ({
+                        ...prev,
+                        docsLink: docUrl
+                    }));
                 }
             },
         });
