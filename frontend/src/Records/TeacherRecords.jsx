@@ -40,7 +40,7 @@ const TeacherRecords = () => {
 
     const filteredTeachers = teachers.filter(teacher => 
         teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        teacher.teacher_id.toLowerCase().includes(searchTerm.toLowerCase())
+        (teacher.teacher_id && teacher.teacher_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
@@ -62,6 +62,7 @@ const TeacherRecords = () => {
                                 outline: 'none',
                                 width: '250px',
                                 backgroundColor: '#f9f9f9', // Light background
+                                color: '#000', // Change text color to black
                             }}
                         />
                         <i

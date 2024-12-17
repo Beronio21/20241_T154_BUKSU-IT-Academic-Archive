@@ -41,7 +41,7 @@ const StudentRecords = () => {
 
     const filteredStudents = students.filter(student => 
         student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.student_id.toLowerCase().includes(searchTerm.toLowerCase())
+        (student.student_id && student.student_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
@@ -63,6 +63,8 @@ const StudentRecords = () => {
                                 outline: 'none',
                                 width: '250px',
                                 backgroundColor: '#f9f9f9', // Light background
+                                zIndex: 1, // Ensure input is on top
+                                color: '#000', // Change text color to black
                             }}
                         />
                         <i
@@ -74,6 +76,7 @@ const StudentRecords = () => {
                                 transform: 'translateY(-50%)',
                                 fontSize: '18px',
                                 color: '#006BB2', // Icon color
+                                pointerEvents: 'none', // Ensure icon doesn't block input
                             }}
                         ></i>
                     </div>
