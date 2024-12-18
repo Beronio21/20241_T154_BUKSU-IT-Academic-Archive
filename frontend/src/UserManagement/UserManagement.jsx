@@ -10,8 +10,11 @@ const UserManagement = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isViewing, setIsViewing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
+        const userInfo = JSON.parse(localStorage.getItem('user-info'));
+        setCurrentUser(userInfo);
         fetchData();
     }, []);
 
@@ -57,8 +60,31 @@ const UserManagement = () => {
     };
 
     const handleEdit = async (user, type) => {
-        setEditingUser({ ...user, type });
-        setIsEditing(true);
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${userInfo?.token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            // Check if the user is already locked
+            const lockCheckResponse = await axios.get(`http://localhost:8080/api/users/${user._id}/lock-status`, config);
+            if (lockCheckResponse.data.lock) {
+                alert('This user is currently being edited by another admin.');
+                return;
+            }
+
+            // Set lock
+            await axios.post(`http://localhost:8080/api/users/${user._id}/lock`, {}, config);
+
+            setEditingUser({ ...user, type });
+            setIsEditing(true);
+        } catch (error) {
+            console.error('Error checking or setting lock:', error);
+            alert('Failed to start editing. Please try again.');
+        }
     };
 
     const handleUpdate = async (userId, type, updatedData) => {
@@ -76,6 +102,10 @@ const UserManagement = () => {
                 : `http://localhost:8080/api/teachers/${userId}`;
 
             await axios.put(endpoint, updatedData, config);
+
+            // Release lock
+            await axios.post(`http://localhost:8080/api/users/${userId}/unlock`, {}, config);
+
             fetchData();
             setIsEditing(false);
             setEditingUser(null);
@@ -113,6 +143,27 @@ const UserManagement = () => {
         }
     };
 
+    const handleCancelEdit = async (userId) => {
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${userInfo?.token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            // Release lock
+            await axios.post(`http://localhost:8080/api/users/${userId}/unlock`, {}, config);
+
+            setIsEditing(false);
+            setEditingUser(null);
+        } catch (error) {
+            console.error('Error releasing lock:', error);
+            alert('Failed to cancel editing. Please try again.');
+        }
+    };
+
     const filteredStudents = students.filter(student => 
         student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (student.student_id && student.student_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
@@ -143,7 +194,12 @@ const UserManagement = () => {
                     {Array.isArray(users) && users.map(user => (
                         <tr key={user._id}>
                             <td>{user[`${type}_id`] || 'Not set'}</td>
-                            <td>{user.name}</td>
+                            <td>
+                                {user.name}
+                                {user.lock && (
+                                    <i className="fas fa-lock" style={{ marginLeft: '5px', color: 'red' }} title="Being edited"></i>
+                                )}
+                            </td>
                             <td>{user.email}</td>
                             <td>
                                 <span className="password-hash" title={user.password}>
@@ -156,8 +212,8 @@ const UserManagement = () => {
                                 <span
                                     className={`badge ${user.isProfileComplete ? 'badge-success' : 'badge-danger'}`}
                                     style={{
-                                        fontSize: '1rem',  // Increase font size
-                                        color: user.isProfileComplete ? '' : 'black'  // Set color to black for Incomplete
+                                        fontSize: '1rem',
+                                        color: user.isProfileComplete ? '' : 'black'
                                     }}
                                 >
                                     {user.isProfileComplete ? 'Complete' : 'Incomplete'}
@@ -177,6 +233,7 @@ const UserManagement = () => {
                                     onClick={() => handleEdit(user, type)}
                                     title="Edit User"
                                     style={{ marginRight: '5px', padding: '2px 5px' }}
+                                    disabled={user.lock}
                                 >
                                     <i className="fas fa-edit"></i> Edit
                                 </button>
@@ -199,6 +256,9 @@ const UserManagement = () => {
     const renderContent = () => {
         return (
             <section className="user-management-section">
+                <div className="current-user-info">
+                    <p>Logged in as: {currentUser?.name || currentUser?.email}</p>
+                </div>
                 <div className="search-bar" style={{ position: 'relative', marginBottom: '20px' }}>
                     <input
                         type="text"
@@ -238,10 +298,7 @@ const UserManagement = () => {
                             <h3>Edit {editingUser.type === 'student' ? 'Student' : 'Teacher'}</h3>
                             <button 
                                 className="btn-close" 
-                                onClick={() => {
-                                    setIsEditing(false);
-                                    setEditingUser(null);
-                                }}
+                                onClick={() => handleCancelEdit(editingUser._id)}
                                 title="Close"
                             >
                                 &times;

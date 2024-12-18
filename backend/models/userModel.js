@@ -67,6 +67,10 @@ const userSchema = new mongoose.Schema({
             },
             message: 'Admin ID must be between 1 and 20 digits'
         }
+    },
+    lock: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
