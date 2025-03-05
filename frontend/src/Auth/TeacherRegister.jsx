@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import "../Styles/TeacherRegister.css"; // Make sure to create a separate CSS file for teacher registration.
+import "../Styles/TeacherRegister.css"; // Ensure you have the appropriate styles
 
 const TeacherRegister = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +9,6 @@ const TeacherRegister = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    contactNumber: "",
     department: "",
     teacher_id: "",
     gender: "", // Default to empty to force selection
@@ -104,177 +103,159 @@ const TeacherRegister = () => {
   });
 
   return (
-    <div className="container-fluid d-flex align-items-center justify-content-center vh-100">
-      <div className="row w-100">
-        {/* Left Container: Image */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <div className="left-container d-flex justify-content-center align-items-center h-100">
-            <img
-              src="src/images/buksulogo.png" // Assuming 'buksulogo.png' is in the public/images folder
-              alt="Illustration"
-              className="img-fluid rounded"
-              style={{ maxHeight: "80%", width: "auto" }}
-            />
-          </div>
-        </div>
+    <section>
+      {/* Jumbotron */}
+      <div className="px-4 py-5 text-center text-lg-start" style={{ backgroundColor: "hsl(0, 0%, 96%)" }}>
+        <div className="container-fluid">
+          <div className="row gx-lg-5 align-items-center">
+            <div className="col-lg-6 mb-5 mb-lg-0">
+              <h1 className="my-5 display-4 fw-bold ls-tight">
+                Welcome to BUKSU <br />
+                <span className="text-primary">IT Capstone Archive</span>
+              </h1>
+              <p style={{ color: "hsl(217, 10%, 50.8%)" }}>
+                Please fill in the details below to create your account and join our community.
+              </p>
+            </div>
 
-        {/* Right Container: Form */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <div className="card p-5 shadow-lg rounded" style={{ width: "90%" }}>
-            <h2 className="text-center mb-4">Teacher Registration</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit} className="row g-3">
-              {/* Input Fields with teacher_id first */}
-              {[
-                {
-                  id: "teacher_id",
-                  type: "text",
-                  label: "Teacher ID",
-                  placeholder: "Enter your teacher ID",
-                  required: true,
-                },
-                {
-                  id: "name",
-                  type: "text",
-                  label: "Name",
-                  placeholder: "Enter your full name",
-                  required: true,
-                },
-                {
-                  id: "email",
-                  type: "email",
-                  label: "Email",
-                  placeholder: "Enter your email",
-                  required: true,
-                },
-                {
-                  id: "contactNumber",
-                  type: "text",
-                  label: "Contact Number",
-                  placeholder: "Enter your contact number",
-                  required: false,
-                },
-                {
-                  id: "gender",
-                  type: "select",
-                  label: "Gender",
-                  options: ["", "Male", "Female", "I prefer not to say"],
-                  required: true,
-                },
-                {
-                  id: "department",
-                  type: "text",
-                  label: "Department",
-                  placeholder: "Enter your department",
-                  required: false,
-                },
-              ].map((input, index) => (
-                <div className="col-12 col-md-6" key={index}>
-                  <label className="form-label" htmlFor={input.id}>
-                    {input.label}
-                  </label>
-                  {input.type === "select" ? (
-                    <select
-                      id={input.id}
-                      name={input.id}
-                      className="form-control"
-                      value={formData[input.id]}
-                      onChange={handleChange}
-                      required={input.required}
-                    >
-                      <option value="" disabled>
-                        Select Gender
-                      </option>
-                      {input.options.slice(1).map((option, idx) => (
-                        <option key={idx} value={option}>
-                          {option}
-                        </option>
+            <div className="col-lg-6 mb-5 mb-lg-0">
+              <div className="card" style={{ maxWidth: "500px", margin: "0 auto" }}>
+                <div className="card-body py-4 px-md-4"> {/* Reduced padding */}
+                  <h2 className="text-center mb-4">Teacher Registration</h2>
+                  {error && <div className="alert alert-danger">{error}</div>}
+                  <form onSubmit={handleSubmit}>
+                    <div className="row g-3">
+                      {/* Input Fields */}
+                      {[
+                        {
+                          id: "teacher_id",
+                          type: "text",
+                          placeholder: "Instructor ID",
+                          required: true,
+                        },
+                        {
+                          id: "email",
+                          type: "email",
+                          placeholder: "Email",
+                          required: true,
+                        },
+                        {
+                          id: "name",
+                          type: "text",
+                          placeholder: "Full Name",
+                          required: true,
+                        },
+                        {
+                          id: "department",
+                          type: "text",
+                          placeholder: "Department",
+                          required: false,
+                        },
+                      ].map((input, index) => (
+                        <div className="col-12 col-md-6" key={index}>
+                          <div className="form-outline mb-4">
+                            <input
+                              type={input.type}
+                              id={input.id}
+                              name={input.id}
+                              className="form-control"
+                              placeholder={input.placeholder}
+                              value={formData[input.id]}
+                              onChange={handleChange}
+                              required={input.required}
+                            />
+                          </div>
+                        </div>
                       ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={input.type}
-                      id={input.id}
-                      name={input.id}
-                      className="form-control"
-                      placeholder={input.placeholder}
-                      value={formData[input.id]}
-                      onChange={handleChange}
-                      required={input.required}
-                    />
-                  )}
+
+                      {/* Gender Dropdown */}
+                      <div className="col-12 col-md-6">
+                        <div className="form-outline mb-4">
+                          <select
+                            id="gender"
+                            name="gender"
+                            className="form-control"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="" disabled>Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="I prefer not to say">I prefer not to say</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Password and Confirm Password */}
+                      <div className="col-12 col-md-6">
+                        <div className="form-outline mb-4">
+                          <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            className="form-control"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-md-6">
+                        <div className="form-outline mb-4">
+                          <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            className="form-control"
+                            placeholder="Re-Enter Password" 
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Submit Button */}
+                      <div className="col-12">
+                        <button type="submit" className="btn btn-primary btn-block mb-2" disabled={loading}>
+                          {loading ? "Registering..." : "Register"}
+                        </button>
+                      </div>
+
+                      {/* Divider Text */}
+                      <div className="col-12 text-center mt-2">
+                        <p className="mb-0">or Register With</p>
+                      </div>
+
+                      {/* Google Register Button */}
+                      <div className="col-12 text-center mt-2">
+                        <button
+                          type="button"
+                          className="google-login-btn"
+                          onClick={googleLogin}
+                          disabled={loading}
+                        >
+                          <img
+                            src="../src/Images/Googlelogo.png"
+                            alt="Google logo"
+                            style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                          />
+                          {loading ? "Signing in..." : "Register with Google"}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-              ))}
-
-              {/* Password and Confirm Password */}
-              <div className="col-12 col-md-6">
-                <label className="form-label" htmlFor="password">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="form-control"
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
               </div>
-              <div className="col-12 col-md-6">
-                <label className="form-label" htmlFor="confirmPassword">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  className="form-control"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              {/* Submit Button */}
-              <div className="col-12">
-                <button
-                  type="submit"
-                  className="btn btn-primary w-100"
-                  disabled={loading}
-                >
-                  {loading ? "Registering..." : "Register"}
-                </button>
-              </div>
-
-              {/* Divider Text */}
-              <div className="col-12 text-center mt-3">
-                <p className="mb-0">or Register with</p>
-              </div>
-
-              {/* Google Register Button */}
-              <div className="col-12 text-center mt-2">
-                <button
-                  type="button"
-                  className="google-login-btn"
-                  onClick={googleLogin}
-                  disabled={loading}
-                >
-                  <img
-                    src="../src/Images/Googlelogo.png"
-                    alt="Google logo"
-                    style={{ width: '45px', height: '20px', marginLeft: '2px' }}
-                  />
-                  {loading ? "Signing in..." : "Register with Google"}
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {/* Jumbotron */}
+    </section>
   );
 };
 

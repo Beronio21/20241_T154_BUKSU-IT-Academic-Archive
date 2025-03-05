@@ -98,7 +98,6 @@ const GoogleLogin = () => {
       } catch (error) {
         console.error("Google login error:", error);
         setErrorMessage("Google login failed");
-        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -106,78 +105,107 @@ const GoogleLogin = () => {
     onError: (error) => {
       console.error("Google login error:", error);
       setErrorMessage("Google login failed");
-      setLoading(false);
     },
     scope: "email profile https://www.googleapis.com/auth/drive",
   });
 
   return (
-    <section className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="login-container shadow-lg p-4 rounded">
-        <h3 className="text-center mb-4 fw-bold">Login</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mb-3">
-            <input
-              type="email"
-              className="form-control custom-input"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+    <section className="d-flex vh-100 position-relative">
+      {/* Full-Screen Background Blur */}
+      <div
+        className="position-absolute top-0 left-0 w-100 h-100"
+        style={{
+          backgroundImage: "url('../src/Images/buksumain.jpg')", // Ensure this path is correct
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(8px)",
+          zIndex: -1,
+        }}
+      ></div>
+
+      {/* Container for Login Form */}
+      <div className="container-fluid d-flex align-items-center justify-content-center p-0">
+        <div className="row w-100">
+          {/* Left Side for Image */}
+          <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
+            <img
+              src="../src/Images/buksulogo.png" // Replace with your image path
+              alt="Login Illustration"
+              className="img-fluid" />
+            <p className="text-center mt-3 text-black" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+              Educate. <span style={{ color: 'black' }}>Innovate.</span> Lead.
+            </p>
           </div>
-          <div className="form-group mb-3">
-            <input
-              type="password"
-              className="form-control custom-input"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {errorMessage && (
-            <div className="alert alert-danger" role="alert">
-              {errorMessage}
+          {/* Right Side for Login Form */}
+          <div className="col-md-6 d-flex justify-content-center align-items-center">
+            <div className="login-container shadow-lg p-4 rounded" style={{ width: '90%', maxWidth: '400px', backgroundColor: '#fff', borderRadius: '20px' }}>
+              <h3 className="text-center mb-4 fw-bold">Login</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                  <input
+                    type="email"
+                    className="form-control custom-input"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <input
+                    type="password"
+                    className="form-control custom-input"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                {errorMessage && (
+                  <div className="alert alert-danger" role="alert">
+                    {errorMessage}
+                  </div>
+                )}
+                <div className="d-flex justify-content-center mb-3">
+                  <ReCAPTCHA
+                    sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
+                    onChange={(token) => setRecaptchaToken(token)}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100"
+                  disabled={loading}
+                >
+                  {loading ? "Logging in..." : "Log In"}
+                </button>
+              </form>
+              <div className="d-flex justify-content-center my-4">
+                <p className="text-center mb-0">Or Login with</p>
+              </div>
+              <button
+                type="button"
+                className="google-login-btn"
+                onClick={googleLogin}
+                disabled={loading}
+              >
+                <img
+                  src="../src/Images/Googlelogo.png"
+                  alt="Google logo"
+                  style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                />
+                {loading ? "Signing in..." : "Sign in with Google"}
+              </button>
+              <div className="d-flex justify-content-center align-items-center mt-4">
+                <p className="text-center mb-0">
+                  Don't have an account?{" "}
+                  <span className="register-link" onClick={() => setShowModal(true)}>
+                    Register
+                  </span>
+                </p>
+              </div>
             </div>
-          )}
-          <div className="d-flex justify-content-center mb-3">
-            <ReCAPTCHA
-              sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
-              onChange={(token) => setRecaptchaToken(token)}
-            />
           </div>
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Log In"}
-          </button>
-        </form>
-        <div className="d-flex justify-content-center my-4">
-          <p className="text-center mb-0">Or Login with</p>
-        </div>
-        <button
-          type="button"
-          className="google-login-btn"
-          onClick={googleLogin}
-          disabled={loading}
-        >
-          <img
-            src="../src/Images/Googlelogo.png"
-            alt="Google logo"
-            style={{ width: '45px', height: '20px', marginLeft: '2px' }}
-          />
-          {loading ? "Signing in..." : "Sign in with Google"}
-        </button>
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <p className="text-center mb-0">
-            Don't have an account?{" "}
-            <span className="register-link" onClick={() => setShowModal(true)}>
-              Register
-            </span>
-          </p>
         </div>
       </div>
 
