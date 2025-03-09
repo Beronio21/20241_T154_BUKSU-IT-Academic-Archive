@@ -14,10 +14,12 @@
     const Header = () => (
         <header className="w-100 bg-white shadow-sm py-2 fixed-top">
         <div className="container d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-2">
-            <img src="../src/Images/buksulogo.png" alt="Logo" className="logo" style={{ height: "40px" }} />
-            <h2 className="text-dark fs-5 fw-bold mb-0">IT Capstone Archive</h2>
-            </div>
+             <a href="#">
+                <div className="d-flex align-items-center gap-2">
+                <img src="../src/Images/buksulogo.png" alt="Logo" className="logo" style={{ height: "40px" }} />
+                <h2 className="text-dark fs-5 fw-bold mb-0 ">IT Capstone Archive</h2>
+                </div>
+              </a>
             <nav className="d-none d-md-flex gap-3">
             {['Home', 'Projects', 'Contact'].map((item) => (
                 <a key={item} className="text-dark text-decoration-none" href="#">{item}</a>

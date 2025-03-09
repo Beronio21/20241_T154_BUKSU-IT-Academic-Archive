@@ -106,7 +106,7 @@ const StudentRegister = () => {
   return (
     <section>
       {/* Jumbotron */}
-      <div className="px-4 py-5 text-center text-lg-start" style={{ backgroundColor: "hsl(0, 0%, 96%)" }}>
+      <div className="px-4 py-5 text-center text-lg-start">
         <div className="container-fluid">
           <div className="row gx-lg-5 align-items-center">
             <div className="col-lg-6 mb-5 mb-lg-0">
