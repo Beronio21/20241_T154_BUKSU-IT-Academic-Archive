@@ -162,53 +162,96 @@ const SearchBar = () => (
   );
 
 const Filters = () => {
-    const badgeStyle = {
-    transition: 'box-shadow 0.3s ease',
-    cursor: 'pointer', // Change cursor to pointer
-    };
-
-    const badgeHoverStyle = {
-    boxShadow: '0 0 10px rgba(0, 123, 255, 0.5)', // Glowing effect
-    };
+    const years = ['2023', '2022', '2021', '2020', '2019', '2018'];
+    const topics = ['Mobile Apps', 'Web Apps', 'Databases'];
 
     return (
-    <div className="mb-4">
-        <h3 className="text-dark fs-5 fw-bold mb-3">Filter options</h3>
-        <div className="d-flex flex-wrap gap-2">
-        {['2023', '2022', '2021', '2020', '2019', '2018'].map((year) => (
-            <span
-            key={year}
-            className="badge bg-light text-dark p-2"
-            style={badgeStyle}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = badgeHoverStyle.boxShadow;
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
-            }}
-            >
-            {year}
-            </span>
-        ))}
+        <div className="mb-4">
+            <h3 className="text-dark fs-5 fw-bold mb-3">Filter Options</h3>
+            <div className="d-flex gap-2">
+                {/* Year Dropdown */}
+                <div className="dropdown">
+                    <button
+                        className="btn btn-outline-primary dropdown-toggle"
+                        type="button"
+                        id="yearDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{
+                            borderRadius: '15px',
+                            padding: '0.3rem 1rem',
+                            fontSize: '0.9rem',
+                            transition: 'all 0.3s ease',
+                        }}
+                    >
+                        Year
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="yearDropdown">
+                        {years.map((year) => (
+                            <li key={year}>
+                                <a
+                                    className="dropdown-item"
+                                    href="#"
+                                    style={{
+                                        transition: 'background-color 0.3s ease',
+                                        fontSize: '0.9rem',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = '#e9ecef';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                    }}
+                                >
+                                    {year}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Topic Dropdown */}
+                <div className="dropdown">
+                    <button
+                        className="btn btn-outline-primary dropdown-toggle"
+                        type="button"
+                        id="topicDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{
+                            borderRadius: '15px',
+                            padding: '0.3rem 1rem',
+                            fontSize: '0.9rem',
+                            transition: 'all 0.3s ease',
+                        }}
+                    >
+                        Topic
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="topicDropdown">
+                        {topics.map((topic) => (
+                            <li key={topic}>
+                                <a
+                                    className="dropdown-item"
+                                    href="#"
+                                    style={{
+                                        transition: 'background-color 0.3s ease',
+                                        fontSize: '0.9rem',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = '#e9ecef';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                    }}
+                                >
+                                    {topic}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div className="d-flex flex-wrap gap-2 mt-3">
-        {['Mobile Apps', 'Web Apps', 'Databases'].map((type) => (
-            <span
-            key={type}
-            className="badge bg-light text-dark p-2"
-            style={badgeStyle}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = badgeHoverStyle.boxShadow;
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
-            }}
-            >
-            {type}
-            </span>
-        ))}
-        </div>
-    </div>
     );
 };
 const ProjectList = () => (
