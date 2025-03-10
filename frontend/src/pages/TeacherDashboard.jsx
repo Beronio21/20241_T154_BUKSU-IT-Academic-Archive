@@ -25,7 +25,7 @@ const TeacherDashboard = () => {
 
         // Set user information if authenticated
         setUserInfo(userData);
-
+        
         // Redirect to the dashboard if on the base path
         if (location.pathname === '/teacher-dashboard') {
             navigate('/teacher-dashboard/dashboard', { replace: true });
@@ -38,16 +38,16 @@ const TeacherDashboard = () => {
             sessionStorage.clear();
             navigate('/login', { replace: true });
         }
-    };
+        };
 
-    return (
+        return (
         <div className="d-flex flex-column min-vh-100 bg-light" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <MainContent />
             <Footer />
-        </div>
-    );
-};
+            </div>
+        );
+    };
 
 const Header = ({ userInfo, handleLogout }) => (
     <header className="w-100 bg-white shadow-sm py-2 fixed-top">
@@ -56,7 +56,7 @@ const Header = ({ userInfo, handleLogout }) => (
                 <div className="d-flex align-items-center gap-2">
                     <img src="../src/Images/buksulogo.png" alt="Logo" className="logo" style={{ height: "40px" }} />
                     <h2 className="text-dark fs-5 fw-bold mb-0">IT Capstone Archive</h2>
-                </div>
+                                </div>
             </a>
             <nav className="d-none d-md-flex align-items-center gap-3">
                 {['Home', 'Projects', 'Contact'].map((item) => (
@@ -75,21 +75,21 @@ const Header = ({ userInfo, handleLogout }) => (
                                 <img
                                     src={userInfo.image || '/default-avatar.png'}
                                     alt={userInfo.name || 'User Avatar'}
-                                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                                />
-                            </div>
+                                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                    />
+                                </div>
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a className="dropdown-item" href="/profile">Profile Settings</a></li>
                             <li><hr className="dropdown-divider" /></li>
                             <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
                         </ul>
-                    </div>
+                        </div>
                 ) : (
                     <a className="text-dark text-decoration-none" href="/login">Login</a>
                 )}
             </nav>
-        </div>
+                                    </div>
     </header>
 );
 
@@ -100,7 +100,7 @@ const MainContent = () => (
     <SearchBar />
     <Filters />
     <ProjectList />
-    </div>
+                                </div>
 </main>
 );
 
@@ -109,8 +109,8 @@ const Intro = () => (
     <h1 className="text-dark text display-6 fw-bold mb-3">Capstone IT Projects</h1>
     <p className="text-secondary mb-4">
     Explore the best IT capstone projects from 2020 to present. Use the search bar to find a specific project, or use the filters to browse by year or type.
-    </p>
-</div>
+                                        </p>
+                                    </div>
 );
 
 const SearchBar = () => (
@@ -157,8 +157,8 @@ const SearchBar = () => (
             style={{ height: '20px', width: '20px' }} // Adjust size as needed
           />
         </span>
-      </div>
-    </div>
+                                </div>
+                            </div>
   );
 
 const Filters = () => {
@@ -212,7 +212,7 @@ const Filters = () => {
 
                 {/* Topic Dropdown */}
                 <div className="dropdown">
-                    <button
+                                                                <button 
                         className="btn btn-outline-primary dropdown-toggle"
                         type="button"
                         id="topicDropdown"
@@ -226,7 +226,7 @@ const Filters = () => {
                         }}
                     >
                         Topic
-                    </button>
+                                                                </button>
                     <ul className="dropdown-menu" aria-labelledby="topicDropdown">
                         {topics.map((topic) => (
                             <li key={topic}>
@@ -249,7 +249,7 @@ const Filters = () => {
                             </li>
                         ))}
                     </ul>
-                </div>
+                                                            </div>
             </div>
         </div>
     );
