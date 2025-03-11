@@ -104,180 +104,167 @@ const StudentRegister = () => {
   });
 
   return (
-    <section>
-      {/* Jumbotron */}
-      <div className="px-4 py-5 text-center text-lg-start">
-        <div className="container-fluid">
-          <div className="row gx-lg-5 align-items-center">
-            <div className="col-lg-6 mb-5 mb-lg-0">
-              <h1 className="my-5 display-4 fw-bold ls-tight">
-                Welcome to BUKSU <br />
-                <span className="text-primary">IT Capstone Archive</span>
-              </h1>
-              <p style={{ color: "hsl(217, 10%, 50.8%)" }}>
-                Please fill in the details below to create your account and join our community.
-              </p>
-            </div>
+    <div className="std-reg__container">
+      <div className="std-reg__content">
+        {/* Left side */}
+        <div className="std-reg__left">
+          <img
+            src="../src/Images/buksulogov2.png"
+            alt="BukSU Logo"
+            className="std-reg__logo"
+          />
+          <h1 className="std-reg__title">
+            Welcome to BUKSU
+            <span className="std-reg__subtitle">IT Capstone Archive</span>
+          </h1>
+          <p className="std-reg__description">
+            Please fill in the details below to create your account and join our community.
+          </p>
+        </div>
 
-            <div className="col-lg-6 mb-5 mb-lg-0">
-              <div className="card" style={{ maxWidth: "500px", margin: "0 auto" }}>
-                <div className="card-body py-4 px-md-4"> {/* Reduced padding */}
-                  <h2 className="text-center mb-4">Register</h2>
-                  {error && <div className="alert alert-danger">{error}</div>}
-                  <form onSubmit={handleSubmit}>
-                    <div className="row g-3">
-                      {/* Input Fields */}
-                      {[
-                        {
-                          id: "student_id",
-                          type: "text",
-                          placeholder: "Institution ID",
-                          required: true,
-                        },
-                        {
-                          id: "name",
-                          type: "text",
-                          placeholder: "Full Name",
-                          required: true,
-                        },
-                        {
-                          id: "email",
-                          type: "email",
-                          placeholder: "Institution Email",
-                          required: true,
-                        },
-                        {
-                          id: "course",
-                          type: "text",
-                          placeholder: "Course",
-                          required: false,
-                        },
-                      ].map((input, index) => (
-                        <div className="col-12 col-md-6" key={index}>
-                          <div className="form-outline mb-4">
-                            <input
-                              type={input.type}
-                              id={input.id}
-                              name={input.id}
-                              className="form-control"
-                              placeholder={input.placeholder}
-                              value={formData[input.id]}
-                              onChange={handleChange}
-                              required={input.required}
-                            />
-                          </div>
-                        </div>
-                      ))}
+        {/* Right side - Form */}
+        <div className="std-reg__right">
+          <div className="std-reg__form-wrapper">
+            <h2 className="std-reg__form-title">Register</h2>
+            {error && <div className="std-reg__error">{error}</div>}
+            
+            <form onSubmit={handleSubmit} className="std-reg__form">
+              <div className="std-reg__form-grid">
+                {/* Input Fields */}
+                {[
+                  {
+                    id: "student_id",
+                    type: "text",
+                    placeholder: "Institution ID",
+                    required: true,
+                  },
+                  {
+                    id: "name",
+                    type: "text",
+                    placeholder: "Full Name",
+                    required: true,
+                  },
+                  {
+                    id: "email",
+                    type: "email",
+                    placeholder: "Institution Email",
+                    required: true,
+                  },
+                  {
+                    id: "course",
+                    type: "text",
+                    placeholder: "Course",
+                    required: false,
+                  },
+                ].map((input, index) => (
+                  <div className="std-reg__input-group" key={index}>
+                    <input
+                      type={input.type}
+                      id={input.id}
+                      name={input.id}
+                      className="std-reg__input"
+                      placeholder={input.placeholder}
+                      value={formData[input.id]}
+                      onChange={handleChange}
+                      required={input.required}
+                    />
+                  </div>
+                ))}
 
-                      {/* Year Dropdown */}
-                      <div className="col-12 col-md-6">
-                        <div className="form-outline mb-4">
-                          <select
-                            id="year"
-                            name="year"
-                            className="form-control"
-                            value={formData.year}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="" disabled>School Year</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                          </select>
-                        </div>
-                      </div>
+                {/* Year Dropdown */}
+                <div className="std-reg__input-group">
+                  <select
+                    id="year"
+                    name="year"
+                    className="std-reg__input"
+                    value={formData.year}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>School Year</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </div>
 
-                      {/* Gender Dropdown */}
-                      <div className="col-12 col-md-6">
-                        <div className="form-outline mb-4">
-                          <select
-                            id="gender"
-                            name="gender"
-                            className="form-control"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="" disabled>Gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
- <option value="other">Other</option>
-                          </select>
-                        </div>
-                      </div>
+                {/* Gender Dropdown */}
+                <div className="std-reg__input-group">
+                  <select
+                    id="gender"
+                    name="gender"
+                    className="std-reg__input"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
 
-                      {/* Password and Confirm Password */}
-                      <div className="col-12 col-md-6">
-                        <div className="form-outline mb-4">
-                          <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className="form-control"
-                            placeholder="Password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
+                {/* Password and Confirm Password */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="std-reg__input"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
 
-                      {/* Confirm Password */}
-                      <div className="col-12 col-md-6">
-                        <div className="form-outline mb-4">
-                          <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            className="form-control"
-                            placeholder="Re-enter Your Password"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      {/* Submit Button */}
-                      <div className="col-12">
-                        <button type="submit" className="btn btn-primary btn-block mb-2" disabled={loading}>
-                          {loading ? "Registering..." : "Register"}
-                        </button>
-                      </div>
-
-                      {/* Divider Text */}
-                      <div className="col-12 text-center mt-2">
-                        <p className="mb-0">or Register With</p>
-                      </div>
-
-                      {/* Google Register Button */}
-                      <div className="col-12 text-center mt-2">
-                        <button
-                          type="button"
-                          className="google-login-btn"
-                          onClick={googleLogin}
-                          disabled={loading}
-                        >
-                          <img
-                            src="../src/Images/Googlelogo.png"
-                            alt="Google logo"
-                            style={{ width: '45px', height: '20px', marginLeft: '2px' }}
-                          />
-                          {loading ? "Signing in..." : "Register with Google"}
-                        </button>
-                      </div>
-                    </div>
-                  </form>
+                {/* Confirm Password */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    className="std-reg__input"
+                    placeholder="Re-enter Your Password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
               </div>
-            </div>
+
+              <button 
+                type="submit" 
+                className="std-reg__submit-btn" 
+                disabled={loading}
+              >
+                {loading ? "Registering..." : "Register"}
+              </button>
+
+              <div className="std-reg__divider">
+                <span>or Register With</span>
+              </div>
+
+              <button
+                type="button"
+                className="std-reg__google-btn"
+                onClick={googleLogin}
+                disabled={loading}
+              >
+                <img
+                  src="../src/Images/Googlelogo.png"
+                  alt="Google logo"
+                  className="std-reg__google-icon"
+                />
+                <span>{loading ? "Signing in..." : "Register with Google"}</span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
-      {/* Jumbotron */}
-    </section>
+    </div>
   );
 };
 

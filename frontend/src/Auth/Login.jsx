@@ -93,7 +93,7 @@ const GoogleLogin = () => {
     <section className="d-flex vh-100 position-relative" style={{
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      backgroundPosition:   'center',
       backgroundRepeat: 'no-repeat',
     }}>
       <div className="background-blur"></div>
@@ -105,7 +105,7 @@ const GoogleLogin = () => {
               <div className="col-md-6">
                 <div className="logo-section">
                   <img
-                    src="../src/Images/buksulogo.png"
+                    src="../src/Images/buksulogov2.png"
                     alt="BukSU Logo"
                     className="img-fluid"
                   />
