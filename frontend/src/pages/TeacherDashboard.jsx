@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Routes, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import StudentList from '../components/StudentList';
+import TeacherProfile from '../Profile/TeacherProfile';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -66,7 +68,13 @@ const TeacherDashboard = () => {
     return (
         <div className="d-flex flex-column min-vh-100 bg-light" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>
             <Header userInfo={userInfo} handleLogout={handleLogout} />
-            <MainContent loading={loading} submissions={submissions} />
+            <div className="flex-grow-1 p-4" style={{ marginTop: '60px' }}>
+                <Routes>
+                    <Route path="/dashboard" element={<MainContent loading={loading} submissions={submissions} />} />
+                    <Route path="/students" element={<StudentList />} />
+                    <Route path="/profile" element={<TeacherProfile />} />
+                </Routes>
+            </div>
             <Footer />
         </div>
     );
@@ -75,16 +83,15 @@ const TeacherDashboard = () => {
 const Header = ({ userInfo, handleLogout }) => (
     <header className="w-100 bg-white shadow-sm py-2 fixed-top">
         <div className="container d-flex align-items-center justify-content-between">
-            <a href="#">
+            <Link to="/teacher-dashboard/dashboard" className="text-decoration-none">
                 <div className="d-flex align-items-center gap-2">
                     <img src="../src/Images/buksulogo.png" alt="Logo" className="logo" style={{ height: "40px" }} />
                     <h2 className="text-dark fs-5 fw-bold mb-0">IT Capstone Archive</h2>
                 </div>
-            </a>
+            </Link>
             <nav className="d-none d-md-flex align-items-center gap-3">
-                {['Home', 'Projects', 'Contact'].map((item) => (
-                    <a key={item} className="text-dark text-decoration-none" href="#">{item}</a>
-                ))}
+                <Link to="/teacher-dashboard/dashboard" className="text-dark text-decoration-none">Dashboard</Link>
+                <Link to="/teacher-dashboard/students" className="text-dark text-decoration-none">Students</Link>
                 {userInfo ? (
                     <div className="dropdown">
                         <a
@@ -103,13 +110,13 @@ const Header = ({ userInfo, handleLogout }) => (
                             </div>
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a className="dropdown-item" href="/profile">Profile Settings</a></li>
+                            <li><Link className="dropdown-item" to="/teacher-dashboard/profile">Profile Settings</Link></li>
                             <li><hr className="dropdown-divider" /></li>
                             <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
                         </ul>
                     </div>
                 ) : (
-                    <a className="text-dark text-decoration-none" href="/login">Login</a>
+                    <Link className="text-dark text-decoration-none" to="/login">Login</Link>
                 )}
             </nav>
         </div>
@@ -310,9 +317,7 @@ const ProjectList = ({ loading, submissions }) => {
                         <p className="text-secondary mb-0">
                             Submitted: {new Date(submission.createdAt).toLocaleDateString()}
                         </p>
-                        <span className={`badge bg-${getStatusColor(submission.status)} mt-2`}>
-                            {submission.status}
-                        </span>
+                       
                     </div>
                     <div className="d-flex flex-column gap-2">
                         <a
