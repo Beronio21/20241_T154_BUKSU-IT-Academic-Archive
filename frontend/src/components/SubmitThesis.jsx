@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useDrivePicker from 'react-google-drive-picker';
 import '../Styles/SubmitThesis.css';
 
 const SubmitThesis = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: '',
         members: [''],
@@ -118,7 +120,7 @@ const SubmitThesis = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userInfo.token}` // Authorization Logic
+                    'Authorization': `Bearer ${userInfo.token}`
                 },
                 body: JSON.stringify(submissionData)
             });
@@ -131,12 +133,7 @@ const SubmitThesis = () => {
             }
 
             alert('Thesis submitted successfully!');
-            setFormData({
-                title: '',
-                members: [''],
-                adviserEmail: '',
-                docsLink: ''
-            });
+            navigate('/student-dashboard/my-theses');
         } catch (error) {
             console.error('Submission error:', error);
             setError(error.message);

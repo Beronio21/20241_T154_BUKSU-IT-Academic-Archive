@@ -2,19 +2,13 @@ const express = require('express');
 const router = express.Router();
 const Thesis = require('../models/thesis');
 const Notification = require('../models/notification');
+const { authenticateToken } = require('../middleware/authMiddleware');
 
 // Submit thesis
-router.post('/submit', async (req, res) => {
+router.post('/submit', authenticateToken, async (req, res) => {
     try {
-        const { title, members, adviserEmail, docsLink, email } = req.body;
-
-        // Validate required fields
-        if (!title || !members || !adviserEmail || !docsLink || !email) {
-            return res.status(400).json({
-                status: 'error',
-                message: 'All fields are required'
-            });
-        }
+        const { title, members, adviserEmail, docsLink } = req.body;
+        const email = req.user.email;
 
         // Create new thesis
         const thesis = new Thesis({
@@ -29,7 +23,7 @@ router.post('/submit', async (req, res) => {
         // Save thesis
         const savedThesis = await thesis.save();
 
-        // Create notification for adviser
+        // Create notifications
         const teacherNotification = new Notification({
             recipientEmail: adviserEmail,
             studentEmail: email,
@@ -39,7 +33,6 @@ router.post('/submit', async (req, res) => {
             thesisId: savedThesis._id
         });
 
-        // Create notification for student
         const studentNotification = new Notification({
             recipientEmail: email,
             studentEmail: email,
@@ -56,28 +49,42 @@ router.post('/submit', async (req, res) => {
 
         res.status(201).json({
             status: 'success',
-            message: 'Thesis submitted successfully',
             data: savedThesis
         });
-
     } catch (error) {
-        console.error('Error in thesis submission:', error);
+        console.error('Error submitting thesis:', error);
         res.status(500).json({
             status: 'error',
-            message: 'Failed to submit thesis',
-            error: error.message
+            message: 'Failed to submit thesis'
+        });
+    }
+});
+
+// Get all theses submitted by a student
+router.get('/student-submissions', authenticateToken, async (req, res) => {
+    try {
+        const email = req.user.email;
+        const submissions = await Thesis.find({ email })
+            .sort({ submissionDate: -1 });
+
+        res.json({
+            status: 'success',
+            data: submissions
+        });
+    } catch (error) {
+        console.error('Error fetching student submissions:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch submitted theses'
         });
     }
 });
 
 // Get all submissions (for students)
-router.get('/submissions', async (req, res) => {
+router.get('/submissions', authenticateToken, async (req, res) => {
     try {
-        console.log('Fetching all submissions');
         const submissions = await Thesis.find()
-            .sort({ createdAt: -1 }); // Sort by newest first
-
-        console.log('Found submissions:', submissions.length);
+            .sort({ submissionDate: -1 });
         
         res.json({
             status: 'success',
@@ -92,20 +99,20 @@ router.get('/submissions', async (req, res) => {
     }
 });
 
-// Get submissions for specific adviser (for teachers)
-router.get('/submissions/adviser', async (req, res) => {
+// Get submissions for specific adviser
+router.get('/submissions/adviser', authenticateToken, async (req, res) => {
     try {
         const { email } = req.query;
         const submissions = await Thesis.find({ 
             adviserEmail: email 
-        }).select('title members email status createdAt docsLink');
+        }).select('title members email status submissionDate docsLink');
 
         res.json({
             status: 'success',
             data: submissions
         });
     } catch (error) {
-        console.error('Error fetching submissions:', error);
+        console.error('Error fetching adviser submissions:', error);
         res.status(500).json({
             status: 'error',
             message: 'Failed to fetch submissions'
@@ -114,12 +121,13 @@ router.get('/submissions/adviser', async (req, res) => {
 });
 
 // Add feedback to thesis
-router.post('/feedback/:thesisId', async (req, res) => {
+router.post('/feedback/:thesisId', authenticateToken, async (req, res) => {
     try {
         const { thesisId } = req.params;
-        const { comment, status, teacherName, teacherEmail } = req.body;
+        const { comment, status, teacherName } = req.body;
+        const teacherEmail = req.user.email;
 
-        // Find the thesis first
+        // Find the thesis
         const thesis = await Thesis.findById(thesisId);
         if (!thesis) {
             return res.status(404).json({
@@ -128,7 +136,7 @@ router.post('/feedback/:thesisId', async (req, res) => {
             });
         }
 
-        // Add feedback to the thesis
+        // Add feedback
         thesis.feedback.push({
             comment,
             status,
@@ -139,13 +147,11 @@ router.post('/feedback/:thesisId', async (req, res) => {
 
         // Update thesis status
         thesis.status = status;
-
-        // Save the update
         await thesis.save();
 
-        // Create notification for the student
+        // Create notification for student
         const notification = new Notification({
-            recipientEmail: thesis.email, // Student's email
+            recipientEmail: thesis.email,
             title: 'Thesis Feedback Received',
             message: `Your thesis "${thesis.title}" has received feedback from ${teacherName}`,
             type: 'feedback',
@@ -156,27 +162,23 @@ router.post('/feedback/:thesisId', async (req, res) => {
 
         res.json({
             status: 'success',
-            message: 'Feedback submitted successfully',
             data: thesis
         });
-
     } catch (error) {
         console.error('Error submitting feedback:', error);
         res.status(500).json({
             status: 'error',
-            message: 'Failed to submit feedback',
-            error: error.message
+            message: 'Failed to submit feedback'
         });
     }
 });
 
 // Get feedback for a specific thesis
-router.get('/feedback/:thesisId', async (req, res) => {
+router.get('/feedback/:thesisId', authenticateToken, async (req, res) => {
     try {
         const { thesisId } = req.params;
         
         const thesis = await Thesis.findById(thesisId);
-        
         if (!thesis) {
             return res.status(404).json({
                 status: 'error',
@@ -188,7 +190,6 @@ router.get('/feedback/:thesisId', async (req, res) => {
             status: 'success',
             data: thesis.feedback
         });
-
     } catch (error) {
         console.error('Error fetching feedback:', error);
         res.status(500).json({
@@ -198,64 +199,45 @@ router.get('/feedback/:thesisId', async (req, res) => {
     }
 });
 
-// Add this route to handle thesis deletion
-router.delete('/delete/:thesisId', async (req, res) => {
+// Delete thesis
+router.delete('/:id', authenticateToken, async (req, res) => {
     try {
-        const { thesisId } = req.params;
-        
-        // Find the thesis
-        const thesis = await Thesis.findById(thesisId);
-        
+        const { id } = req.params;
+        const email = req.user.email;
+
+        // Find and check thesis
+        const thesis = await Thesis.findOne({ _id: id, email });
         if (!thesis) {
             return res.status(404).json({
                 status: 'error',
-                message: 'Thesis not found'
+                message: 'Thesis not found or unauthorized'
             });
         }
 
-        // Only prevent deletion of approved theses
+        if (thesis.status === 'approved') {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Cannot delete approved thesis'
+            });
+        }
 
-
-        // Delete the thesis
-        await Thesis.findByIdAndDelete(thesisId);
-
-        // Delete associated notifications
-        await Notification.deleteMany({ thesisId });
+        // Delete thesis and notifications
+        await Promise.all([
+            Thesis.findByIdAndDelete(id),
+            Notification.deleteMany({ thesisId: id })
+        ]);
 
         res.json({
             status: 'success',
             message: 'Thesis deleted successfully'
         });
-
     } catch (error) {
         console.error('Error deleting thesis:', error);
         res.status(500).json({
             status: 'error',
-            message: 'Failed to delete thesis',
-            error: error.message
+            message: 'Failed to delete thesis'
         });
     }
 });
 
-// Add this route to get student's submissions
-router.get('/student-submissions/:email', async (req, res) => {
-    try {
-        const submissions = await Thesis.find({ 
-            email: req.params.email 
-        }).sort({ createdAt: -1 });
-
-        res.json({
-            status: 'success',
-            data: submissions
-        });
-    } catch (error) {
-        console.error('Error fetching student submissions:', error);
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to fetch submissions',
-            error: error.message
-        });
-    }
-});
-
-module.exports = router; 
+module.exports = router;
