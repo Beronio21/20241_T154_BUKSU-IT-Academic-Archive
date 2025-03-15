@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation, Link } from 'react-router-dom';
 import StudentProfile from '../Profile/StudentProfile';
+import SubmitThesis from '../components/SubmitThesis';
+import ViewSubmittedThesis from '../components/ViewSubmittedThesis';
 
 const StudentDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
+    const [submissions, setSubmissions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
     const location = useLocation(); 
 
@@ -26,6 +31,84 @@ const StudentDashboard = () => {
         }
     }, [navigate, location]);
 
+    useEffect(() => {
+        if (userInfo?.email) {
+            fetchSubmissions();
+        }
+    }, [userInfo]);
+
+    const fetchSubmissions = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            if (!userInfo?.email) {
+                throw new Error('User email not found');
+            }
+
+            console.log('Fetching submissions for:', userInfo.email);
+            const url = `http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`;
+            console.log('Request URL:', url);
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${userInfo.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log('Response status:', response.status);
+            const data = await response.json();
+            console.log('Response data:', data);
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to fetch submissions');
+            }
+
+            if (data.status === 'success') {
+                setSubmissions(data.data);
+            } else {
+                throw new Error(data.message || 'Failed to fetch submissions');
+            }
+        } catch (error) {
+            console.error('Detailed error:', error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (thesisId) => {
+        if (!window.confirm('Are you sure you want to delete this thesis?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/thesis/delete/${thesisId}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userInfo.token}`
+                    }
+                }
+            );
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                alert('Thesis deleted successfully');
+                fetchSubmissions(); // Refresh the list
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Error deleting thesis:', error);
+            alert('Failed to delete thesis: ' + error.message);
+        }
+    };
+
     const handleLogout = () => {
         if (window.confirm('Are you sure you want to logout?')) {
             localStorage.clear();
@@ -34,6 +117,136 @@ const StudentDashboard = () => {
         }
     };
 
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    };
+
+    const renderFeedback = (feedback) => {
+        if (!feedback || feedback.length === 0) return null;
+        
+        return (
+            <div className="feedback-section">
+                {feedback.map((item, index) => (
+                    <div key={index} className="feedback-item">
+                        <div className="feedback-header">
+                            <span className="teacher-info">
+                                <strong>{item.teacherName}</strong> ({item.teacherEmail})
+                            </span>
+                            <span className={`feedback-status status-${item.status.toLowerCase()}`}>
+                                {item.status}
+                            </span>
+                            <span className="feedback-date">
+                                {formatDate(item.dateSubmitted)}
+                            </span>
+                        </div>
+                        <div className="feedback-comment">
+                            {item.comment}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    const ThesisSubmissions = () => (
+        <section className="submissions-section mt-5">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2>My Thesis Submissions</h2>
+                <Link to="/student-dashboard/submit-thesis" className="btn btn-primary">
+                    <i className="bi bi-plus-circle me-2"></i>Submit New Thesis
+                </Link>
+            </div>
+            {loading ? (
+                <div className="text-center p-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            ) : error ? (
+                <div className="alert alert-danger" role="alert">
+                    <i className="bi bi-exclamation-triangle me-2"></i>{error}
+                </div>
+            ) : submissions.length === 0 ? (
+                <div className="text-center p-5 bg-light rounded">
+                    <i className="bi bi-file-earmark-text display-1 text-muted"></i>
+                    <p className="mt-3 text-muted">No submissions found. Start by submitting your first thesis!</p>
+                    <Link to="/student-dashboard/submit-thesis" className="btn btn-primary mt-3">
+                        Submit Thesis
+                    </Link>
+                </div>
+            ) : (
+                <div className="table-responsive">
+                    <table className="table table-hover">
+                        <thead className="table-light">
+                            <tr>
+                                <th>Title</th>
+                                <th>Members</th>
+                                <th>Adviser</th>
+                                <th>Submission Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {submissions.map((submission, index) => (
+                                <React.Fragment key={submission._id || index}>
+                                    <tr>
+                                        <td className="fw-bold">{submission.title}</td>
+                                        <td>{submission.members.join(', ')}</td>
+                                        <td>{submission.adviserEmail}</td>
+                                        <td>{formatDate(submission.createdAt)}</td>
+                                        <td>
+                                            <span className={`badge ${
+                                                submission.status === 'pending' ? 'bg-warning' : 
+                                                submission.status === 'approved' ? 'bg-success' :
+                                                submission.status === 'revision needed' ? 'bg-info' : 'bg-danger'
+                                            }`}>
+                                                {submission.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div className="d-flex gap-2">
+                                                <a 
+                                                    href={submission.docsLink} 
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn btn-primary btn-sm"
+                                                >
+                                                    <i className="bi bi-eye me-1"></i>View
+                                                </a>
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() => handleDelete(submission._id)}
+                                                    disabled={submission.status === 'approved'}
+                                                >
+                                                    <i className="bi bi-trash me-1"></i>Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {submission.feedback && submission.feedback.length > 0 && (
+                                        <tr className="feedback-row">
+                                            <td colSpan="6" className="bg-light">
+                                                <div className="p-3">
+                                                    <h6 className="mb-3">Feedback History</h6>
+                                                    {renderFeedback(submission.feedback)}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </section>
+    );
+
     return (
         <div className="d-flex flex-column min-vh-100 bg-light" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>
             <Header userInfo={userInfo} handleLogout={handleLogout} />
@@ -41,6 +254,10 @@ const StudentDashboard = () => {
                 <Routes>
                     <Route path="/dashboard" element={<MainContent />} />
                     <Route path="/student-profile" element={<StudentProfile />} />
+                    <Route path="/submit-thesis" element={<SubmitThesis />} />
+                    <Route path="/my-theses" element={<ViewSubmittedThesis />} />
+                    <Route path="/home" element={<MainContent />} />
+            
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </div>
@@ -52,16 +269,19 @@ const StudentDashboard = () => {
 const Header = ({ userInfo, handleLogout }) => (
     <header className="w-100 bg-white shadow-sm py-2 fixed-top">
         <div className="container d-flex align-items-center justify-content-between">
-            <a href="#">
+            <Link to="/student-dashboard/dashboard" className="text-decoration-none">
                 <div className="d-flex align-items-center gap-2">
                     <img src="../src/Images/buksulogo.png" alt="Logo" className="logo" style={{ height: "40px" }} />
                     <h2 className="text-dark fs-5 fw-bold mb-0">IT Capstone Archive</h2>
                 </div>
-            </a>
+            </Link>
             <nav className="d-none d-md-flex align-items-center gap-3">
-                {['Home', 'Projects', 'Contact'].map((item) => (
-                    <a key={item} className="text-dark text-decoration-none" href="#">{item}</a>
+                {['Home'].map((item) => (
+                    <Link key={item} className="text-dark text-decoration-none" to={`/student-dashboard/${item.toLowerCase()}`}>{item}</Link>
                 ))}
+                <Link className="text-dark text-decoration-none" to="/student-dashboard/submit-thesis">Submit Thesis</Link>
+                <Link className="text-dark text-decoration-none" to="/student-dashboard/my-theses">My Theses</Link>
+                
                 {userInfo ? (
                     <div className="dropdown">
                         <a
@@ -80,13 +300,13 @@ const Header = ({ userInfo, handleLogout }) => (
                             </div>
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a className="dropdown-item" href="/student-profile">Profile Settings</a></li>
+                            <li><Link className="dropdown-item" to="/student-dashboard/student-profile">Profile Settings</Link></li>
                             <li><hr className="dropdown-divider" /></li>
                             <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
                         </ul>
                     </div>
                 ) : (
-                    <a className="text-dark text-decoration-none" href="/login">Login</a>
+                    <Link className="text-dark text-decoration-none" to="/login">Login</Link>
                 )}
             </nav>
         </div>
