@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import StudentList from '../components/StudentList';
 import TeacherProfile from '../Profile/TeacherProfile';
+import ThesisSubmissions from '../components/thesis-submissions';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -68,10 +69,11 @@ const TeacherDashboard = () => {
     return (
         <div className="d-flex flex-column min-vh-100 bg-light" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>
             <Header userInfo={userInfo} handleLogout={handleLogout} />
-            <div className="flex-grow-1 p-4" style={{ marginTop: '60px' }}>
+            <div className="flex-grow-1 p-4" style={{ marginTop: '100px' }}>
                 <Routes>
                     <Route path="/dashboard" element={<MainContent loading={loading} submissions={submissions} />} />
                     <Route path="/students" element={<StudentList />} />
+                    <Route path="/thesis" element={<ThesisSubmissions />} />
                     <Route path="/profile" element={<TeacherProfile />} />
                 </Routes>
             </div>
@@ -91,6 +93,7 @@ const Header = ({ userInfo, handleLogout }) => (
             </Link>
             <nav className="d-none d-md-flex align-items-center gap-3">
                 <Link to="/teacher-dashboard/dashboard" className="text-dark text-decoration-none">Dashboard</Link>
+                <Link to="/teacher-dashboard/thesis" className="text-dark text-decoration-none">All Thesis</Link>
                 <Link to="/teacher-dashboard/students" className="text-dark text-decoration-none">Students</Link>
                 {userInfo ? (
                     <div className="dropdown">
@@ -124,7 +127,7 @@ const Header = ({ userInfo, handleLogout }) => (
 );
 
 const MainContent = ({ loading, submissions }) => (
-    <main className="flex-grow-1 p-3 p-md-4 mt-5">
+    <main className="flex-grow-1 p-3 p-md-4">
         <div className="container">
             <Intro />
             <SearchBar />
@@ -136,7 +139,7 @@ const MainContent = ({ loading, submissions }) => (
 
 const Intro = () => (
     <div>
-        <h1 className="text-dark text display-6 fw-bold mb-3">Capstone IT Projects</h1>
+        <h1 className="text-dark text display-6 fw-bold mb-3"style={{ marginTop: '100px' }}>Capstone IT Projects</h1>
         <p className="text-secondary mb-4">
             Explore the best IT capstone projects from 2020 to present. Use the search bar to find a specific project, or use the filters to browse by year or type.
         </p>

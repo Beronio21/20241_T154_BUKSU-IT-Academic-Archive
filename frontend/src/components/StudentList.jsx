@@ -71,7 +71,7 @@ const StudentList = () => {
     );
 
     return (
-        <div className="student-list-container">
+        <div className="student-list-container"style={{ marginTop: '250px' }}>
             <header className="list-header">
                 <h2>Student List</h2>
                 <div className="header-actions">

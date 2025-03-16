@@ -150,7 +150,7 @@ const SubmitThesis = () => {
         <div className="submit-thesis-container container mt-4">
             <h2 className="mb-4">Submit Thesis</h2>
 
-            <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
+            <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded"style={{ marginTop: '100px' }}>
                 <div className="row mb-3">
                     <div className="col-md-6">
                         <div className="form-group">

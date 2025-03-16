@@ -84,28 +84,7 @@ const ViewSubmittedThesis = () => {
     const renderFeedback = (feedback) => {
         if (!feedback || feedback.length === 0) return null;
         
-        return (
-            <div className="feedback-section mt-2">
-                {feedback.map((item, index) => (
-                    <div key={index} className="feedback-item border-start border-4 border-info ps-3 mb-2">
-                        <div className="d-flex justify-content-between align-items-center">
-                            <span className="text-muted">
-                                <strong>{item.teacherName || 'Adviser'}</strong> ({item.teacherEmail})
-                            </span>
-                            <span className="text-muted small">
-                                {formatDate(item.dateSubmitted)}
-                            </span>
-                        </div>
-                        <div className="mt-1">
-                            <span className={`badge ${getStatusBadgeClass(item.status)} me-2`}>
-                                {item.status}
-                            </span>
-                            <span>{item.comment}</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
+        
     };
 
     const getStatusBadgeClass = (status) => {
@@ -143,7 +122,7 @@ const ViewSubmittedThesis = () => {
     }
 
     return (
-        <div className="container mt-5 pt-4">
+        <div className="container" style={{ marginTop: '500px' }}>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h2 className="mb-0">My Submitted Theses</h2>
                 <div className="d-flex gap-2 align-items-center">
