@@ -83,6 +83,32 @@ section {
   transform: scale(1.02);
 }
 
+
+.logo-section {
+  padding: 3rem 2rem;
+  height: 100%; /* Full height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item {
+  height: 100%; /* Full height for carousel items */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-content {
+  text-align: center;
+}
+
+.tagline {
+  font-size: 2rem; /* Adjust font size as needed */
+  color: #333; /* Adjust color as needed */
+  margin: 0 10px; /* Space between taglines */
+}
 .university-name {
   font-size: 2rem;
   font-weight: 600;

@@ -1,175 +1,50 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifications, notifications, markAsRead }) => {
+
+const StudentTopbar = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) {
-            localStorage.clear();
-            sessionStorage.clear();
-            navigate('/', { replace: true });
-        }
-    };
-
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    const notificationStyles = {
-        container: {
-            position: 'relative',
-            marginRight: '1rem',
-            zIndex: 1031
-        },
-        dropdown: {
-            position: 'absolute',
-            top: 'calc(100% + 10px)',
-            right: '-10px',
-            width: '300px',
-            backgroundColor: 'white',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            borderRadius: '8px',
-            maxHeight: '400px',
-            overflowY: 'auto',
-            zIndex: 1031,
-            border: '1px solid #ddd'
-        },
-        header: {
-            padding: '10px',
-            borderBottom: '1px solid #eee',
-            backgroundColor: '#f8f9fa',
-            borderTopLeftRadius: '8px',
-            borderTopRightRadius: '8px'
-        },
-        list: {
-            maxHeight: '350px',
-            overflowY: 'auto',
-            scrollbarWidth: 'thin'
-        },
-        item: (read) => ({
-            padding: '12px',
-            borderBottom: '1px solid #eee',
-            backgroundColor: '#fff',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s'
-        }),
-        timestamp: {
-            fontSize: '0.8rem',
-            color: '#666',
-            marginTop: '4px'
-        },
-        emptyMessage: {
-            padding: '20px',
-            textAlign: 'center',
-            color: '#666'
-        },
-        badge: {
-            fontSize: '0.65rem'
-        }
-    };
-
     return (
-        <nav className="navbar fixed-top navbar-expand-lg">
-            <div className="container-fluid">
-                <div className="d-flex align-items-center ms-auto">
-                   
-                    <button 
-                        className="p-0 me-3 position-relative" 
-                        title="Messages" 
-                        style={{ background: 'none', border: 'none', color: 'inherit' }}
-                        onClick={() => navigate('/student-dashboard/send-gmail')}
-                    >
-                        <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: 'inherit' }}></i>
-                    </button>
-                    <div style={notificationStyles.container}>
-                        <button 
-                            className="p-0 me-4 position-relative" 
-                            title="Notifications"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                            onClick={() => setShowNotifications(!showNotifications)}
-                        >
-                            <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: 'inherit' }}></i>
-                            {unreadCount > 0 && (
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={notificationStyles.badge}>
-                                    {unreadCount}
-                                </span>
-                            )}
-                        </button>
-
-                        {showNotifications && (
-                            <div className="dropdown-menu show" style={notificationStyles.dropdown}>
-                                <div className="dropdown-header" style={notificationStyles.header}>
-                                    <h6 className="m-0">Notifications</h6>
+        <header className="student-header bg-white shadow-sm py-2 fixed-top">
+            <div className="container d-flex align-items-center justify-content-between">
+                <a href="#" className="d-flex align-items-center gap-2 text-decoration-none">
+                    <img src="../src/Images/buksulogo.png" alt="Logo" className="img-fluid" style={{ height: '40px' }} />
+                    <h2 className="text-dark fs-5 fw-bold mb-0">IT Capstone Archive</h2>
+                </a>
+                <nav className="d-none d-md-flex align-items-center gap-3">
+                    {['Home', 'Projects', 'Contact'].map((item) => (
+                        <a key={item} className="text-dark text-decoration-none" href="#">{item}</a>
+                    ))}
+                    {userInfo ? (
+                        <div className="dropdown">
+                            <a
+                                href="#"
+                                className="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
+                                id="userDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <div className="rounded-circle overflow-hidden" style={{ width: '40px', height: '40px' }}>
+                                    <img
+                                        src={userInfo.image || '/default-avatar.png'}
+                                        alt={userInfo.name || 'User Avatar'}
+                                        className="img-fluid"
+                                    />
                                 </div>
-                                <div className="dropdown-list" style={notificationStyles.list}>
-                                    {notifications.length === 0 ? (
-                                        <div style={notificationStyles.emptyMessage}>
-                                            No notifications
-                                        </div>
-                                    ) : (
-                                        notifications.map(notification => (
-                                            <div 
-                                                key={notification._id}
-                                                className="dropdown-item"
-                                                style={notificationStyles.item(!notification.read)}
-                                                onClick={() => !notification.read && markAsRead(notification._id)}
-                                            >
-                                                <div className="fw-bold">{notification.title}</div>
-                                                <div>{notification.message}</div>
-                                                <div style={notificationStyles.timestamp}>
-                                                    {formatDate(notification.createdAt)}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    <div className="dropdown">
-                        <button 
-                            className="p-0 dropdown-toggle d-flex align-items-center"
-                            type="button"
-                            id="userDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                        >
-                            <img
-                                src={userInfo?.image || 'https://via.placeholder.com/32'}
-                                alt="Profile"
-                                className="rounded-circle me-2"
-                                width="32"
-                                height="32"
-                            />
-                            <span>{userInfo?.name || 'User'}</span>
-                        </button>
-                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li>
-                                <a className="dropdown-item" href="/student-dashboard/profile">
-                                    <i className="bi bi-person me-2 fs-5"></i>
-                                    Profile
-                                </a>
-                            </li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li>
-                                <button className="dropdown-item text-danger" onClick={handleLogout}>
-                                    <i className="bi bi-box-arrow-right me-2 fs-5"></i>
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                            </a>
+                            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a className="dropdown-item" href="/student-profile">Profile Settings</a></li>
+                                <li><hr className="dropdown-divider" /></li>
+                                <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                            </ul>
+                        </div>
+                    ) : (
+                        <a className="text-dark text-decoration-none" href="/login">Login</a>
+                    )}
+                </nav>
             </div>
-        </nav>
+        </header>
     );
 };
 
