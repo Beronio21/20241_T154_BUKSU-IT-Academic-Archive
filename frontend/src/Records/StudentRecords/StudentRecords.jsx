@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap-icons/font/bootstrap-icons.css'; // Import Bootstrap Icons
-import '../Styles/StudentRecords.css'; // Your custom styles
+import '../../Styles/StudentRecords.css'; // Your custom styles
 
 const StudentRecords = () => {
     const [students, setStudents] = useState([]);

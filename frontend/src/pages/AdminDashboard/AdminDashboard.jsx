@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import UserManagement from '../UserManagement/UserManagement';
-import StudentRecords from '../Records/StudentRecords';
-import TeacherRecords from '../Records/TeacherRecords';
-import AdminTopbar from '../Topbar/AdminTopbar';
-import AdminNavbar from '../Navbar/AdminNavbar';
-import AdminRegister from '../Auth/AdminRegister';
-import '../Styles/adminpanel.css';
+import UserManagement from '../../UserManagement/UserManagement';
+import StudentRecords from '../../Records/StudentRecords/StudentRecords';
+import TeacherRecords from '../../Records/TeacherRecords/TeacherRecords';
+import AdminTopbar from '../../Topbar/AdminTopbar/AdminTopbar';
+import AdminNavbar from '../../Navbar/AdminNavbar';
+import AdminRegister from '../../Auth/AdminRegister';
+
 
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);

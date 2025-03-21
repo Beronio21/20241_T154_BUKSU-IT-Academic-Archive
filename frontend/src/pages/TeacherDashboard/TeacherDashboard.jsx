@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Routes, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import StudentList from '../components/StudentList';
-import TeacherProfile from '../Profile/TeacherProfile';
-import ThesisSubmissions from '../components/thesis-submissions';
+import StudentList from '../../components/StudentList';
+import TeacherProfile from '../../Profile/TeacherProfile/TeacherProfile';
+import ThesisSubmissions from '../../components/thesis-submissions';
 
 const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
-    const [submissions, setSubmissions] = useState([]);
+    const [submissions, setSubmissions] = useState([]); 
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();

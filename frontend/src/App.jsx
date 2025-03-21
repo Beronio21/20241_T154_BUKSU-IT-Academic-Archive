@@ -11,9 +11,9 @@ import TeacherRegister from './Auth/TeacherRegister';
 import AdminRegister from './Auth/AdminRegister';
 
 // Dashboard Components
-import StudentDashboard from './pages/StudentDashboard';
-import TeacherDashboard from './pages/TeacherDashboard';
-import AdminDashboard from './pages/AdminDashboard';
+import StudentDashboard from './pages/StudentDashboard/StudentDashboard';
+import TeacherDashboard from './pages/TeacherDashboard/TeacherDashboard';
+import AdminDashboard from './pages/AdminDashboard/AdminDashboard'; 
 
 // Other Components
 import NotFound from './NotFound';
