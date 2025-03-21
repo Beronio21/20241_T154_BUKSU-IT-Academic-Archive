@@ -249,4 +249,4 @@ const TeacherRegister = () => {
   );
 };
 
-export default TeacherRegister;
+export default TeacherRegister; 
