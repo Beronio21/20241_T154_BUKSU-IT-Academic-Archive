@@ -49,73 +49,75 @@ const StudentDashboard = () => {
 
     return (
         <div className="d-flex">
-            <StudentTopBar userInfo={userInfo} />
             <StudentNavbar activeSection="dashboard" handleSectionChange={() => {}} />
-            <div className="container mt-5" style={{ marginLeft: "10px", marginTop: "90px" }}>
-                {/* Header Section */}
-                <div className="mb-4 text-center">
-                    <h1 className="fw-bold">Capstone IT Projects</h1>
-                    <p className="text-secondary">
-                        Explore the best IT capstone projects from 2010 to present. Use the search bar to find a specific project, or use the filters to browse by year or type.
-                    </p>
-                </div>
-
-                {/* Search Bar */}
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by project title or mentor..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        aria-label="Search projects"
-                    />
-                </div>
-
-                {/* Filter Options */}
-                <div className="mb-4">
-                    <h5 className="fw-bold">Filter Options</h5>
-                    <div className="d-flex align-items-center gap-2">
-                        {/* Year Filter */}
-                        <select className="form-select" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} aria-label="Filter by year">
-                            <option value="">Year</option>
-                            {years.map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                            ))}
-                        </select>
-
-                        {/* Category Filter */}
-                        <select className="form-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} aria-label="Filter by category">
-                            <option value="">Category</option>
-                            {categories.map((category) => (
-                                <option key={category} value={category}>{category}</option>
-                            ))}
-                        </select>
-
-                        {/* Reset Filters Button */}
-                        <button className="btn btn-outline-secondary" onClick={() => { setSelectedYear(""); setSelectedCategory(""); }}>
-                            Reset Filters
-                        </button>
+            <div className="flex-grow-1">
+                <StudentTopBar userInfo={userInfo} />
+                <div className="container mt-4" style={{ marginLeft: "80px" }}>
+                    {/* Header Section */}
+                    <div className="mb-3 text-center">
+                        <h1 className="fw-bold fs-4">Capstone IT Projects</h1>
+                        <p className="text-secondary fs-6">
+                            Explore and review IT capstone projects. Use the search bar or filters to find specific projects.
+                        </p>
                     </div>
-                </div>
 
-                {/* Project List */}
-                <div className="row">
-                    {filteredProjects.length > 0 ? (
-                        filteredProjects.map((project, index) => (
-                            <div key={index} className="col-md-6 col-lg-4 mb-4">
-                                <div className="card shadow border-0" style={{ transition: "0.3s" }}>
-                                    <div className="card-body">
-                                        <h5 className="card-title fw-bold">{project.title}</h5>
-                                        <p className="card-text">Mentor: {project.mentor}</p>
-                                        <button className="btn btn-outline-primary">View full summary</button>
+                    {/* Search Bar */}
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search by project title or mentor..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            aria-label="Search projects"
+                        />
+                    </div>
+
+                    {/* Filter Options */}
+                    <div className="mb-3">
+                        <h5 className="fw-bold">Filter Options</h5>
+                        <div className="d-flex align-items-center gap-2">
+                            {/* Year Filter */}
+                            <select className="form-select" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} aria-label="Filter by year">
+                                <option value="">Year</option>
+                                {years.map((year) => (
+                                    <option key={year} value={year}>{year}</option>
+                                ))}
+                            </select>
+
+                            {/* Category Filter */}
+                            <select className="form-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} aria-label="Filter by category">
+                                <option value="">Category</option>
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
+
+                            {/* Reset Filters Button */}
+                            <button className="btn btn-outline-secondary" onClick={() => { setSelectedYear(""); setSelectedCategory(""); }}>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Project List */}
+                    <div className="row">
+                        {filteredProjects.length > 0 ? (
+                            filteredProjects.map((project, index) => (
+                                <div key={index} className="col-md-6 col-lg-4 mb-3">
+                                    <div className="card shadow border-0" style={{ transition: "0.3s" }}>
+                                        <div className="card-body">
+                                            <h5 className="card-title fw-bold">{project.title}</h5>
+                                            <p className="card-text">Mentor: {project.mentor}</p>
+                                            <button className="btn btn-outline-primary btn-sm">View Summary</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-center text-secondary">No projects found</p>
-                    )}
+                            ))
+                        ) : (
+                            <p className="text-center text-secondary">No projects found</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

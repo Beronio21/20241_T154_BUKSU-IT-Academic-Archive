@@ -62,7 +62,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
     );
 
     return (
-        <div
+        <nav
             className="sidebar shadow-sm"
             style={{
                 position: 'fixed',
@@ -70,10 +70,12 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                 left: 0,
                 bottom: 0,
                 width: '250px',
-                backgroundColor: '#fff',
+                backgroundColor: '#f5f5f5', // Light gray background
                 overflowY: 'auto',
                 zIndex: 1000,
                 padding: '1rem',
+                marginTop: '50px', // Adjust to match the top bar height
+                borderRadius: '8px',
             }}
         >
             <div className="d-flex flex-column h-100">
@@ -92,7 +94,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                     </ul>
                 </div>
             </div>
-        </div>
+        </nav>
     );
 };
 
