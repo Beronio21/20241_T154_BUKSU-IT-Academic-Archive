@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import StudentProfile from '../Profile/StudentProfile';
-import SubmitThesis from '../components/SubmitThesis';
-import Docs from '../components/Docs';
-import Calendar from '../components/Calendar';
-import SendGmail from '../Communication/SendGmail';
-import ScheduleTable from '../components/ScheduleTable';
-import Topbar from '../Topbar/StudentTopbar';
-import StudentNavbar from '../Navbar/StudentNavbar';
+import StudentProfile from '../../Profile/StudentProfile';
+import SubmitThesis from '../../components/SubmitThesis';
+import Docs from '../../components/Docs';
+import Calendar from '../../components/Calendar';
+import SendGmail from '../../Communication/SendGmail';
+import ScheduleTable from '../../components/ScheduleTable';
+import Topbar from '../../Topbar/Student-Topbar/StudentTopbar';
+import StudentNavbar from '../../Navbar/Student-Navbar/StudentNavbar';
 
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');

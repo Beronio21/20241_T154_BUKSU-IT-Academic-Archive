@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import UserManagement from '../UserManagement/UserManagement';
-import StudentRecords from '../Records/StudentRecords';
-import TeacherRecords from '../Records/TeacherRecords';
-import AdminTopbar from '../Topbar/AdminTopbar';
-import AdminNavbar from '../Navbar/AdminNavbar';
-import AdminRegister from '../Auth/AdminRegister';
-import '../Styles/adminpanel.css';
+import UserManagement from '../../UserManagement/UserManagement';
+import StudentRecords from '../../Records/StudentRecords';
+import TeacherRecords from '../../Records/TeacherRecords';
+import AdminTopbar from '../../Topbar/Admin-Topbar/AdminTopbar';
+import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
+import AdminRegister from '../../Auth/AdminRegister';
+
 
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -84,12 +84,11 @@ const AdminDashboard = () => {
 
   // Handle user logout
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      localStorage.clear();
-      sessionStorage.clear();
-      navigate('/', { replace: true });
-    }
-  };
+    // Clear user info from local storage or state
+    localStorage.removeItem("user-info");
+    // Redirect to login page
+    navigate("/login");
+};
 
   // Change active section
   const handleSectionChange = (section) => {
