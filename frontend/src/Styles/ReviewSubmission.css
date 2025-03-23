@@ -1,69 +1,149 @@
 .review-submission-container {
-    padding: 20px;
+    padding: 30px;
+    background: #f8f9fa;
+    min-height: 100vh;
 }
 
 .review-header {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.review-header h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.8rem;
 }
 
 .submissions-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
     background: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.submissions-table th,
-.submissions-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
 .submissions-table th {
-    background-color: #f8f9fa;
+    background: #f8f9fa;
+    padding: 15px;
     font-weight: 600;
-    color: #495057;
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
 }
 
+.submissions-table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Status badges with improved design */
 .status-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: inline-block;
 }
 
-.status-badge.pending {
-    background-color: #fff3e0;
-    color: #e65100;
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
 
-.status-badge.approved {
-    background-color: #e8f5e9;
-    color: #2e7d32;
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-.status-badge.rejected {
-    background-color: #ffebee;
-    color: #c62828;
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
-.status-badge.revision {
-    background-color: #e3f2fd;
-    color: #1565c0;
+.status-revision {
+    background-color: #cce5ff;
+    color: #004085;
+    border: 1px solid #b8daff;
+}
+
+/* Improved buttons */
+.btn-view, .btn-feedback {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 0 5px;
 }
 
 .btn-view {
-    padding: 6px 12px;
-    background-color: #1976d2;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 .btn-view:hover {
-    background-color: #1565c0;
+    background-color: #45a049;
+    transform: translateY(-1px);
+}
+
+.btn-feedback {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+}
+
+.btn-feedback:hover {
+    background-color: #1976D2;
+    transform: translateY(-1px);
+}
+
+/* Modal improvements */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 20px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.feedback-form textarea {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 120px;
+    margin-bottom: 15px;
+}
+
+.feedback-form select {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+/* Empty state styling */
+.no-submissions {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
 }
 
 .review-modal {
@@ -77,16 +157,6 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 24px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 .submission-details {
@@ -106,27 +176,6 @@
     background-color: #4caf50;
     color: white;
     text-decoration: none;
-    border-radius: 4px;
-}
-
-.feedback-form {
-    margin-top: 20px;
-}
-
-.feedback-form textarea {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: vertical;
-}
-
-.feedback-form select {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
     border-radius: 4px;
 }
 
@@ -156,8 +205,7 @@
 }
 
 .loading,
-.error,
-.no-submissions {
+.error {
     text-align: center;
     padding: 20px;
     color: #666;

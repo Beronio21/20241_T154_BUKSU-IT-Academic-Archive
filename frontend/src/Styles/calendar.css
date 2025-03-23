@@ -1,48 +1,72 @@
 .calendar-container {
-    width: 400px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    padding: 25px;
     margin: 30px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
 }
 
-.calendar-container h2 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
+.fc {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.calendar-container p {
-    margin: 10px 0;
+.fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    color: #2c3e50;
 }
 
-.calendar-container input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
+.fc-button-primary {
+    background-color: #2196F3 !important;
+    border-color: #2196F3 !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    font-weight: 500 !important;
+}
+
+.fc-button-primary:hover {
+    background-color: #1976D2 !important;
+    border-color: #1976D2 !important;
+}
+
+.fc-event {
     border-radius: 4px;
+    padding: 3px;
+    margin: 2px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
 }
 
-.calendar-container button {
-    padding: 10px 15px;
-    background-color: #007bff;
+.event-form {
+    margin-top: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.event-form input {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.event-form button {
+    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.calendar-container button:hover {
-    background-color: #0056b3;
-}
-
-.calendar-button-container {
-    display: flex;
-    gap: 10px;
-}
-
-.calendar-button {
-    padding: 5px 10px;
-    font-size: 0.9em;
+.event-form button:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
 }

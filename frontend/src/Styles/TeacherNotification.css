@@ -1,69 +1,73 @@
 .notifications-page {
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 30px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
 .notifications-container {
-    margin-top: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.notifications-header {
+    padding: 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.notifications-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
 }
 
 .notifications-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    padding: 20px;
 }
 
 .notification-item {
-    padding: 16px;
-    border-radius: 8px;
-    background-color: #fff;
-    border: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
 }
 
 .notification-item:hover {
-    background-color: #f8f9fa;
     transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .notification-item.unread {
-    background-color: #e3f2fd;
-    border-color: #bbdefb;
+    background-color: #f8f9fa;
+    border-left: 4px solid #2196F3;
 }
 
-.notification-content {
-    flex: 1;
+.notification-content h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
-.notification-item h4 {
-    margin: 0 0 8px 0;
-    color: #333;
-    font-size: 1.1rem;
+.notification-content p {
+    color: #6c757d;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
-.notification-item p {
-    margin: 0 0 8px 0;
-    color: #666;
-    font-size: 0.95rem;
-}
-
-.notification-item small {
-    color: #999;
+.notification-time {
+    color: #95a5a6;
     font-size: 0.85rem;
 }
 
 .unread-indicator {
-    background-color: #2196f3;
+    background-color: #2196F3;
     color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 500;
 }
