@@ -1,7 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+// TeacherTopbar.jsx
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifications, notifications, markAsRead }) => {
+const TeacherTopbar = ({ userInfo }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -12,156 +13,48 @@ const TeacherTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         }
     };
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    const notificationStyles = {
-        dropdownMenu: {
-            width: '300px',
-            maxHeight: '400px',
-            overflowY: 'auto',
-            padding: '0'
-        },
-        notificationItem: {
-            padding: '10px 15px',
-            borderBottom: '1px solid #eee',
-            cursor: 'pointer'
-        },
-        list: {
-            maxHeight: '350px',
-            overflowY: 'auto',
-            scrollbarWidth: 'thin'
-        },
-        item: (read) => ({
-            padding: '12px',
-            borderBottom: '1px solid #eee',
-            backgroundColor: '#fff',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s'
-        }),
-        timestamp: {
-            fontSize: '0.8rem',
-            color: '#666',
-            marginTop: '4px'
-        },
-        emptyMessage: {
-            padding: '20px',
-            textAlign: 'center',
-            color: '#666'
-        },
-        badge: {
-            fontSize: '0.65rem'
-        }
-    };
-
     return (
-        <nav className="navbar fixed-top navbar-expand-lg">
-            <div className="container-fluid">
-                <div className="d-flex align-items-center ms-auto">
-                   
-                    <button 
-                        className="p-0 me-3 position-relative" 
-                        title="Messages"
-                        onClick={() => navigate('/teacher-dashboard/send-gmail')}
-                        style={{ background: 'none', border: 'none', color: 'inherit' }}
-                    >
-                        <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: 'inherit' }}></i>
-                    </button>
-                    
-                    {/* Notifications Dropdown */}
-                    <div style={notificationStyles.container}>
-                        <button 
-                            className="p-0 me-4 position-relative" 
-                            title="Notifications"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                            onClick={() => setShowNotifications(!showNotifications)}
-                        >
-                            <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: 'inherit' }}></i>
-                            {unreadCount > 0 && (
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={notificationStyles.badge}>
-                                    {unreadCount > 99 ? '99+' : unreadCount}
-                                </span>
-                            )}
-                        </button>
-
-                        {showNotifications && (
-                            <div className="dropdown-menu show" style={notificationStyles.dropdown}>
-                                <div className="dropdown-header" style={notificationStyles.header}>
-                                    <h6 className="m-0">Notifications</h6>
-                                </div>
-                                <div className="dropdown-list" style={notificationStyles.list}>
-                                    {notifications.length === 0 ? (
-                                        <div style={notificationStyles.emptyMessage}>
-                                            No notifications
-                                        </div>
-                                    ) : (
-                                        notifications.map(notification => (
-                                            <div 
-                                                key={notification._id}
-                                                className="dropdown-item"
-                                                style={notificationStyles.item(!notification.read)}
-                                                onClick={() => !notification.read && markAsRead(notification._id)}
-                                            >
-                                                <div className="fw-bold">{notification.message}</div>
-                                                <div style={notificationStyles.timestamp}>
-                                                    {formatDate(notification.createdAt)}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        )}
+        <header className="w-100 bg-white shadow-sm py-2 fixed-top">
+            <div className="container d-flex align-items-center justify-content-between">
+                <Link to="/teacher-dashboard/dashboard" className="text-decoration-none">
+                    <div className="d-flex align-items-center gap-2">
+                        <img src="../src/Images/buksulogo.png" alt="Logo" className="logo" style={{ height: "40px" }} />
+                        <h2 className="text-dark fs-5 fw-bold mb-0">IT Capstone Archive</h2>
                     </div>
-
-                    {/* User Profile Dropdown */}
-                    <div className="dropdown">
-                        <button 
-                            className="p-0 dropdown-toggle d-flex align-items-center"
-                            type="button"
-                            id="teacherDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                        >
-                            <img
-                                src={userInfo?.image || 'https://via.placeholder.com/32'}
-                                alt="Profile"
-                                className="rounded-circle me-2"
-                                width="32"
-                                height="32"
-                            />
-                            <span>{userInfo?.name || 'Teacher'}</span>
-                        </button>
-                        <ul className="dropdown-menu dropdown-menu-end shadow" aria-labelledby="teacherDropdown">
-                            <li>
-                                <button 
-                                    className="dropdown-item" 
-                                    onClick={() => navigate('/teacher-dashboard/profile')}
-                                >
-                                    <i className="bi bi-person me-2 fs-5"></i>
-                                    Profile
-                                </button>
-                            </li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li>
-                                <button className="dropdown-item text-danger" onClick={handleLogout}>
-                                    <i className="bi bi-box-arrow-right me-2 fs-5"></i>
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                </Link>
+                <nav className="d-none d-md-flex align-items-center gap-3">
+                    <Link className="text-dark text-decoration-none" to="/teacher-dashboard/dashboard">Dashboard</Link>
+                    <Link className="text-dark text-decoration-none" to="/teacher-dashboard/send-gmail">Send Email</Link>
+                    <Link className="text-dark text-decoration-none" to="/teacher-dashboard/my-theses">My Theses</Link>
+                    {userInfo ? (
+                        <div className="dropdown">
+                            <a
+                                href="#"
+                                className="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
+                                id="userDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <div className="user-icon rounded-circle overflow-hidden" style={{ width: '40px', height: '40px' }}>
+                                    <img
+                                        src={userInfo.image || '/default-avatar.png'}
+                                        alt={userInfo.name || 'User Avatar'}
+                                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                    />
+                                </div>
+                            </a>
+                            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><Link className="dropdown-item" to="/teacher-dashboard/student-profile">Profile Settings</Link></li>
+                                <li><hr className="dropdown-divider" /></li>
+                                <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                            </ul>
+                        </div>
+                    ) : (
+                        <Link className="text-dark text-decoration-none" to="/login">Login</Link>
+                    )}
+                </nav>
             </div>
-        </nav>
+        </header>
     );
 };
 

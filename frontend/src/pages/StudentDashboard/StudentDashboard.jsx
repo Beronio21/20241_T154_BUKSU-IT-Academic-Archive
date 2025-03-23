@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import StudentTopbar from '../../Topbar/StudentTopbar/StudentTopbar';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
+import { useNavigate } from "react-router-dom";
+import StudentNavbar from "../../Navbar/StudentNavbar";
+import StudentTopBar from "../../Topbar/StudentTopbar/StudentTopbar";
 
 const projectData = [
     { title: "AI for Climate Change", mentor: "Bill Gates", year: "2023", category: "Mobile Apps" },
@@ -12,21 +14,20 @@ const projectData = [
 
 const StudentDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedYear, setSelectedYear] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedYear, setSelectedYear] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
-        const data = localStorage.getItem('user-info');
+        const data = localStorage.getItem("user-info");
         if (!data) {
-            navigate('/login', { replace: true });
+            navigate("/login", { replace: true });
             return;
         }
         const userData = JSON.parse(data);
-        if (userData?.role !== 'student' || !userData.token) {
-            navigate('/login', { replace: true });
+        if (userData?.role !== "student" || !userData.token) {
+            navigate("/login", { replace: true });
             return;
         }
         setUserInfo(userData);
@@ -35,31 +36,22 @@ const StudentDashboard = () => {
     const years = ["2023", "2022", "2021", "2020", "2019", "2018"];
     const categories = ["Mobile Apps", "Web Apps", "Databases"];
 
-    const filteredProjects = projectData.filter((project) => {
-        const matchesSearch =
-            project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            project.mentor.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesYear = selectedYear ? project.year === selectedYear : true;
-        const matchesCategory = selectedCategory ? project.category === selectedCategory : true;
-        return matchesSearch && matchesYear && matchesCategory;
-    });
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
-    };
-
-    const handleCategoryChange = (e) => {
-        setSelectedCategory(e.target.value);
-    };
+    const filteredProjects = useMemo(() => {
+        return projectData.filter((project) => {
+            const matchesSearch =
+                project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                project.mentor.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesYear = selectedYear ? project.year === selectedYear : true;
+            const matchesCategory = selectedCategory ? project.category === selectedCategory : true;
+            return matchesSearch && matchesYear && matchesCategory;
+        });
+    }, [searchQuery, selectedYear, selectedCategory]);
 
     return (
-        <div>
-            <StudentTopbar userInfo={userInfo} />
-            <div className="container mt-5" style={{ marginTop: '80px' }}>
+        <div className="d-flex">
+            <StudentTopBar userInfo={userInfo} />
+            <StudentNavbar activeSection="dashboard" handleSectionChange={() => {}} />
+            <div className="container mt-5" style={{ marginLeft: "10px", marginTop: "90px" }}>
                 {/* Header Section */}
                 <div className="mb-4 text-center">
                     <h1 className="fw-bold">Capstone IT Projects</h1>
@@ -69,52 +61,56 @@ const StudentDashboard = () => {
                 </div>
 
                 {/* Search Bar */}
-                <div className="mb-4 pt-5">
+                <div className="mb-4">
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Search..."
+                        placeholder="Search by project title or mentor..."
                         value={searchQuery}
-                        onChange={handleSearchChange}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        aria-label="Search projects"
                     />
                 </div>
 
                 {/* Filter Options */}
                 <div className="mb-4">
-                    <h5 className="fw-bold">Filter options</h5>
-                    <div className="d-flex ">
-                        <div className="me-2">
-                            <select className="form-select" value={selectedYear} onChange={handleYearChange}>
-                                <option value="">Year</option>
-                                {years.map((year) => (
-                                    <option key={year} value={year}>{year}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <select className="form-select" value={selectedCategory} onChange={handleCategoryChange}>
-                                <option value="">Category</option>
-                                {categories.map((category) => (
-                                    <option key={category} value={category}>{category}</option>
-                                ))}
-                            </select>
-                        </div>
+                    <h5 className="fw-bold">Filter Options</h5>
+                    <div className="d-flex align-items-center gap-2">
+                        {/* Year Filter */}
+                        <select className="form-select" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} aria-label="Filter by year">
+                            <option value="">Year</option>
+                            {years.map((year) => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
+                        </select>
+
+                        {/* Category Filter */}
+                        <select className="form-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} aria-label="Filter by category">
+                            <option value="">Category</option>
+                            {categories.map((category) => (
+                                <option key={category} value={category}>{category}</option>
+                            ))}
+                        </select>
+
+                        {/* Reset Filters Button */}
+                        <button className="btn btn-outline-secondary" onClick={() => { setSelectedYear(""); setSelectedCategory(""); }}>
+                            Reset Filters
+                        </button>
                     </div>
                 </div>
 
                 {/* Project List */}
-                <div>
+                <div className="row">
                     {filteredProjects.length > 0 ? (
                         filteredProjects.map((project, index) => (
-                            <div
-                                key={index}
-                                className="p-3 mb-3 bg-white border rounded shadow-sm d-flex flex-column"
-                            >
-                                <div>
-                                    <h5 className="mb-1">{project.title}</h5>
-                                    <p className="mb-0 text-secondary">Mentor: {project.mentor}</p>
+                            <div key={index} className="col-md-6 col-lg-4 mb-4">
+                                <div className="card shadow border-0" style={{ transition: "0.3s" }}>
+                                    <div className="card-body">
+                                        <h5 className="card-title fw-bold">{project.title}</h5>
+                                        <p className="card-text">Mentor: {project.mentor}</p>
+                                        <button className="btn btn-outline-primary">View full summary</button>
+                                    </div>
                                 </div>
-                                <button className="btn btn-outline-primary mt-2 align-self-start">View full summary</button>
                             </div>
                         ))
                     ) : (
