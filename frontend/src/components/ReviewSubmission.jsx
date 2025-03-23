@@ -91,7 +91,7 @@ const ReviewSubmission = () => {
     return (
         <div className="review-submission-container">
             <header className="review-header">
-                <h2>Review Thesis Submissions</h2>
+                <h2>Review Capstone Research Paper Submissions</h2>
             </header>
 
             {loading ? (

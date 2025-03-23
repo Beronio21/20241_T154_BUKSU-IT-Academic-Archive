@@ -98,6 +98,10 @@ const SubmitThesis = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.title.trim()) {
+            setError('Research title is required');
+            return;
+        }
         setLoading(true);
         setError(null);
 
@@ -148,154 +152,156 @@ const SubmitThesis = () => {
 
     return (
         <div className="submit-thesis-container container mt-4">
-            <h2 className="mb-4">Submit Thesis</h2>
+            <div className="thesis-form">
+                <h2>Submit Capstone Research Paper</h2>
 
-            <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
-                <div className="row mb-3">
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label htmlFor="title">Thesis Title:</label>
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                className="form-control"
-                                value={formData.title}
-                                onChange={handleInputChange}
-                                required
-                                placeholder="Enter thesis title"
-                            />
+                <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
+                    <div className="row mb-3">
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label htmlFor="title">Research Title</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="title"
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Enter your research title"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label htmlFor="adviserEmail">Adviser Email:</label>
+                                <input
+                                    type="email"
+                                    id="adviserEmail"
+                                    name="adviserEmail"
+                                    className="form-control"
+                                    value={formData.adviserEmail}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Enter adviser's email"
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label htmlFor="adviserEmail">Adviser Email:</label>
-                            <input
-                                type="email"
-                                id="adviserEmail"
-                                name="adviserEmail"
-                                className="form-control"
-                                value={formData.adviserEmail}
-                                onChange={handleInputChange}
-                                required
-                                placeholder="Enter adviser's email"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="form-group mb-4">
-                    <label htmlFor="members" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Members:</label>
-                    {formData.members.map((member, index) => (
-                        <div key={index} className="mb-3 position-relative">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="members"
-                                value={member}
-                                onChange={(e) => handleInputChange(e, index)}
-                                placeholder="Enter member name"
-                                required
+                    <div className="form-group mb-4">
+                        <label htmlFor="members" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Members:</label>
+                        {formData.members.map((member, index) => (
+                            <div key={index} className="mb-3 position-relative">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="members"
+                                    value={member}
+                                    onChange={(e) => handleInputChange(e, index)}
+                                    placeholder="Enter member name"
+                                    required
+                                    style={{
+                                        borderRadius: '8px',
+                                        padding: '0.8rem 1.2rem',
+                                        border: '1px solid #ccc',
+                                        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                                        transition: 'border-color 0.3s ease',
+                                        outline: 'none',
+                                        fontSize: '1rem',
+                                    }}
+                                    onFocus={(e) => e.target.style.borderColor = '#007BFF'}
+                                    onBlur={(e) => e.target.style.borderColor = '#ccc'}
+                                />
+                                <span
+                                    onClick={() => removeMember(index)}
+                                    className="text-danger position-absolute"
+                                    style={{
+                                        top: '50%',
+                                        right: '10px',
+                                        transform: 'translateY(-50%)',
+                                        cursor: 'pointer',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '500',
+                                        textDecoration: 'none',
+                                        padding: '0.2rem 0.5rem',
+                                        transition: 'background-color 0.3s ease, color 0.3s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.color = '#fff';
+                                        e.target.style.backgroundColor = '#dc3545';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.color = 'red';
+                                        e.target.style.backgroundColor = 'transparent';
+                                    }}
+                                >
+                                    <i className="fas fa-trash-alt me-1"></i> Remove
+                                </span>
+                            </div>
+                        ))}
+                        <div className="d-flex justify-content-start mb-3">
+                            <button
+                                type="button"
+                                onClick={addMember}
+                                className="btn btn-outline-primary"
                                 style={{
+                                    padding: '0.6rem 1.5rem',
                                     borderRadius: '8px',
-                                    padding: '0.8rem 1.2rem',
-                                    border: '1px solid #ccc',
-                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-                                    transition: 'border-color 0.3s ease',
-                                    outline: 'none',
+                                    fontWeight: '600',
                                     fontSize: '1rem',
+                                    backgroundColor: 'transparent',
+                                    borderColor: '#007BFF',
+                                    color: '#007BFF',
+                                    transition: 'all 0.3s ease',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                 }}
-                                onFocus={(e) => e.target.style.borderColor = '#007BFF'}
-                                onBlur={(e) => e.target.style.borderColor = '#ccc'}
-                            />
-                            <span
-                                onClick={() => removeMember(index)}
-                                className="text-danger position-absolute"
-                                style={{
-                                    top: '50%',
-                                    right: '10px',
-                                    transform: 'translateY(-50%)',
-                                    cursor: 'pointer',
-                                    fontSize: '0.9rem',
-                                    fontWeight: '500',
-                                    textDecoration: 'none',
-                                    padding: '0.2rem 0.5rem',
-                                    transition: 'background-color 0.3s ease, color 0.3s ease',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.color = '#fff';
-                                    e.target.style.backgroundColor = '#dc3545';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.color = 'red';
-                                    e.target.style.backgroundColor = 'transparent';
-                                }}
+                                onMouseEnter={(e) => e.target.style.borderColor = '#0056b3'}
+                                onMouseLeave={(e) => e.target.style.borderColor = '#007BFF'}
                             >
-                                <i className="fas fa-trash-alt me-1"></i> Remove
-                            </span>
+                                <i className="fas fa-plus me-2"></i> Add Member
+                            </button>
                         </div>
-                    ))}
-                    <div className="d-flex justify-content-start mb-3">
-                        <button
-                            type="button"
-                            onClick={addMember}
-                            className="btn btn-outline-primary"
-                            style={{
-                                padding: '0.6rem 1.5rem',
-                                borderRadius: '8px',
-                                fontWeight: '600',
-                                fontSize: '1rem',
-                                backgroundColor: 'transparent',
-                                borderColor: '#007BFF',
-                                color: '#007BFF',
-                                transition: 'all 0.3s ease',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                            onMouseEnter={(e) => e.target.style.borderColor = '#0056b3'}
-                            onMouseLeave={(e) => e.target.style.borderColor = '#007BFF'}
-                        >
-                            <i className="fas fa-plus me-2"></i> Add Member
-                        </button>
                     </div>
-                </div>
 
-                <div className="form-group mb-3">
-                    <label>Document Link:</label>
-                    <div className="d-flex align-items-center">
-                        <span className="me-3">
-                            {formData.docsLink || 'No document selected'}
-                        </span>
-                        <button
-                            type="button"
-                            onClick={handleOpenPicker}
-                            className="btn btn-outline-info btn-sm"
-                        >
-                            Select from Google Drive
-                        </button>
+                    <div className="form-group mb-3">
+                        <label>Document Link:</label>
+                        <div className="d-flex align-items-center">
+                            <span className="me-3">
+                                {formData.docsLink || 'No document selected'}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={handleOpenPicker}
+                                className="btn btn-outline-info btn-sm"
+                            >
+                                Select from Google Drive
+                            </button>
+                        </div>
+                        <span className="d-block my-2 text-center">or</span>
+                        <div className="file-input-container text-center">
+                            <input
+                                type="file"
+                                onChange={handleFileChange}
+                                className="form-control-file"
+                            />
+                        </div>
                     </div>
-                    <span className="d-block my-2 text-center">or</span>
-                    <div className="file-input-container text-center">
-                        <input
-                            type="file"
-                            onChange={handleFileChange}
-                            className="form-control-file"
-                        />
-                    </div>
-                </div>
 
-                <button
-                    type="submit"
-                    className="btn btn-success btn-lg w-100"
-                    disabled={loading}
-                >
-                    {loading ? 'Submitting...' : 'Submit Thesis'}
-                </button>
+                    <button
+                        type="submit"
+                        className="btn btn-success btn-lg w-100"
+                        disabled={loading}
+                    >
+                        {loading ? 'Submitting...' : 'Submit Thesis'}
+                    </button>
 
-                {error && <div className="text-danger mt-3">{error}</div>}
-            </form>
+                    {error && <div className="text-danger mt-3">{error}</div>}
+                </form>
+            </div>
         </div>
     );
 };

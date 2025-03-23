@@ -38,7 +38,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
 
     const thesisManagementItems = [
         { name: 'Defense Schedule', section: 'defenseschedule' },
-        { name: 'Review Submissions', section: 'review-submissions' },
+        { name: 'Review Capstone', section: 'review-submissions' },
         { name: 'Comment Docs', section: 'comment-docs' },
     ];
 
@@ -71,7 +71,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                     onMouseEnter={(e) => handleMouseEnter(e, false)}
                     onMouseLeave={(e) => handleMouseLeave(e, false)}
                 >
-                    Thesis Management
+                    Capstone Management
                 </button>
                 <ul className="dropdown-menu">
                     {thesisManagementItems.map((item) => (

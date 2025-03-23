@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require('../models/userModel');
 const auth = require('../middleware/auth');
 const bcrypt = require('bcrypt');
-const checkLock = require('../middleware/checkLock');
 
 // Register new user
 router.post('/register', async (req, res) => {
@@ -29,34 +28,22 @@ router.post('/register', async (req, res) => {
 });
 
 // Update user profile
-router.put('/profile/:userId', auth, checkLock, async (req, res) => {
+router.put('/profile/:userId', auth, async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
-
-        // Check if the user is already locked
-        if (user.lock) {
-            return res.status(423).json({ message: 'User is currently being edited by another admin.' });
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-
-        // Set lock
-        user.lock = true;
-        await user.save();
 
         const updates = Object.keys(req.body);
         updates.forEach(update => user[update] = req.body[update]);
 
         if (!user.validateRoleFields()) {
-            user.lock = false; // Release lock
-            await user.save();
             return res.status(400).json({ message: 'Missing required fields for role' });
         }
 
         await user.save();
-
-        // Release lock
-        user.lock = false;
-        await user.save();
-
         res.json(user);
     } catch (error) {
         res.status(400).json({ message: error.message });
