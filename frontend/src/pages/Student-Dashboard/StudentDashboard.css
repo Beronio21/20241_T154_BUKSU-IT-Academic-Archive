@@ -1,0 +1,54 @@
+.search-input {
+    width: 100%; /* Full width */
+    max-width: 600px; /* Set a maximum width */
+    margin: 0 auto; /* Center the input */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for border color and shadow */
+}
+
+.search-input:focus {
+    border-color: #007bff; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+    outline: none; /* Remove default outline */
+}
+
+.submissions-table {
+    width: 100%; /* Full width */
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center; /* Center the loading spinner */
+    align-items: center; /* Center vertically */
+    height: 100px; /* Fixed height for loading area */
+}
+
+.alert {
+    margin-top: 20px; /* Space above alerts */
+}
+.search-input {
+    width: 100%; /* Full width */
+    max-width: 600px; /* Set a maximum width */
+    margin: 0 auto; /* Center the input */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for border color and shadow */
+}
+
+.search-input:focus {
+    border-color: #007bff; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+    outline: none; /* Remove default outline */
+}
+
+.submissions-table {
+    width: 100%; /* Full width */
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center; /* Center the loading spinner */
+    align-items: center; /* Center vertically */
+    height: 100px; /* Fixed height for loading area */
+}
+
+.alert {
+    margin-top: 20px; /* Space above alerts */
+}
