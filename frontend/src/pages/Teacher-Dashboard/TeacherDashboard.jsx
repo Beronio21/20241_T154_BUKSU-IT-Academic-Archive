@@ -9,7 +9,6 @@ import ScheduleTable from '../../components/ScheduleTable';
 import DefenseSchedule from '../../components/DefenseSchedule';
 import ReviewSubmission from '../../components/ReviewSubmission';
 import StudentList from '../../components/StudentList';
-import TeacherNotification from '../../components/TeacherNotification';
 import TeacherNavbar from '../../Navbar/Teacher-Navbar/TeacherNavbar';
 import TeacherTopbar from '../../Topbar/Teacher-Topbar/TeacherTopbar';
 
@@ -18,12 +17,11 @@ const TeacherDashboard = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [notifications, setNotifications] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [showNotifications, setShowNotifications] = useState(false);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Check user authentication and role
     useEffect(() => {
         const storedUserInfo = localStorage.getItem('user-info');
         if (!storedUserInfo) {
@@ -36,7 +34,7 @@ const TeacherDashboard = () => {
             return;
         }
         setUserInfo(userData);
-        
+
         if (location.pathname === '/teacher-dashboard') {
             navigate('/teacher-dashboard/dashboard', { replace: true });
         }
@@ -50,6 +48,8 @@ const TeacherDashboard = () => {
     }, [userInfo]);
 
     const fetchSubmissions = async () => {
+        setLoading(true);
+        setError(null);
         try {
             const response = await fetch(
                 `http://localhost:8080/api/thesis/submissions/adviser?email=${encodeURIComponent(userInfo.email)}`
@@ -57,9 +57,12 @@ const TeacherDashboard = () => {
             const data = await response.json();
             if (data.status === 'success') {
                 setSubmissions(data.data);
+            } else {
+                throw new Error(data.message || 'Failed to fetch submissions');
             }
         } catch (error) {
             console.error('Error fetching submissions:', error);
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -76,6 +79,72 @@ const TeacherDashboard = () => {
     const handleSectionChange = (section) => {
         setActiveSection(section);
         navigate(`/teacher-dashboard/${section}`);
+    };
+
+    const handleDelete = async (thesisId) => {
+        if (!window.confirm('Are you sure you want to delete this thesis?')) {
+            return;
+        }
+
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            const response = await fetch(
+                `http://localhost:8080/api/thesis/delete/${thesisId}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userInfo.token}`,
+                    },
+                }
+            );
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                alert('Thesis deleted successfully');
+                fetchSubmissions(); // Refresh the list
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Error deleting thesis:', error);
+            alert('Failed to delete thesis: ' + error.message);
+        }
+    };
+
+    const renderThesisList = () => {
+        if (loading) {
+            return <div className="loading-spinner">Loading...</div>;
+        }
+
+        if (error) {
+            return <div className="alert alert-danger">{error}</div>;
+        }
+
+        if (submissions.length === 0) {
+            return <div className="alert alert-info">No submissions found</div>;
+        }
+
+        return (
+            <ul className="list-group">
+                {submissions.map((submission) => (
+                    <li className="list-group-item d-flex justify-content-between align-items-center" key={submission._id}>
+                        <div>
+                            <h5 className="mb-1">{submission.title}</h5>
+                            <p className="mb-1">Authors: {submission.members.join(', ')}</p>
+                            <p className="mb-1">Adviser: {submission.adviserEmail}</p>
+                            <span className={`badge bg-${submission.status === 'approved' ? 'success' : 'warning'}`}>
+                                {submission.status}
+                            </span>
+                        </div>
+                        <div>
+                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(submission._id)}>Delete</button>
+                            <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm ms-2">View</a>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        );
     };
 
     const renderContent = () => {
@@ -103,7 +172,8 @@ const TeacherDashboard = () => {
                 return (
                     <div>
                         <h1>Welcome, {userInfo?.name}</h1>
-                        {/* Add more dashboard content here */}
+                        <h2>Thesis Submissions</h2>
+                        {renderThesisList()}
                     </div>
                 );
         }

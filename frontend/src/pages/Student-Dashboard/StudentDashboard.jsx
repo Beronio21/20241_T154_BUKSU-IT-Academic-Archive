@@ -482,24 +482,7 @@ const StudentDashboard = () => {
             case 'dashboard':
                 return (
                     <>
-                        <div className="container mt-4 p-1 ">
-                            <header className="d-flex justify-content-between align-items-center border rounded p-5 shadow-sm">
-                                <div className="user-info">
-                                    <h1 className="h4">Welcome, {userInfo?.name || 'Guest'}</h1>
-                                    <p className="mb-0 ">
-                                        Student ID: {userInfo?.student_id || 'N/A'}
-                                    </p>
-                                </div>
-                                <div className="profile-picture-container rounded-circle overflow-hidden" style={{ width: '80px', height: '80px' }}>
-                                {/* Add fallback for image if not available */}
-                                <img
-                                    className="img-fluid"
-                                    src={userInfo?.image || '/default-avatar.png'}
-                                    alt={userInfo?.name || 'User Avatar'}
-                                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                                />
-                                </div>
-                            </header>
+                        <div className="container mt-4  ">
                         </div>
                         {/* 3 cards areas */}
 

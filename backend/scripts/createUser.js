@@ -19,6 +19,7 @@ async function createTestUser() {
             isProfileComplete: false
         });
 
+       
         await user.save();
         console.log('Test user created successfully');
         process.exit(0);
