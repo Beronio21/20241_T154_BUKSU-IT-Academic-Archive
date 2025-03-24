@@ -6,19 +6,19 @@ import { googleAuth, emailLogin } from "../../api";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../Login-Page/GoogleLogin.css";
-import backgroundImage from '../../Images/buksumain.jpg'; // Background image
 import googleLogo from '../../Images/Googlelogo.png'; // Google logo
 import bukSULogo from '../../Images/buksulogov2.png'; // BukSU logo
 
 const GoogleLogin = () => {
+  // State variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
+  // Check if user is already logged in
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("user-info"));
     if (userInfo && userInfo.googleDriveToken) {
@@ -26,7 +26,8 @@ const GoogleLogin = () => {
     }
   }, []);
 
- const handleSubmit = async (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
@@ -45,7 +46,6 @@ const GoogleLogin = () => {
       });
 
       const recaptchaData = await response.json();
-
       if (!recaptchaData.success) {
         setErrorMessage("reCAPTCHA verification failed. Please try again.");
         setLoading(false);
@@ -53,7 +53,6 @@ const GoogleLogin = () => {
       }
 
       const result = await emailLogin(email, password);
-
       if (result.status === "success") {
         const { user, token } = result.data;
         localStorage.setItem("user-info", JSON.stringify({ id: user._id, name: user.name, email: user.email, image: user.image, role: user.role, token }));
@@ -67,6 +66,7 @@ const GoogleLogin = () => {
     }
   };
 
+  // Google login function
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -74,7 +74,15 @@ const GoogleLogin = () => {
         const result = await googleAuth(tokenResponse.access_token);
         if (result.status === "success") {
           const { user, token } = result.data;
-          localStorage.setItem("user-info", JSON.stringify({ id: user._id, name: user.name, email: user.email, image: user.image, role: user.role, token, googleDriveToken: tokenResponse.access_token }));
+          localStorage.setItem("user-info", JSON.stringify({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            role: user.role,
+            token,
+            googleDriveToken: tokenResponse.access_token,
+          }));
           navigate(`/${user.role}-dashboard`);
         }
       } catch (error) {
@@ -92,117 +100,66 @@ const GoogleLogin = () => {
   });
 
   return (
-    <section className="section" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className="background-blur"></div>
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="container-box d-flex">
+        {/* Left: Logo and Info */}
+        <div className="left-section p-4 text-center bg-light d-flex flex-column align-items-center">
+          <img src={bukSULogo} alt="BukSU Logo" className="mb-3" style={{ maxWidth: "180px" }} />
+          <h4 className="fw-bold">Bukidnon State University</h4>
+          <p>Educate. Innovate. Lead.</p>
+        </div>
 
-      <div className="outer-container">
-        <div className="container">
-          <div className="logo-section">
-            <img src={bukSULogo} alt="BukSU Logo" className="img-fluid" />
-            <h1 className="university-name">Bukidnon State University</h1>
-            <p className="tagline">
-              <span>Educate.</span>
-              {' '}
-              <span>Innovate.</span>
-              {' '}
-              <span>Lead.</span>
-            </p>
-          </div>
-          
-          <div className="login-container">
-            <h3 className="text-center mb-4 fw-bold">Welcome Back</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group mb-3">
-                <input
-                  type="email"
-                  className="form-control custom-input"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group mb-3">
-                <input
-                  type="password"
-                  className="form-control custom-input"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              {errorMessage && (
-                <div className="alert alert-danger" role="alert">
-                  {errorMessage}
-                </div>
-              )}
-              <div className="d-flex justify-content-center mb-3">
-                <ReCAPTCHA
-                  sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
-                  onChange={(token) => setRecaptchaToken(token)}
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn btn-primary w-100"
-                disabled={loading}
-              >
-                {loading ? "Logging in..." : "Log In"}
-              </button>
-            </form>
-            <div className="d-flex justify-content-center my-4">
-              <p className="text-center mb-0">Or Login with</p>
+        {/* Right: Login Form */}
+        <div className="right-section p-4 flex-grow-1">
+          <h4 className="text-center mb-4">Signup</h4>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group mb-3">
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
-            <button
-              type="button"
-              className="google-login-btn"
-              onClick={googleLogin}
-              disabled={loading}
-            >
- <img src={googleLogo} alt="Google logo" style={{ width: '45px', height: '20px', marginLeft: '2px' }} />
-              {loading ? "Signing in..." : "Sign in with Google"}
+            <div className="form-group mb-3">
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+            <div className="d-flex justify-content-center mb-3">
+              <ReCAPTCHA
+                sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
+                onChange={(token) => setRecaptchaToken(token)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+              {loading ? "Logging in..." : "Log In"}
             </button>
-            <div className="d-flex justify-content-center align-items-center mt-4">
-              <p className="text-center mb-0">
-                Don't have an account?{" "}
-                <span className="register-link" onClick={() => setShowModal(true)}>
-                  Register
-                </span>
-              </p>
-            </div>
+          </form>
+          <div className="text-center my-3">Or Login with</div>
+          <button
+            className="btn btn-light border w-100 d-flex align-items-center justify-content-center shadow-sm"
+            onClick={googleLogin}
+            disabled={loading}
+            style={{ background: "none", borderColor: "#ccc" }}
+          >
+            <img src={googleLogo} alt="Google logo" className="me-1" style={{ width: "40px" }} />
+            <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
+          </button>
+          <div className="text-center mt-3">
+            Don't have an account? <span className="text-primary" onClick={() => navigate("/register")} style={{ cursor: "pointer" }}>Register</span>
           </div>
         </div>
       </div>
-
-      {showModal && (
-        <div className="modal-container">
-          <div className="modal-content">
-            <h4 className="modal-title">Choose Your Account Type</h4>
-            <div className="user-type-options">
-              <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
-                <div className="user-type-icon">
-                  <img src="./src/Images/Teacher.png" alt="Teacher" />
-                </div>
-                <p>Teacher</p>
-              </div>
-              <div className="user-type-card" onClick={() => navigate("/student-register")}>
-                <div className="user-type-icon">
-                  <img src="./src/Images/user.png" alt="Student" />
-                </div>
-                <p>Student</p>
-              </div>
-            </div>
-            <button
-              className="btn w-100 mt-3"
-              onClick={() => setShowModal(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </section>
+    </div>
   );
 };
 
