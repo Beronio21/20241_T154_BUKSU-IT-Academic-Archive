@@ -155,7 +155,7 @@ const GoogleLogin = () => {
             <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
           </button>
           <div className="text-center mt-3">
-            Don't have an account? <span className="text-primary" onClick={() => navigate("/register")} style={{ cursor: "pointer" }}>Register</span>
+            Don't have an account? <span className="text-primary" onClick={() => navigate("/register-link")} style={{ cursor: "pointer" }}>Register</span>
           </div>
         </div>
       </div>

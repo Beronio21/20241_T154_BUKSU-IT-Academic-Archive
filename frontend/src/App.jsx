@@ -1,4 +1,4 @@
-import './App.css'
+import './App.css';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { createClient } from '@supabase/supabase-js';
@@ -16,36 +16,17 @@ import TeacherDashboard from './pages/Teacher-Dashboard/TeacherDashboard';
 import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
 
 // Other Components
-import NotFound from './NotFound';
+import NotFound from './components/NotFound/NotFound';
+import ProtectedRoute from '../src/ProtectedRoute';
 
-// Protected Route Component
-const ProtectedRoute = ({ element: Element, allowedRole }) => {
-  const userInfo = localStorage.getItem('user-info');
-  if (!userInfo) {
-    return <Navigate to="/" replace />;
-  }
-  
-  try {
-    const userData = JSON.parse(userInfo);
-    if (userData?.role !== allowedRole) {
-      return <Navigate to="/" replace />;
-    }
-    return Element;
-  } catch {
-    return <Navigate to="/" replace />;
-  }
-};
-
-// Supabase Configuration
-const supabaseConfig = {
-  url: "https://knhjeoyqyyjcbozxqcew.supabase.co",
-  apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuaGplb3lxeXlqY2JvenhxY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIzMjgzNzcsImV4cCI6MjA0NzkwNDM3N30.SqCDArQsjm7doWyFswm4BtRZdP4HISFI1jvgkSwoRsU"
-};
-
-const supabase = createClient(supabaseConfig.url, supabaseConfig.apiKey);
+// Supabase Configuration (Using Environment Variables)
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL, 
+  process.env.REACT_APP_SUPABASE_ANON_KEY
+);
 
 // Google OAuth Configuration
-const GOOGLE_CLIENT_ID = "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 function App() {
   return (
@@ -56,7 +37,6 @@ function App() {
             {/* Login is the default route */}
             <Route path="/" element={<GoogleLogin />} />
             
-            {/* Registration Routes */}
             <Route path="/student-register" element={<StudentRegister />} />
             <Route path="/teacher-register" element={<TeacherRegister />} />
             <Route path="/admin-register" element={<AdminRegister />} />
@@ -64,34 +44,19 @@ function App() {
             {/* Protected Dashboard Routes */}
             <Route 
               path="/student-dashboard/*" 
-              element={
-                <ProtectedRoute 
-                  element={<StudentDashboard />} 
-                  allowedRole="student"
-                />
-              } 
+              element={<ProtectedRoute element={<StudentDashboard />} allowedRole="student" />} 
             />
             <Route 
               path="/teacher-dashboard/*" 
-              element={
-                <ProtectedRoute 
-                  element={<TeacherDashboard />} 
-                  allowedRole="teacher"
-                />
-              } 
+              element={<ProtectedRoute element={<TeacherDashboard />} allowedRole="teacher" />} 
             />
             <Route 
               path="/admin-dashboard/*" 
-              element={
-                <ProtectedRoute 
-                  element={<AdminDashboard />} 
-                  allowedRole="admin"
-                />
-              } 
+              element={<ProtectedRoute element={<AdminDashboard />} allowedRole="admin" />} 
             />
 
-            {/* Catch-all Routes - Redirect to login */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Catch-all 404 Page */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </GoogleOAuthProvider>
