@@ -1,8 +1,6 @@
-import './App.css';
+import './App.css'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { createClient } from '@supabase/supabase-js';
-import { SessionContextProvider } from '@supabase/auth-helpers-react';
 
 // Auth Components
 import GoogleLogin from './Auth/Login-Page/Login';
@@ -16,51 +14,73 @@ import TeacherDashboard from './pages/Teacher-Dashboard/TeacherDashboard';
 import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
 
 // Other Components
-import NotFound from './components/NotFound/NotFound';
-import ProtectedRoute from '../src/ProtectedRoute';
+import NotFound from './NotFound';
 
-// Supabase Configuration (Using Environment Variables)
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL, 
-  process.env.REACT_APP_SUPABASE_ANON_KEY
-);
-
-// Google OAuth Configuration
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+// Protected Route Component
+const ProtectedRoute = ({ element: Element, allowedRole }) => {
+  const userInfo = localStorage.getItem('user-info');
+  if (!userInfo) {
+    return <Navigate to="/" replace />;
+  }
+  
+  try {
+    const userData = JSON.parse(userInfo);
+    if (userData?.role !== allowedRole) {
+      return <Navigate to="/" replace />;
+    }
+    return Element;
+  } catch {
+    return <Navigate to="/" replace />;
+  }
+};
 
 function App() {
   return (
-    <SessionContextProvider supabaseClient={supabase}>
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <BrowserRouter>
-          <Routes>
-            {/* Login is the default route */}
-            <Route path="/" element={<GoogleLogin />} />
-            
-            <Route path="/student-register" element={<StudentRegister />} />
-            <Route path="/teacher-register" element={<TeacherRegister />} />
-            <Route path="/admin-register" element={<AdminRegister />} />
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+      <BrowserRouter>
+        <Routes>
+          {/* Login is the default route */}
+          <Route path="/" element={<GoogleLogin />} />
+          
+          {/* Registration Routes */}
+          <Route path="/student-register" element={<StudentRegister />} />
+          <Route path="/teacher-register" element={<TeacherRegister />} />
+          <Route path="/admin-register" element={<AdminRegister />} />
 
-            {/* Protected Dashboard Routes */}
-            <Route 
-              path="/student-dashboard/*" 
-              element={<ProtectedRoute element={<StudentDashboard />} allowedRole="student" />} 
-            />
-            <Route 
-              path="/teacher-dashboard/*" 
-              element={<ProtectedRoute element={<TeacherDashboard />} allowedRole="teacher" />} 
-            />
-            <Route 
-              path="/admin-dashboard/*" 
-              element={<ProtectedRoute element={<AdminDashboard />} allowedRole="admin" />} 
-            />
+          {/* Protected Dashboard Routes */}
+          <Route 
+            path="/student-dashboard/*" 
+            element={
+              <ProtectedRoute 
+                element={<StudentDashboard />} 
+                allowedRole="student"
+              />
+            } 
+          />
+          <Route 
+            path="/teacher-dashboard/*" 
+            element={
+              <ProtectedRoute 
+                element={<TeacherDashboard />} 
+                allowedRole="teacher"
+              />
+            } 
+          />
+          <Route 
+            path="/admin-dashboard/*" 
+            element={
+              <ProtectedRoute 
+                element={<AdminDashboard />} 
+                allowedRole="admin"
+              />
+            } 
+          />
 
-            {/* Catch-all 404 Page */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </GoogleOAuthProvider>
-    </SessionContextProvider>
+          {/* Catch-all Routes - Redirect to login */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 
