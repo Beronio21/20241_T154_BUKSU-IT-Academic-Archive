@@ -1,4 +1,4 @@
-/* Ensure full-page darker gradient background */
+/* Ensure full-page lighter blue gradient background */
 body, html {
   height: 100%;
   width: 100%;
@@ -7,7 +7,7 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Darker blue gradient */
+  background: linear-gradient(135deg, #4A90E2, #80C2FF); /* Lighter blue gradient */
   background-size: cover;
   background-attachment: fixed;
 }
@@ -18,7 +18,7 @@ body, html {
   flex-wrap: wrap;
   max-width: 750px;
   width: 100%;
-  background: linear-gradient(135deg, #ffffff, #e0e7ff); /* Soft white-blue gradient */
+  background: linear-gradient(135deg, #ffffff, #dceeff); /* Soft white-blue gradient */
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -93,7 +93,7 @@ body, html {
 
 /* Styled primary login button */
 .btn-primary {
-  background: linear-gradient(135deg, #4682b4, #1e90ff);
+  background: linear-gradient(135deg, #5BA4FC, #2196F3);
   border: none;
   transition: all 0.3s ease-in-out;
   font-weight: bold;
@@ -104,7 +104,7 @@ body, html {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #1e90ff, #0a74da);
+  background: linear-gradient(135deg, #2196F3, #0A74DA);
   transform: translateY(-2px);
 }
 
