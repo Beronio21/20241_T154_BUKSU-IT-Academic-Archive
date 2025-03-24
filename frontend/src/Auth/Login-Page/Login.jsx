@@ -26,7 +26,7 @@ const GoogleLogin = () => {
     }
   }, []);
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
@@ -92,13 +92,12 @@ const GoogleLogin = () => {
   });
 
   return (
-    <section className="section" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className="background-blur"></div>
-
-      <div className="outer-container">
-        <div className="container">
-          <div className="logo-section">
-            <img src={bukSULogo} alt="BukSU Logo" className="img-fluid" />
+    <section className="section" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', height: '100vh' }}>
+      <div className="container-fluid h-100">
+        <div className="row h-100">
+          {/* Left Side: Icon/Logo */}
+          <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-center">
+            <img src={bukSULogo} alt="BukSU Logo" className="img-fluid mb-4" />
             <h1 className="university-name">Bukidnon State University</h1>
             <p className="tagline">
               <span>Educate.</span>
@@ -108,68 +107,71 @@ const GoogleLogin = () => {
               <span>Lead.</span>
             </p>
           </div>
-          
-          <div className="login-container">
-            <h3 className="text-center mb-4 fw-bold">Welcome Back</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group mb-3">
-                <input
-                  type="email"
-                  className="form-control custom-input"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group mb-3">
-                <input
-                  type="password"
-                  className="form-control custom-input"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              {errorMessage && (
-                <div className="alert alert-danger" role="alert">
-                  {errorMessage}
+
+          {/* Right Side: Login Form */}
+          <div className="col-md-6 d-flex justify-content-center align-items-center">
+            <div className="login-container w-75">
+              <h3 className="text-center mb-4 fw-bold">Welcome Back</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                  <input
+                    type="email"
+                    className="form-control custom-input"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
-              )}
-              <div className="d-flex justify-content-center mb-3">
-                <ReCAPTCHA
-                  sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
-                  onChange={(token) => setRecaptchaToken(token)}
-                />
+                <div className="form-group mb-3">
+                  <input
+                    type="password"
+                    className="form-control custom-input"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                {errorMessage && (
+                  <div className="alert alert-danger" role="alert">
+                    {errorMessage}
+                  </div>
+                )}
+                <div className="d-flex justify-content-center mb-3">
+                  <ReCAPTCHA
+                    sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
+                    onChange={(token) => setRecaptchaToken(token)}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100"
+                  disabled={loading}
+                >
+                  {loading ? "Logging in..." : "Log In"}
+                </button>
+              </form>
+              <div className="d-flex justify-content-center my-4">
+                <p className="text-center mb-0">Or Login with</p>
               </div>
               <button
-                type="submit"
-                className="btn btn-primary w-100"
+                type="button"
+                className="google-login-btn btn btn-light w-100"
+                onClick={googleLogin}
                 disabled={loading}
               >
-                {loading ? "Logging in..." : "Log In"}
+                <img src={googleLogo} alt="Google logo" style={{ width: '45px', height: '20px', marginLeft: '2px' }} />
+                {loading ? "Signing in..." : "Sign in with Google"}
               </button>
-            </form>
-            <div className="d-flex justify-content-center my-4">
-              <p className="text-center mb-0">Or Login with</p>
-            </div>
-            <button
-              type="button"
-              className="google-login-btn"
-              onClick={googleLogin}
-              disabled={loading}
-            >
- <img src={googleLogo} alt="Google logo" style={{ width: '45px', height: '20px', marginLeft: '2px' }} />
-              {loading ? "Signing in..." : "Sign in with Google"}
-            </button>
-            <div className="d-flex justify-content-center align-items-center mt-4">
-              <p className="text-center mb-0">
-                Don't have an account?{" "}
-                <span className="register-link" onClick={() => setShowModal(true)}>
-                  Register
-                </span>
-              </p>
+              <div className="d-flex justify-content-center align-items-center mt-4">
+                <p className="text-center mb-0">
+                  Don't have an account?{" "}
+                  <span className="register-link" onClick={() => setShowModal(true)}>
+                    Register
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
