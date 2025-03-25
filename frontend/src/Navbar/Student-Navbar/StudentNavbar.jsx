@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import StudentProfile from '../../Profile/Student-Profile/StudentProfile';
+import './StudentNavbar.css'; // Import CSS file
 
 const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const navigate = useNavigate();
@@ -12,50 +12,26 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
         { name: 'View Thesis', section: 'docs', icon: 'bi bi-file-earmark-text', path: '/view-thesis' },
     ];
 
-    const renderNavItem = (item) => (
-        <li className="nav-item mb-2" key={item.section}>
-            <Link
-                to={item.path}
-                className={`nav-link w-100 text-start rounded d-flex align-items-center gap-2 ${activeSection === item.section ? 'active' : ''}`}
-                onClick={() => handleSectionChange(item.section)}
-            >
-                <i className={item.icon}></i>
-                {item.name}
-            </Link>
-        </li>
-    );
-
     return (
-        <nav
-            className="sidebar shadow-sm"
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                width: '250px',
-                backgroundColor: '#f5f5f5', // Light gray background
-                overflowY: 'auto',
-                zIndex: 1000,
-                padding: '1rem',
-                marginTop: '50px', // Adjust to match the top bar height
-                borderRadius: '8px',
-            }}
-        >
-            <div className="d-flex flex-column h-100">
-                {/* Header */}
-                <div className="p-3 border-bottom">
-                    <h5 className="text-black fw-bold mb-0">Student Portal</h5>
-                </div>
-
-                {/* Navigation Items */}
-                <div className="py-3">
-                    <ul className="nav flex-column">
-                        {navItems.map(renderNavItem)}
-                    </ul>
-                </div>
-               
+        <nav className="student-sidebar">
+            <div className="sidebar-header">
+                <h5>Student Portal</h5>
             </div>
+
+            <ul className="nav-list">
+                {navItems.map((item) => (
+                    <li key={item.section} className="nav-item">
+                        <Link
+                            to={item.path}
+                            className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
+                            onClick={() => handleSectionChange(item.section)}
+                        >
+                            <i className={item.icon}></i>
+                            <span>{item.name}</span>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </nav>
     );
 };

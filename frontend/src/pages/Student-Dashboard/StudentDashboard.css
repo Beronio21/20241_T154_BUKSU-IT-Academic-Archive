@@ -1,40 +1,115 @@
-/* General styles for the dashboard */
+/* General Layout */
 .dashboard-container {
-    font-family: 'Inter', 'Noto Sans', sans-serif;
-    background-color: #ffffff; /* White background */
-    min-height: 100vh;
+    display: flex;
+    background: #f9fafb;
 }
 
-/* Header styles */
-.dashboard-header {
-    border-bottom: 1px solid #e7edf3;
-    padding: 1rem 2rem;
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
 }
 
-/* Main content styles */
-.dashboard-content {
-    padding: 2rem;
+/* Titles */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
 }
 
-/* Project card styles */
-.project-card {
-    background-color: #ffffff;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+.page-subtitle {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 16px;
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+/* Search & Filters */
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
 }
 
-/* Footer styles */
-.dashboard-footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: #343a40; /* Dark background */
+.search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.filter-dropdown {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+}
+
+.reset-btn {
+    padding: 8px 14px;
+    border-radius: 5px;
+    background-color: #dc3545;
     color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.reset-btn:hover {
+    background-color: #c82333;
+}
+
+/* Modern Table */
+.project-list {
+    background: white;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.project-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f7f7f7;
+    font-weight: 600;
+}
+
+tr:hover {
+    background: #f9f9f9;
+}
+
+.view-btn {
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.view-btn:hover {
+    background: #0056b3;
+}
+
+/* No Projects Message */
+.no-projects {
+    text-align: center;
+    padding: 10px;
+    color: #777;
 }

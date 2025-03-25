@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { useNavigate } from "react-router-dom";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
 import StudentTopBar from "../../Topbar/StudentTopbar/StudentTopbar";
+import "./StudentDashboard.css"; // Ensure you include the updated CSS file
 
 const projectData = [
     { title: "AI for Climate Change", mentor: "Bill Gates", year: "2023", category: "Mobile Apps" },
@@ -17,7 +18,6 @@ const StudentDashboard = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
-const [activeSection, setActiveSection] = useState("dashboard"); // Track active section
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -50,24 +50,24 @@ const [activeSection, setActiveSection] = useState("dashboard"); // Track active
 
     return (
         <div className="d-flex">
-            <StudentNavbar activeSection={activeSection} handleSectionChange={setActiveSection} />
+            <StudentNavbar activeSection="dashboard" handleSectionChange={() => {}} />
             <div className="flex-grow-1">
                 <StudentTopBar userInfo={userInfo} />
                 <div className="container mt-4" style={{ marginLeft: "80px" }}>
                     {/* Header Section */}
-                    <div className="mb-3 text-center">
-                        <h1 className="fw-bold fs-4">Capstone IT Projects</h1>
+                    <div className="mb-4 text-center">
+                        <h1 className="fw-bold fs-3 text-primary">Capstone IT Projects</h1>
                         <p className="text-secondary fs-6">
-                            Explore and review IT capstone projects. Use the search bar or filters to find specific projects.
+                            Browse and explore innovative IT capstone projects. Use the search bar or filters to find specific projects.
                         </p>
                     </div>
 
                     {/* Search Bar */}
-                    <div className="mb-3">
+                    <div className="input-group mb-4">
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Search by project title or mentor..."
+                            placeholder="🔍 Search by project title or mentor..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             aria-label="Search projects"
@@ -75,48 +75,58 @@ const [activeSection, setActiveSection] = useState("dashboard"); // Track active
                     </div>
 
                     {/* Filter Options */}
-                    <div className="mb-3">
-                        <h5 className="fw-bold">Filter Options</h5>
-                        <div className="d-flex align-items-center gap-2">
-                            {/* Year Filter */}
-                            <select className="form-select" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} aria-label="Filter by year">
-                                <option value="">Year</option>
+                    <div className="mb-4">
+                        <h5 className="fw-bold">Filter Projects</h5>
+                        <div className="d-flex flex-wrap gap-2">
+                            <select className="form-select w-auto" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                                <option value="">📅 Year</option>
                                 {years.map((year) => (
                                     <option key={year} value={year}>{year}</option>
                                 ))}
                             </select>
 
-                            {/* Category Filter */}
-                            <select className="form-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} aria-label="Filter by category">
-                                <option value="">Category</option>
+                            <select className="form-select w-auto" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                                <option value="">📂 Category</option>
                                 {categories.map((category) => (
                                     <option key={category} value={category}>{category}</option>
                                 ))}
                             </select>
 
-                            {/* Reset Filters Button */}
-                            <button className="btn btn-outline-secondary" onClick={() => { setSelectedYear(""); setSelectedCategory(""); }}>
-                                Reset
+                            <button className="btn btn-outline-danger" onClick={() => { setSelectedYear(""); setSelectedCategory(""); }}>
+                                ❌ Reset Filters
                             </button>
                         </div>
                     </div>
 
-                    {/* Project List */}
-                    <div className="row">
+                    {/* Project List - Modern Table Style */}
+                    <div className="project-list-container">
                         {filteredProjects.length > 0 ? (
-                            filteredProjects.map((project, index) => (
-                                <div key={index} className="col-md-6 col-lg-4 mb-3">
-                                    <div className="card shadow border-0" style={{ transition: "0.3s" }}>
-                                        <div className="card-body">
-                                            <h5 className="card-title fw-bold">{project.title}</h5>
-                                            <p className="card-text">Mentor: {project.mentor}</p>
-                                            <button className="btn btn-outline-primary btn-sm">View Summary</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
+                            <table className="table table-hover">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Project Title</th>
+                                        <th>Mentor</th>
+                                        <th>Year</th>
+                                        <th>Category</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredProjects.map((project, index) => (
+                                        <tr key={index}>
+                                            <td>{project.title}</td>
+                                            <td>{project.mentor}</td>
+                                            <td>{project.year}</td>
+                                            <td>{project.category}</td>
+                                            <td>
+                                                <button className="btn btn-primary btn-sm">📜 View Summary</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         ) : (
-                            <p className="text-center text-secondary">No projects found</p>
+                            <p className="text-center text-muted">No projects found. Try adjusting the filters.</p>
                         )}
                     </div>
                 </div>

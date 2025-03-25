@@ -30,7 +30,7 @@ const StudentTopbar = () => {
     };
 
     return (
-        <header className="w-100 bg-white shadow-sm py-2 fixed-top">
+        <header className="width-60 bg-white shadow-sm py-2 fixed-top position-absolute end-0">
             <div className="container d-flex align-items-center justify-content-between">
                 <Link to="/student-dashboard/dashboard" className="text-decoration-none">
                     <div className="d-flex align-items-center gap-2">

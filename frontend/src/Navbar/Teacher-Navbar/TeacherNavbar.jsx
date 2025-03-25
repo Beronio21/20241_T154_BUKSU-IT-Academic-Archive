@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './TeacherNavbar.css';
 
-const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
+const TeacherNavbar = ({ activeSection, setActiveSection }) => {
     const navigate = useNavigate();
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-    // Navigation items configuration
+    const handleSectionChange = (section) => {
+        setActiveSection(section);
+        navigate(`/${section}`);
+    };
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!isDropdownOpen);
+    };
+
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard', icon: 'bi bi-house-door' },
         { name: 'All Thesis', section: 'thesis', icon: 'bi bi-journal-text' },
@@ -22,78 +32,60 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
         { name: 'Schedule', section: 'schedule', icon: 'bi bi-clock' },
     ];
 
-    const renderNavItem = (item) => (
-        <li className="nav-item mb-2" key={item.section}>
-            <button
-                className={`nav-link w-100 text-start rounded d-flex align-items-center gap-2 ${activeSection === item.section ? 'active' : ''}`}
-                onClick={() => handleSectionChange(item.section)}
-                aria-current={activeSection === item.section ? 'page' : undefined}
-            >
-                <i className={item.icon}></i>
-                {item.name}
-            </button>
-        </li>
-    );
+    return (
+        <nav className="teacher-sidebar">
+            <div className="sidebar-header">
+                <h5>Teacher Portal</h5>
+            </div>
 
-    const renderThesisManagementDropdown = () => (
-        <li className="nav-item dropdown mb-3">
-            <button
-                className="nav-link w-100 text-start rounded d-flex align-items-center gap-2 dropdown-toggle"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-            >
-                <i className="bi bi-folder"></i>
-                Thesis Management
-            </button>
-            <ul className="dropdown-menu w-100 shadow-sm border-0 p-2">
-                {thesisManagementItems.map((item) => (
-                    <li key={item.section}>
+            <ul className="nav-list">
+                {mainNavItems.map((item) => (
+                    <li key={item.section} className="nav-item">
                         <button
-                            className={`dropdown-item rounded d-flex align-items-center gap-2 ${activeSection === item.section ? 'active' : ''}`}
+                            className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
                             onClick={() => handleSectionChange(item.section)}
                         >
                             <i className={item.icon}></i>
-                            {item.name}
+                            <span>{item.name}</span>
+                        </button>
+                    </li>
+                ))}
+
+                <li className="nav-item dropdown">
+                    <button className="nav-link dropdown-toggle" onClick={toggleDropdown}>
+                        <i className="bi bi-folder"></i>
+                        <span>Thesis Management</span>
+                    </button>
+                    {isDropdownOpen && (
+                        <ul className="dropdown-menu">
+                            {thesisManagementItems.map((item) => (
+                                <li key={item.section}>
+                                    <button
+                                        className={`dropdown-item ${activeSection === item.section ? 'active' : ''}`}
+                                        onClick={() => handleSectionChange(item.section)}
+                                    >
+                                        <i className={item.icon}></i>
+                                        <span>{item.name}</span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </li>
+
+                <li><hr className="sidebar-divider" /></li>
+                {additionalNavItems.map((item) => (
+                    <li key={item.section} className="nav-item">
+                        <button
+                            className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
+                            onClick={() => handleSectionChange(item.section)}
+                        >
+                            <i className={item.icon}></i>
+                            <span>{item.name}</span>
                         </button>
                     </li>
                 ))}
             </ul>
-        </li>
-    );
-
-    return (
-        <nav
-            className="sidebar shadow-sm"
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                width: '250px',
-                backgroundColor: '#f5f5f5', // Light gray background
-                overflowY: 'auto',
-                zIndex: 1000,
-                padding: '1rem',
-                marginTop: '50px', // Adjust to match the top bar height
-                borderRadius: '8px',
-            }}
-        >
-            <div className="d-flex flex-column h-100">
-                {/* Header */}
-                <div className="p-3 border-bottom">
-                    <h5 className="text-black fw-bold mb-0">Teacher Portal</h5>
-                </div>
-
-                {/* Navigation Items */}
-                <div className="py-3">
-                    <ul className="nav flex-column">
-                        {mainNavItems.map(renderNavItem)}
-                        {renderThesisManagementDropdown()}
-                        <li><hr className="my-3" /></li>
-                        {additionalNavItems.map(renderNavItem)}
-                    </ul>
-                </div>
-            </div>
         </nav>
     );
 };
