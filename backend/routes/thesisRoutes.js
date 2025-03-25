@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Thesis = require('../models/thesis');
 const Notification = require('../models/notification');
-const { authenticateToken } = require('../middleware/authMiddleware');
+const authenticateToken = require('../middleware/auth');
 
 // Submit thesis
 router.post('/submit', authenticateToken, async (req, res) => {

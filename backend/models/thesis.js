@@ -39,7 +39,20 @@ const thesisSchema = new mongoose.Schema({
     submissionDate: {
         type: Date,
         default: Date.now
-    }
+    },
+    file: {
+        url: { type: String, required: true },
+        key: { type: String, required: true },
+        size: { type: Number, required: true },
+        hash: { type: String, required: true }
+    },
+    author: { type: String, required: true },
+    abstract: { type: String, required: true },
+    keywords: { type: [String], required: true },
+    department: { type: String, required: true },
+    academic_year: { type: Number, required: true },
+    advisor_name: { type: String, required: true },
+    created_at: { type: Date, default: Date.now }
 }, {
     timestamps: true
 });
