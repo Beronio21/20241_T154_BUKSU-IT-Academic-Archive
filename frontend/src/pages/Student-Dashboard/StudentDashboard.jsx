@@ -17,6 +17,7 @@ const StudentDashboard = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [activeSection, setActiveSection] = useState("dashboard"); // Track active section
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -49,7 +50,7 @@ const StudentDashboard = () => {
 
     return (
         <div className="d-flex">
-            <StudentNavbar activeSection="dashboard" handleSectionChange={() => {}} />
+            <StudentNavbar activeSection={activeSection} handleSectionChange={setActiveSection} />
             <div className="flex-grow-1">
                 <StudentTopBar userInfo={userInfo} />
                 <div className="container mt-4" style={{ marginLeft: "80px" }}>
