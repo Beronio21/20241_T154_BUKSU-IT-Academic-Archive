@@ -15,6 +15,9 @@ import StudentDashboard from './pages/Student-Dashboard/StudentDashboard';
 import TeacherDashboard from './pages/Teacher-Dashboard/TeacherDashboard';
 import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard'; 
 
+// Profile Component
+import StudentProfile from './Profile/Student-Profile/StudentProfile';
+
 // Other Components
 import NotFound from './NotFound';
 
@@ -86,6 +89,17 @@ function App() {
                 <ProtectedRoute 
                   element={<AdminDashboard />} 
                   allowedRole="admin"
+                />
+              } 
+            />
+
+            {/* Student Profile Route */}
+            <Route 
+              path="/student-profile" 
+              element={
+                <ProtectedRoute 
+                  element={<StudentProfile />} 
+                  allowedRole="student"
                 />
               } 
             />

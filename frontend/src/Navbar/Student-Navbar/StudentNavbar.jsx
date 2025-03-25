@@ -1,28 +1,28 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import StudentProfile from '../../Profile/Student-Profile/StudentProfile';
 
 const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const navigate = useNavigate();
 
     const navItems = [
-        { name: 'Dashboard', section: 'dashboard', icon: 'bi bi-house-door' },
-        { name: 'My Profile', section: 'profile', icon: 'bi bi-person' },
-        { name: 'Submit Thesis', section: 'submit-thesis', icon: 'bi bi-file-earmark-plus' },
-        { name: 'View Thesis', section: 'docs', icon: 'bi bi-file-earmark-text' },
-        { name: 'Schedule', section: 'schedule', icon: 'bi bi-calendar' },
+        { name: 'Dashboard', section: 'dashboard', icon: 'bi bi-house-door', path: '/student-dashboard' },
+        { name: 'My Profile', section: 'profile', icon: 'bi bi-person', path: '/student-profile' },
+        { name: 'Submit Thesis', section: 'submit-thesis', icon: 'bi bi-file-earmark-plus', path: '/submit-thesis' },
+        { name: 'View Thesis', section: 'docs', icon: 'bi bi-file-earmark-text', path: '/view-thesis' },
+        { name: 'Schedule', section: 'schedule', icon: 'bi bi-calendar', path: '/schedule' },
     ];
 
     const renderNavItem = (item) => (
         <li className="nav-item mb-2" key={item.section}>
-            <button
+            <Link
+                to={item.path}
                 className={`nav-link w-100 text-start rounded d-flex align-items-center gap-2 ${activeSection === item.section ? 'active' : ''}`}
                 onClick={() => handleSectionChange(item.section)}
-                aria-current={activeSection === item.section ? 'page' : undefined}
             >
                 <i className={item.icon}></i>
                 {item.name}
-            </button>
+            </Link>
         </li>
     );
 
@@ -55,6 +55,9 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
                         {navItems.map(renderNavItem)}
                     </ul>
                 </div>
+                <Link to="/student-profile" onClick={() => handleSectionChange('profile')}>
+                    Student Profile
+                </Link>
             </div>
         </nav>
     );
