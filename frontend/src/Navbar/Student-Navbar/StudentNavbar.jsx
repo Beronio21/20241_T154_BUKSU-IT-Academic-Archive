@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import StudentProfile from '../../Profile/Student-Profile/StudentProfile';
 
 const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const navigate = useNavigate();

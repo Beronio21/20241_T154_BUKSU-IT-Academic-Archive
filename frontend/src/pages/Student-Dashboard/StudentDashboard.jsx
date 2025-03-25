@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import { useNavigate } from "react-router-dom";
-import StudentNavbar from "../../Navbar/StudentNavbar";
+import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
 import StudentTopBar from "../../Topbar/StudentTopbar/StudentTopbar";
 
 const projectData = [

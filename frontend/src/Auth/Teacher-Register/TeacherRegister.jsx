@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import "../Styles/StudentRegister.css";
+import "../Teacher-Register/TeacherRegister.css"; // Ensure you have the appropriate styles
 
-const StudentRegister = () => {
+const TeacherRegister = () => {
   const [formData, setFormData] = useState({
-    student_id: "",
     name: "",
     email: "",
-    course: "",
-    year: "",
     password: "",
     confirmPassword: "",
-    role: "student", // Default role
-    gender: "",
+    department: "",
+    teacher_id: "",
+    gender: "", // Default to empty to force selection
+    role: "teacher", // Default role
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,9 +28,9 @@ const StudentRegister = () => {
     setError("");
     setLoading(true);
 
-    // Validate year selection
-    if (!formData.year) {
-      setError("Please select a year.");
+    // Validate gender selection
+    if (!formData.gender) {
+      setError("Please select a gender.");
       setLoading(false);
       return;
     }
@@ -125,7 +124,7 @@ const StudentRegister = () => {
         {/* Right side - Form */}
         <div className="std-reg__right">
           <div className="std-reg__form-wrapper">
-            <h2 className="std-reg__form-title">Register</h2>
+            <h2 className="std-reg__form-title">Teacher Registration</h2>
             {error && <div className="std-reg__error">{error}</div>}
             
             <form onSubmit={handleSubmit} className="std-reg__form">
@@ -133,9 +132,15 @@ const StudentRegister = () => {
                 {/* Input Fields */}
                 {[
                   {
-                    id: "student_id",
+                    id: "teacher_id",
                     type: "text",
-                    placeholder: "Institution ID",
+                    placeholder: "Instructor ID",
+                    required: true,
+                  },
+                  {
+                    id: "email",
+                    type: "email",
+                    placeholder: "Email",
                     required: true,
                   },
                   {
@@ -145,15 +150,9 @@ const StudentRegister = () => {
                     required: true,
                   },
                   {
-                    id: "email",
-                    type: "email",
-                    placeholder: "Institution Email",
-                    required: true,
-                  },
-                  {
-                    id: "course",
+                    id: "department",
                     type: "text",
-                    placeholder: "Course",
+                    placeholder: "Department",
                     required: false,
                   },
                 ].map((input, index) => (
@@ -171,24 +170,6 @@ const StudentRegister = () => {
                   </div>
                 ))}
 
-                {/* Year Dropdown */}
-                <div className="std-reg__input-group">
-                  <select
-                    id="year"
-                    name="year"
-                    className="std-reg__input"
-                    value={formData.year}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="" disabled>School Year</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                  </select>
-                </div>
-
                 {/* Gender Dropdown */}
                 <div className="std-reg__input-group">
                   <select
@@ -200,9 +181,9 @@ const StudentRegister = () => {
                     required
                   >
                     <option value="" disabled>Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="I prefer not to say">I prefer not to say</option>
                   </select>
                 </div>
 
@@ -227,7 +208,7 @@ const StudentRegister = () => {
                     id="confirmPassword"
                     name="confirmPassword"
                     className="std-reg__input"
-                    placeholder="Re-enter Your Password"
+                    placeholder="Re-Enter Password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
@@ -268,4 +249,4 @@ const StudentRegister = () => {
   );
 };
 
-export default StudentRegister;
+export default TeacherRegister; 

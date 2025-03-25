@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserManagement from '../../UserManagement/UserManagement';
-import StudentRecords from '../../Records/StudentRecords/StudentRecords';
-import TeacherRecords from '../../Records/TeacherRecords/TeacherRecords';
+import StudentRecords from '../../Records/Student-Records/StudentRecords';
+import TeacherRecords from '../../Records/Teacher-Records/TeacherRecords';
 import AdminTopbar from '../../Topbar/AdminTopbar/AdminTopbar';
-import AdminNavbar from '../../Navbar/AdminNavbar';
-import AdminRegister from '../../Auth/AdminRegister';
+import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
+import AdminRegister from '../../Auth/Admin-Register/AdminRegister';
 
 
 const AdminDashboard = () => {

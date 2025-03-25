@@ -1,0 +1,129 @@
+/* Ensure full-page lighter blue gradient background */
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: 
+url('../../Images/Vector.png'); /* Gradient + Background Image */
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* Centered container with a subtle gradient */
+.container-box {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 750px;
+  width: 100%;
+  background: linear-gradient(135deg, #ffffff, #dceeff); /* Soft white-blue gradient */
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  padding: 25px;
+  gap: 20px;
+}
+
+.container-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Left section - University Logo & Info */
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  text-align: center;
+  background: transparent !important;
+  border-right: 2px solid rgba(0, 0, 0, 0.15);
+}
+
+.left-section img {
+  max-width: 140px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.left-section img:hover {
+  transform: scale(1.1);
+}
+
+/* Right section - Login Form */
+.right-section {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Google login button */
+.google-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 30px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.google-login-btn img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.google-login-btn:hover {
+  background: #e9ecef;
+  border-color: #bbb;
+  transform: translateY(-2px);
+}
+
+/* Styled primary login button */
+.btn-primary {
+  background: linear-gradient(135deg, #5BA4FC, #2196F3);
+  border: none;
+  transition: all 0.3s ease-in-out;
+  font-weight: bold;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2196F3, #0A74DA);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-box {
+    flex-direction: column;
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .left-section {
+    padding: 20px;
+    border-right: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .right-section {
+    padding: 20px;
+  }
+}

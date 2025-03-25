@@ -2,8 +2,9 @@ import React, { useEffect, useState, useMemo } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import { useNavigate } from "react-router-dom";
-import TeacherNavbar from "../../Navbar/TeacherNavbar";
+import TeacherNavbar from "../../Navbar/Teacher-Navbar/TeacherNavbar";
 import TeacherTopBar from "../../Topbar/TeacherTopbar/TeacherTopbar";
+import '../Teacher-Dashboard/TeacherDashboard.css'
 
 const projectData = [
     { title: "AI for Climate Change", mentor: "Bill Gates", year: "2023", category: "Mobile Apps" },
