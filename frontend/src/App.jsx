@@ -21,6 +21,7 @@ import StudentProfile from './Profile/Student-Profile/StudentProfile';
 // Other Components
 import NotFound from './NotFound';
 import SubmitThesis from './components/SubmitThesis';
+import ViewSubmittedThesis from './components/ViewSubmittedThesis';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -111,6 +112,17 @@ function App() {
               element={
                 <ProtectedRoute 
                   element={<SubmitThesis />} 
+                  allowedRole="student"
+                />
+              } 
+            />
+
+            {/* View Submitted Thesis Route */}
+            <Route 
+              path="/view-thesis" 
+              element={
+                <ProtectedRoute 
+                  element={<ViewSubmittedThesis />} 
                   allowedRole="student"
                 />
               } 
