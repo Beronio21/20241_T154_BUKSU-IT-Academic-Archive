@@ -10,7 +10,6 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
         { name: 'My Profile', section: 'profile', icon: 'bi bi-person', path: '/student-profile' },
         { name: 'Submit Thesis', section: 'submit-thesis', icon: 'bi bi-file-earmark-plus', path: '/submit-thesis' },
         { name: 'View Thesis', section: 'docs', icon: 'bi bi-file-earmark-text', path: '/view-thesis' },
-        { name: 'Schedule', section: 'schedule', icon: 'bi bi-calendar', path: '/schedule' },
     ];
 
     const renderNavItem = (item) => (
@@ -55,9 +54,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
                         {navItems.map(renderNavItem)}
                     </ul>
                 </div>
-                <Link to="/student-profile" onClick={() => handleSectionChange('profile')}>
-                    Student Profile
-                </Link>
+               
             </div>
         </nav>
     );

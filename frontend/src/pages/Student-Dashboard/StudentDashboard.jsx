@@ -17,7 +17,7 @@ const StudentDashboard = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
-    const [activeSection, setActiveSection] = useState("dashboard"); // Track active section
+const [activeSection, setActiveSection] = useState("dashboard"); // Track active section
     const navigate = useNavigate();
 
     useEffect(() => {
