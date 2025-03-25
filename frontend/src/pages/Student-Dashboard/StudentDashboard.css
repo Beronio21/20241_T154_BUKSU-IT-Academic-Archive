@@ -1,9 +1,8 @@
-/* StudentDashboard.css */
-
 /* General styles for the dashboard */
 .dashboard-container {
     font-family: 'Inter', 'Noto Sans', sans-serif;
-    background-color: #f8fafc; /* Light background */
+    background-color: #ffffff; /* White background */
+    min-height: 100vh;
 }
 
 /* Header styles */
@@ -14,18 +13,22 @@
 
 /* Main content styles */
 .dashboard-content {
-    padding: 2rem 2rem;
+    padding: 2rem;
 }
 
 /* Project card styles */
 .project-card {
-    background-color: #e7edf3;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* Footer styles */
