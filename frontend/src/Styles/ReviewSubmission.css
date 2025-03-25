@@ -67,7 +67,7 @@
 
 .submission-header h3 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 2.1rem;
     font-weight: 600;
     color: #2c3e50;
     line-height: 1.4;
@@ -113,7 +113,7 @@
 .abstract-text {
     text-align: justify;
     padding: 1rem;
-    background-color: #f8f9fa;
+
     border-radius: 6px;
     font-style: italic;
     max-height: 300px;
