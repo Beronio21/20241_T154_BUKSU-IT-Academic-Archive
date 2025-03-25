@@ -7,7 +7,8 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #4A90E2, #80C2FF); /* Lighter blue gradient */
+  background: 
+url('../../Images/Vector.png'); /* Gradient + Background Image */
   background-size: cover;
   background-attachment: fixed;
 }
