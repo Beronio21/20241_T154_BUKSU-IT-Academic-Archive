@@ -16,6 +16,7 @@ const GoogleLogin = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [showModal, setShowModal] = useState(false); // State for registration modal
   const navigate = useNavigate();
 
   // Check if user is already logged in
@@ -115,7 +116,7 @@ const GoogleLogin = () => {
 
         {/* Right: Login Form */}
         <div className="right-section p-4 flex-grow-1">
-          <h4 className="text-center mb-4">Welcome Back</h4>
+          <h4 className="text-center mb-4">Signup</h4>
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-3">
               <input
@@ -159,10 +160,39 @@ const GoogleLogin = () => {
             <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
           </button>
           <div className="text-center mt-3">
-            Don't have an account? <span className="text-primary" onClick={() => navigate("/register-link")} style={{ cursor: "pointer" }}>Register</span>
+            Don't have an account? <span className="text-primary" onClick={() => setShowModal(true)} style={{ cursor: "pointer" }}>Register</span>
           </div>
         </div>
       </div>
+
+      {/* Registration Modal */}
+      {showModal && (
+        <div className="modal-container">
+          <div className="modal-content">
+            <h4 className="modal-title">Choose Your Account Type</h4>
+            <div className="user-type-options">
+              <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
+                <div className="user-type-icon">
+                  <img src="./src/Images/Teacher.png" alt="Teacher" />
+                </div>
+                <p>Teacher</p>
+              </div>
+              <div className="user-type-card" onClick={() => navigate("/student-register")}>
+                <div className="user-type-icon">
+                  <img src="./src/Images/user.png" alt="Student" />
+                </div>
+                <p>Student</p>
+              </div>
+            </div>
+            <button
+              className="btn w-100 mt-3"
+              onClick={() => setShowModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
