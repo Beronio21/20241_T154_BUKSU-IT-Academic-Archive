@@ -34,17 +34,18 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard' },
         { name: 'My Profile', section: 'profile' },
+        { name: 'Review Capstone', section: 'review-submissions' }
     ];
 
     const thesisManagementItems = [
-        { name: 'Defense Schedule', section: 'defenseschedule' },
-        { name: 'Review Capstone', section: 'review-submissions' },
-        { name: 'Comment Docs', section: 'comment-docs' },
+ 
+ 
+
     ];
 
     const additionalNavItems = [
-        { name: 'Calendar', section: 'calendar' },
-        { name: 'Schedule', section: 'schedule' },
+
+ 
     ];
 
     const renderNavItem = (item) => (

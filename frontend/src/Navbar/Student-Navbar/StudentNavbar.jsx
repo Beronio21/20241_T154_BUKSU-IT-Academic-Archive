@@ -34,16 +34,15 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard' },
         { name: 'My Profile', section: 'profile' },
+        { name: 'Submit Capstone', section: 'submit-thesis' },
+        { name: 'View Capstone', section: 'docs' }
     ];
 
-    const thesisManagementItems = [
-        { name: 'Submit Capstone', section: 'submit-thesis' },
-        { name: 'View Capstone', section: 'docs' },
-    ];
+
 
     const additionalNavItems = [
         
-        { name: 'Schedule', section: 'schedule' },
+    
     ];
 
     const renderNavItem = (item) => (
@@ -63,42 +62,10 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const renderThesisManagementDropdown = () => (
         <li className="nav-item">
             <div className="dropdown w-100">
-                <button
-                    className="nav-link w-100 text-start rounded dropdown-toggle"
-                    data-bs-toggle="dropdown"
-                    style={getNavButtonStyle(false)}
-                    onMouseEnter={(e) => handleMouseEnter(e, false)}
-                    onMouseLeave={(e) => handleMouseLeave(e, false)}
-                >
-                    Capstone Management
-                </button>
-                <ul className="dropdown-menu">
-                    {thesisManagementItems.map((item) => (
-                        <li key={item.section}>
-                            <button
-                                className={`dropdown-item ${
-                                    activeSection === item.section ? 'bg-primary text-white' : ''
-                                }`}
-                                onClick={() => handleSectionChange(item.section)}
-                                style={{
-                                    fontSize: '14px',
-                                    padding: '8px 16px',
-                                    backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent', // Active: Blue
-                                    color: activeSection === item.section ? '#fff' : '#333', // Active: White
-                                    transition: 'all 0.2s ease',
-                                }}
-                                onMouseEnter={(e) =>
-                                    handleMouseEnter(e, activeSection === item.section)
-                                }
-                                onMouseLeave={(e) =>
-                                    handleMouseLeave(e, activeSection === item.section)
-                                }
-                            >
-                                {item.name}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+               
+                 
+       
+          
             </div>
         </li>
     );

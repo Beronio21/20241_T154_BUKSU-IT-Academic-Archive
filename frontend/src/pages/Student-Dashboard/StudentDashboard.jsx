@@ -10,7 +10,7 @@ import SendGmail from "../../Communication/SendGmail";
 import ScheduleTable from "../../components/ScheduleTable";
 import Topbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
-import { Button, Container, Row, Col, Table, Alert, Dropdown } from "react-bootstrap";
+import { Button, Container, Row, Col, Table, Alert, Dropdown, Modal } from "react-bootstrap";
 import "./StudentDashboard.css";
 
 const StudentDashboard = () => {
@@ -21,6 +21,9 @@ const StudentDashboard = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [filterDate, setFilterDate] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [feedbackForm, setFeedbackForm] = useState({ comment: "", status: "pending" });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -100,6 +103,21 @@ const StudentDashboard = () => {
     return matchesSearchTerm && matchesStatus;
   });
 
+  const getStatusColor = (status) => {
+    switch (status) {
+        case 'pending':
+            return '#ffd700';
+        case 'approved':
+            return '#4caf50';
+        case 'rejected':
+            return '#f44336';
+        case 'revision':
+            return '#2196f3';
+        default:
+            return '#ccc';
+    }
+  };
+
   // Render content based on active section
   const renderContent = () => {
     switch (activeSection) {
@@ -110,94 +128,143 @@ const StudentDashboard = () => {
       case "dashboard":
       default:
         return (
-          <Container>
-            <h2 className="text-left mb-4">Capstone Archive</h2>
-
-            {/* Search Bar and Filters */}
-            <Row className="mb-3 justify-content-center">
-              <Col md={4}>
+          <div className="review-submission-container">
+            <header className="review-header">
+              <h2>Capstone Research Paper</h2>
+              <div className="search-bar">
                 <input
                   type="text"
-                  className="form-control"
-                  placeholder="Search by title or author..."
+                  placeholder="Search by title..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="form-control search-input"
                 />
-              </Col>
-              <Col md={4}>
-                <Dropdown>
-                  <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    {statusFilter}
-                  </Dropdown.Toggle>
+                <input
+                  type="date"
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  className="form-control date-input"
+                />
+              </div>
+            </header>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => setStatusFilter("All")}>All</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatusFilter("approved")}>Approved</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatusFilter("pending")}>Pending</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatusFilter("rejected")}>Rejected</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Col>
-            </Row>
-
-            {/* Submissions Table */}
             {loading ? (
-              <div className="loading-spinner">Loading...</div>
+              <div className="loading-container">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
             ) : error ? (
-              <Alert variant="danger">{error}</Alert>
-            ) : filteredSubmissions.length === 0 ? (
-              <Alert variant="info">No submissions found</Alert>
+              <div className="error-message">
+                {error}
+              </div>
             ) : (
-              <div className="table-responsive">
-                <Table striped bordered hover responsive>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Members</th>
-                      <th>Adviser</th>
-                      <th>Submission Date</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredSubmissions.map((submission) => (
-                      <tr key={submission._id}>
-                        <td>{submission.title}</td>
-                        <td>{submission.members.join(", ")}</td>
-                        <td>{submission.adviserEmail}</td>
-                        <td>{new Date(submission.createdAt).toLocaleDateString()}</td>
-                        <td>
-                          <span className={`badge bg-${submission.status === "approved" ? "success" : "warning"}`}>
-                            {submission.status}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="d-flex justify-content-between">
-                            <a
-                              href={submission.docsLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn btn-primary btn-sm"
-                            >
-                              View
-                            </a>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleDelete(submission._id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
+              <div className="submissions-grid">
+                {submissions.length === 0 ? (
+                  <div className="no-submissions">
+                    <i className="bi bi-inbox text-muted"></i>
+                    <p>No submissions to review</p>
+                  </div>
+                ) : (
+                  filteredSubmissions.map((submission) => (
+                    <div key={submission._id} className="submission-card">
+                      <div className="submission-header">
+                        <h3>{submission.title}</h3>
+                        
+
+                      </div>
+                      <div className="submission-content">
+                        <div className="info-group">
+                          <label>Abstract:</label>
+                          <p className="abstract-text">{submission.abstract}</p>
+                        </div>
+                        <div className="info-group">
+                          <label>Keywords:</label>
+                          <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
+                        </div>
+                        <div className="info-group">
+                          <label>Members:</label>
+                          <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
+                        </div>
+                        <div className="info-group">
+                          <label>Student Email:</label>
+                          <p>{submission.email || 'N/A'}</p>
+                        </div>
+                        <div className="info-group">
+                          <label>Submitted:</label>
+                          <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  ))
+                )}
               </div>
             )}
-          </Container>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)} className="feedback-modal">
+              <Modal.Header closeButton>
+                <Modal.Title>Submit Feedback</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="feedback-form">
+                  <div className="form-group">
+                    <label>Your Feedback</label>
+                    <textarea
+                      value={feedbackForm.comment}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
+                      placeholder="Enter your feedback..."
+                      rows="4"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Status</label>
+                    <select
+                      value={feedbackForm.status}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
+                      className="form-control"
+                      required
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approve</option>
+                      <option value="rejected">Reject</option>
+                      <option value="revision">Needs Revision</option>
+                    </select>
+                  </div>
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <button 
+                  onClick={handleSubmitFeedback} 
+                  className="btn-submit" 
+                  disabled={!feedbackForm.comment.trim()}
+                >
+                  Submit Feedback
+                </button>
+                <button 
+                  onClick={() => setShowModal(false)} 
+                  className="btn-cancel"
+                >
+                  Cancel
+                </button>
+              </Modal.Footer>
+            </Modal>
+          </div>
         );
+    }
+  };
+
+  const handleSubmitFeedback = async () => {
+    try {
+        // Implement the logic to submit feedback
+        console.log('Feedback submitted:', feedbackForm);
+        setShowModal(false);
+        // Optionally, refresh the submissions list
+        fetchSubmissions();
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
     }
   };
 

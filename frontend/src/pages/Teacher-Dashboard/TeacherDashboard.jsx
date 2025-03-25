@@ -182,7 +182,12 @@ const TeacherDashboard = () => {
                                         <div key={submission._id} className="submission-card">
                                             <div className="submission-header">
                                                 <h3>{submission.title}</h3>
-                                          
+                                                <span 
+                                        className="status-badge"
+                                        style={{ backgroundColor: getStatusColor(submission.status) }}
+                                    >
+                                        {submission.status}
+                                    </span>
                                             </div>
                                             <div className="submission-content">
                                                 <div className="info-group">
