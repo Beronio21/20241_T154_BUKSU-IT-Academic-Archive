@@ -10,67 +10,174 @@
 
 /* Ensure body takes full height */
 body {
-  background-color: #f8f9fa !important;
+  background-color: #f8f9fa; /* Fallback color */
+  height: 100vh; /* Full viewport height */
+}
+
+/* Full-Screen Background Image */
+section {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('../Images/buksumain.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Full-Screen Background Blur */
+.background-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.7)
+  );
+  backdrop-filter: blur(8px);
+  z-index: 0;
+}
+
+/* Outer container styling */
+.outer-container {
+  position: relative;
+  width: 80%;
+  max-width: 1000px;
+  margin: 2rem auto;
+  background-color: rgba(255, 255, 255, 1); /* Solid white background */
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 1;
+}
+
+/* Logo section styling */
+.logo-section {
+  padding: 3rem 2rem;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Login container */
-.login-container {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 20px !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+.logo-section img {
+  max-width: 280px;
+  height: auto;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.logo-section img:hover {
+  transform: scale(1.02);
+}
+
+.university-name {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
   text-align: center;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Custom input style */
+.tagline {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* Login container updates */
+.login-container {
+  padding: 2rem;
+  background-color: white;
+  height: auto; /* Allow height to adjust based on content */
+}
+
+/* Custom input styling */
 .custom-input {
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Button style */
-button {
-  border-radius: 10px;
-  padding: 12px;
-  font-weight: 500;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-button:hover {
-  cursor: pointer;
-}
-
-/* Style for 'Sign Up' button */
-.btn-link {
-  background-color: transparent;
-  border: none;
-  color: #006bb2;  /* Use the same blue as your primary color */
-  font-weight: 500;
-  text-decoration: none;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
   padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+  color: #495057;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  width: 100%;
 }
 
-.btn-link:hover {
-  background-color: #e9f5fe; /* Light blue hover effect */
+.custom-input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.15);
+}
+
+.custom-input::placeholder {
+  color: #6c757d;
+  opacity: 0.8;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: #006bb2;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #005691;
+  transform: translateY(-1px);
+}
+
+/* Google login button */
+.google-login-btn {
+  background-color: white;
+  border: 2px solid #e9ecef;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* Center the button */
+  width: 100%; /* Full width */
+  gap: 8px; /* Space between image and text */
+}
+
+.google-login-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Style for 'Register' link */
+.register-link {
+  color: #006bb2;  /* Primary blue color */
+  font-weight: 500;
   cursor: pointer;
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease; /* Smooth transition for color */
 }
 
-.btn-link:focus {
-  outline: none;
-  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+/* Change color of Register link on hover */
+.register-link:hover {
+  color: #0056b3;
 }
 
 /* Modal Styles */
@@ -137,20 +244,6 @@ button:hover {
   margin-bottom: 10px;
 }
 
-.btn-close-modal {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-close-modal:hover {
-  background-color: #0056b3;
-}
-
 /* ReCAPTCHA custom style */
 .recaptcha-container {
   margin-bottom: 20px;
@@ -163,106 +256,22 @@ button:hover {
   padding: 10px;
 }
 
-/* Apply Poppins font globally */
-* {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
+/* Update container fluid for better centering */
+.container-fluid {
+  height: 100vh;
   padding: 0;
-  box-sizing: border-box;
 }
 
-/* Ensure body takes full height */
-body {
-  background-color: #f8f9fa;
-  height: 100%;
-}
-
-/* Login container */
-.login-container {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 20px !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+/* Divider text styling */
+.d-flex.justify-content-center.my-4 {
+  position: relative;
   text-align: center;
-  animation: fadeIn 0.5s ease-in-out;
+  margin: 1.5rem 0;
 }
 
-/* Custom input style */
-.custom-input {
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
+.d-flex.justify-content-center.my-4 p {
+  background-color: white;
+  padding: 0 10px;
+  color: #6c757d;
+  font-size: 0.9rem;
 }
-
-/* Button style */
-button {
-  border-radius: 10px;
-  padding: 12px;
-  font-weight: 500;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-button:hover {
-  cursor: pointer;
-}
-
-/* Style for 'Register' link */
-.register-link {
-  color: #006bb2;  /* Primary blue color */
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none; /* Remove underline */
-  transition: color 0.3s ease; /* Smooth transition for color */
-}
-
-/* Change color of Register link on hover */
-.register-link:hover {
-  color: #0056b3;
-}
-
-/* Modal Styles */
-.modal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 350px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-/* Button spacing in modal */
-.modal-container .btn {
-  margin-bottom: 10px;
-}
-
-/* ReCAPTCHA custom style */
-.recaptcha-container {
-  margin-bottom: 20px;
-}
-
-

@@ -6,6 +6,7 @@ import { googleAuth, emailLogin } from "../api";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../Styles/GoogleLogin.css";
+import backgroundImage from '../Images/buksumain.jpg'; // Import the background image
 
 const GoogleLogin = () => {
   const [email, setEmail] = useState("");
@@ -53,17 +54,7 @@ const GoogleLogin = () => {
 
       if (result.status === "success") {
         const { user, token } = result.data;
-        localStorage.setItem(
-          "user-info",
-          JSON.stringify({
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            image: user.image,
-            role: user.role,
-            token,
-          })
-        );
+        localStorage.setItem("user-info", JSON.stringify({ id: user._id, name: user.name, email: user.email, image: user.image, role: user.role, token }));
         navigate(`/${user.role}-dashboard`);
       }
     } catch (error) {
@@ -81,24 +72,12 @@ const GoogleLogin = () => {
         const result = await googleAuth(tokenResponse.access_token);
         if (result.status === "success") {
           const { user, token } = result.data;
-          localStorage.setItem(
-            "user-info",
-            JSON.stringify({
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              image: user.image,
-              role: user.role,
-              token,
-              googleDriveToken: tokenResponse.access_token,
-            })
-          );
+          localStorage.setItem("user-info", JSON.stringify({ id: user._id, name: user.name, email: user.email, image: user.image, role: user.role, token, googleDriveToken: tokenResponse.access_token }));
           navigate(`/${user.role}-dashboard`);
         }
       } catch (error) {
         console.error("Google login error:", error);
         setErrorMessage("Google login failed");
-        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -106,78 +85,112 @@ const GoogleLogin = () => {
     onError: (error) => {
       console.error("Google login error:", error);
       setErrorMessage("Google login failed");
-      setLoading(false);
     },
     scope: "email profile https://www.googleapis.com/auth/drive",
   });
 
   return (
-    <section className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="login-container shadow-lg p-4 rounded">
-        <h3 className="text-center mb-4 fw-bold">Login</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mb-3">
-            <input
-              type="email"
-              className="form-control custom-input"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group mb-3">
-            <input
-              type="password"
-              className="form-control custom-input"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {errorMessage && (
-            <div className="alert alert-danger" role="alert">
-              {errorMessage}
+    <section className="d-flex vh-100 position-relative" style={{
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition:   'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      <div className="background-blur"></div>
+
+      <div className="container-fluid d-flex align-items-center justify-content-center">
+        <div className="outer-container">
+          <div className="inner-container">
+            <div className="row g-0">
+              <div className="col-md-6">
+                <div className="logo-section">
+                  <img
+                    src="../src/Images/buksulogov2.png"
+                    alt="BukSU Logo"
+                    className="img-fluid"
+                  />
+                  <h1 className="university-name">Bukidnon State University</h1>
+                  <p className="tagline">
+                    <span style={{ color: '#333' }}>Educate.</span>
+                    {' '}
+                    <span style={{ color: '#333' }}>Innovate.</span>
+                    {' '}
+                    <span style={{ color: '#333' }}>Lead.</span>
+                  </p>
+                </div>
+              </div>
+              
+              <div className="col-md-6">
+                <div className="login-container">
+                  <h3 className="text-center mb-4 fw-bold">Welcome Back</h3>
+                  <form onSubmit={handleSubmit}>
+                    <div className="form-group mb-3">
+                      <input
+                        type="email"
+                        className="form-control custom-input"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group mb-3">
+                      <input
+                        type="password"
+                        className="form-control custom-input"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    {errorMessage && (
+                      <div className="alert alert-danger" role="alert">
+                        {errorMessage}
+                      </div>
+                    )}
+                    <div className="d-flex justify-content-center mb-3">
+                      <ReCAPTCHA
+                        sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
+                        onChange={(token) => setRecaptchaToken(token)}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="btn btn-primary w-100"
+                      disabled={loading}
+                    >
+                      {loading ? "Logging in..." : "Log In"}
+                    </button>
+                  </form>
+                  <div className="d-flex justify-content-center my-4">
+                    <p className="text-center mb-0">Or Login with</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="google-login-btn"
+                    onClick={googleLogin}
+                    disabled={loading}
+                  >
+                    <img
+                      src="../src/Images/Googlelogo.png"
+                      alt="Google logo"
+                      style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                    />
+                    {loading ? "Signing in..." : "Sign in with Google"}
+                  </button>
+                  <div className="d-flex justify-content-center align-items-center mt-4">
+                    <p className="text-center mb-0">
+                      Don't have an account?{" "}
+                      <span className="register-link" onClick={() => setShowModal(true)}>
+                        Register
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
-          <div className="d-flex justify-content-center mb-3">
-            <ReCAPTCHA
-              sitekey="6LfREoYqAAAAABFQTQf5IG6SVrRmgcyz5p-C1gls"
-              onChange={(token) => setRecaptchaToken(token)}
-            />
           </div>
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Log In"}
-          </button>
-        </form>
-        <div className="d-flex justify-content-center my-4">
-          <p className="text-center mb-0">Or Login with</p>
-        </div>
-        <button
-          type="button"
-          className="google-login-btn"
-          onClick={googleLogin}
-          disabled={loading}
-        >
-          <img
-            src="../src/Images/Googlelogo.png"
-            alt="Google logo"
-            style={{ width: '45px', height: '20px', marginLeft: '2px' }}
-          />
-          {loading ? "Signing in..." : "Sign in with Google"}
-        </button>
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <p className="text-center mb-0">
-            Don't have an account?{" "}
-            <span className="register-link" onClick={() => setShowModal(true)}>
-              Register
-            </span>
-          </p>
         </div>
       </div>
 

@@ -5,15 +5,11 @@ const thesisSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    members: [{
-        type: String,
-        required: true
-    }],
-    adviserEmail: {
-        type: String,
+    members: {
+        type: [String],
         required: true
     },
-    email: {
+    adviserEmail: {
         type: String,
         required: true
     },
@@ -21,9 +17,13 @@ const thesisSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'revision'],
+        enum: ['pending', 'approved', 'rejected', 'revision needed'],
         default: 'pending'
     },
     feedback: [{
@@ -35,7 +35,24 @@ const thesisSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+    submissionDate: {
+        type: Date,
+        default: Date.now
+    },
+    file: {
+        url: { type: String, required: true },
+        key: { type: String, required: true },
+        size: { type: Number, required: true },
+        hash: { type: String, required: true }
+    },
+    author: { type: String, required: true },
+    abstract: { type: String, required: true },
+    keywords: { type: [String], required: true },
+    department: { type: String, required: true },
+    academic_year: { type: Number, required: true },
+    advisor_name: { type: String, required: true },
+    created_at: { type: Date, default: Date.now }
 }, {
     timestamps: true
 });

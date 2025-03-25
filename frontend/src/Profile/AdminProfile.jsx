@@ -11,7 +11,7 @@ const AdminProfile = () => {
         admin_id: '',
         contact_number: '',
         location: '',
-        birthday: '',
+        birthday: '',       
         gender: '',
         password: '',
         confirm_password: '',
