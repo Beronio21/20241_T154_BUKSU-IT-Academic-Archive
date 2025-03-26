@@ -150,8 +150,8 @@ router.post('/feedback/:thesisId', async (req, res) => {
         // Update thesis status
         thesis.status = status;
 
-        // Save the update
-        await thesis.save();
+        // Save the update without validating the entire document
+        await thesis.save({ validateModifiedOnly: true });
 
         // Create notification for the student
         const notification = new Notification({

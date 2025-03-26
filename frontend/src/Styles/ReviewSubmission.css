@@ -112,12 +112,13 @@
 
 .abstract-text {
     text-align: justify;
-    padding: 0.5rem;
+    padding: 1rem;
     background-color: #f8f9fa;
     border-radius: 6px;
     font-style: italic;
-    max-height: 150px;
+    max-height: 300px;
     overflow-y: auto;
+    margin-bottom: 1rem;
 }
 
 .keywords-list {
