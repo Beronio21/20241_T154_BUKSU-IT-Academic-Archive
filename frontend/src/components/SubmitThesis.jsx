@@ -447,14 +447,8 @@ const SubmitThesis = () => {
                                 Select from Google Drive
                             </button>
                         </div>
-                        <span className="d-block my-2 text-center">or</span>
-                        <div className="file-input-container text-center">
-                            <input
-                                type="file"
-                                onChange={handleFileChange}
-                                className="form-control-file"
-                            />
-                        </div>
+                        
+                        
                     </div>
 
                     <button
