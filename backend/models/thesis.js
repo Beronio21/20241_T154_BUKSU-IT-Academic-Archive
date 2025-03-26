@@ -5,6 +5,14 @@ const thesisSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    abstract: {
+        type: String,
+        required: true
+    },
+    keywords: [{
+        type: String,
+        required: true
+    }],
     members: [{
         type: String,
         required: true

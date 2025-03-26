@@ -110,6 +110,30 @@
     line-height: 1.4;
 }
 
+.abstract-text {
+    text-align: justify;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    font-style: italic;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.keywords-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.keywords-list span {
+    background-color: #e9ecef;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
 .submission-actions {
     padding: 1.25rem;
     background: #f8f9fa;

@@ -136,8 +136,16 @@ const ReviewSubmission = () => {
                                 </div>
                                 <div className="submission-content">
                                     <div className="info-group">
+                                        <label>Abstract:</label>
+                                        <p className="abstract-text">{submission.abstract}</p>
+                                    </div>
+                                    <div className="info-group">
+                                        <label>Keywords:</label>
+                                        <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
+                                    </div>
+                                    <div className="info-group">
                                         <label>Members:</label>
-                                        <p>{submission.members.join(', ')}</p>
+                                        <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
                                     </div>
                                     <div className="info-group">
                                         <label>Student Email:</label>

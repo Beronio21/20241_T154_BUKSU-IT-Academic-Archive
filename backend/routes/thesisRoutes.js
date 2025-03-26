@@ -6,19 +6,29 @@ const Notification = require('../models/notification');
 // Submit thesis
 router.post('/submit', async (req, res) => {
     try {
-        const { title, members, adviserEmail, docsLink, email } = req.body;
+        const { title, abstract, keywords, members, adviserEmail, docsLink, email } = req.body;
 
         // Validate required fields
-        if (!title || !members || !adviserEmail || !docsLink || !email) {
+        if (!title || !abstract || !keywords || !members || !adviserEmail || !docsLink || !email) {
             return res.status(400).json({
                 status: 'error',
                 message: 'All fields are required'
             });
         }
 
+        // Validate keywords array
+        if (!Array.isArray(keywords) || keywords.length === 0) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Keywords must be provided as an array with at least one keyword'
+            });
+        }
+
         // Create new thesis
         const thesis = new Thesis({
             title,
+            abstract,
+            keywords,
             members,
             adviserEmail,
             docsLink,
@@ -98,7 +108,7 @@ router.get('/submissions/adviser', async (req, res) => {
         const { email } = req.query;
         const submissions = await Thesis.find({ 
             adviserEmail: email 
-        }).select('title members email status createdAt docsLink');
+        }).select('title abstract keywords members email status createdAt docsLink');
 
         res.json({
             status: 'success',

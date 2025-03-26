@@ -5,6 +5,8 @@ import '../Styles/SubmitThesis.css';
 const SubmitThesis = () => {
     const [formData, setFormData] = useState({
         title: '',
+        abstract: '',
+        keywords: [''],
         members: [''],
         adviserEmail: '',
         docsLink: ''
@@ -26,12 +28,12 @@ const SubmitThesis = () => {
     const handleInputChange = (e, index = null) => {
         const { name, value } = e.target;
 
-        if (name === 'members' && index !== null) {
-            const updatedMembers = [...formData.members];
-            updatedMembers[index] = value;
+        if ((name === 'members' || name === 'keywords') && index !== null) {
+            const updatedArray = [...formData[name]];
+            updatedArray[index] = value;
             setFormData(prev => ({
                 ...prev,
-                members: updatedMembers
+                [name]: updatedArray
             }));
         } else {
             setFormData(prev => ({
@@ -52,6 +54,20 @@ const SubmitThesis = () => {
         setFormData(prev => ({
             ...prev,
             members: prev.members.filter((_, i) => i !== index)
+        }));
+    };
+
+    const addKeyword = () => {
+        setFormData(prev => ({
+            ...prev,
+            keywords: [...prev.keywords, '']
+        }));
+    };
+
+    const removeKeyword = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            keywords: prev.keywords.filter((_, i) => i !== index)
         }));
     };
 
@@ -102,6 +118,14 @@ const SubmitThesis = () => {
             setError('Research title is required');
             return;
         }
+        if (!formData.abstract.trim()) {
+            setError('Abstract is required');
+            return;
+        }
+        if (!formData.keywords.some(keyword => keyword.trim())) {
+            setError('At least one keyword is required');
+            return;
+        }
         setLoading(true);
         setError(null);
 
@@ -110,6 +134,8 @@ const SubmitThesis = () => {
 
             const submissionData = {
                 title: formData.title,
+                abstract: formData.abstract,
+                keywords: formData.keywords.filter(keyword => keyword.trim() !== ''),
                 members: formData.members.filter(member => member.trim() !== ''),
                 adviserEmail: formData.adviserEmail,
                 docsLink: formData.docsLink,
@@ -137,6 +163,8 @@ const SubmitThesis = () => {
             alert('Thesis submitted successfully!');
             setFormData({
                 title: '',
+                abstract: '',
+                keywords: [''],
                 members: [''],
                 adviserEmail: '',
                 docsLink: ''
@@ -157,7 +185,7 @@ const SubmitThesis = () => {
 
                 <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
                     <div className="row mb-3">
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                             <div className="form-group">
                                 <label htmlFor="title">Research Title</label>
                                 <input
@@ -172,7 +200,100 @@ const SubmitThesis = () => {
                                 />
                             </div>
                         </div>
+                    </div>
 
+                    <div className="row mb-3">
+                        <div className="col-md-12">
+                            <div className="form-group">
+                                <label htmlFor="abstract">Abstract</label>
+                                <textarea
+                                    className="form-control"
+                                    id="abstract"
+                                    name="abstract"
+                                    value={formData.abstract}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Enter your research abstract"
+                                    rows="4"
+                                    style={{ resize: 'vertical' }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-group mb-4">
+                        <label htmlFor="keywords" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Keywords:</label>
+                        {formData.keywords.map((keyword, index) => (
+                            <div key={index} className="mb-3 position-relative">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="keywords"
+                                    value={keyword}
+                                    onChange={(e) => handleInputChange(e, index)}
+                                    placeholder="Enter keyword"
+                                    required
+                                    style={{
+                                        borderRadius: '8px',
+                                        padding: '0.8rem 1.2rem',
+                                        border: '1px solid #ccc',
+                                        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                                        transition: 'border-color 0.3s ease',
+                                        outline: 'none',
+                                        fontSize: '1rem',
+                                    }}
+                                    onFocus={(e) => e.target.style.borderColor = '#007BFF'}
+                                    onBlur={(e) => e.target.style.borderColor = '#ccc'}
+                                />
+                                {formData.keywords.length > 1 && (
+                                    <span
+                                        onClick={() => removeKeyword(index)}
+                                        className="text-danger position-absolute"
+                                        style={{
+                                            top: '50%',
+                                            right: '10px',
+                                            transform: 'translateY(-50%)',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem',
+                                            fontWeight: '500',
+                                            textDecoration: 'none',
+                                            padding: '0.2rem 0.5rem',
+                                            transition: 'background-color 0.3s ease, color 0.3s ease',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.color = '#fff';
+                                            e.target.style.backgroundColor = '#dc3545';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.color = 'red';
+                                            e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                    >
+                                        <i className="fas fa-trash-alt me-1"></i> Remove
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                        <div className="d-flex justify-content-start mb-3">
+                            <button
+                                type="button"
+                                onClick={addKeyword}
+                                className="btn btn-outline-primary"
+                                style={{
+                                    padding: '0.6rem 1.5rem',
+                                    borderRadius: '8px',
+                                    fontWeight: '500',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                }}
+                            >
+                                <i className="fas fa-plus"></i> Add Keyword
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label htmlFor="adviserEmail">Adviser Email:</label>
