@@ -6,9 +6,9 @@ const TeacherNavbar = ({ activeSection, setActiveSection }) => {
     const navigate = useNavigate();
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-    const handleSectionChange = (section) => {
+    const handleSectionChange = (section, path) => {
         setActiveSection(section);
-        navigate(`/${section}`);
+        navigate(path);
     };
 
     const toggleDropdown = () => {
@@ -16,20 +16,19 @@ const TeacherNavbar = ({ activeSection, setActiveSection }) => {
     };
 
     const mainNavItems = [
-        { name: 'Dashboard', section: 'dashboard', icon: 'bi bi-house-door' },
-        { name: 'All Thesis', section: 'thesis', icon: 'bi bi-journal-text' },
-        { name: 'Students', section: 'students', icon: 'bi bi-people' },
+        { name: 'Dashboard', section: 'dashboard', icon: 'bi bi-house-door', path: '/teacher-dashboard' },
+        { name: 'My Profile', section: 'profile', icon: 'bi bi-person', path: '/teacher-profile' },
     ];
 
     const thesisManagementItems = [
-        { name: 'Defense Schedule', section: 'defenseschedule', icon: 'bi bi-calendar-event' },
-        { name: 'Review Submissions', section: 'review-submissions', icon: 'bi bi-file-earmark-text' },
-        { name: 'Comment Docs', section: 'comment-docs', icon: 'bi bi-chat-square-text' },
+        { name: 'Defense Schedule', section: 'defenseschedule', icon: 'bi bi-calendar-event', path: '/teacher-dashboard/defense-schedule' },
+        { name: 'Review Submissions', section: 'review-submissions', icon: 'bi bi-file-earmark-text', path: '/teacher-dashboard/view-submitted-thesis' },
+        { name: 'Comment Docs', section: 'comment-docs', icon: 'bi bi-chat-square-text', path: '/teacher-dashboard/comment-docs' },
     ];
 
     const additionalNavItems = [
-        { name: 'Calendar', section: 'calendar', icon: 'bi bi-calendar3' },
-        { name: 'Schedule', section: 'schedule', icon: 'bi bi-clock' },
+        { name: 'Calendar', section: 'calendar', icon: 'bi bi-calendar3', path: '/teacher-dashboard/calendar' },
+        { name: 'Schedule', section: 'schedule', icon: 'bi bi-clock', path: '/teacher-dashboard/schedule' },
     ];
 
     return (
@@ -43,7 +42,7 @@ const TeacherNavbar = ({ activeSection, setActiveSection }) => {
                     <li key={item.section} className="nav-item">
                         <button
                             className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
-                            onClick={() => handleSectionChange(item.section)}
+                            onClick={() => handleSectionChange(item.section, item.path)}
                         >
                             <i className={item.icon}></i>
                             <span>{item.name}</span>
@@ -62,7 +61,7 @@ const TeacherNavbar = ({ activeSection, setActiveSection }) => {
                                 <li key={item.section}>
                                     <button
                                         className={`dropdown-item ${activeSection === item.section ? 'active' : ''}`}
-                                        onClick={() => handleSectionChange(item.section)}
+                                        onClick={() => handleSectionChange(item.section, item.path)}
                                     >
                                         <i className={item.icon}></i>
                                         <span>{item.name}</span>
@@ -78,7 +77,7 @@ const TeacherNavbar = ({ activeSection, setActiveSection }) => {
                     <li key={item.section} className="nav-item">
                         <button
                             className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
-                            onClick={() => handleSectionChange(item.section)}
+                            onClick={() => handleSectionChange(item.section, item.path)}
                         >
                             <i className={item.icon}></i>
                             <span>{item.name}</span>

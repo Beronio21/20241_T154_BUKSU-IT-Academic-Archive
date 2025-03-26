@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Modal from 'react-bootstrap/Modal';
+import TeacherNavbar from "../../Navbar/Teacher-Navbar/TeacherNavbar"; // Import the TeacherNavbar
 
 const departments = [
     'Computer Science',
@@ -167,8 +168,9 @@ const TeacherProfile = () => {
     };
 
     return (
-        <div className="container-fluid py-2 px-4" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
-            <div className="row mb-2"style={{ marginTop: '90px' }}>
+        <div className="container-fluid" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
+            <TeacherNavbar /> {/* Add the TeacherNavbar here */}
+            <div className="row mb-2" style={{ marginTop: '90px' }}>
                 <div className="col-12">
                     <div className={`alert ${serverStatus === 'connected' ? 'alert-success' : 'alert-warning'} 
                         d-flex align-items-center justify-content-between shadow-sm rounded-4 mb-0`}>
