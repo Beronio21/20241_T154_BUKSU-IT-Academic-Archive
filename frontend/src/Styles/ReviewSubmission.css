@@ -1,216 +1,282 @@
 .review-submission-container {
-    padding: 30px;
-    background: #f8f9fa;
-    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 60px);
+    max-width: 1800px;
+    margin: 0 auto;
 }
 
 .review-header {
-    margin-bottom: 30px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
 }
 
 .review-header h2 {
     color: #2c3e50;
+    font-size: 1.8rem;
     font-weight: 600;
     margin: 0;
-    font-size: 1.8rem;
 }
 
-.submissions-table {
+.submissions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 1400px) {
+    .submissions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .submissions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.submission-card {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.submissions-table th {
+.submission-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.submission-header {
+    padding: 1.25rem;
     background: #f8f9fa;
-    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.submission-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #2c3e50;
-    border-bottom: 2px solid #e9ecef;
+    line-height: 1.4;
+    flex: 1;
 }
 
-.submissions-table td {
-    padding: 15px;
-    vertical-align: middle;
-    border-bottom: 1px solid #e9ecef;
-}
-
-/* Status badges with improved design */
 .status-badge {
-    padding: 6px 12px;
+    padding: 0.35rem 0.75rem;
     border-radius: 20px;
-    font-weight: 500;
     font-size: 0.85rem;
-    display: inline-block;
-}
-
-.status-pending {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-}
-
-.status-approved {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.status-rejected {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.status-revision {
-    background-color: #cce5ff;
-    color: #004085;
-    border: 1px solid #b8daff;
-}
-
-/* Improved buttons */
-.btn-view, .btn-feedback {
-    padding: 8px 16px;
-    border-radius: 6px;
     font-weight: 500;
-    transition: all 0.3s ease;
-    margin: 0 5px;
+    color: white;
+    white-space: nowrap;
+}
+
+.submission-content {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-group label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.info-group p {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.submission-actions {
+    padding: 1.25rem;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-view,
+.btn-feedback {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
 .btn-view {
-    background-color: #4CAF50;
+    background-color: #2196F3;
     color: white;
-    border: none;
+    text-decoration: none;
 }
 
 .btn-view:hover {
-    background-color: #45a049;
-    transform: translateY(-1px);
+    background-color: #1976D2;
+    text-decoration: none;
+    color: white;
 }
 
 .btn-feedback {
-    background-color: #2196F3;
+    background-color: #4CAF50;
     color: white;
-    border: none;
 }
 
 .btn-feedback:hover {
-    background-color: #1976D2;
-    transform: translateY(-1px);
+    background-color: #388E3C;
 }
 
-/* Modal improvements */
-.modal-content {
-    border-radius: 12px;
-    border: none;
-}
-
-.modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    padding: 20px;
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.feedback-form textarea {
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    padding: 12px;
-    min-height: 120px;
-    margin-bottom: 15px;
-}
-
-.feedback-form select {
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 15px;
-}
-
-/* Empty state styling */
-.no-submissions {
-    text-align: center;
-    padding: 40px;
-    color: #6c757d;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    margin-top: 20px;
-}
-
-.review-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+.loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    min-height: 200px;
 }
 
-.submission-details {
-    margin: 20px 0;
-    padding: 15px;
+.error-message {
+    text-align: center;
+    color: #dc3545;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.no-submissions {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    color: #6c757d;
+}
+
+.no-submissions i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.no-submissions p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Modal Styles */
+.feedback-modal .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.feedback-modal .modal-header {
     background: #f8f9fa;
-    border-radius: 4px;
+    border-bottom: 1px solid #eee;
+    padding: 1.25rem;
 }
 
-.document-preview {
-    margin: 15px 0;
+.feedback-modal .modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
 }
 
-.btn-download {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #4caf50;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
+.feedback-modal .modal-body {
+    padding: 1.5rem;
 }
 
-.button-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
+.feedback-form .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.feedback-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.feedback-form textarea,
+.feedback-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.feedback-form textarea:focus,
+.feedback-form select:focus {
+    border-color: #2196F3;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.25);
+}
+
+.modal-footer {
+    padding: 1.25rem;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
 }
 
 .btn-submit,
 .btn-cancel {
-    padding: 8px 16px;
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
     cursor: pointer;
-    flex: 1;
+    transition: all 0.2s ease;
 }
 
 .btn-submit {
-    background-color: #4caf50;
+    background-color: #2196F3;
     color: white;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background-color: #1976D2;
+}
+
+.btn-submit:disabled {
+    background-color: #90CAF9;
+    cursor: not-allowed;
 }
 
 .btn-cancel {
-    background-color: #f44336;
-    color: white;
+    background-color: #e9ecef;
+    color: #495057;
+    margin-left: 0.75rem;
 }
 
-.loading,
-.error {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-}
-
-.error {
-    color: #f44336;
+.btn-cancel:hover {
+    background-color: #dee2e6;
 } 

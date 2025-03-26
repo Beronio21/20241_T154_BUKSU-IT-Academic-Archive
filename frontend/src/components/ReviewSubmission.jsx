@@ -41,6 +41,7 @@ const ReviewSubmission = () => {
             }
         } catch (error) {
             console.error('Error fetching submissions:', error);
+            setError('Failed to fetch submissions');
         } finally {
             setLoading(false);
         }
@@ -88,6 +89,16 @@ const ReviewSubmission = () => {
         }
     };
 
+    const getStatusColor = (status) => {
+        const colors = {
+            pending: '#ff9800',
+            approved: '#4caf50',
+            rejected: '#f44336',
+            revision: '#2196f3'
+        };
+        return colors[status.toLowerCase()] || '#757575';
+    };
+
     return (
         <div className="review-submission-container">
             <header className="review-header">
@@ -95,78 +106,95 @@ const ReviewSubmission = () => {
             </header>
 
             {loading ? (
-                <p>Loading submissions...</p>
+                <div className="loading-container">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            ) : error ? (
+                <div className="error-message">
+                    {error}
+                </div>
             ) : (
-                <section className="submissions-section">
-                    <table className="submissions-table">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Members</th>
-                                <th>Student Email</th>
-                                <th>Submission Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {submissions.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" style={{textAlign: 'center'}}>
-                                        No submissions to review
-                                    </td>
-                                </tr>
-                            ) : (
-                                submissions.map((submission) => (
-                                    <tr key={submission._id}>
-                                        <td>{submission.title}</td>
-                                        <td>{submission.members.join(', ')}</td>
-                                        <td>{submission.email || 'N/A'}</td>
-                                        <td>{new Date(submission.createdAt).toLocaleDateString()}</td>
-                                        <td>
-                                            <span className={`status-${submission.status.toLowerCase()}`}>
-                                                {submission.status}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className="d-flex align-items-center">
-                                                <a 
-                                                    href={submission.docsLink}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="btn btn-primary btn-md me-2"
-                                                >
-                                                    View
-                                                </a>
-                                                <button 
-                                                    className="btn btn-secondary btn-md"
-                                                    onClick={() => handleAddFeedback(submission)}
-                                                >
-                                                    Add Feedback
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                <div className="submissions-grid">
+                    {submissions.length === 0 ? (
+                        <div className="no-submissions">
+                            <i className="bi bi-inbox text-muted"></i>
+                            <p>No submissions to review</p>
+                        </div>
+                    ) : (
+                        submissions.map((submission) => (
+                            <div key={submission._id} className="submission-card">
+                                <div className="submission-header">
+                                    <h3>{submission.title}</h3>
+                                    <span 
+                                        className="status-badge"
+                                        style={{ backgroundColor: getStatusColor(submission.status) }}
+                                    >
+                                        {submission.status}
+                                    </span>
+                                </div>
+                                <div className="submission-content">
+                                    <div className="info-group">
+                                        <label>Members:</label>
+                                        <p>{submission.members.join(', ')}</p>
+                                    </div>
+                                    <div className="info-group">
+                                        <label>Student Email:</label>
+                                        <p>{submission.email || 'N/A'}</p>
+                                    </div>
+                                    <div className="info-group">
+                                        <label>Submitted:</label>
+                                        <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                <div className="submission-actions">
+                                    <a 
+                                        href={submission.docsLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-view"
+                                    >
+                                        <i className="bi bi-eye-fill me-2"></i>
+                                        View Document
+                                    </a>
+                                    <button 
+                                        className="btn-feedback"
+                                        onClick={() => handleAddFeedback(submission)}
+                                    >
+                                        <i className="bi bi-chat-left-text-fill me-2"></i>
+                                        Add Feedback
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
 
-                    <Modal show={showModal} onHide={() => setShowModal(false)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Submit Feedback</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
+            <Modal show={showModal} onHide={() => setShowModal(false)} className="feedback-modal">
+                <Modal.Header closeButton>
+                    <Modal.Title>Submit Feedback</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="feedback-form">
+                        <div className="form-group">
+                            <label>Your Feedback</label>
                             <textarea
                                 value={feedbackForm.comment}
                                 onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
                                 placeholder="Enter your feedback..."
                                 rows="4"
+                                className="form-control"
                                 required
                             />
+                        </div>
+                        <div className="form-group">
+                            <label>Status</label>
                             <select
                                 value={feedbackForm.status}
                                 onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
+                                className="form-control"
                                 required
                             >
                                 <option value="pending">Pending</option>
@@ -174,18 +202,25 @@ const ReviewSubmission = () => {
                                 <option value="rejected">Reject</option>
                                 <option value="revision">Needs Revision</option>
                             </select>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <button onClick={handleSubmitFeedback} className="btn-submit" disabled={!feedbackForm.comment.trim()}>
-                                Submit Feedback
-                            </button>
-                            <button onClick={() => setShowModal(false)} className="btn-cancel">
-                                Cancel
-                            </button>
-                        </Modal.Footer>
-                    </Modal>
-                </section>
-            )}
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button 
+                        onClick={handleSubmitFeedback} 
+                        className="btn-submit" 
+                        disabled={!feedbackForm.comment.trim()}
+                    >
+                        Submit Feedback
+                    </button>
+                    <button 
+                        onClick={() => setShowModal(false)} 
+                        className="btn-cancel"
+                    >
+                        Cancel
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
