@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Modal from 'react-bootstrap/Modal';
+import TeacherNavbar from "../../Navbar/Teacher-Navbar/TeacherNavbar"; // Import the TeacherNavbar
 
 const departments = [
     'Computer Science',
@@ -140,7 +141,6 @@ const TeacherProfile = () => {
                     birthday: formData.birthday,
                     gender: formData.gender,
                     department: formData.department,
-                    subject: formData.subject,
                     facebook: formData.facebook,
                     ...(formData.password && { password: formData.password })
                 })
@@ -168,8 +168,9 @@ const TeacherProfile = () => {
     };
 
     return (
-        <div className="container-fluid py-2 px-4" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
-            <div className="row mb-2 p-4">
+        <div className="container-fluid" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
+            <TeacherNavbar /> {/* Add the TeacherNavbar here */}
+            <div className="row mb-2" style={{ marginTop: '90px' }}>
                 <div className="col-12">
                     <div className={`alert ${serverStatus === 'connected' ? 'alert-success' : 'alert-warning'} 
                         d-flex align-items-center justify-content-between shadow-sm rounded-4 mb-0`}>
@@ -207,7 +208,7 @@ const TeacherProfile = () => {
             ) : (
                 <div className="row g-2" style={{ height: 'calc(100% - 60px)', overflowY: 'auto' }}>
                     <div className="col-lg-4">
-                        <div className="container-fluid border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
                             <div className="card-body p-0">
                                 <div className="bg-primary bg-gradient p-3 text-white text-center">
                                     <div className="position-relative d-inline-block mb-2">
@@ -244,7 +245,7 @@ const TeacherProfile = () => {
                             </div>
                         </div>
 
-                        <div className="container-fluid border-0 shadow-sm rounded-4 mt-2">
+                        <div className="card border-0 shadow-sm rounded-4 mt-2">
                             <div className="card-body p-3">
                                 <h5 className="card-title d-flex align-items-center mb-2">
                                     <i className="bi bi-person-lines-fill me-2 text-primary"></i>
@@ -324,7 +325,7 @@ const TeacherProfile = () => {
                     </div>
 
                     <div className="col-lg-8">
-                        <div className="container-fluid border-0 shadow-sm rounded-4 mb-4">
+                        <div className="card border-0 shadow-sm rounded-4 mb-4">
                             <div className="card-body p-4">
                                 <h5 className="card-title d-flex align-items-center mb-3">
                                     <i className="bi bi-mortarboard-fill me-2 text-primary"></i>
@@ -374,7 +375,7 @@ const TeacherProfile = () => {
                             </div>
                         </div>
 
-                        <div className="container-fluid border-0 shadow-sm rounded-4 mb-4">
+                        <div className="card border-0 shadow-sm rounded-4 mb-4">
                             <div className="card-body p-4">
                                 <h5 className="card-title d-flex align-items-center mb-3">
                                     <i className="bi bi-person-fill me-2 text-primary"></i>

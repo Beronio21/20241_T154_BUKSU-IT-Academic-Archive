@@ -5,18 +5,27 @@ import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 
 // Auth Components
-import GoogleLogin from './Auth/Login';
-import StudentRegister from './Auth/StudentRegister';
-import TeacherRegister from './Auth/TeacherRegister';
-import AdminRegister from './Auth/AdminRegister';
+import GoogleLogin from './Auth/Login/Login';
+import StudentRegister from './Auth/Student-Register/StudentRegister';
+import TeacherRegister from './Auth/Teacher-Register/TeacherRegister';
+import AdminRegister from './Auth/Admin-Register/AdminRegister';
 
 // Dashboard Components
 import StudentDashboard from './pages/Student-Dashboard/StudentDashboard';
 import TeacherDashboard from './pages/Teacher-Dashboard/TeacherDashboard';
+<<<<<<< HEAD
 import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
+=======
+import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard'; 
+
+// Profile Component
+import StudentProfile from './Profile/Student-Profile/StudentProfile';
+>>>>>>> 0bd4427c7055338431092cdd4fd9689cfd1a57a9
 
 // Other Components
 import NotFound from './NotFound';
+import SubmitThesis from './components/SubmitThesis';
+import ViewSubmittedThesis from './components/ViewSubmittedThesis';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -86,6 +95,39 @@ function App() {
                 <ProtectedRoute 
                   element={<AdminDashboard />} 
                   allowedRole="admin"
+                />
+              } 
+            />
+
+            {/* Student Profile Route */}
+            <Route 
+              path="/student-profile" 
+              element={
+                <ProtectedRoute 
+                  element={<StudentProfile />} 
+                  allowedRole="student"
+                />
+              } 
+            />
+
+            {/* Submit Thesis Route */}
+            <Route 
+              path="/submit-thesis" 
+              element={
+                <ProtectedRoute 
+                  element={<SubmitThesis />} 
+                  allowedRole="student"
+                />
+              } 
+            />
+
+            {/* View Submitted Thesis Route */}
+            <Route 
+              path="/view-thesis" 
+              element={
+                <ProtectedRoute 
+                  element={<ViewSubmittedThesis />} 
+                  allowedRole="student"
                 />
               } 
             />

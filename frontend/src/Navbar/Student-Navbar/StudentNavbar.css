@@ -1,0 +1,59 @@
+/* StudentNavbar.css */
+
+.student-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.sidebar-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.nav-item {
+    margin-bottom: 10px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.nav-link i {
+    font-size: 18px;
+}
+
+.nav-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.nav-link.active {
+    background-color: #0056b3;
+    color: white;
+    font-weight: bold;
+}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .search-input {
     width: 100%; /* Full width */
     max-width: 600px; /* Set a maximum width */
@@ -52,3 +53,120 @@
 .alert {
     margin-top: 20px; /* Space above alerts */
 }
+=======
+/* General Layout */
+.dashboard-container {
+    display: flex;
+    background: #f9fafb;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Titles */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 16px;
+}
+
+/* Search & Filters */
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.filter-dropdown {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+}
+
+.reset-btn {
+    padding: 8px 14px;
+    border-radius: 5px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.reset-btn:hover {
+    background-color: #c82333;
+}
+
+/* Modern Table */
+.project-list {
+    background: white;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.project-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f7f7f7;
+    font-weight: 600;
+}
+
+tr:hover {
+    background: #f9f9f9;
+}
+
+.view-btn {
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.view-btn:hover {
+    background: #0056b3;
+}
+
+/* No Projects Message */
+.no-projects {
+    text-align: center;
+    padding: 10px;
+    color: #777;
+}
+>>>>>>> 0bd4427c7055338431092cdd4fd9689cfd1a57a9

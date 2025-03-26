@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Modal from 'react-bootstrap/Modal';
-import AdminNavbar from '../Navbar/AdminNavbar';
-import AdminTopbar from '../Topbar/AdminTopbar';
+import StudentNavbar from '../../Navbar/Student-Navbar/StudentNavbar';
 
-const AdminProfile = () => {
+const StudentProfile = () => {
+    // Initialize all form fields with empty strings
     const initialFormState = {
         name: '',
         email: '',
-        admin_id: '',
+        student_id: '',
         contact_number: '',
         location: '',
-        birthday: '',       
+        birthday: '',
         gender: '',
+        course: '',
+        year: '',
         password: '',
         confirm_password: '',
         image: '',
-        role: 'admin',
+        role: '',
         isProfileComplete: false,
+        thesis_status: '',
     };
 
     const [formData, setFormData] = useState(initialFormState);
@@ -26,6 +29,7 @@ const AdminProfile = () => {
     const [serverStatus, setServerStatus] = useState('checking');
     const [isEditing, setIsEditing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [activeSection, setActiveSection] = useState("profile"); // Track active section
 
     const checkServerConnection = async () => {
         try {
@@ -49,8 +53,9 @@ const AdminProfile = () => {
         }
     };
 
-    const fetchAdminProfile = async () => {
+    const fetchUserProfile = async () => {
         try {
+            // Check server connection first
             const isServerConnected = await checkServerConnection();
             if (!isServerConnected) return;
 
@@ -74,15 +79,18 @@ const AdminProfile = () => {
 
             const data = await response.json();
             
+            // Ensure all fields have at least empty string values
             const formattedData = {
-                ...initialFormState,
-                ...data.data,
-                admin_id: data.data.admin_id,
+                ...initialFormState, // Start with initial empty values
+                ...data.data, // Override with actual data
+                // Format date if it exists
                 birthday: data.data.birthday 
                     ? new Date(data.data.birthday).toISOString().split('T')[0] 
                     : '',
+                // Ensure password fields are empty when loading profile
                 password: '',
-                confirm_password: ''
+                confirm_password: '',
+                thesis_status: data.data.thesis_status || '',
             };
 
             setFormData(formattedData);
@@ -96,9 +104,10 @@ const AdminProfile = () => {
     };
 
     useEffect(() => {
-        fetchAdminProfile();
+        fetchUserProfile();
         
-        const intervalId = setInterval(checkServerConnection, 30000);
+        // Set up periodic server checks
+        const intervalId = setInterval(checkServerConnection, 30000); // Check every 30 seconds
         
         return () => clearInterval(intervalId);
     }, []);
@@ -107,7 +116,7 @@ const AdminProfile = () => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value || ''
+            [name]: value || '' // Ensure value is never undefined
         }));
     };
 
@@ -126,11 +135,13 @@ const AdminProfile = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    admin_id: formData.admin_id,
+                    student_id: formData.student_id,
                     contact_number: formData.contact_number,
                     location: formData.location,
                     birthday: formData.birthday,
                     gender: formData.gender,
+                    course: formData.course,
+                    year: formData.year,
                     ...(formData.password && { password: formData.password })
                 })
             });
@@ -158,11 +169,11 @@ const AdminProfile = () => {
 
     return (
         <div className="d-flex">
-            <AdminNavbar activeSection="profile" handleSectionChange={() => {}} />
+            <StudentNavbar activeSection={activeSection} handleSectionChange={setActiveSection} />
             <div className="flex-grow-1">
-                <AdminTopbar userInfo={formData} />
                 <div className="container-fluid py-2 px-4" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
-                    <div className="row mb-2 p-4">
+                    {/* Top Status Bar */}
+                    <div className="row mb-2" style={{ marginTop: '140px' }}>
                         <div className="col-12">
                             <div className={`alert ${serverStatus === 'connected' ? 'alert-success' : 'alert-warning'} 
                                 d-flex align-items-center justify-content-between shadow-sm rounded-4 mb-0`}>
@@ -191,7 +202,7 @@ const AdminProfile = () => {
                             <div className="d-flex align-items-center">
                                 <i className="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
                                 <div className="flex-grow-1">{error}</div>
-                                <button className="btn btn-danger ms-3" onClick={fetchAdminProfile}>
+                                <button className="btn btn-danger ms-3" onClick={fetchUserProfile}>
                                     <i className="bi bi-arrow-clockwise me-2"></i>
                                     Retry
                                 </button>
@@ -199,8 +210,10 @@ const AdminProfile = () => {
                         </div>
                     ) : (
                         <div className="row g-2" style={{ height: 'calc(100% - 60px)', overflowY: 'auto' }}>
+                            {/* Left Column - Profile Info */}
                             <div className="col-lg-4">
-                                <div className="container-fluid border-0 shadow-sm rounded-4 overflow-hidden">
+                                {/* Profile Card */}
+                                <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
                                     <div className="card-body p-0">
                                         <div className="bg-primary bg-gradient p-3 text-white text-center">
                                             <div className="position-relative d-inline-block mb-2">
@@ -217,8 +230,8 @@ const AdminProfile = () => {
                                             </div>
                                             <h5 className="mb-1">{formData.name}</h5>
                                             <p className="mb-1 opacity-75">
-                                                <i className="bi bi-person-workspace me-1"></i>
-                                                {formData.role || 'Admin'}
+                                                <i className="bi bi-mortarboard-fill me-1"></i>
+                                                {formData.role || 'Student'}
                                             </p>
                                         </div>
                                         <div className="p-3">
@@ -237,7 +250,8 @@ const AdminProfile = () => {
                                     </div>
                                 </div>
 
-                                <div className="container-fluid border-0 shadow-sm rounded-4 mt-2">
+                                {/* Contact Information */}
+                                <div className="card border-0 shadow-sm rounded-4 mt-2">
                                     <div className="card-body p-3">
                                         <h5 className="card-title d-flex align-items-center mb-2">
                                             <i className="bi bi-person-lines-fill me-2 text-primary"></i>
@@ -266,17 +280,65 @@ const AdminProfile = () => {
                                                     </div>
                                                 </div>
                                             </div>
+                                            {/* Social Media Links */}
+                                            <div className="d-flex align-items-center">
+                                                <div className="rounded-4 bg-primary bg-opacity-10 p-2">
+                                                    <i className="bi bi-facebook text-primary fs-5"></i>
+                                                </div>
+                                                <div className="ms-2 flex-grow-1">
+                                                    <small className="text-muted text-uppercase">Facebook</small>
+                                                    <div className="fw-medium">
+                                                        {formData.facebook ? (
+                                                            <a 
+                                                                href={formData.facebook.startsWith('http') ? formData.facebook : `https://${formData.facebook}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="d-inline-flex align-items-center text-decoration-none px-3 py-2 rounded-pill"
+                                                                style={{
+                                                                    backgroundColor: 'rgba(24, 119, 242, 0.1)',
+                                                                    color: '#1877F2',
+                                                                    transition: 'all 0.3s ease',
+                                                                    maxWidth: '250px',
+                                                                    border: '1px solid rgba(24, 119, 242, 0.2)'
+                                                                }}
+                                                                onMouseOver={(e) => {
+                                                                    e.currentTarget.style.backgroundColor = 'rgba(24, 119, 242, 0.15)';
+                                                                    e.currentTarget.style.transform = 'translateY(-1px)';
+                                                                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 119, 242, 0.2)';
+                                                                }}
+                                                                onMouseOut={(e) => {
+                                                                    e.currentTarget.style.backgroundColor = 'rgba(24, 119, 242, 0.1)';
+                                                                    e.currentTarget.style.transform = 'none';
+                                                                    e.currentTarget.style.boxShadow = 'none';
+                                                                }}
+                                                            >
+                                                                <span className="text-truncate" style={{ maxWidth: '180px' }}>
+                                                                    {formData.facebook.replace(/^https?:\/\/(www\.)?(facebook\.com\/)?/, '')}
+                                                                </span>
+                                                                <i className="bi bi-box-arrow-up-right ms-2 opacity-75"></i>
+                                                            </a>
+                                                        ) : (
+                                                            <span className="text-muted fst-italic d-flex align-items-center">
+                                                                <i className="bi bi-dash-circle me-1"></i>
+                                                                Not connected
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+                            {/* Right Column - Academic and Personal Details */}
                             <div className="col-lg-8">
-                                <div className="container-fluid border-0 shadow-sm rounded-4 mb-4">
+                                {/* Academic Information */}
+                                <div className="card border-0 shadow-sm rounded-4 mb-4">
                                     <div className="card-body p-4">
-                                        <h5 className="card-title d-flex align-items-center mb-3">
-                                            <i className="bi bi-person-badge-fill me-2 text-primary"></i>
-                                            Admin Information
+                                        <h5 className="card-title d-flex align-items-center mb-3 ">
+                                            <i className="bi bi-mortarboard-fill me-2 text-primary"></i>
+                                            Academic Information
                                         </h5>
                                         <div className="row g-3">
                                             <div className="col-md-6">
@@ -285,9 +347,35 @@ const AdminProfile = () => {
                                                         <i className="bi bi-person-badge-fill text-primary fs-5"></i>
                                                     </div>
                                                     <div className="ms-2">
-                                                        <small className="text-muted text-uppercase">Admin ID</small>
+                                                        <small className="text-muted text-uppercase">Student ID</small>
                                                         <div className="fw-medium">
-                                                            {formData.admin_id || 'Not set'}
+                                                            {formData.student_id || 'Not set'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="d-flex align-items-center">
+                                                    <div className="rounded-4 bg-primary bg-opacity-10 p-2">
+                                                        <i className="bi bi-book-fill text-primary fs-5"></i>
+                                                    </div>
+                                                    <div className="ms-2">
+                                                        <small className="text-muted text-uppercase">Course</small>
+                                                        <div className="fw-medium">
+                                                            {formData.course || 'Not set'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="d-flex align-items-center">
+                                                    <div className="rounded-4 bg-primary bg-opacity-10 p-2">
+                                                        <i className="bi bi-calendar-fill text-primary fs-5"></i>
+                                                    </div>
+                                                    <div className="ms-2">
+                                                        <small className="text-muted text-uppercase">Year</small>
+                                                        <div className="fw-medium">
+                                                            {formData.year || 'Not set'}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -309,7 +397,8 @@ const AdminProfile = () => {
                                     </div>
                                 </div>
 
-                                <div className="container-fluid border-0 shadow-sm rounded-4 mb-4">
+                                {/* Personal Details */}
+                                <div className="card border-0 shadow-sm rounded-4 mb-4">
                                     <div className="card-body p-4">
                                         <h5 className="card-title d-flex align-items-center mb-3">
                                             <i className="bi bi-person-fill me-2 text-primary"></i>
@@ -346,6 +435,20 @@ const AdminProfile = () => {
                                     </div>
                                 </div>
 
+                                {/* Thesis Status */}
+                                <div className="card border-0 shadow-sm rounded-4 mb-4">
+                                    <div className="card-body p-4">
+                                        <h5 className="card-title d-flex align-items-center mb-3 p-2">
+                                            <i className="bi bi-file-earmark-text-fill me-2 text-primary"></i>
+                                            Thesis Status
+                                        </h5>
+                                        <div className="fw-medium">
+                                            {formData.thesis_status || 'Not set'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Edit Profile Section */}
                                 <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
                                     <Modal.Header className="text-black">
                                         <Modal.Title className="w-100 text-center">Edit Profile</Modal.Title>
@@ -398,15 +501,42 @@ const AdminProfile = () => {
                                                     />
                                                 </div>
                                                 <div className="col-md-6">
-                                                    <label htmlFor="admin_id" className="form-label">Admin ID</label>
+                                                    <label htmlFor="student_id" className="form-label">Student ID</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control" 
-                                                        id="admin_id" 
-                                                        name="admin_id" 
-                                                        value={formData.admin_id} 
+                                                        id="student_id" 
+                                                        name="student_id" 
+                                                        value={formData.student_id} 
                                                         onChange={handleChange} 
                                                     />
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <label htmlFor="course" className="form-label">Course</label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="course" 
+                                                        name="course" 
+                                                        value={formData.course} 
+                                                        onChange={handleChange} 
+                                                    />
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <label htmlFor="year" className="form-label">Year</label>
+                                                    <select 
+                                                        id="year" 
+                                                        name="year" 
+                                                        className="form-select" 
+                                                        value={formData.year} 
+                                                        onChange={handleChange}
+                                                    >
+                                                        <option value="">Select Year</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col-md-6">
                                                     <label htmlFor="birthday" className="form-label">Birthday</label>
@@ -417,7 +547,7 @@ const AdminProfile = () => {
                                                         name="birthday" 
                                                         value={formData.birthday} 
                                                         onChange={handleChange} 
-                                                        max={`${new Date().getFullYear()}-12-31`}
+                                                        max={`${new Date().getFullYear()}-12-31`} // Ensure year is 4 digits
                                                     />
                                                 </div>
                                                 <div className="col-md-6">
@@ -434,6 +564,18 @@ const AdminProfile = () => {
                                                         <option value="female">Female</option>
                                                         <option value="other">Other</option>
                                                     </select>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <label htmlFor="facebook" className="form-label">Facebook</label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="facebook" 
+                                                        name="facebook" 
+                                                        value={formData.facebook} 
+                                                        onChange={handleChange} 
+                                                        placeholder="Facebook Profile URL"
+                                                    />
                                                 </div>
                                                 <div className="col-12 d-flex gap-2 justify-content-end">
                                                     <button type="submit" className="btn btn-primary px-4" onClick={handleSubmit}>
@@ -452,6 +594,15 @@ const AdminProfile = () => {
                                         </form>
                                     </Modal.Body>
                                 </Modal>
+                                {/* Add a button to navigate to the Submit Thesis page */}
+                                <div className="mt-4">
+                                    <button 
+                                        className="btn btn-primary"
+                                        onClick={() => setActiveSection('submit-thesis')}
+                                    >
+                                        Go to Submit Thesis
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -461,4 +612,4 @@ const AdminProfile = () => {
     );
 };
 
-export default AdminProfile;
+export default StudentProfile;
