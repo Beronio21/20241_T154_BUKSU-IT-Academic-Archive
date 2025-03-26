@@ -24,6 +24,8 @@ const StudentDashboard = () => {
   const [filterDate, setFilterDate] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [feedbackForm, setFeedbackForm] = useState({ comment: "", status: "pending" });
+  const [selectedThesis, setSelectedThesis] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -118,6 +120,12 @@ const StudentDashboard = () => {
     }
   };
 
+  // Add this function before renderContent
+  const handleViewDetails = (thesis) => {
+    setSelectedThesis(thesis);
+    setShowDetailsModal(true);
+  };
+
   // Render content based on active section
   const renderContent = () => {
     switch (activeSection) {
@@ -170,8 +178,12 @@ const StudentDashboard = () => {
                     <div key={submission._id} className="submission-card">
                       <div className="submission-header">
                         <h3>{submission.title}</h3>
-                        
-
+                        <span 
+                          className="status-badge"
+                          style={{ backgroundColor: getStatusColor(submission.status) }}
+                        >
+                          {submission.status}
+                        </span>
                       </div>
                       <div className="submission-content">
                         <div className="info-group">
@@ -248,6 +260,112 @@ const StudentDashboard = () => {
                   className="btn-cancel"
                 >
                   Cancel
+                </button>
+              </Modal.Footer>
+            </Modal>
+
+            <Modal 
+              show={showDetailsModal} 
+              onHide={() => setShowDetailsModal(false)} 
+              size="lg"
+              className="thesis-details-modal"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Thesis Details</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {selectedThesis && (
+                  <div className="thesis-details">
+                    <div className="detail-section">
+                      <h4>Title</h4>
+                      <p>{selectedThesis.title}</p>
+                    </div>
+                    <div className="detail-section">
+                      <h4>Status</h4>
+                      <span 
+                        className="status-badge"
+                        style={{ backgroundColor: getStatusColor(selectedThesis.status) }}
+                      >
+                        {selectedThesis.status}
+                      </span>
+                    </div>
+                    <div className="detail-section">
+                      <h4>Abstract</h4>
+                      <p className="abstract-text">{selectedThesis.abstract}</p>
+                    </div>
+                    <div className="detail-section">
+                      <h4>Keywords</h4>
+                      <div className="keywords-list">
+                        {selectedThesis.keywords.map((keyword, index) => (
+                          <span key={index} className="keyword-tag">{keyword}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="detail-section">
+                      <h4>Members</h4>
+                      <ul className="members-list">
+                        {selectedThesis.members.map((member, index) => (
+                          <li key={index}>{member}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="detail-section">
+                      <h4>Submission Information</h4>
+                      <div className="info-grid">
+                        <div className="info-item">
+                          <label>Student Email:</label>
+                          <p>{selectedThesis.email}</p>
+                        </div>
+                        <div className="info-item">
+                          <label>Submitted Date:</label>
+                          <p>{new Date(selectedThesis.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="info-item">
+                          <label>Document Link:</label>
+                          <a 
+                            href={selectedThesis.docsLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="doc-link"
+                          >
+                            View Document
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    {selectedThesis.feedback && selectedThesis.feedback.length > 0 && (
+                      <div className="detail-section">
+                        <h4>Feedback History</h4>
+                        <div className="feedback-list">
+                          {selectedThesis.feedback.map((feedback, index) => (
+                            <div key={index} className="feedback-item">
+                              <div className="feedback-header">
+                                <span className="feedback-status" style={{ backgroundColor: getStatusColor(feedback.status) }}>
+                                  {feedback.status}
+                                </span>
+                                <span className="feedback-date">
+                                  {new Date(feedback.dateSubmitted).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <p className="feedback-comment">{feedback.comment}</p>
+                              <div className="feedback-meta">
+                                <span>By: {feedback.teacherName}</span>
+                                <span>{feedback.teacherEmail}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </Modal.Body>
+              <Modal.Footer>
+                <button 
+                  onClick={() => setShowDetailsModal(false)} 
+                  className="btn-cancel"
+                >
+                  Close
                 </button>
               </Modal.Footer>
             </Modal>
