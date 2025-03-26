@@ -80,25 +80,70 @@ const SubmitThesis = () => {
             return;
         }
 
-        openPicker({
-            clientId: "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com",
-            developerKey: "AIzaSyBefZhoxSibx9ORWrmhrH3I8L_Cz1OB33E",
-            viewId: "DOCS",
-            showUploadView: true,
-            showUploadFolders: true,
-            supportDrives: true,
-            multiselect: false,
-            token: googleDriveToken,
-            callbackFunction: (data) => {
-                if (data.action === 'picked') {
-                    const docUrl = data.docs[0].url;
-                    setFormData(prev => ({
-                        ...prev,
-                        docsLink: docUrl
-                    }));
+        // Function to find or create the folder
+        const getOrCreateFolder = async () => {
+            const query = `name='Submit Capstone Research Paper' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+            const response = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}`, {
+                headers: {
+                    'Authorization': `Bearer ${googleDriveToken}`
                 }
-            },
-        });
+            });
+            const data = await response.json();
+
+            if (data.files && data.files.length > 0) {
+                return data.files[0].id; // Return existing folder ID
+            } else {
+                const folderMetadata = {
+                    name: 'Submit Capstone Research Paper',
+                    mimeType: 'application/vnd.google-apps.folder'
+                };
+                const createResponse = await fetch('https://www.googleapis.com/drive/v3/files', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${googleDriveToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(folderMetadata)
+                });
+                const folder = await createResponse.json();
+                return folder.id; // Return new folder ID
+            }
+        };
+
+        // Open the picker and upload the document to the folder
+        const openPickerAndUpload = async (folderId) => {
+            openPicker({
+                clientId: "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com",
+                developerKey: "AIzaSyBefZhoxSibx9ORWrmhrH3I8L_Cz1OB33E",
+                viewId: "DOCS",
+                showUploadView: true,
+                showUploadFolders: true,
+                supportDrives: true,
+                multiselect: false,
+                token: googleDriveToken,
+                callbackFunction: async (data) => {
+                    if (data.action === 'picked') {
+                        const docId = data.docs[0].id;
+                        // Move the document to the specified folder
+                        const updateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${docId}?addParents=${folderId}&removeParents=root`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `Bearer ${googleDriveToken}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        const updatedDoc = await updateResponse.json();
+                        setFormData(prev => ({
+                            ...prev,
+                            docsLink: `https://drive.google.com/file/d/${updatedDoc.id}/view`
+                        }));
+                    }
+                }
+            });
+        };
+
+        // Get or create the folder and then open the picker
+        getOrCreateFolder().then(openPickerAndUpload);
     };
 
     const handleFileChange = (e) => {
