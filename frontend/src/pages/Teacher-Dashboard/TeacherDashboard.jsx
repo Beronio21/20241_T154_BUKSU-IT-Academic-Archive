@@ -13,6 +13,7 @@ import TeacherNotification from '../../components/TeacherNotification';
 import TeacherNavbar from '../../Navbar/Teacher-Navbar/TeacherNavbar';
 import TeacherTopbar from '../../Topbar/Teacher-Topbar/TeacherTopbar';
 import { Modal } from 'react-bootstrap';
+import axios from 'axios';
 
 const TeacherDashboard = () => {
 
@@ -30,6 +31,11 @@ const TeacherDashboard = () => {
     const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDate, setFilterDate] = useState('');
+    const [titleSearch, setTitleSearch] = useState('');
+    const [dateSearch, setDateSearch] = useState('');
+    const [categorySearch, setCategorySearch] = useState('');
+    
+    const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
 
     useEffect(() => {
         const storedUserInfo = localStorage.getItem('user-info');
@@ -58,13 +64,8 @@ const TeacherDashboard = () => {
 
     const fetchSubmissions = async () => {
         try {
-            const response = await fetch(
-                `http://localhost:8080/api/thesis/submissions/adviser?email=${encodeURIComponent(userInfo.email)}`
-            );
-            const data = await response.json();
-            if (data.status === 'success') {
-                setSubmissions(data.data);
-            }
+            const response = await axios.get(`http://localhost:8080/api/thesis/submissions/adviser?email=${userInfo.email}`);
+            setSubmissions(response.data.data);
         } catch (error) {
             console.error('Error fetching submissions:', error);
         } finally {
@@ -112,9 +113,11 @@ const TeacherDashboard = () => {
     };
 
     const filteredSubmissions = submissions.filter(submission => {
-        const matchesTitle = submission.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesDate = filterDate ? new Date(submission.createdAt).toLocaleDateString() === new Date(filterDate).toLocaleDateString() : true;
-        return matchesTitle && matchesDate;
+        const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
+        const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
+        const matchesCategory = categorySearch ? submission.category === categorySearch : true;
+
+        return matchesTitle && matchesDate && matchesCategory;
     });
 
     const renderContent = () => {
@@ -147,16 +150,26 @@ const TeacherDashboard = () => {
                                 <input
                                     type="text"
                                     placeholder="Search by title..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    value={titleSearch}
+                                    onChange={(e) => setTitleSearch(e.target.value)}
                                     className="form-control search-input"
                                 />
                                 <input
                                     type="date"
-                                    value={filterDate}
-                                    onChange={(e) => setFilterDate(e.target.value)}
+                                    value={dateSearch}
+                                    onChange={(e) => setDateSearch(e.target.value)}
                                     className="form-control date-input"
                                 />
+                                <select
+                                    value={categorySearch}
+                                    onChange={(e) => setCategorySearch(e.target.value)}
+                                    className="form-control category-input"
+                                >
+                                    <option value="">Select a category</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
                             </div>
                         </header>
 
@@ -183,11 +196,11 @@ const TeacherDashboard = () => {
                                             <div className="submission-header">
                                                 <h3>{submission.title}</h3>
                                                 <span 
-                                        className="status-badge"
-                                        style={{ backgroundColor: getStatusColor(submission.status) }}
-                                    >
-                                        {submission.status}
-                                    </span>
+                                                    className="status-badge"
+                                                    style={{ backgroundColor: getStatusColor(submission.status) }}
+                                                >
+                                                    {submission.status}
+                                                </span>
                                             </div>
                                             <div className="submission-content">
                                                 <div className="info-group">
@@ -221,7 +234,6 @@ const TeacherDashboard = () => {
                                                     <i className="bi bi-eye-fill me-2"></i>
                                                     View Document
                                                 </a>
-                                       
                                             </div>
                                         </div>
                                     ))
