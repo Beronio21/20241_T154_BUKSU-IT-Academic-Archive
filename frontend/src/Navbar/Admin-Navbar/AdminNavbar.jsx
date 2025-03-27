@@ -1,4 +1,5 @@
 import React from 'react';
+import CapstoneManagement from '../../components/CapstoneManagement';
 
 const AdminNavbar = ({ activeSection, handleSectionChange }) => {
   // Style related functions
@@ -34,6 +35,7 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
     { name: 'Student Records', section: 'student-records' },
     { name: 'Teacher Records', section: 'teacher-records' },
     { name: 'Review Capstone', section: 'review-submissions' },
+    { name: 'Capstone Management', section: 'capstone-management' },
     { name: 'Admin Register', section: 'admin-register' },
   ];
 

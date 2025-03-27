@@ -8,6 +8,7 @@ import AdminTopbar from '../../Topbar/Admin-Topbar/AdminTopbar';
 import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import AdminRegister from '../../Auth/AdminRegister';
 import ReviewSubmission from '../../components/ReviewSubmission';
+import CapstoneManagement from '../../components/CapstoneManagement';
 
 
 const AdminDashboard = () => {
@@ -108,6 +109,8 @@ const AdminDashboard = () => {
         return <TeacherRecords />;
       case 'review-submissions':
         return <ReviewSubmission />;
+      case 'capstone-management':
+        return <CapstoneManagement />;
       case 'admin-register':
         return <AdminRegister />;
       case 'dashboard':

@@ -269,4 +269,35 @@ router.get('/student-submissions/:email', async (req, res) => {
     }
 });
 
+// Update a thesis submission
+router.put('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedData = req.body;
+
+        // Find the thesis by ID and update it
+        const thesis = await Thesis.findByIdAndUpdate(id, updatedData, { new: true });
+        
+        if (!thesis) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Thesis not found'
+            });
+        }
+
+        res.json({
+            status: 'success',
+            message: 'Thesis updated successfully',
+            data: thesis
+        });
+    } catch (error) {
+        console.error('Error updating thesis:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to update thesis',
+            error: error.message
+        });
+    }
+});
+
 module.exports = router; 
