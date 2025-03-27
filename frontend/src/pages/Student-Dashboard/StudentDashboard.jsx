@@ -402,7 +402,6 @@ const StudentDashboard = () => {
           <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
           <Route path="/submit-thesis" element={<SubmitThesis />} />
           <Route path="/docs" element={<Docs />} />
-          <Route path="/calendar" element={<Calendar />} />
           <Route path="/send-gmail" element={<SendGmail />} />
           <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
         </Routes>

@@ -300,8 +300,6 @@ const TeacherDashboard = () => {
                     <Route path="/dashboard" element={renderContent()} />
                     <Route path="/profile" element={<TeacherProfile userInfo={userInfo} />} />
                     <Route path="/submit-thesis" element={<SubmitThesis />} />
-                    <Route path="/comment-docs" element={<CommentDocs />} />
-                    <Route path="/calendar" element={<Calendar />} />
                     <Route path="/send-gmail" element={<SendGmail />} />
                     <Route path="/defenseschedule" element={<DefenseSchedule />} />
                     <Route path="/review-submissions" element={<ReviewSubmission />} />
