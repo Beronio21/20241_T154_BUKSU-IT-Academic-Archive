@@ -7,8 +7,8 @@ import StudentRecords from '../../Records/StudentRecords';
 import TeacherRecords from '../../Records/TeacherRecords';
 import AdminTopbar from '../../Topbar/Admin-Topbar/AdminTopbar';
 import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
-import ReviewSubmission from '../../components/ReviewSubmission';
-import CapstoneManagement from '../../components/CapstoneManagement';
+import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmission';
+import CapstoneManagement from '../../components/Capstone-Management/CapstoneManagement';
 
 
 

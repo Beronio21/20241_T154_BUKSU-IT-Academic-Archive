@@ -5,9 +5,7 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-
 import StudentProfile from "../../Profile/StudentProfile";
 import SubmitThesis from "../../components/SubmitThesis";
 import Docs from "../../components/Docs";
-import Calendar from "../../components/Calendar";
 import SendGmail from "../../Communication/SendGmail";
-import ScheduleTable from "../../components/ScheduleTable";
 import Topbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
 import { Button, Container, Row, Col, Table, Alert, Dropdown, Modal } from "react-bootstrap";
@@ -406,7 +404,6 @@ const StudentDashboard = () => {
           <Route path="/docs" element={<Docs />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/send-gmail" element={<SendGmail />} />
-          <Route path="/schedule" element={<ScheduleTable />} />
           <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
         </Routes>
       </div>

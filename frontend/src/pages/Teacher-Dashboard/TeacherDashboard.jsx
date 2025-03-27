@@ -3,11 +3,9 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-
 import TeacherProfile from '../../Profile/TeacherProfile';
 import SubmitThesis from '../../components/SubmitThesis';
 import CommentDocs from '../../components/CommentDocs';
-import Calendar from '../../components/Calendar';
 import SendGmail from '../../Communication/SendGmail';
-import ScheduleTable from '../../components/ScheduleTable';
 import DefenseSchedule from '../../components/DefenseSchedule';
-import ReviewSubmission from '../../components/ReviewSubmission';
+import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmission';
 import StudentList from '../../components/StudentList';
 import TeacherNotification from '../../components/TeacherNotification';
 import TeacherNavbar from '../../Navbar/Teacher-Navbar/TeacherNavbar';
@@ -132,8 +130,6 @@ const TeacherDashboard = () => {
                 return <Calendar />;
             case 'send-gmail':
                 return <SendGmail />;
-            case 'schedule':
-                return <ScheduleTable />;
             case 'defenseschedule':
                 return <DefenseSchedule />;
             case 'review-submissions':
@@ -307,7 +303,6 @@ const TeacherDashboard = () => {
                     <Route path="/comment-docs" element={<CommentDocs />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/send-gmail" element={<SendGmail />} />
-                    <Route path="/schedule" element={<ScheduleTable />} />
                     <Route path="/defenseschedule" element={<DefenseSchedule />} />
                     <Route path="/review-submissions" element={<ReviewSubmission />} />
                     <Route path="/student-list" element={<StudentList />} />

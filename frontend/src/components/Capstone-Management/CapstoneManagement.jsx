@@ -13,8 +13,8 @@ const CapstoneManagement = () => {
         docsLink: '',
         email: '',
         category: '',
-        id: null // For editing
-    });
+        id: null
+      });
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState(null);
 

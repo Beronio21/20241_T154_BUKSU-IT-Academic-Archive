@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../Styles/ReviewSubmission.css';
+import './ReviewSubmission.css';
 import { Modal } from 'react-bootstrap';
 
 const ReviewSubmission = () => {

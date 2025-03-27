@@ -1,5 +1,5 @@
 import React from 'react';
-import CapstoneManagement from '../../components/CapstoneManagement';
+import CapstoneManagement from '../../components/Capstone-Management/CapstoneManagement';
 
 const AdminNavbar = ({ activeSection, handleSectionChange }) => {
   // Style related functions
