@@ -2,19 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserManagement from '../../UserManagement/UserManagement';
-<<<<<<< HEAD
-import StudentRecords from '../../Records/StudentRecords';
-import TeacherRecords from '../../Records/TeacherRecords';
-import AdminTopbar from '../../Topbar/Admin-Topbar/AdminTopbar';
-import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
-import AdminRegister from '../../Auth/AdminRegister';
-=======
 import StudentRecords from '../../Records/Student-Records/StudentRecords';
 import TeacherRecords from '../../Records/Teacher-Records/TeacherRecords';
 import AdminTopbar from '../../Topbar/AdminTopbar/AdminTopbar';
 import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import AdminRegister from '../../Auth/Admin-Register/AdminRegister';
->>>>>>> 0bd4427c7055338431092cdd4fd9689cfd1a57a9
+
 
 
 const AdminDashboard = () => {

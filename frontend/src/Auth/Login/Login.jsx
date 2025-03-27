@@ -144,7 +144,7 @@ const GoogleLogin = () => {
 
                 {/* Right: Login Form */}
                 <div className="right-section p-4 flex-grow-1">
-                    <h4 className="text-center mb-4">Welcome Back</h4>
+                    <h4 className="text-center mb-4">Signup</h4>
                     <form onSubmit={handleSubmit}>
                         <div className="form-group mb-3">
                             <input
