@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AdminRegister from "../../Auth/Admin-Register/AdminRegister";
 import UserManagement from '../../UserManagement/UserManagement';
 import StudentRecords from '../../Records/StudentRecords';
 import TeacherRecords from '../../Records/TeacherRecords';
 import AdminTopbar from '../../Topbar/Admin-Topbar/AdminTopbar';
 import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
-import AdminRegister from '../../Auth/AdminRegister';
 import ReviewSubmission from '../../components/ReviewSubmission';
 import CapstoneManagement from '../../components/CapstoneManagement';
+
 
 
 const AdminDashboard = () => {

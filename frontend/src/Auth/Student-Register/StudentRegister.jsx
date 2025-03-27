@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import "../Styles/StudentRegister.css";
+import "./StudentRegister.css";
 
 const StudentRegister = () => {
   const [formData, setFormData] = useState({

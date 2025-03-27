@@ -5,10 +5,10 @@ import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 
 // Auth Components
-import GoogleLogin from './Auth/Login';
-import StudentRegister from './Auth/StudentRegister';
-import TeacherRegister from './Auth/TeacherRegister';
-import AdminRegister from './Auth/AdminRegister';
+import GoogleLogin from './Auth/Login-Page/Login';
+import StudentRegister from './Auth/Student-Register/StudentRegister';
+import TeacherRegister from './Auth/Teacher-Register/TeacherRegister';
+import AdminRegister from './Auth/Admin-Register/AdminRegister';
 
 // Dashboard Components
 import StudentDashboard from './pages/Student-Dashboard/StudentDashboard';

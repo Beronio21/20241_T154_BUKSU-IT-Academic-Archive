@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import "../Styles/TeacherRegister.css"; // Make sure to create a separate CSS file for teacher registration.
+import "./TeacherRegister.css"; // Make sure to create a separate CSS file for teacher registration.
 
 const TeacherRegister = () => {
   const [formData, setFormData] = useState({
