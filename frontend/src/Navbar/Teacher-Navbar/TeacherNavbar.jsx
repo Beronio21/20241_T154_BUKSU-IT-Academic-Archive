@@ -34,6 +34,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard' },
         { name: 'My Profile', section: 'profile' },
+        { name: 'Submit Capstone', section: 'submit-thesis' },
         { name: 'Review Capstone', section: 'review-submissions' }
     ];
 

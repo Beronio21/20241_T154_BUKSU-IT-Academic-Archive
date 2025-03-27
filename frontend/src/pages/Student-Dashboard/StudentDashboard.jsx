@@ -12,6 +12,7 @@ import Topbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
 import { Button, Container, Row, Col, Table, Alert, Dropdown, Modal } from "react-bootstrap";
 import "./StudentDashboard.css";
+import axios from 'axios';
 
 const StudentDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -19,7 +20,9 @@ const StudentDashboard = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [titleSearch, setTitleSearch] = useState('');
+  const [dateSearch, setDateSearch] = useState('');
+  const [categorySearch, setCategorySearch] = useState('');
   const [statusFilter, setStatusFilter] = useState("All");
   const [filterDate, setFilterDate] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -28,6 +31,8 @@ const StudentDashboard = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
 
   // Ensure user authentication
   useEffect(() => {
@@ -62,18 +67,8 @@ const StudentDashboard = () => {
         throw new Error("User  info not found");
       }
 
-      const response = await fetch(
-        `http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch submissions");
-      }
-
-      const data = await response.json();
-      if (data.status === "success") {
-        setSubmissions(data.data);
-      }
+      const response = await axios.get(`http://localhost:8080/api/thesis/student-submissions/${userInfo.email}`);
+      setSubmissions(response.data.data);
     } catch (error) {
       console.error("Error fetching submissions:", error);
       setError(error.message);
@@ -93,16 +88,14 @@ const StudentDashboard = () => {
 
   // Filter submissions based on search term and status
   const filteredSubmissions = submissions.filter((submission) => {
-    const matchesSearchTerm =
-      submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      submission.members.some((member) =>
-        member.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
+    const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
+    const matchesCategory = categorySearch ? submission.category === categorySearch : true;
 
     const matchesStatus =
       statusFilter === "All" || submission.status === statusFilter;
 
-    return matchesSearchTerm && matchesStatus;
+    return matchesTitle && matchesDate && matchesCategory && matchesStatus;
   });
 
   const getStatusColor = (status) => {
@@ -142,17 +135,27 @@ const StudentDashboard = () => {
               <div className="search-bar">
                 <input
                   type="text"
-                  placeholder="Search by title..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by title"
+                  value={titleSearch}
+                  onChange={(e) => setTitleSearch(e.target.value)}
                   className="form-control search-input"
                 />
                 <input
                   type="date"
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
+                  value={dateSearch}
+                  onChange={(e) => setDateSearch(e.target.value)}
                   className="form-control date-input"
                 />
+                <select
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                  className="form-control"
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
               </div>
             </header>
 

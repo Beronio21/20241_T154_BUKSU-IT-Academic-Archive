@@ -29,6 +29,10 @@ const thesisSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected', 'revision'],

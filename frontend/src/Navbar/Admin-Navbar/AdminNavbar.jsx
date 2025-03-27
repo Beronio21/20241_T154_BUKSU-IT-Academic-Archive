@@ -33,6 +33,7 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
     { name: 'User Management', section: 'user-management' },
     { name: 'Student Records', section: 'student-records' },
     { name: 'Teacher Records', section: 'teacher-records' },
+    { name: 'Review Capstone', section: 'review-submissions' },
     { name: 'Admin Register', section: 'admin-register' },
   ];
 

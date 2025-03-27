@@ -15,6 +15,10 @@ const ReviewSubmission = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [feedbackForm, setFeedbackForm] = useState({ thesisId: '', comment: '', status: '' });
     const [showModal, setShowModal] = useState(false);
+    const [titleSearch, setTitleSearch] = useState('');
+    const [dateSearch, setDateSearch] = useState('');
+    const [categorySearch, setCategorySearch] = useState('');
+    const [categories] = useState(['IoT', 'AI', 'ML', 'Sound', 'Camera']);
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -99,11 +103,42 @@ const ReviewSubmission = () => {
         return colors[status.toLowerCase()] || '#757575';
     };
 
+    const filteredSubmissions = submissions.filter(submission => {
+        const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
+        const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
+        const matchesCategory = categorySearch ? submission.category === categorySearch : true;
+
+        return matchesTitle && matchesDate && matchesCategory;
+    });
+
     return (
         <div className="review-submission-container">
             <header className="review-header">
                 <h2>Review Capstone Research Paper Submissions</h2>
             </header>
+
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search by title"
+                    value={titleSearch}
+                    onChange={(e) => setTitleSearch(e.target.value)}
+                />
+                <input
+                    type="date"
+                    value={dateSearch}
+                    onChange={(e) => setDateSearch(e.target.value)}
+                />
+                <select
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                >
+                    <option value="">Select a category</option>
+                    {categories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
+            </div>
 
             {loading ? (
                 <div className="loading-container">
@@ -117,13 +152,13 @@ const ReviewSubmission = () => {
                 </div>
             ) : (
                 <div className="submissions-grid">
-                    {submissions.length === 0 ? (
+                    {filteredSubmissions.length === 0 ? (
                         <div className="no-submissions">
                             <i className="bi bi-inbox text-muted"></i>
                             <p>No submissions to review</p>
                         </div>
                     ) : (
-                        submissions.map((submission) => (
+                        filteredSubmissions.map((submission) => (
                             <div key={submission._id} className="submission-card">
                                 <div className="submission-header">
                                     <h3>{submission.title}</h3>

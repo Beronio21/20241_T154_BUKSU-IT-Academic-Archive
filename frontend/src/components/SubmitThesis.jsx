@@ -9,11 +9,15 @@ const SubmitThesis = () => {
         keywords: [''],
         members: [''],
         adviserEmail: '',
-        docsLink: ''
+        docsLink: '',
+        email: '',
+        category: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [openPicker] = useDrivePicker();
+
+    const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
     useEffect(() => {
         const userInfoString = localStorage.getItem('user-info');
@@ -184,7 +188,8 @@ const SubmitThesis = () => {
                 members: formData.members.filter(member => member.trim() !== ''),
                 adviserEmail: formData.adviserEmail,
                 docsLink: formData.docsLink,
-                email: userInfo.email
+                email: userInfo.email,
+                category: formData.category
             };
 
             console.log('Submitting thesis data:', submissionData);
@@ -212,7 +217,9 @@ const SubmitThesis = () => {
                 keywords: [''],
                 members: [''],
                 adviserEmail: '',
-                docsLink: ''
+                docsLink: '',
+                email: '',
+                category: ''
             });
         } catch (error) {
             console.error('Submission error:', error);
@@ -449,6 +456,22 @@ const SubmitThesis = () => {
                         </div>
                         
                         
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="category">Category</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            required
+                        >
+                            <option value="">Select a category</option>
+                            {categories.map((cat) => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <button
