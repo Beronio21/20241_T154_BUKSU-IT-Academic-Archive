@@ -135,9 +135,4 @@ const StudentDashboard = () => {
     );
 };
 
-<<<<<<< HEAD
 export default StudentDashboard;
-
-=======
-export default StudentDashboard;
->>>>>>> f964dcad79e522c2f257446c8f42640a3e6ae2d3
