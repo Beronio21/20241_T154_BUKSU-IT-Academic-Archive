@@ -1,0 +1,48 @@
+/* ✅ Topbar */
+.teacher-topbar {
+    position: fixed;
+    top: 0;
+    left: 250px; /* ✅ Matches Sidebar */
+    width: calc(100% - 250px);
+    height: 73px; /* ✅ Matches Sidebar Header */
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    padding: 10px 5px;
+    transition: left 0.3s ease, width 0.3s ease;
+    z-index: 1040;
+}
+
+/* ✅ Search Bar */
+.search-bar {
+    max-width: 400px;
+    min-width: 250px;
+    border-radius: 20px;
+    padding: 5px 15px;
+}
+
+/* ✅ Filters */
+.filter-dropdown {
+    max-width: 140px;
+}
+
+/* ✅ Profile Button */
+.profile-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* ✅ Mobile Responsive */
+@media (max-width: 768px) {
+    .teacher-topbar {
+        left: 60px;
+        width: calc(100% - 60px);
+    }
+
+    .search-bar {
+        max-width: 200px;
+    }
+}

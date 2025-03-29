@@ -1,7 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './StudentTopbar.css'; // External CSS
 
-const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifications, notifications, markAsRead }) => {
+const StudentTopbar = ({
+    userInfo,
+    searchTerm,
+    setSearchTerm,
+    yearFilter,
+    setYearFilter,
+    topicFilter,
+    setTopicFilter
+}) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -12,162 +21,78 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         }
     };
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    const notificationStyles = {
-        container: {
-            position: 'relative',
-            marginRight: '1rem',
-            zIndex: 1031
-        },
-        dropdown: {
-            position: 'absolute',
-            top: 'calc(100% + 10px)',
-            right: '-10px',
-            width: '300px',
-            backgroundColor: 'white',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            borderRadius: '8px',
-            maxHeight: '400px',
-            overflowY: 'auto',
-            zIndex: 1031,
-            border: '1px solid #ddd'
-        },
-        header: {
-            padding: '10px',
-            borderBottom: '1px solid #eee',
-            backgroundColor: '#f8f9fa',
-            borderTopLeftRadius: '8px',
-            borderTopRightRadius: '8px'
-        },
-        list: {
-            maxHeight: '350px',
-            overflowY: 'auto',
-            scrollbarWidth: 'thin'
-        },
-        item: (read) => ({
-            padding: '12px',
-            borderBottom: '1px solid #eee',
-            backgroundColor: '#fff',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s'
-        }),
-        timestamp: {
-            fontSize: '0.8rem',
-            color: '#666',
-            marginTop: '4px'
-        },
-        emptyMessage: {
-            padding: '20px',
-            textAlign: 'center',
-            color: '#666'
-        },
-        badge: {
-            fontSize: '0.65rem'
-        }
-    };
+    const topics = ["All Topics", "IoT", "AI", "ML", "Sound", "Camera"];
 
     return (
-        <nav className="navbar fixed-top navbar-expand-lg">
-            <div className="container-fluid">
-                <div className="d-flex align-items-center ms-auto">
-                   
-                    <button 
-                        className="p-0 me-3 position-relative" 
-                        title="Messages" 
-                        style={{ background: 'none', border: 'none', color: 'inherit' }}
-                        onClick={() => navigate('/student-dashboard/send-gmail')}
-                    >
-                        <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: 'inherit' }}></i>
-                    </button>
-                    <div style={notificationStyles.container}>
-                        <button 
-                            className="p-0 me-4 position-relative" 
-                            title="Notifications"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                            onClick={() => setShowNotifications(!showNotifications)}
-                        >
-                            <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: 'inherit' }}></i>
-                            {unreadCount > 0 && (
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={notificationStyles.badge}>
-                                    {unreadCount}
-                                </span>
-                            )}
-                        </button>
+        <nav className="student-topbar navbar navbar-expand-lg bg-light shadow-sm">
+            <div className="container-fluid d-flex justify-content-between align-items-center">
+                
+                {/* Search Bar & Filters */}
+                <div className="d-flex align-items-center gap-3">
+                    <input
+                        type="text"
+                        className="form-control form-control-sm search-bar"
+                        placeholder="Search capstones..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
 
-                        {showNotifications && (
-                            <div className="dropdown-menu show" style={notificationStyles.dropdown}>
-                                <div className="dropdown-header" style={notificationStyles.header}>
-                                    <h6 className="m-0">Notifications</h6>
-                                </div>
-                                <div className="dropdown-list" style={notificationStyles.list}>
-                                    {notifications.length === 0 ? (
-                                        <div style={notificationStyles.emptyMessage}>
-                                            No notifications
-                                        </div>
-                                    ) : (
-                                        notifications.map(notification => (
-                                            <div 
-                                                key={notification._id}
-                                                className="dropdown-item"
-                                                style={notificationStyles.item(!notification.read)}
-                                                onClick={() => !notification.read && markAsRead(notification._id)}
-                                            >
-                                                <div className="fw-bold">{notification.title}</div>
-                                                <div>{notification.message}</div>
-                                                <div style={notificationStyles.timestamp}>
-                                                    {formatDate(notification.createdAt)}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    <div className="dropdown">
-                        <button 
-                            className="p-0 dropdown-toggle d-flex align-items-center"
-                            type="button"
-                            id="userDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                        >
-                            <img
-                                src={userInfo?.image || 'https://via.placeholder.com/32'}
-                                alt="Profile"
-                                className="rounded-circle me-2"
-                                width="32"
-                                height="32"
-                            />
-                            <span>{userInfo?.name || 'User'}</span>
-                        </button>
-                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li>
-                                <a className="dropdown-item" href="/student-dashboard/profile">
-                                    <i className="bi bi-person me-2 fs-5"></i>
-                                    Profile
-                                </a>
-                            </li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li>
-                                <button className="dropdown-item text-danger" onClick={handleLogout}>
-                                    <i className="bi bi-box-arrow-right me-2 fs-5"></i>
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    <select
+                        className="form-select form-select-sm filter-dropdown"
+                        value={yearFilter}
+                        onChange={(e) => setYearFilter(e.target.value)}
+                    >
+                        <option value="">All Years</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+
+                    <select
+                        className="form-select form-select-sm filter-dropdown"
+                        value={topicFilter}
+                        onChange={(e) => setTopicFilter(e.target.value)}
+                    >
+                        {topics.map((topic) => (
+                            <option key={topic} value={topic}>
+                                {topic}
+                            </option>
+                        ))}
+                    </select>
                 </div>
+
+                {/* User Profile Dropdown */}
+                <div className="dropdown">
+                    <button className="p-0 dropdown-toggle d-flex align-items-center profile-btn"
+                        type="button"
+                        id="userDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        <img
+                            src={userInfo?.image || 'https://via.placeholder.com/32'}
+                            alt="Profile"
+                            className="rounded-circle me-2"
+                            width="32"
+                            height="32"
+                        />
+                        <span>{userInfo?.name || 'User'}</span>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <a className="dropdown-item" href="/student-dashboard/profile">
+                                <i className="bi bi-person me-2 fs-5"></i> Profile
+                            </a>
+                        </li>
+                        <li><hr className="dropdown-divider" /></li>
+                        <li>
+                            <button className="dropdown-item text-danger" onClick={handleLogout}>
+                                <i className="bi bi-box-arrow-right me-2 fs-5"></i> Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </nav>
     );

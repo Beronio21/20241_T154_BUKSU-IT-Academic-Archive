@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import "./StudentRegister.css";
+import "../Student-Register/StudentRegister.css";
 
 const StudentRegister = () => {
   const [formData, setFormData] = useState({
     student_id: "",
     name: "",
     email: "",
-    contactNumber: "",
     course: "",
     year: "",
     password: "",
@@ -105,190 +104,162 @@ const StudentRegister = () => {
   });
 
   return (
-    <div className="container-fluid d-flex align-items-center justify-content-center vh-100">
-      <div className="row w-100">
-        {/* Left Container: Image */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <div className="left-container d-flex justify-content-center align-items-center h-100">
-            <img
-              src="src/images/buksulogo.png" // Assuming 'buksulogo.png' is in the public/images folder
-              alt="Illustration"
-              className="img-fluid rounded"
-              style={{ maxHeight: "80%", width: "auto" }}
-            />
-          </div>
+    <div className="std-reg__container">
+      <div className="std-reg__content">
+        {/* Left side */}
+        <div className="std-reg__left">
+          <img
+            src="../src/Images/buksulogov2.png"
+            alt="BukSU Logo"
+            className="std-reg__logo"
+          />
+          <h1 className="std-reg__title">
+            Welcome to BUKSU
+            <span className="std-reg__subtitle">IT Capstone Archive</span>
+          </h1>
+          <p className="std-reg__description">
+            Please fill in the details below to create your account and join our community.
+          </p>
         </div>
 
-        {/* Right Container: Form */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <div className="card p-5 shadow-lg rounded" style={{ width: "90%" }}>
-            <h2 className="text-center mb-4">Student Registration</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit} className="row g-3">
-              {/* Input Fields */}
-              {[
-                {
-                  id: "student_id",
-                  type: "text",
-                  label: "Student ID",
-                  placeholder: "Enter your student ID",
-                  required: true,
-                },
-                {
-                  id: "name",
-                  type: "text",
-                  label: "Name",
-                  placeholder: "Enter your full name",
-                  required: true,
-                },
-                {
-                  id: "email",
-                  type: "email",
-                  label: "Email",
-                  placeholder: "Enter your email",
-                  required: true,
-                },
-                {
-                  id: "contactNumber",
-                  type: "text",
-                  label: "Contact Number",
-                  placeholder: "Enter your contact number",
-                  required: false,
-                },
-                {
-                  id: "course",
-                  type: "text",
-                  label: "Course",
-                  placeholder: "Enter your course",
-                  required: false,
-                },
-              ].map((input, index) => (
-                <div className="col-12 col-md-6" key={index}>
-                  <label className="form-label" htmlFor={input.id}>
-                    {input.label}
-                  </label>
-                  <input
-                    type={input.type}
-                    id={input.id}
-                    name={input.id}
-                    className="form-control"
-                    placeholder={input.placeholder}
-                    value={formData[input.id]}
+        {/* Right side - Form */}
+        <div className="std-reg__right">
+          <div className="std-reg__form-wrapper">
+            <h2 className="std-reg__form-title">Register</h2>
+            {error && <div className="std-reg__error">{error}</div>}
+            
+            <form onSubmit={handleSubmit} className="std-reg__form">
+              <div className="std-reg__form-grid">
+                {/* Input Fields */}
+                {[
+                  {
+                    id: "student_id",
+                    type: "text",
+                    placeholder: "Institution ID",
+                    required: true,
+                  },
+                  {
+                    id: "name",
+                    type: "text",
+                    placeholder: "Full Name",
+                    required: true,
+                  },
+                  {
+                    id: "email",
+                    type: "email",
+                    placeholder: "Institution Email",
+                    required: true,
+                  },
+                  {
+                    id: "course",
+                    type: "text",
+                    placeholder: "Course",
+                    required: false,
+                  },
+                ].map((input, index) => (
+                  <div className="std-reg__input-group" key={index}>
+                    <input
+                      type={input.type}
+                      id={input.id}
+                      name={input.id}
+                      className="std-reg__input"
+                      placeholder={input.placeholder}
+                      value={formData[input.id]}
+                      onChange={handleChange}
+                      required={input.required}
+                    />
+                  </div>
+                ))}
+
+                {/* Year Dropdown */}
+                <div className="std-reg__input-group">
+                  <select
+                    id="year"
+                    name="year"
+                    className="std-reg__input"
+                    value={formData.year}
                     onChange={handleChange}
-                    required={input.required}
+                    required
+                  >
+                    <option value="" disabled>School Year</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </div>
+
+                {/* Gender Dropdown */}
+                <div className="std-reg__input-group">
+                  <select
+                    id="gender"
+                    name="gender"
+                    className="std-reg__input"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                {/* Password and Confirm Password */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="std-reg__input"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
-              ))}
 
-              {/* Year Dropdown */}
-              <div className="col-12 col-md-6">
-                <label className="form-label" htmlFor="year">
-                  Year
-                </label>
-                <select
-                  id="year"
-                  name="year"
-                  className="form-control"
-                  value={formData.year}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>
-                    Select Year
-                  </option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-
-              {/* Gender Dropdown */}
-              <div className="col-12 col-md-6">
-                <label className="form-label" htmlFor="gender">
-                  Gender
-                </label>
-                <select
-                  id="gender"
-                  name="gender"
-                  className="form-control"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>
-                    Select Gender
-                  </option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              {/* Password and Confirm Password */}
-              <div className="col-12 col-md-6">
-                <label className="form-label" htmlFor="password">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="form-control"
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="col-12 col-md-6">
-                <label className="form-label" htmlFor="confirmPassword">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  className="form-control"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              {/* Submit Button */}
-              <div className="col-12">
-                <button
-                  type="submit"
-                  className="btn btn-primary w-100"
-                  disabled={loading}
-                >
-                  {loading ? "Registering..." : "Register"}
-                </button>
-              </div>
-
-              {/* Divider Text */}
-              <div className="col-12 text-center mt-3">
-                <p className="mb-0">or Register With</p>
-              </div>
-
-              {/* Google Register Button */}
-              <div className="col-12 text-center mt-2">
-                <button
-                  type="button"
-                  className="google-login-btn"
-                  onClick={googleLogin}
-                  disabled={loading}
-                >
-                  <img
-                    src="../src/Images/Googlelogo.png"
-                    alt="Google logo"
-                    style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                {/* Confirm Password */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    className="std-reg__input"
+                    placeholder="Re-enter Your Password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
                   />
-                  {loading ? "Signing in..." : "Register with Google"}
-                </button>
+                </div>
               </div>
+
+              <button 
+                type="submit" 
+                className="std-reg__submit-btn" 
+                disabled={loading}
+              >
+                {loading ? "Registering..." : "Register"}
+              </button>
+
+              <div className="std-reg__divider">
+                <span>or Register With</span>
+              </div>
+
+              <button
+                type="button"
+                className="std-reg__google-btn"
+                onClick={googleLogin}
+                disabled={loading}
+              >
+                <img
+                  src="../src/Images/Googlelogo.png"
+                  alt="Google logo"
+                  className="std-reg__google-icon"
+                />
+                <span>{loading ? "Signing in..." : "Register with Google"}</span>
+              </button>
             </form>
           </div>
         </div>

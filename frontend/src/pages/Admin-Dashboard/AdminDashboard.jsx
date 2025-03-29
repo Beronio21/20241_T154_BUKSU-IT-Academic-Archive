@@ -10,8 +10,6 @@ import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmission';
 import CapstoneManagement from '../../components/Capstone-Management/CapstoneManagement';
 
-
-
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -23,7 +21,6 @@ const AdminDashboard = () => {
   const [recentAccounts, setRecentAccounts] = useState([]);
   const navigate = useNavigate();
 
-  // Load user info and stats on component mount
   useEffect(() => {
     const storedUserInfo = localStorage.getItem('user-info');
     if (storedUserInfo) {
@@ -31,7 +28,7 @@ const AdminDashboard = () => {
     }
     fetchStats();
 
-    // Prevent navigation and prompt user on page unload or back navigation
+    // Prevent accidental navigation
     const preventNavigation = (e) => {
       e.preventDefault();
       e.returnValue = '';
@@ -39,10 +36,6 @@ const AdminDashboard = () => {
 
     const handlePopState = () => {
       window.history.pushState(null, null, window.location.pathname);
-      // Removed logout confirmation
-      // if (window.confirm('Are you sure you want to leave this page?')) {
-      //   handleLogout();
-      // }
     };
 
     window.history.pushState(null, null, window.location.pathname);
@@ -55,7 +48,7 @@ const AdminDashboard = () => {
     };
   }, []);
 
-  // Fetch statistics from the backend
+  // Fetch statistics from backend
   const fetchStats = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('user-info'));
@@ -69,7 +62,7 @@ const AdminDashboard = () => {
       const studentsResponse = await axios.get('http://localhost:8080/api/students', config);
       const teachersResponse = await axios.get('http://localhost:8080/api/teachers', config);
 
-      // Combine student and teacher data, and sort by creation date
+      // Sort users by creation date
       const allUsers = [...studentsResponse.data, ...teachersResponse.data]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 5);
@@ -78,20 +71,18 @@ const AdminDashboard = () => {
       setStats({
         totalStudents: studentsResponse.data.length,
         totalTeachers: teachersResponse.data.length,
-        activeTheses: 0, // You can update this if you have active theses data
+        activeTheses: 0, // Update if thesis data is available
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
   };
 
-  // Handle user logout
+  // Handle logout
   const handleLogout = () => {
-    // Clear user info from local storage or state
     localStorage.removeItem("user-info");
-    // Redirect to login page
     navigate("/login");
-};
+  };
 
   // Change active section
   const handleSectionChange = (section) => {

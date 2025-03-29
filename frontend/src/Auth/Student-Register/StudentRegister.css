@@ -1,116 +1,815 @@
-
-/* General setup */
-.register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Reset and Base styles */
+.std-reg__container {
     min-height: 100vh;
-    background-color: #f0f2f5;
-    padding: 1rem;
-}
-
-.register-card {
-    width: 90%;
-    max-width: 600px;
-    background: #ffffff;
-    border: none;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.register-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-}
-
-/* Image section */
-.register-image-container {
     width: 100%;
-    background-color: #007bff;
-    text-align: center;
-    padding: 1.5rem;
-}
-
-.register-image {
-    width: 70%;
-    max-width: 200px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  
+  .std-reg__content {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
     height: auto;
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Form section */
-.register-form-container {
-    padding: 2rem;
-}
-
-.register-form-container h2 {
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .std-reg__content:hover {
+    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Left side styles */
+  .std-reg__left {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 3rem;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .std-reg__logo {
+    width: 200px;
+    height: auto;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .std-reg__logo:hover {
+    transform: scale(1.02);
+  }
+  
+  .std-reg__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .std-reg__subtitle {
+    display: block;
+    font-size: 2rem;
+    color: #006bb2;
+    margin-top: 0.5rem;
+  }
+  
+  .std-reg__description {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+  
+  /* Right side styles */
+  .std-reg__right {
+    flex: 1;
+    padding: 3rem;
+    background-color: #ffffff;
+  }
+  
+  .std-reg__form-wrapper {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  
+  .std-reg__form-title {
     font-size: 1.75rem;
     color: #333;
-    margin-bottom: 1.5rem;
     text-align: center;
-}
-
-/* Form styles */
-.form-group {
-    margin-bottom: 1.25rem;
-}
-
-.form-control {
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #ddd;
+    margin-bottom: 2rem;
+  }
+  
+  .std-reg__error {
+    background-color: #fff3f3;
+    color: #e53935;
+    padding: 12px;
     border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.btn {
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    border: 1px solid #ffcdd2;
+  }
+  
+  .std-reg__form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  
+  .std-reg__input-group {
     width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
+  }
+  
+  .std-reg__input,
+  .std-reg__select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .std-reg__input:hover,
+  .std-reg__select:hover {
+    border-color: #006bb2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .std-reg__input:focus,
+  .std-reg__select:focus {
+    border-color: #006bb2;
+    box-shadow: 0 0 0 3px rgba(0, 107, 178, 0.08);
+    outline: none;
+  }
+  
+  .std-reg__submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #006bb2;
     color: #ffffff;
-    background-color: #007bff;
     border: none;
     border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-.btn:disabled {
-    background-color: #ccc;
+    transition: all 0.2s ease-in-out;
+    margin-top: 1rem;
+  }
+  
+  .std-reg__submit-btn:hover {
+    background-color: #005691;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 107, 178, 0.15);
+  }
+  
+  .std-reg__submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 107, 178, 0.1);
+  }
+  
+  .std-reg__divider {
+    text-align: center;
+    margin: 1.25rem 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .std-reg__divider::before,
+  .std-reg__divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background-color: #e0e0e0;
+  }
+  
+  .std-reg__divider::before { 
+    left: 0; 
+  }
+  
+  .std-reg__divider::after { 
+    right: 0; 
+  }
+  
+  .std-reg__divider span {
+    background-color: #ffffff;
+    padding: 0 12px;
+    color: #666;
+    font-size: 0.9rem;
+    z-index: 1;
+  }
+  
+  .std-reg__google-btn {
+    width: 100%;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: #ffffff;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    min-height: 45px;
+  }
+  
+  .std-reg__google-btn:hover {
+    border-color: #006bb2;
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .std-reg__google-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  }
+  
+  .std-reg__google-icon {
+    width: 45px;
+    height: 20px;
+    object-fit: contain;
+  }
+  
+  .std-reg__google-btn span {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 991.98px) {
+    .std-reg__content {
+      flex-direction: column;
+    }
+  
+    .std-reg__left {
+      padding: 2rem;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .std-reg__form-wrapper {
+      padding: 1.5rem;
+    }
+  
+    .std-reg__form-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }
+  
+  /* General setup */
+  .register-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f2f5;
+      padding: 1rem;
+  }
+  
+  .register-card {
+      width: 90%;
+      max-width: 600px;
+      background: #ffffff;
+      border: none;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .register-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Image section */
+  .register-image-container {
+      width: 100%;
+      background-color: #007bff;
+      text-align: center;
+      padding: 1.5rem;
+  }
+  
+  .register-image {
+      width: 70%;
+      max-width: 200px;
+      height: auto;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form section */
+  .register-form-container {
+      padding: 2rem;
+  }
+  
+  .register-form-container h2 {
+      font-size: 1.75rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+      text-align: center;
+  }
+  
+  /* Form styles */
+  .form-group {
+      margin-bottom: 1.25rem;
+  }
+  
+  .form-control, .form-select {
+      padding: 0.625rem 0.75rem;
+      font-size: 0.95rem;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+  }
+  
+  .form-control:focus, .form-select:focus {
+      border-color: #006bb2 !important;
+      box-shadow: 0 0 0 3px rgba(0, 107, 178, 0.1) !important;
+      background-color: white !important;
+  }
+  
+  .btn {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      color: #ffffff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .btn:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+  }
+  
+  .btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+  }
+  
+  .google-login-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      border: 1px solid #ddd;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+      margin-top: 1rem;
+      border-radius: 4px;
+      width: 100%;
+  }
+  
+  .google-login-btn:hover {
+      background-color: #f8f9fa;
+  }
+  
+  .google-logo {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;     
+  }
+  
+  .card {
+      background-color: #ffffff;
+      transition: all 0.3s ease;
+  }
+  
+  .btn-primary {
+      background-color: #006bb2;
+      border: none;
+  }
+  
+  .btn-primary:hover {
+      background-color: #005691 !important;
+      transform: translateY(-1px);
+  }
+  
+  .google-button:hover {
+      background-color: #f8f9fa;
+      border-color: #006bb2;
+  }
+  
+  @media (max-width: 991px) {
+      .row > div:first-child {
+          border-radius: 20px 20px 0 0 !important;
+      }
+      
+      .row > div:last-child {
+          border-radius: 0 0 20px 20px !important;
+      }
+  }
+  
+  .student-register-page {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    background-image: url('../Images/buksumain.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .student-register-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
+    backdrop-filter: blur(8px);
+  }
+  
+  .student-register-container {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    z-index: 1;
+    padding: 2rem;
+  }
+  
+  /* Left Section */
+  .student-register-left {
+    color: white;
+    padding: 2rem;
+  }
+  
+  .student-register-logo {
+    width: 120px;
+    height: auto;
+    margin-bottom: 1.5rem;
+  }
+  
+  .student-register-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .student-register-subtitle {
+    display: block;
+    color: #007bff;
+    margin-top: 0.5rem;
+  }
+  
+  .student-register-text {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+  
+  /* Right Section - Form */
+  .student-register-right {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+  }
+  
+  .student-register-form-box {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .student-register-form-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: #333;
+  }
+  
+  .student-register-error {
+    background-color: #fee;
+    color: #e33;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .student-register-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .student-register-input-group {
+    width: 100%;
+  }
+  
+  .student-register-input,
+  .student-register-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  
+  .student-register-input:focus,
+  .student-register-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+    outline: none;
+  }
+  
+  .student-register-button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #006bb2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .student-register-button:hover {
+    background: #005691;
+  }
+  
+  .student-register-button:disabled {
+    background: #ccc;
     cursor: not-allowed;
-}
-
-.google-login-btn {
+  }
+  
+  .student-register-divider {
+    text-align: center;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  
+  .student-register-divider::before,
+  .student-register-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background: #ddd;
+  }
+  
+  .student-register-divider::before { left: 0; }
+  .student-register-divider::after { right: 0; }
+  
+  .student-register-divider span {
+    background: white;
+    padding: 0 1rem;
+    color: #333;
+  }
+  
+  .student-register-google {
+    width: 100%;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .student-register-google:hover {
+    background: #f8f9fa;
+  }
+  
+  .student-register-google-icon {
+    width: 45px;
+    height: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .student-register-container {
+      grid-template-columns: 1fr;
+    }
+  
+    .student-register-left {
+      text-align: center;
+      padding: 1rem;
+    }
+  
+    .student-register-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Make "or Register With" text visible */
+  .col-12.text-center.mt-2 p {
+    color: #000;
+    font-weight: 500;
+  }
+  
+  /* Style the Google login button text */
+  .google-login-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: transparent;
-    border: none;
-    padding: 0;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
     cursor: pointer;
     font-size: 16px;
-    color: #555;
+    color: #333;
+    font-weight: 500;
     margin-top: 1rem;
-}
-
-.google-logo {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-}
+    border-radius: 4px;
+    width: 100%;
+  }
   
+  .google-login-btn:hover {
+    background-color: #f8f9fa;
+  }
+  
+  /* Make form text visible */
+  .form-control::placeholder {
+    color: #666;
+  }
+  
+  /* Make select options visible */
+  .form-control option {
+    color: #333;
+  }
+  
+  /* Ensure error messages are visible */
+  .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
+  /* Only add these minimal styles to fix visibility */
+  .student-register-section {
+    min-height: 100vh;
+    background-image: url('../Images/buksumain.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+  
+  .student-register-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
+    backdrop-filter: blur(8px);
+  }
+  
+  .student-register-section > div {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 16px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .google-login-btn:hover {
+    background-color: #f8f9fa;
+  }
+  
+  /* Ensure form inputs are visible */
+  .form-control {
+    background-color: white;
+    color: #333;
+  }
+  
+  .form-control::placeholder {
+    color: #666;
+  }
+  
+  .form-control option {
+    color: #333;
+  }
+  
+  /* Add these styles while keeping your existing ones */
+  .student-register-main {
+    min-height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+  }
+  
+  .student-welcome-content {
+    padding: 2rem;
+  }
+  
+  .student-welcome-logo {
+    width: 120px;
+    height: auto;
+  }
+  
+  .student-register-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Form styling improvements */
+  .form-control {
+    border: 1px solid #dee2e6;
+    padding: 0.75rem;
+    border-radius: 5px;
+    background-color: #ffffff;
+  }
+  
+  .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
+  
+  /* Make text colors visible */
+  .form-control, 
+  .form-control::placeholder {
+    color: #333;
+  }
+  
+  /* Google button styling */
+  .google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    color: #333;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .google-login-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+  }
+  
+  /* Divider styling */
+  .col-12.text-center.mt-2 p {
+    color: #333;
+    position: relative;
+    background: #fff;
+    padding: 0 10px;
+    display: inline-block;
+  }
+  
+  /* Keep text visible */
+  h1, h2, p {
+    color: #333;
+  }
+  
+  .text-primary {
+    color: #0d6efd !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 991.98px) {
+    .student-register-main {
+      padding: 2rem 0;
+    }
+    
+    .student-register-card {
+      margin: 1rem;
+    }
+  }
+    
