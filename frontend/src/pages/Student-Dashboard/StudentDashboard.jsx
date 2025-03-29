@@ -5,10 +5,9 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-
 import StudentProfile from "../../Profile/Student-Profile/StudentProfile";
 import SubmitThesis from "../../components/Submit-Thesis/SubmitThesis";
 import Docs from "../../components/Docs";
-import SendGmail from "../../Communication/SendGmail";
 import StudentTopbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
-import { Container, Row, Col, Card, Alert, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Alert, Button, Spinner } from "react-bootstrap";
 import "./StudentDashboard.css";
 
 const StudentDashboard = () => {
@@ -18,7 +17,6 @@ const StudentDashboard = () => {
     const [error, setError] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-    // ✅ Search & Filter States
     const [searchTerm, setSearchTerm] = useState("");
     const [yearFilter, setYearFilter] = useState("");
     const [topicFilter, setTopicFilter] = useState("All Topics");
@@ -26,7 +24,6 @@ const StudentDashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // ✅ Check user authentication
     useEffect(() => {
         const data = localStorage.getItem("user-info");
         if (!data) {
@@ -44,7 +41,6 @@ const StudentDashboard = () => {
         }
     }, [navigate, location]);
 
-    // ✅ Fetch capstone submissions
     useEffect(() => {
         const fetchSubmissions = async () => {
             setLoading(true);
@@ -53,9 +49,7 @@ const StudentDashboard = () => {
                 const userInfo = JSON.parse(localStorage.getItem("user-info"));
                 if (!userInfo?.email) throw new Error("User info not found");
 
-                const response = await fetch(
-                    `http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`
-                );
+                const response = await fetch(`http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`);
                 if (!response.ok) throw new Error("Failed to fetch submissions");
 
                 const data = await response.json();
@@ -66,26 +60,21 @@ const StudentDashboard = () => {
                 setLoading(false);
             }
         };
-
         fetchSubmissions();
     }, []);
 
-    // ✅ Filter submissions based on search and filters
     const filteredSubmissions = submissions.filter(({ title, createdAt }) => {
         const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesYear = yearFilter ? new Date(createdAt).getFullYear().toString() === yearFilter : true;
         const matchesTopic = topicFilter === "All Topics" || title.toLowerCase().includes(topicFilter.toLowerCase());
-
         return matchesSearch && matchesYear && matchesTopic;
     });
 
-    // ✅ Render Capstone Cards
     const renderDashboard = () => (
         <Container fluid className="capstone-container px-4">
             <h2 className="dashboard-title text-center mb-4">Capstone Archive</h2>
-
             {loading ? (
-                <div className="loading-spinner">Loading...</div>
+                <div className="text-center"><Spinner animation="border" /></div>
             ) : error ? (
                 <Alert variant="danger">{error}</Alert>
             ) : filteredSubmissions.length === 0 ? (
@@ -96,35 +85,16 @@ const StudentDashboard = () => {
                         <Col xs={12} sm={6} md={4} lg={3} key={_id}>
                             <Card className="capstone-card shadow-sm border-0 d-flex flex-column">
                                 <Card.Body className="d-flex flex-column">
-                                    {/* Card Title & Status */}
                                     <div className="submission-header d-flex justify-content-between align-items-center">
-                                        <Card.Title className="submission-title text-truncate" title={title}>
-                                            {title}
-                                        </Card.Title>
-                                        <span className={`badge bg-${status === "approved" ? "success" : "warning"}`}>
-                                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                                        </span>
+                                        <Card.Title className="submission-title text-truncate" title={title}>{title}</Card.Title>
+                                        <span className={`badge bg-${status === "approved" ? "success" : "warning"}`}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
                                     </div>
-
-                                    {/* Card Content */}
-                                    <Card.Text className="submission-members text-truncate">
-                                        <strong>Members:</strong> {members.join(", ")}
-                                    </Card.Text>
-                                    <Card.Text className="text-truncate">
-                                        <strong>Adviser:</strong> {adviserEmail}
-                                    </Card.Text>
-                                    <Card.Text>
-                                        <strong>Submitted on:</strong> {new Date(createdAt).toLocaleDateString()}
-                                    </Card.Text>
-
-                                    {/* Buttons for Details & Document */}
+                                    <Card.Text className="submission-members text-truncate"><strong>Members:</strong> {members.join(", ")}</Card.Text>
+                                    <Card.Text className="text-truncate"><strong>Adviser:</strong> {adviserEmail}</Card.Text>
+                                    <Card.Text><strong>Submitted on:</strong> {new Date(createdAt).toLocaleDateString()}</Card.Text>
                                     <div className="mt-auto btn-container">
-                                        <Button variant="secondary" size="sm" onClick={() => alert("View Details clicked!")}>
-                                            View Details
-                                        </Button>
-                                        <a href={docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
-                                            View Document
-                                        </a>
+                                        <Button variant="secondary" size="sm" onClick={() => alert("View Details clicked!")}>View Details</Button>
+                                        <a href={docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">View Document</a>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -137,7 +107,6 @@ const StudentDashboard = () => {
 
     return (
         <div className={`dashboard-wrapper ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-            {/* ✅ Apply Search & Filters from StudentTopbar */}
             <StudentTopbar 
                 userInfo={userInfo} 
                 searchTerm={searchTerm} 
@@ -147,7 +116,6 @@ const StudentDashboard = () => {
                 topicFilter={topicFilter} 
                 setTopicFilter={setTopicFilter} 
             />
-
             <div className="d-flex">
                 <StudentNavbar isSidebarOpen={isSidebarOpen} />
                 <div className="dashboard-content">
@@ -165,4 +133,3 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
-    

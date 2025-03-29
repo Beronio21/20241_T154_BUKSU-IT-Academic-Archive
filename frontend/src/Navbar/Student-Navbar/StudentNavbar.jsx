@@ -9,7 +9,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard', path: '/student-dashboard/dashboard', icon: 'bi bi-house' },
         { name: 'My Profile', section: 'profile', path: '/student-dashboard/profile', icon: 'bi bi-person' },
-        { name: 'Submit Capstone', section: 'submit-capstone', path: '/student-dashboard/submit-capstone', icon: 'bi bi-upload' },
+        { name: 'Submit Capstone', section: 'submit-Thesis', path: '/student-dashboard/submit-thesis', icon: 'bi bi-upload' },
         { name: 'View Capstone', section: 'view-capstone', path: '/student-dashboard/view-capstone', icon: 'bi bi-eye' }
     ];
 

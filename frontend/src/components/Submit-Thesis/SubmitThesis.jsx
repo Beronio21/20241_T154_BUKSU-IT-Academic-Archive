@@ -27,7 +27,6 @@ const SubmitThesis = () => {
         }
     }, []);
 
-    // 🔹 Handle input changes for normal fields and dynamic arrays (keywords & members)
     const handleInputChange = (e, index = null) => {
         const { name, value } = e.target;
 
@@ -41,14 +40,12 @@ const SubmitThesis = () => {
         }
     };
 
-    // 🔹 Add & Remove Dynamic Fields (Keywords & Members)
     const addField = (field) => setFormData((prev) => ({ ...prev, [field]: [...prev[field], ''] }));
     const removeField = (field, index) => setFormData((prev) => ({
         ...prev,
         [field]: prev[field].filter((_, i) => i !== index),
     }));
 
-    // 🔹 Open Google Drive Picker & Upload File
     const handleOpenPicker = async () => {
         const userInfo = JSON.parse(localStorage.getItem('user-info'));
         const googleDriveToken = userInfo?.googleDriveToken;
@@ -77,7 +74,6 @@ const SubmitThesis = () => {
         });
     };
 
-    // 🔹 Handle Manual File Upload
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -86,7 +82,6 @@ const SubmitThesis = () => {
         }
     };
 
-    // 🔹 Form Submission Handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.title.trim() || !formData.abstract.trim() || !formData.docsLink) {
@@ -110,7 +105,7 @@ const SubmitThesis = () => {
                 body: JSON.stringify(submissionData),
             });
 
-            if (!response.ok) throw new Error('Submission failed.');
+            if (!response.ok) throw new Error('Submission failed. Please try again.');
 
             alert('Thesis submitted successfully!');
             setFormData({
@@ -140,7 +135,7 @@ const SubmitThesis = () => {
                 <form onSubmit={handleSubmit}>
                     {/* 🔹 Research Title */}
                     <div className="mb-3">
-                        <label>Research Title</label>
+                        <label htmlFor="title">Research Title</label>
                         <input
                             type="text"
                             className="form-control"
@@ -148,12 +143,13 @@ const SubmitThesis = () => {
                             value={formData.title}
                             onChange={handleInputChange}
                             required
+                            aria-label="Research Title"
                         />
                     </div>
 
                     {/* 🔹 Abstract */}
                     <div className="mb-3">
-                        <label>Abstract</label>
+                        <label htmlFor="abstract">Abstract</label>
                         <textarea
                             className="form-control"
                             name="abstract"
@@ -161,6 +157,7 @@ const SubmitThesis = () => {
                             onChange={handleInputChange}
                             rows="4"
                             required
+                            aria-label="Abstract"
                         />
                     </div>
 
@@ -176,6 +173,7 @@ const SubmitThesis = () => {
                                     value={keyword}
                                     onChange={(e) => handleInputChange(e, index)}
                                     required
+                                    aria-label={`Keyword ${index + 1}`}
                                 />
                                 <button type="button" className="btn btn-danger btn-sm" onClick={() => removeField('keywords', index)}>
                                     &times;
@@ -187,7 +185,7 @@ const SubmitThesis = () => {
 
                     {/* 🔹 Adviser Email */}
                     <div className="mb-3">
-                        <label>Adviser Email</label>
+                        <label htmlFor="adviserEmail">Adviser Email</label>
                         <input
                             type="email"
                             className="form-control"
@@ -195,13 +193,14 @@ const SubmitThesis = () => {
                             value={formData.adviserEmail}
                             onChange={handleInputChange}
                             required
+                            aria-label="Adviser Email"
                         />
                     </div>
 
                     {/* 🔹 Upload Document */}
                     <div className="mb-3">
                         <label>Upload Thesis Paper</label>
-                        <input type="file" className="form-control" onChange={handleFileChange} />
+                        <input type="file" className="form-control" onChange={handleFileChange} aria-label="Upload Thesis Paper" />
                         <button type="button" className="btn btn-success mt-2" onClick={handleOpenPicker}>Upload via Google Drive</button>
                         {formData.docsLink && <p className="mt-2">📄 <a href={formData.docsLink} target="_blank" rel="noopener noreferrer">View Document</a></p>}
                     </div>

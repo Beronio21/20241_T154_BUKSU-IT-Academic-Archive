@@ -6,7 +6,7 @@ import logo from '../../Images/buksulogov2.png';
 const TeacherNavbar = ({ activeSection, handleSectionChange, user }) => {
     const navigate = useNavigate();
 
-    // Sidebar navigation items
+    // Define the navigation items for the sidebar
     const navItems = [
         { name: 'Dashboard', section: 'dashboard', path: '/teacher-dashboard/dashboard' },
         { name: 'My Profile', section: 'profile', path: '/teacher-dashboard/profile' },
@@ -14,12 +14,10 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, user }) => {
         { name: 'Review Capstone', section: 'review-submissions', path: '/teacher-dashboard/review-submissions' }
     ];
 
-    // Handle navigation
+    // Handle navigation and section change
     const handleNavigation = (section, path) => {
-        if (typeof handleSectionChange === 'function') {
-            handleSectionChange(section); // Update active section
-        }
-        navigate(path); // Navigate to path
+        handleSectionChange(section); // Update the active section in the parent component
+        navigate(path); // Navigate to the target path
     };
 
     return (
