@@ -6,30 +6,28 @@ import logo from '../../Images/buksulogov2.png';
 const TeacherNavbar = ({ activeSection, handleSectionChange, user }) => {
     const navigate = useNavigate();
 
-    // Define the navigation items for the sidebar
     const navItems = [
-        { name: 'Dashboard', section: 'dashboard', path: '/teacher-dashboard/dashboard' },
-        { name: 'My Profile', section: 'profile', path: '/teacher-dashboard/profile' },
-        { name: 'Submit Capstone', section: 'submit-thesis', path: '/teacher-dashboard/submit-thesis' },
-        { name: 'Review Capstone', section: 'review-submissions', path: '/teacher-dashboard/review-submissions' }
+        { name: 'Dashboard', section: 'dashboard', path: '/teacher-dashboard/dashboard', icon: 'bi bi-house' },
+        { name: 'My Profile', section: 'profile', path: '/teacher-dashboard/profile', icon: 'bi bi-person' },
+        { name: 'Submit Capstone', section: 'submit-thesis', path: '/teacher-dashboard/submit-thesis', icon: 'bi bi-upload' },
+        { name: 'Review Capstone', section: 'review-submissions', path: '/teacher-dashboard/review-submissions', icon: 'bi bi-eye' },
+        { name: 'Capstone Management', section: 'capstone-management', path: '/teacher-dashboard/capstone-management', icon: 'bi bi-folder' }
     ];
 
-    // Handle navigation and section change
     const handleNavigation = (section, path) => {
-        handleSectionChange(section); // Update the active section in the parent component
-        navigate(path); // Navigate to the target path
+        if (handleSectionChange && typeof handleSectionChange === 'function') {
+            handleSectionChange(section);
+        }
+        navigate(path);
     };
 
     return (
         <div className="sidebar">
             <div className="sidebar-content">
-                {/* Sidebar Header */}
                 <div className="sidebar-header">
                     <img src={logo} alt="BukSU Logo" className="sidebar-logo" />
                     <h5 className="sidebar-title">Teacher Portal</h5>
                 </div>
-
-                {/* Navigation Menu */}
                 <ul className="nav flex-column">
                     {navItems.map((item) => (
                         <li className="nav-item" key={item.section}>
@@ -37,14 +35,28 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, user }) => {
                                 className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
                                 onClick={() => handleNavigation(item.section, item.path)}
                             >
+                                <i className={item.icon}></i>
                                 {item.name}
                             </button>
                         </li>
                     ))}
                 </ul>
+                {/* Capstone Management Section */}
+                <div className="capstone-management">
+                    <h6 className="capstone-title">Capstone Management</h6>
+                    <ul className="nav flex-column">
+                        <li className="nav-item">
+                            <button
+                                className="nav-link"
+                                onClick={() => handleNavigation('capstone-management', '/teacher-dashboard/capstone-management')}
+                            >
+                                <i className="bi bi-folder"></i>
+                                Manage Capstone
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            {/* User Info Section */}
             {user && (
                 <div className="sidebar-footer">
                     <div className="user-info">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import AdminRegister from "../../Auth/Admin-Register/AdminRegister";
 import UserManagement from '../../UserManagement/UserManagement';
@@ -196,8 +196,16 @@ const AdminDashboard = () => {
   return (
     <div className="d-flex">
       <AdminNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
-      <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
-        {renderContent()}
+      <div className="flex-grow-1 p-4">
+        <Routes>
+          <Route path="/dashboard" element={<DashboardComponent />} />
+          <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/student-records" element={<StudentRecords />} />
+          <Route path="/teacher-records" element={<TeacherRecords />} />
+          <Route path="/review-submissions" element={<ReviewSubmission />} />
+          <Route path="/capstone-management" element={<CapstoneManagement />} />
+          <Route path="/admin-register" element={<AdminRegister />} />
+        </Routes>
       </div>
     </div>
   );
