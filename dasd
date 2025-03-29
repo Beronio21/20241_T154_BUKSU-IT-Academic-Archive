@@ -1,0 +1,563 @@
+[33mcommit b5eb088107f326062b00fc7436a44954ab3ab0a7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mDEV7[m[33m, [m[1;31morigin/DEV7[m[33m)[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Sat Mar 29 18:45:18 2025 +0800
+
+    added new features
+
+[33mcommit 1aa59163e0283522085913bd1426043e80a6f506[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Sat Mar 29 16:51:13 2025 +0800
+
+    added features
+
+[33mcommit b63bae427be6107a40a9e3ebf96cd41ea428b7ff[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Sat Mar 29 14:11:59 2025 +0800
+
+    adjusted codes
+
+[33mcommit 549decdccbcd6f388c8ffd263342865c7b0b8129[m[33m ([m[1;31morigin/DEV6[m[33m, [m[1;32mDEV6[m[33m)[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Thu Mar 27 23:07:46 2025 +0800
+
+    fixed Routes
+
+[33mcommit f7538d2ec65379767b9d7b87100c7d107051c803[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Thu Mar 27 22:45:26 2025 +0800
+
+    Updates
+
+[33mcommit 37edfa0fd8e4c7f4511c535be2ae80cd27e869e7[m[33m ([m[1;32mDEV3[m[33m)[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Thu Mar 27 22:11:21 2025 +0800
+
+    UI updated
+
+[33mcommit 8b512728cedbb4690e441ea7c5871d34f3b72a5a[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Thu Mar 27 18:09:22 2025 +0000
+
+    fix missing category
+
+[33mcommit 423cb9b5d2231a099975464c71eadad66b754d35[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Thu Mar 27 18:07:06 2025 +0000
+
+    add admin management
+
+[33mcommit 384796b2d335f11bee371b9aec8d4ea07548f705[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Thu Mar 27 17:51:58 2025 +0000
+
+    fix everything
+
+[33mcommit 5935de462b04f96e1e2deeac6e1c709ab49bda1d[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 08:04:45 2025 +0800
+
+    size text
+
+[33mcommit f5347ba8c6ffa296edf6b30df77e2250a507b851[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 07:54:10 2025 +0800
+
+    size
+
+[33mcommit 438c70a0ecdc93df6b25e5211e3556bf48e96e4b[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 07:42:49 2025 +0800
+
+    last
+
+[33mcommit 29a88855324516113fb91f4639c53b32374554cb[m
+Merge: a1ba98b f87a5dc
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 07:16:30 2025 +0800
+
+    dashboard
+
+[33mcommit f87a5dc867a2487b5d4a79e6cf9d2bf54f1182bd[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 03:52:30 2025 +0000
+
+    fix
+
+[33mcommit fd3c0576f75e2212a4ead763b1dec3aceed2a05d[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 03:46:15 2025 +0000
+
+    beronio
+
+[33mcommit a1ba98b6ffd3477ab0e580cc2f29e93aaeef7139[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 10:01:07 2025 +0800
+
+    fix feedback
+
+[33mcommit e85a0c5d4dcc8b390a78a1d84e5b8f637b442272[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 09:37:55 2025 +0800
+
+    fix error
+
+[33mcommit f866c101f68a1c4491f25035dadbd1fec1910c42[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Mar 26 09:28:13 2025 +0800
+
+    boxes
+
+[33mcommit c17eaa807d98df1fd96a1fe3b3970eaa4d6da643[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Mon Mar 24 21:28:10 2025 +0800
+
+    updated
+
+[33mcommit ab0edb90c4436b3fd35c63dbf69b840198aaf039[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Mon Mar 24 14:36:40 2025 +0800
+
+    updated area
+
+[33mcommit a770b4e2f10bb61f022f6a8ebffb864091d749f6[m
+Author: Julian Sedo <2001104249@student.buksu.edu.ph>
+Date:   Sun Mar 23 23:20:07 2025 +0800
+
+    :nwely updated
+
+[33mcommit f1376df4ed0e5106a013aab694b0b32e3fced1eb[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Sun Mar 23 20:12:09 2025 +0000
+
+    fix style
+
+[33mcommit 2e4f0799cc7060e82c8e76e84ced0fde4730e52e[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Sun Mar 23 19:33:21 2025 +0000
+
+    Your commit message here
+
+[33mcommit 2d9cb8d6fe14e523426f0e5fb980a482325096a6[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Sun Mar 23 19:18:44 2025 +0000
+
+    change to capstone research submission
+
+[33mcommit a2c383cab6cfaa5a93ae4bfaaa02c03907e50c4a[m[33m ([m[1;31morigin/newlast[m[33m)[m
+Author: Beronio21 <115527849+Beronio21@users.noreply.github.com>
+Date:   Fri Feb 21 23:27:09 2025 +0800
+
+    Update README.md
+
+[33mcommit 886ec1c725c4bf2bb7a0b9abb96e27315161fdab[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 18 09:33:25 2024 +0800
+
+    lock base
+
+[33mcommit bafa50b459f80161c4ec738bba19cf2947d498c8[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 15:44:56 2024 +0800
+
+    fix login
+
+[33mcommit bc75390f1dd567e6627c302c9045193541a4f280[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 12:06:20 2024 +0800
+
+    fix google drive
+
+[33mcommit 73ce32f75d4a1b2bc8e47987ab88b2833f6c7d6c[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 12:02:31 2024 +0800
+
+    fix google integration
+
+[33mcommit 2197e4a7949469cc78458462671ed035d0e30a4d[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 11:40:33 2024 +0800
+
+    fix spread sheet
+
+[33mcommit 98835faee78ca05d07b9449501cd10cebbf01d11[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 11:31:06 2024 +0800
+
+    fix register
+
+[33mcommit acbfad9757fc95a7d18111b0b8c068d19b89ac39[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 08:29:25 2024 +0800
+
+    search
+
+[33mcommit c594b5f369caeaf90ced29a1f8bb32414c56a279[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 17 08:25:09 2024 +0800
+
+    search fix
+
+[33mcommit 06c92fc840e39e02d0d952ca0dc474308bb65dfe[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Tue Dec 17 01:08:21 2024 +0800
+
+    admin backprevention added
+
+[33mcommit 13f4973f39c8a9b4d8c07c25424955e6dcc3336f[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Tue Dec 17 00:30:55 2024 +0800
+
+    improvely code tonnight
+
+[33mcommit a6bb2b9f3a5552a90855ca61f60043969942661f[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 19:00:00 2024 +0800
+
+    review
+
+[33mcommit 7357d5a72779b900f2c9ddfa95e8f97c25cf9d18[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 18:52:53 2024 +0800
+
+    view
+
+[33mcommit 71bd1d14acc098073e87261251351f175f0bd547[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 18:42:08 2024 +0800
+
+    check
+
+[33mcommit 8c108bafa317076c16d3cadbf877cd3aed8b1913[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 18:23:52 2024 +0800
+
+    atlas
+
+[33mcommit ac457b025ed187b88649b607af597210cabb51d6[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 18:05:07 2024 +0800
+
+    add admin register
+
+[33mcommit 8ec7aa0e2504351954bb9b1cee08a6de3db963f5[m
+Merge: b625683 d1decce
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 17:58:20 2024 +0800
+
+    remove settings
+
+[33mcommit d1decce065fc1fc91fa851e64b6a48e8f8c84b3a[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 16 17:46:55 2024 +0800
+
+    removed settings
+
+[33mcommit b625683d382de7864303c039b666a492c1f3b51c[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 17:35:54 2024 +0800
+
+    remove unecessary
+
+[33mcommit b51b2700c92f79ebd1ab922e20885e827ce2e64f[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 16 16:27:17 2024 +0800
+
+    improved submit thesis
+
+[33mcommit 6a9b8a80f7cfa73831153d9f40895e72e56916b8[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 16 15:33:12 2024 +0800
+
+    improved buttons
+
+[33mcommit 29e3ee17c2b53c09ed9929a95a63f866834309c3[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 11:31:57 2024 +0800
+
+    fix google docs
+
+[33mcommit 5667cfcfd5446d78f7e5b70e307cdb0524df7ec7[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 16 11:20:06 2024 +0800
+
+    fix spread sheet
+
+[33mcommit d38f2e195ce2db1edec120d6356ffb06f19e994d[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 16 02:28:39 2024 +0800
+
+    addded improvements
+
+[33mcommit 8f5d90a143561a27ce1bad4008ee0d57766aa0ac[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Sun Dec 15 22:19:18 2024 +0800
+
+    improved popup
+
+[33mcommit 92514203a78679cd6d88a47d20eb0af2c9f01656[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Fri Dec 13 18:24:09 2024 +0800
+
+    ipmroved UI navbar
+
+[33mcommit 693a171d510a39e5121c64e0eec4197f827ea11b[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Fri Dec 13 17:59:48 2024 +0800
+
+    adjusted sizing Calendar
+
+[33mcommit f22124ac175c15b66726446b93e1d5b75c2c8f0e[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Fri Dec 13 17:51:14 2024 +0800
+
+    removed email section
+
+[33mcommit 50d540208b17e7f72ca21b8ac43ae2a1f9051d30[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Fri Dec 13 17:35:29 2024 +0800
+
+    new updated codes
+
+[33mcommit 46c5d9df83fa568be9630fc41bc8cff92e36d1f6[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Fri Dec 13 00:22:33 2024 +0800
+
+    adjusted buttons
+
+[33mcommit ceb358bc253f70df95ef64ce65231d928237be30[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Fri Dec 13 00:05:31 2024 +0800
+
+    changing navbar and topbar settings
+
+[33mcommit 6179ed91f5ebf455040f295814a28938b04b1c42[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Thu Dec 12 23:43:05 2024 +0800
+
+    back arrow prevention
+
+[33mcommit a7f23a377c0892662af7d2dd00d0033d70094ce6[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Thu Dec 12 23:18:45 2024 +0800
+
+    linked
+
+[33mcommit 3a560b00b05c5d6dc3b9b3855850a0df2094d041[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Thu Dec 12 22:57:01 2024 +0800
+
+    added Logic and designs in topbar
+
+[33mcommit 8a15a492714b72631eb28e522f0028f682d148ed[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Thu Dec 12 02:09:57 2024 +0800
+
+    updated codes
+
+[33mcommit 5208f9579dca7db875e9fc9ee5bfd4ef891fd088[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 11 16:32:28 2024 +0800
+
+    fix feedback
+
+[33mcommit ed36d51156b422306cd13328b3d4d222f9cbb1a8[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 11 10:12:24 2024 +0800
+
+    add topbar
+
+[33mcommit 2d1b54f58d308495d60934327cf6ab75be0875b7[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Wed Dec 11 01:22:24 2024 +0800
+
+    applied in the admins dashboard
+
+[33mcommit 08e7f73bee2dbdf0e0e91e5018dad85144da076a[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Tue Dec 10 21:44:22 2024 +0800
+
+    added Messages
+
+[33mcommit 00accccb1b9a850ae6c4f4de1b2a77b81eed8214[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Tue Dec 10 15:46:20 2024 +0800
+
+    choose file local
+
+[33mcommit 8bf03b742833650cc05c4be3378ae9729330923b[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Tue Dec 10 14:37:47 2024 +0800
+
+    newly dropdown added
+
+[33mcommit e297e34d6b072d9b15d35a863b1cfe4a53e2c128[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Tue Dec 10 13:21:18 2024 +0800
+
+    improved little bit
+
+[33mcommit 746b6fd84900628f7c5a0ceb96f22ed623194348[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 9 22:04:12 2024 +0800
+
+    gamayng bag o
+
+[33mcommit 9be9f74d57c9cf06fbebabbb73a64133bd0c9567[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 9 21:20:59 2024 +0800
+
+    dashboard improvements
+
+[33mcommit d42d4580467182621d1838f3dd7d43dd1ca2320a[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Sun Dec 8 17:45:42 2024 +0800
+
+    add docs api teacher
+
+[33mcommit ecd30ed8a90942ce37ca804428c07ade914acdcc[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Fri Dec 6 20:47:22 2024 +0800
+
+    fixing google drive
+
+[33mcommit 511208f5595210385aa16163e51efcf91242f9e7[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Fri Dec 6 12:51:47 2024 +0800
+
+    fix error
+
+[33mcommit 307b14b3b0a8eaaac3f656f4f2f8a9849f1ae8bf[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Fri Dec 6 11:48:25 2024 +0800
+
+    fixing drive
+
+[33mcommit b27d946dda2bf1da854c1d6ab16eba10dbcb475f[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Fri Dec 6 11:37:34 2024 +0800
+
+    update
+
+[33mcommit 44c6100a6a616f52062b12170a7ec3a0f22e3ee5[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Fri Dec 6 11:17:10 2024 +0800
+
+    add server event
+
+[33mcommit ca35e36734709a2263178925458651b6b575b02b[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 4 19:49:50 2024 +0800
+
+    add schedule student
+
+[33mcommit f3743e928c36626d960f463b77957f1220947bab[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 4 19:39:30 2024 +0800
+
+    remove messages
+
+[33mcommit 20ba6040cd6726c479a00ac60b98adc85966bf2a[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 4 19:07:44 2024 +0800
+
+    google calendar
+
+[33mcommit 790e23944b33af495dbc11a666039e7bf8b45356[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Wed Dec 4 19:03:04 2024 +0800
+
+    add calender delete
+
+[33mcommit 92fff5b010eb307ea0f9801b450e68f5fcbacc5e[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 2 16:25:09 2024 +0800
+
+    transfer Login.jsx in Auth for organized
+
+[33mcommit 1b2fcd438db7b81ce8b5268728671a5838ea37f1[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Mon Dec 2 16:04:49 2024 +0800
+
+    integrated back prevention and Logout Handling
+
+[33mcommit 43edd7fe34465af428a3e6d3a81fdb2ed9f5744b[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 2 09:08:07 2024 +0800
+
+    issue admin layout
+
+[33mcommit fda45b4848e609b60de6e2f6ec4d6fff0ceb836f[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Dec 2 09:05:46 2024 +0800
+
+    fix teacher and student
+
+[33mcommit 8c2edb0f3de1d8266885b4a664c14a4bd19d2112[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Sun Dec 1 20:36:13 2024 +0800
+
+    re organized codes
+
+[33mcommit 7cfe2a50d02d420cdc04df562f2c5b25f7b52a5b[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Sun Dec 1 18:36:28 2024 +0800
+
+    improved account type
+
+[33mcommit 73e8b67372ff258a54b6d42d1b9d5b1fe98923bb[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Sun Dec 1 15:59:43 2024 +0800
+
+    small adjustments
+
+[33mcommit 0693e781cde3dfd8560059427e394cc9adacb350[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Sat Nov 30 17:09:00 2024 +0800
+
+    applied Modals
+
+[33mcommit 748dac26e8e0a175566362d88c9204a241a630a5[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Sat Nov 30 16:57:28 2024 +0800
+
+    Newly organized Frontend Codes
+
+[33mcommit afb9b3afc8275e5a984ab437a91d728e88b44270[m
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Fri Nov 29 00:04:34 2024 +0800
+
+    add nodemon
+
+[33mcommit 092a417eedfe3b34cc2b73f455c7c4406cd74713[m
+Author: JulianSedo31 <2001104249@student.buksu.edu.ph>
+Date:   Thu Nov 28 19:00:09 2024 +0800
+
+    updated frontend and Organized codes
+
+[33mcommit 38cac501ef527071a71923aca4b778c8a826f8c3[m
+Author: Rebatoo <2201104172@student.buksu.edu.ph>
+Date:   Wed Nov 27 23:38:46 2024 +0800
+
+    merge
+
+[33mcommit e493571ebdcaaa28092cf87f1ea4693f7f501de8[m
+Author: Rebatoo <2201104172@student.buksu.edu.ph>
+Date:   Tue Nov 26 22:58:51 2024 +0800
+
+    the admin crud is done
+
+[33mcommit 62d19aec2f72d37f03e18b6b06a66019c5e1b98e[m
+Author: Rebatoo <2201104172@student.buksu.edu.ph>
+Date:   Tue Nov 26 22:20:18 2024 +0800
+
+    adding student records
+
+[33mcommit 032b5a0722d920df668f40ed9f068360320a5554[m
+Merge: 23c613c 1c9b7b3
+Author: Beronio21 <2201107938@student.buksu.edu.ph>
+Date:   Mon Nov 25 09:24:10 2024 +0800
+
+    api spread sheet
+
+[33mcommit 1c9b7b3a4c67aee446edd1da18e3cb8e86837f4a[m
+Author: Beron

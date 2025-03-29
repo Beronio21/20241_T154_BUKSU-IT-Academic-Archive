@@ -10,6 +10,7 @@ import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmission';
 import CapstoneManagement from '../../components/Capstone-Management/CapstoneManagement';
 
+
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -115,12 +116,6 @@ const AdminDashboard = () => {
                 <h1 className="h3">Welcome, {userInfo?.name}</h1>
                 <p className="text-muted">Administrator</p>
               </div>
-              <img
-                className="rounded-circle"
-                src={userInfo?.image}
-                alt={userInfo?.name}
-                style={{ width: '50px', height: '50px' }}
-              />
             </header>
 
             <div className="row g-3">

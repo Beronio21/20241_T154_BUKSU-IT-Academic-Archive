@@ -1,0 +1,94 @@
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(135deg, #1A1F36, #253A5A); /* Blue Gradient */
+    color: #FFFFFF;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures the footer stays at the bottom */
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #E3F2FD; /* Light Blue */
+    margin-left: 12px;
+}
+
+/* Navigation Menu */
+.nav {
+    padding: 20px 0;
+    flex-grow: 1; /* Ensures the nav section takes the available space */
+}
+
+/* Navigation Links */
+.nav-link {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #C1D1E8; /* Light Grayish Blue */
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 6px;
+    font-weight: normal;
+}
+
+/* Active Link State */
+.nav-link.active {
+    background: #3A6EA5; /* Darker Blue */
+    color: white;
+    border-left: 4px solid #1E88E5; /* Accent Blue */
+    font-weight: bold;
+}
+
+/* Sidebar Footer (User Info) */
+.sidebar-footer {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05); /* Slight transparent background */
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    margin-top: auto; /* Pushes the footer to the bottom of the sidebar */
+}
+
+.user-info {
+    color: #E3F2FD; /* Light Blue Text */
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.user-email {
+    font-size: 0.875rem;
+    margin: 5px 0;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #B0BEC5; /* Light Gray */
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 220px;
+    }
+}
