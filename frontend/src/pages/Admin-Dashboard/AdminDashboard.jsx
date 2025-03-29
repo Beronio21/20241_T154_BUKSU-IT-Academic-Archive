@@ -198,13 +198,13 @@ const AdminDashboard = () => {
       <AdminNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
       <div className="flex-grow-1 p-4">
         <Routes>
-          <Route path="/dashboard" element={<DashboardComponent />} />
-          <Route path="/user-management" element={<UserManagement />} />
-          <Route path="/student-records" element={<StudentRecords />} />
-          <Route path="/teacher-records" element={<TeacherRecords />} />
-          <Route path="/review-submissions" element={<ReviewSubmission />} />
-          <Route path="/capstone-management" element={<CapstoneManagement />} />
-          <Route path="/admin-register" element={<AdminRegister />} />
+          <Route path="/dashboard" element={renderContent()} />
+          <Route path="/user-management" element={renderContent()} />
+          <Route path="/student-records" element={renderContent()} />
+          <Route path="/teacher-records" element={renderContent()} />
+          <Route path="/review-submissions" element={renderContent()} />
+          <Route path="/capstone-management" element={renderContent()} />
+          <Route path="/admin-register" element={renderContent()} />
         </Routes>
       </div>
     </div>
