@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './StudentNavbar.css';
 import logo from '../../Images/buksulogov2.png';
 
@@ -7,14 +7,16 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const navigate = useNavigate();
 
     const mainNavItems = [
-        { name: 'Dashboard', section: 'dashboard', path: '/student-dashboard/dashboard' },
-        { name: 'My Profile', section: 'profile', path: '/student-dashboard/profile' },
-        { name: 'Submit Capstone', section: 'submit-capstone', path: '/student-dashboard/submit-capstone' },
-        { name: 'View Capstone', section: 'view-capstone', path: '/student-dashboard/view-capstone' }
+        { name: 'Dashboard', section: 'dashboard', path: '/student-dashboard/dashboard', icon: 'bi bi-house' },
+        { name: 'My Profile', section: 'profile', path: '/student-dashboard/profile', icon: 'bi bi-person' },
+        { name: 'Submit Capstone', section: 'submit-capstone', path: '/student-dashboard/submit-capstone', icon: 'bi bi-upload' },
+        { name: 'View Capstone', section: 'view-capstone', path: '/student-dashboard/view-capstone', icon: 'bi bi-eye' }
     ];
 
     const handleNavigation = (section, path) => {
-        handleSectionChange(section);
+        if (typeof handleSectionChange === 'function') {
+            handleSectionChange(section);
+        }
         navigate(path);
     };
 
@@ -32,6 +34,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
                                 className={`nav-link ${activeSection === item.section ? 'active' : ''}`}
                                 onClick={() => handleNavigation(item.section, item.path)}
                             >
+                                <i className={item.icon}></i>
                                 {item.name}
                             </button>
                         </li>

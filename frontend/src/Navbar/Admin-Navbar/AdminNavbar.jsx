@@ -40,7 +40,7 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
         </div>
 
         {/* Footer */}
-        <div className="sidebar-footer">
+        <div className="sidebar-footer ">
           {/* You can add user info here if needed */}
           <div className="user-info">
             <div className="user-name">Admin Name</div>
