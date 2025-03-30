@@ -1,0 +1,139 @@
+.review-submission-container {
+    padding: 2rem;
+}
+
+.review-header h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.search-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+}
+
+.search-bar input,
+.search-bar select {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 250px;
+}
+
+/* Grid Layout for Submissions */
+.submissions-grid {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    gap: 1.5rem;
+}
+
+/* Individual Card */
+.submission-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1 1 300px; /* Ensure cards are responsive and have a minimum width */
+}
+
+.submission-card:hover {
+    transform: scale(1.03);
+}
+
+/* Header */
+.submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.submission-header h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: white;
+}
+
+/* Submission Content */
+.submission-content .info-group {
+    margin-bottom: 0.75rem;
+}
+
+.submission-content label {
+    font-weight: bold;
+    display: block;
+    color: #555;
+}
+
+.abstract-text,
+.keywords-list,
+.info-group p {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 0;
+}
+
+/* Action Buttons */
+.submission-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.btn-view,
+.btn-feedback {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-view {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-view:hover {
+    background-color: #0056b3;
+}
+
+.btn-feedback {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-feedback:hover {
+    background-color: #1e7e34;
+}
+
+/* Scrollbar Styling */
+.submissions-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.submissions-grid::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 10px;
+}
+
+.submissions-grid::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}

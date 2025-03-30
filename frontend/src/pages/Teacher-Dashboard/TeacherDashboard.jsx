@@ -155,7 +155,7 @@ const TeacherDashboard = () => {
                                     submissions.map((submission) => (
                                         <Col md={4} key={submission._id} className="mb-4">
                                             <Card className="submission-card h-100">
-                                                <Card.Body>
+                                                <Card.Body className="d-flex flex-column">
                                                     <Card.Title>{submission.title}</Card.Title>
                                                     <Card.Text>
                                                         <strong>Status:</strong> 
@@ -175,9 +175,11 @@ const TeacherDashboard = () => {
                                                     <Card.Text>
                                                         <strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}
                                                     </Card.Text>
-                                                    <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                                                        View Document
-                                                    </a>
+                                                    <div className="mt-auto">
+                                                        <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary w-100">
+                                                            View Document
+                                                        </a>
+                                                    </div>
                                                 </Card.Body>
                                             </Card>
                                         </Col>
