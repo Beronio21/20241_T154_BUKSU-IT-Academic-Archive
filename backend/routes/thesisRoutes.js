@@ -6,10 +6,10 @@ const Notification = require('../models/notification');
 // Submit thesis
 router.post('/submit', async (req, res) => {
     try {
-        const { title, abstract, keywords, members, adviserEmail, docsLink, email, category } = req.body;
+        const { title, abstract, keywords, members, adviserEmail, docsLink, email, category, objective } = req.body;
 
         // Validate required fields
-        if (!title || !abstract || !keywords || !members || !adviserEmail || !docsLink || !email || !category) {
+        if (!title || !abstract || !keywords || !members || !adviserEmail || !docsLink || !email || !category || !objective) {
             return res.status(400).json({
                 status: 'error',
                 message: 'All fields are required'
@@ -34,6 +34,7 @@ router.post('/submit', async (req, res) => {
             docsLink,
             email,
             category,
+            objective,
             status: 'pending'
         });
 
