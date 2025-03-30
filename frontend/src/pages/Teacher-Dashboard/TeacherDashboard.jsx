@@ -12,7 +12,6 @@ import { Modal } from 'react-bootstrap';
 import axios from 'axios';
 
 const TeacherDashboard = () => {
-
     const [activeSection, setActiveSection] = useState('dashboard');
     const [userInfo, setUserInfo] = useState(null);
     const [submissions, setSubmissions] = useState([]);
@@ -51,7 +50,6 @@ const TeacherDashboard = () => {
         }
     }, [navigate, location]);
 
-    // Fetch submissions when userInfo is available
     useEffect(() => {
         if (userInfo?.email) {
             fetchSubmissions();

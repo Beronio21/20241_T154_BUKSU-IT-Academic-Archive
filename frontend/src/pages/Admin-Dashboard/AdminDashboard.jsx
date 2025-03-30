@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import AdminRegister from "../../Auth/Admin-Register/AdminRegister";
 import UserManagement from '../../UserManagement/UserManagement';
 import StudentRecords from '../../Records/StudentRecords';
 import TeacherRecords from '../../Records/TeacherRecords';
 import AdminTopbar from '../../Topbar/Admin-Topbar/AdminTopbar';
 import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
+import AdminRegister from '../../Auth/Admin-Register/AdminRegister';
 import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmission';
 import CapstoneManagement from '../../components/Capstone-Management/CapstoneManagement';
 
@@ -22,6 +22,7 @@ const AdminDashboard = () => {
   const [recentAccounts, setRecentAccounts] = useState([]);
   const navigate = useNavigate();
 
+  // Load user info and stats on component mount
   useEffect(() => {
     const storedUserInfo = localStorage.getItem('user-info');
     if (storedUserInfo) {
@@ -29,7 +30,7 @@ const AdminDashboard = () => {
     }
     fetchStats();
 
-    // Prevent accidental navigation
+    // Prevent navigation and prompt user on page unload or back navigation
     const preventNavigation = (e) => {
       e.preventDefault();
       e.returnValue = '';
@@ -37,6 +38,10 @@ const AdminDashboard = () => {
 
     const handlePopState = () => {
       window.history.pushState(null, null, window.location.pathname);
+      // Removed logout confirmation
+      // if (window.confirm('Are you sure you want to leave this page?')) {
+      //   handleLogout();
+      // }
     };
 
     window.history.pushState(null, null, window.location.pathname);
@@ -49,7 +54,7 @@ const AdminDashboard = () => {
     };
   }, []);
 
-  // Fetch statistics from backend
+  // Fetch statistics from the backend
   const fetchStats = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('user-info'));
@@ -63,7 +68,7 @@ const AdminDashboard = () => {
       const studentsResponse = await axios.get('http://localhost:8080/api/students', config);
       const teachersResponse = await axios.get('http://localhost:8080/api/teachers', config);
 
-      // Sort users by creation date
+      // Combine student and teacher data, and sort by creation date
       const allUsers = [...studentsResponse.data, ...teachersResponse.data]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 5);
@@ -72,18 +77,20 @@ const AdminDashboard = () => {
       setStats({
         totalStudents: studentsResponse.data.length,
         totalTeachers: teachersResponse.data.length,
-        activeTheses: 0, // Update if thesis data is available
+        activeTheses: 0, // You can update this if you have active theses data
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
   };
 
-  // Handle logout
+  // Handle user logout
   const handleLogout = () => {
+    // Clear user info from local storage or state
     localStorage.removeItem("user-info");
+    // Redirect to login page
     navigate("/login");
-  };
+};
 
   // Change active section
   const handleSectionChange = (section) => {
@@ -116,6 +123,12 @@ const AdminDashboard = () => {
                 <h1 className="h3">Welcome, {userInfo?.name}</h1>
                 <p className="text-muted">Administrator</p>
               </div>
+              <img
+                className="rounded-circle"
+                src={userInfo?.image}
+                alt={userInfo?.name}
+                style={{ width: '50px', height: '50px' }}
+              />
             </header>
 
             <div className="row g-3">
@@ -196,16 +209,8 @@ const AdminDashboard = () => {
   return (
     <div className="d-flex">
       <AdminNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
-      <div className="flex-grow-1 p-4">
-        <Routes>
-          <Route path="/dashboard" element={renderContent()} />
-          <Route path="/user-management" element={renderContent()} />
-          <Route path="/student-records" element={renderContent()} />
-          <Route path="/teacher-records" element={renderContent()} />
-          <Route path="/review-submissions" element={renderContent()} />
-          <Route path="/capstone-management" element={renderContent()} />
-          <Route path="/admin-register" element={renderContent()} />
-        </Routes>
+      <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
+        {renderContent()}
       </div>
     </div>
   );
