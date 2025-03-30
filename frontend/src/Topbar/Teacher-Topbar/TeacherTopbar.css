@@ -4,7 +4,7 @@
     top: 0;
     left: 250px; /* ✅ Matches Sidebar */
     width: calc(100% - 250px);
-    height: 73px; /* ✅ Matches Sidebar Header */
+    height: 78px; /* ✅ Matches Sidebar Header */
     background-color: white;
     border-bottom: 1px solid #ddd;
     display: flex;
