@@ -4,12 +4,13 @@ import './StudentTopbar.css'; // External CSS
 
 const StudentTopbar = ({
     userInfo,
-    searchTerm,
-    setSearchTerm,
-    yearFilter,
-    setYearFilter,
-    topicFilter,
-    setTopicFilter
+    titleSearch,
+    setTitleSearch,
+    dateSearch,
+    setDateSearch,
+    categorySearch,
+    setCategorySearch,
+    categories = [] // Default to an empty array
 }) => {
     const navigate = useNavigate();
 
@@ -21,49 +22,40 @@ const StudentTopbar = ({
         }
     };
 
-    const topics = ["All Topics", "IoT", "AI", "ML", "Sound", "Camera"];
-
     return (
         <nav className="student-topbar navbar navbar-expand-lg bg-light shadow-sm">
             <div className="container-fluid d-flex justify-content-between align-items-center">
-                
-                {/* Search Bar & Filters */}
-                <div className="d-flex align-items-center gap-3">
+                {/* Search Bar */}
+                <div className="search-bar d-flex gap-3">
                     <input
                         type="text"
-                        className="form-control form-control-sm search-bar"
-                        placeholder="Search capstones..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search by title"
+                        value={titleSearch}
+                        onChange={(e) => setTitleSearch(e.target.value)}
+                        className="form-control"
                     />
-
+                    <input
+                        type="date"
+                        value={dateSearch}
+                        onChange={(e) => setDateSearch(e.target.value)}
+                        className="form-control"
+                    />
                     <select
-                        className="form-select form-select-sm filter-dropdown"
-                        value={yearFilter}
-                        onChange={(e) => setYearFilter(e.target.value)}
+                        value={categorySearch}
+                        onChange={(e) => setCategorySearch(e.target.value)}
+                        className="form-control"
                     >
-                        <option value="">All Years</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                    </select>
-
-                    <select
-                        className="form-select form-select-sm filter-dropdown"
-                        value={topicFilter}
-                        onChange={(e) => setTopicFilter(e.target.value)}
-                    >
-                        {topics.map((topic) => (
-                            <option key={topic} value={topic}>
-                                {topic}
-                            </option>
+                        <option value="">Select a category</option>
+                        {categories.map((cat) => (
+                            <option key={cat} value={cat}>{cat}</option>
                         ))}
                     </select>
                 </div>
 
                 {/* User Profile Dropdown */}
                 <div className="dropdown">
-                    <button className="p-0 dropdown-toggle d-flex align-items-center profile-btn"
+                    <button
+                        className="p-0 dropdown-toggle d-flex align-items-center profile-btn"
                         type="button"
                         id="userDropdown"
                         data-bs-toggle="dropdown"
@@ -92,7 +84,6 @@ const StudentTopbar = ({
                         </li>
                     </ul>
                 </div>
-
             </div>
         </nav>
     );
