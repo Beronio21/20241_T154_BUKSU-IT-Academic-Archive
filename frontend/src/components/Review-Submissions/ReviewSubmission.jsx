@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Container, Row, Col, Alert, Button, Form } from 'react-bootstrap';
-import './ReviewSubmission.css';
+import { Modal } from 'react-bootstrap';
 
 const ReviewSubmission = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -112,12 +111,12 @@ const ReviewSubmission = () => {
     });
 
     return (
-        <Container className="review-submission-container py-5">
+        <div className="review-submission-container">
             <header className="review-header">
                 <h2>Review Capstone Research Paper Submissions</h2>
             </header>
 
-            <div className="search-bar mb-4">
+            <div className="search-bar">
                 <input
                     type="text"
                     placeholder="Search by title"
@@ -147,70 +146,72 @@ const ReviewSubmission = () => {
                     </div>
                 </div>
             ) : error ? (
-                <Alert variant="danger">{error}</Alert>
+                <div className="error-message">
+                    {error}
+                </div>
             ) : (
-                <Row className="submissions-grid">
+                <div className="submissions-grid">
                     {filteredSubmissions.length === 0 ? (
-                        <Col>
-                            <Alert variant="info">No submissions to review</Alert>
-                        </Col>
+                        <div className="no-submissions">
+                            <i className="bi bi-inbox text-muted"></i>
+                            <p>No submissions to review</p>
+                        </div>
                     ) : (
                         filteredSubmissions.map((submission) => (
-                            <Col md={4} key={submission._id} className="mb-4">
-                                <div className="submission-card unique-card-class h-100">
-                                    <div className="submission-header">
-                                        <h3>{submission.title}</h3>
-                                        <span 
-                                            className="status-badge"
-                                            style={{ backgroundColor: getStatusColor(submission.status) }}
-                                        >
-                                            {submission.status}
-                                        </span>
+                            <div key={submission._id} className="submission-card">
+                                <div className="submission-header">
+                                    <h3>{submission.title}</h3>
+                                    <span 
+                                        className="status-badge"
+                                        style={{ backgroundColor: getStatusColor(submission.status) }}
+                                    >
+                                        {submission.status}
+                                    </span>
+                                </div>
+                                <div className="submission-content">
+                                    <div className="info-group">
+                                        <label>Abstract:</label>
+                                        <p className="abstract-text">{submission.abstract}</p>
                                     </div>
-                                    <div className="submission-content">
-                                        <div className="info-group">
-                                            <label>Abstract:</label>
-                                            <p className="abstract-text">{submission.abstract}</p>
-                                        </div>
-                                        <div className="info-group">
-                                            <label>Keywords:</label>
-                                            <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
-                                        </div>
-                                        <div className="info-group">
-                                            <label>Members:</label>
-                                            <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
-                                        </div>
-                                        <div className="info-group">
-                                            <label>Student Email:</label>
-                                            <p>{submission.email || 'N/A'}</p>
-                                        </div>
-                                        <div className="info-group">
-                                            <label>Submitted:</label>
-                                            <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
-                                        </div>
+                                    <div className="info-group">
+                                        <label>Keywords:</label>
+                                        <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
                                     </div>
-                                    <div className="submission-actions">
-                                        <a 
-                                            href={submission.docsLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="btn-view"
-                                        >
-                                            <i className="bi bi-eye-fill me-2"></i>
-                                            View Document
-                                        </a>
-                                        <Button 
-                                            variant="primary" 
-                                            onClick={() => handleAddFeedback(submission)}
-                                        >
-                                            Add Feedback
-                                        </Button>
+                                    <div className="info-group">
+                                        <label>Members:</label>
+                                        <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
+                                    </div>
+                                    <div className="info-group">
+                                        <label>Student Email:</label>
+                                        <p>{submission.email || 'N/A'}</p>
+                                    </div>
+                                    <div className="info-group">
+                                        <label>Submitted:</label>
+                                        <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
                                     </div>
                                 </div>
-                            </Col>
+                                <div className="submission-actions">
+                                    <a 
+                                        href={submission.docsLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-view"
+                                    >
+                                        <i className="bi bi-eye-fill me-2"></i>
+                                        View Document
+                                    </a>
+                                    <button 
+                                        className="btn-feedback"
+                                        onClick={() => handleAddFeedback(submission)}
+                                    >
+                                        <i className="bi bi-chat-left-text-fill me-2"></i>
+                                        Add Feedback
+                                    </button>
+                                </div>
+                            </div>
                         ))
                     )}
-                </Row>
+                </div>
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)} className="feedback-modal">
@@ -218,39 +219,51 @@ const ReviewSubmission = () => {
                     <Modal.Title>Submit Feedback</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleSubmitFeedback}>
-                        <Form.Group controlId="comment" className="mb-3">
-                            <Form.Label>Your Feedback</Form.Label>
-                            <Form.Control
-                                as="textarea"
+                    <div className="feedback-form">
+                        <div className="form-group">
+                            <label>Your Feedback</label>
+                            <textarea
                                 value={feedbackForm.comment}
                                 onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
                                 placeholder="Enter your feedback..."
                                 rows="4"
+                                className="form-control"
                                 required
                             />
-                        </Form.Group>
-                        <Form.Group controlId="status" className="mb-3">
-                            <Form.Label>Status</Form.Label>
-                            <Form.Control
-                                as="select"
+                        </div>
+                        <div className="form-group">
+                            <label>Status</label>
+                            <select
                                 value={feedbackForm.status}
                                 onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
+                                className="form-control"
                                 required
                             >
                                 <option value="pending">Pending</option>
                                 <option value="approved">Approve</option>
                                 <option value="rejected">Reject</option>
                                 <option value="revision">Needs Revision</option>
-                            </Form.Control>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" className="w-100">
-                            Submit Feedback
-                        </Button>
-                    </Form>
+                            </select>
+                        </div>
+                    </div>
                 </Modal.Body>
+                <Modal.Footer>
+                    <button 
+                        onClick={handleSubmitFeedback} 
+                        className="btn-submit" 
+                        disabled={!feedbackForm.comment.trim()}
+                    >
+                        Submit Feedback
+                    </button>
+                    <button 
+                        onClick={() => setShowModal(false)} 
+                        className="btn-cancel"
+                    >
+                        Cancel
+                    </button>
+                </Modal.Footer>
             </Modal>
-        </Container>
+        </div>
     );
 };
 
