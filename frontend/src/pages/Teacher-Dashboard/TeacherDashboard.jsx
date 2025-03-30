@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import TeacherNavbar from '../../Navbar/Teacher-Navbar/TeacherNavbar';
 import TeacherTopbar from '../../Topbar/Teacher-Topbar/TeacherTopbar';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const TeacherDashboard = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -53,7 +55,7 @@ const TeacherDashboard = () => {
     };
 
     return (
-        <div className="d-flex">
+        <div className="d-flex flex-column">
             <TeacherTopbar 
                 searchTerm={searchTerm} 
                 setSearchTerm={setSearchTerm} 
@@ -62,57 +64,51 @@ const TeacherDashboard = () => {
                 topicFilter={topicFilter} 
                 setTopicFilter={setTopicFilter}
             />
-            <TeacherNavbar />
-            <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
-                {loading ? (
-                    <div className="loading-container">
-                        <div className="spinner-border text-primary" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="submissions-grid">
-                        {filterSubmissions().length === 0 ? (
-                            <div className="no-submissions">
-                                <i className="bi bi-inbox text-muted"></i>
-                                <p>No submissions to review</p>
+            <div className="d-flex">
+                <TeacherNavbar />
+                <div className="container mt-4">
+                    <h2 className="mb-3">Thesis Submissions</h2>
+                    {loading ? (
+                        <div className="text-center py-5">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
                             </div>
-                        ) : (
-                            filterSubmissions().map((submission) => (
-                                <div 
-                                    key={submission._id} 
-                                    className="submission-card fade-in"
-                                >
-                                    <div className="submission-header">
-                                        <h3>{submission.title}</h3>
-                                        <span 
-                                            className={`status-badge ${submission.status.toLowerCase()}`}
-                                        >
-                                            {submission.status}
-                                        </span>
-                                    </div>
-                                    <div className="submission-content">
-                                        <div className="info-group">
-                                            <label>Abstract:</label>
-                                            <p className="abstract-text">{submission.abstract}</p>
+                        </div>
+                    ) : (
+                        <ul className="list-group">
+                            {filterSubmissions().length === 0 ? (
+                                <li className="list-group-item text-center text-muted py-4">
+                                    <i className="bi bi-inbox-fill fs-2"></i>
+                                    <p className="mt-2">No submissions to review</p>
+                                </li>
+                            ) : (
+                                filterSubmissions().map((submission) => (
+                                    <li key={submission._id} className="list-group-item border rounded shadow-sm mb-3 p-3">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 className="mb-1">{submission.title}</h5>
+                                                <p className="mb-1 text-muted"><strong>Abstract:</strong> {submission.abstract}</p>
+                                            </div>
+                                            <span className={`badge bg-${submission.status.toLowerCase() === 'approved' ? 'success' : 'warning'} text-uppercase`}>
+                                                {submission.status}
+                                            </span>
                                         </div>
-                                    </div>
-                                    <div className="submission-actions">
-                                        <a 
-                                            href={submission.docsLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="btn-view"
-                                        >
-                                            <i className="bi bi-eye-fill me-2"></i>
-                                            View Document
-                                        </a>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                )}
+                                        <div className="mt-2 d-flex justify-content-between align-items-center">
+                                            <a 
+                                                href={submission.docsLink} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="btn btn-primary btn-sm"
+                                            >
+                                                <i className="bi bi-eye-fill me-2"></i> View Document
+                                            </a>
+                                        </div>
+                                    </li>
+                                ))
+                            )}
+                        </ul>
+                    )}
+                </div>
             </div>
         </div>
     );

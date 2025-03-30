@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useDrivePicker from 'react-google-drive-picker';
-import './SubmitThesis.css';
+
 
 const SubmitThesis = () => {
     const [formData, setFormData] = useState({
@@ -17,8 +17,6 @@ const SubmitThesis = () => {
     const [error, setError] = useState(null);
     const [openPicker] = useDrivePicker();
 
-    const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
-
     useEffect(() => {
         const userInfoString = localStorage.getItem('user-info');
         if (userInfoString) {
@@ -29,7 +27,6 @@ const SubmitThesis = () => {
 
     const handleInputChange = (e, index = null) => {
         const { name, value } = e.target;
-
         if (index !== null) {
             setFormData((prev) => ({
                 ...prev,
@@ -55,22 +52,20 @@ const SubmitThesis = () => {
             return;
         }
 
-        const openPickerCallback = (data) => {
-            if (data.action === 'picked') {
-                const fileId = data.docs[0].id;
-                const fileUrl = `https://drive.google.com/file/d/${fileId}/view`;
-                setFormData((prev) => ({ ...prev, docsLink: fileUrl }));
-            }
-        };
-
         openPicker({
-            clientId: "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com",
-            developerKey: "AIzaSyBefZhoxSibx9ORWrmhrH3I8L_Cz1OB33E",
+            clientId: "YOUR_CLIENT_ID",
+            developerKey: "YOUR_DEVELOPER_KEY",
             viewId: "DOCS",
             showUploadView: true,
             multiselect: false,
             token: googleDriveToken,
-            callbackFunction: openPickerCallback,
+            callbackFunction: (data) => {
+                if (data.action === 'picked') {
+                    const fileId = data.docs[0].id;
+                    const fileUrl = `https://drive.google.com/file/d/${fileId}/view`;
+                    setFormData((prev) => ({ ...prev, docsLink: fileUrl }));
+                }
+            },
         });
     };
 
@@ -126,89 +121,40 @@ const SubmitThesis = () => {
     };
 
     return (
-        <div className="submit-thesis-container container mt-4">
-            <div className="thesis-form shadow p-4 bg-light rounded">
-                <h2 className="mb-4 text-center">Submit Capstone Research Paper</h2>
-
+        <div className="container py-5">
+            <div className="card shadow-lg p-4 bg-white rounded">
+                <h2 className="text-center mb-4">Submit Capstone Research Paper</h2>
                 {error && <div className="alert alert-danger">{error}</div>}
-
                 <form onSubmit={handleSubmit}>
-                    {/* 🔹 Research Title */}
                     <div className="mb-3">
-                        <label htmlFor="title">Research Title</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            required
-                            aria-label="Research Title"
-                        />
+                        <label className="form-label">Research Title</label>
+                        <input type="text" className="form-control" name="title" value={formData.title} onChange={handleInputChange} required />
                     </div>
-
-                    {/* 🔹 Abstract */}
                     <div className="mb-3">
-                        <label htmlFor="abstract">Abstract</label>
-                        <textarea
-                            className="form-control"
-                            name="abstract"
-                            value={formData.abstract}
-                            onChange={handleInputChange}
-                            rows="4"
-                            required
-                            aria-label="Abstract"
-                        />
+                        <label className="form-label">Abstract</label>
+                        <textarea className="form-control" name="abstract" value={formData.abstract} onChange={handleInputChange} rows="4" required />
                     </div>
-
-                    {/* 🔹 Keywords */}
                     <div className="mb-3">
-                        <label>Keywords</label>
+                        <label className="form-label">Keywords</label>
                         {formData.keywords.map((keyword, index) => (
                             <div key={index} className="d-flex gap-2 mb-2">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="keywords"
-                                    value={keyword}
-                                    onChange={(e) => handleInputChange(e, index)}
-                                    required
-                                    aria-label={`Keyword ${index + 1}`}
-                                />
-                                <button type="button" className="btn btn-danger btn-sm" onClick={() => removeField('keywords', index)}>
-                                    &times;
-                                </button>
+                                <input type="text" className="form-control" name="keywords" value={keyword} onChange={(e) => handleInputChange(e, index)} required />
+                                <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => removeField('keywords', index)}>&times;</button>
                             </div>
                         ))}
-                        <button type="button" className="btn btn-primary btn-sm" onClick={() => addField('keywords')}>+ Add</button>
+                        <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => addField('keywords')}>+ Add</button>
                     </div>
-
-                    {/* 🔹 Adviser Email */}
                     <div className="mb-3">
-                        <label htmlFor="adviserEmail">Adviser Email</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            name="adviserEmail"
-                            value={formData.adviserEmail}
-                            onChange={handleInputChange}
-                            required
-                            aria-label="Adviser Email"
-                        />
+                        <label className="form-label">Adviser Email</label>
+                        <input type="email" className="form-control" name="adviserEmail" value={formData.adviserEmail} onChange={handleInputChange} required />
                     </div>
-
-                    {/* 🔹 Upload Document */}
                     <div className="mb-3">
-                        <label>Upload Thesis Paper</label>
-                        <input type="file" className="form-control" onChange={handleFileChange} aria-label="Upload Thesis Paper" />
-                        <button type="button" className="btn btn-success mt-2" onClick={handleOpenPicker}>Upload via Google Drive</button>
-                        {formData.docsLink && <p className="mt-2">📄 <a href={formData.docsLink} target="_blank" rel="noopener noreferrer">View Document</a></p>}
+                        <label className="form-label">Upload Thesis Paper</label>
+                        <input type="file" className="form-control" onChange={handleFileChange} />
+                        <button type="button" className="btn btn-outline-success mt-2" onClick={handleOpenPicker}>Upload via Google Drive</button>
+                        {formData.docsLink && <p className="mt-2"><a href={formData.docsLink} target="_blank" rel="noopener noreferrer">📄 View Document</a></p>}
                     </div>
-
-                    {/* 🔹 Submit Button */}
-                    <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-                        {loading ? 'Submitting...' : 'Submit'}
-                    </button>
+                    <button type="submit" className="btn btn-primary w-100" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
                 </form>
             </div>
         </div>
