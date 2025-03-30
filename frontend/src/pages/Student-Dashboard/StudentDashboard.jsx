@@ -4,132 +4,243 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import StudentProfile from "../../Profile/Student-Profile/StudentProfile";
 import SubmitThesis from "../../components/Submit-Thesis/SubmitThesis";
-import Docs from "../../components/Docs";
-import StudentTopbar from "../../Topbar/Student-Topbar/StudentTopbar";
+import Topbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
-import { Container, Row, Col, Card, Alert, Button, Spinner } from "react-bootstrap";
+import { Card, Container, Row, Col, Alert, Modal } from "react-bootstrap";
 import "./StudentDashboard.css";
+import axios from 'axios';
 
 const StudentDashboard = () => {
-    const [userInfo, setUserInfo] = useState(null);
-    const [submissions, setSubmissions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeSection, setActiveSection] = useState("dashboard");
+  const [userInfo, setUserInfo] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [titleSearch, setTitleSearch] = useState('');
+  const [dateSearch, setDateSearch] = useState('');
+  const [categorySearch, setCategorySearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [filterDate, setFilterDate] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [feedbackForm, setFeedbackForm] = useState({ comment: "", status: "pending" });
+  const [selectedThesis, setSelectedThesis] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [yearFilter, setYearFilter] = useState("");
-    const [topicFilter, setTopicFilter] = useState("All Topics");
+  const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
 
-    const navigate = useNavigate();
-    const location = useLocation();
+  // Ensure user authentication
+  useEffect(() => {
+    const data = localStorage.getItem("user-info");
+    if (!data) {
+      navigate("/login");
+      return;
+    }
+    const userData = JSON.parse(data);
+    if (userData?.role !== "student" || !userData.token) {
+      navigate("/login");
+      return;
+    }
+    setUserInfo(userData);
 
-    useEffect(() => {
-        const data = localStorage.getItem("user-info");
-        if (!data) {
-            navigate("/login");
-            return;
-        }
-        const userData = JSON.parse(data);
-        if (userData?.role !== "student" || !userData.token) {
-            navigate("/login");
-            return;
-        }
-        setUserInfo(userData);
-        if (location.pathname === "/student-dashboard") {
-            navigate("/student-dashboard/dashboard");
-        }
-    }, [navigate, location]);
+    if (location.pathname === "/student-dashboard") {
+      navigate("/student-dashboard/dashboard");
+    }
+  }, [navigate, location]);
 
-    useEffect(() => {
-        const fetchSubmissions = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const userInfo = JSON.parse(localStorage.getItem("user-info"));
-                if (!userInfo?.email) throw new Error("User info not found");
+  // Fetch submissions
+  useEffect(() => {
+    fetchSubmissions();
+  }, []);
 
-                const response = await fetch(`http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`);
-                if (!response.ok) throw new Error("Failed to fetch submissions");
+  const fetchSubmissions = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user-info"));
+      if (!userInfo || !userInfo.email) {
+        throw new Error("User  info not found");
+      }
 
-                const data = await response.json();
-                if (data.status === "success") setSubmissions(data.data);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchSubmissions();
-    }, []);
+      const response = await axios.get(`http://localhost:8080/api/thesis/student-submissions/${userInfo.email}`);
+      setSubmissions(response.data.data);
+    } catch (error) {
+      console.error("Error fetching submissions:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const filteredSubmissions = submissions.filter(({ title, createdAt }) => {
-        const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesYear = yearFilter ? new Date(createdAt).getFullYear().toString() === yearFilter : true;
-        const matchesTopic = topicFilter === "All Topics" || title.toLowerCase().includes(topicFilter.toLowerCase());
-        return matchesSearch && matchesYear && matchesTopic;
-    });
+  // Logout handler
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate("/login", { replace: true });
+    }
+  };
 
-    const renderDashboard = () => (
-        <Container fluid className="capstone-container px-4">
-            <h2 className="dashboard-title text-center mb-4">Capstone Archive</h2>
-            {loading ? (
-                <div className="text-center"><Spinner animation="border" /></div>
-            ) : error ? (
-                <Alert variant="danger">{error}</Alert>
-            ) : filteredSubmissions.length === 0 ? (
-                <Alert variant="info">No submissions found</Alert>
-            ) : (
-                <Row className="g-4">
-                    {filteredSubmissions.map(({ _id, title, members, adviserEmail, createdAt, status, docsLink }) => (
-                        <Col xs={12} sm={6} md={4} lg={3} key={_id}>
-                            <Card className="capstone-card shadow-sm border-0 d-flex flex-column">
-                                <Card.Body className="d-flex flex-column">
-                                    <div className="submission-header d-flex justify-content-between align-items-center">
-                                        <Card.Title className="submission-title text-truncate" title={title}>{title}</Card.Title>
-                                        <span className={`badge bg-${status === "approved" ? "success" : "warning"}`}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
-                                    </div>
-                                    <Card.Text className="submission-members text-truncate"><strong>Members:</strong> {members.join(", ")}</Card.Text>
-                                    <Card.Text className="text-truncate"><strong>Adviser:</strong> {adviserEmail}</Card.Text>
-                                    <Card.Text><strong>Submitted on:</strong> {new Date(createdAt).toLocaleDateString()}</Card.Text>
-                                    <div className="mt-auto btn-container">
-                                        <Button variant="secondary" size="sm" onClick={() => alert("View Details clicked!")}>View Details</Button>
-                                        <a href={docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">View Document</a>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
+  // Filter submissions based on search term and status
+  const filteredSubmissions = submissions.filter((submission) => {
+    const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
+    const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
+    const matchesCategory = categorySearch ? submission.category === categorySearch : true;
+
+    const matchesStatus =
+      statusFilter === "All" || submission.status === statusFilter;
+
+    return matchesTitle && matchesDate && matchesCategory && matchesStatus;
+  });
+
+  const getStatusColor = (status) => {
+    switch (status) {
+        case 'pending':
+            return '#ffd700';
+        case 'approved':
+            return '#4caf50';
+        case 'rejected':
+            return '#f44336';
+        case 'revision':
+            return '#2196f3';
+        default:
+            return '#ccc';
+    }
+  };
+
+  // Add this function before renderContent
+  const handleViewDetails = (thesis) => {
+    setSelectedThesis(thesis);
+    setShowDetailsModal(true);
+  };
+
+  // Render content based on active section
+  const renderContent = () => {
+    switch (activeSection) {
+      case "profile":
+        return <StudentProfile userInfo={userInfo} />;
+      case "submit-thesis":
+        return <SubmitThesis />;
+      case "dashboard":
+      default:
+        return (
+          <Container>
+            <Row className="mb-4">
+              <Col>
+                <h2>Capstone Research Paper</h2>
+                <div className="search-bar mb-3">
+                  <input
+                    type="text"
+                    placeholder="Search by title"
+                    value={titleSearch}
+                    onChange={(e) => setTitleSearch(e.target.value)}
+                    className="form-control"
+                  />
+                  <input
+                    type="date"
+                    value={dateSearch}
+                    onChange={(e) => setDateSearch(e.target.value)}
+                    className="form-control"
+                  />
+                  <select
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
                     ))}
-                </Row>
-            )}
-        </Container>
-    );
-
-    return (
-        <div className={`dashboard-wrapper ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-            <StudentTopbar 
-                userInfo={userInfo} 
-                searchTerm={searchTerm} 
-                setSearchTerm={setSearchTerm} 
-                yearFilter={yearFilter} 
-                setYearFilter={setYearFilter} 
-                topicFilter={topicFilter} 
-                setTopicFilter={setTopicFilter} 
-            />
-            <div className="d-flex">
-                <StudentNavbar isSidebarOpen={isSidebarOpen} />
-                <div className="dashboard-content">
-                    <Routes>
-                        <Route path="/dashboard" element={renderDashboard()} />
-                        <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
-                        <Route path="/submit-thesis" element={<SubmitThesis />} />
-                        <Route path="/docs" element={<Docs />} />
-                        <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
-                    </Routes>
+                  </select>
                 </div>
-            </div>
-        </div>
-    );
+              </Col>
+            </Row>
+
+            {loading ? (
+              <div className="loading-container">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : error ? (
+              <Alert variant="danger">{error}</Alert>
+            ) : (
+              <Row>
+                {filteredSubmissions.length === 0 ? (
+                  <Col>
+                    <Alert variant="info">No submissions to review</Alert>
+                  </Col>
+                ) : (
+                  filteredSubmissions.map((submission) => (
+                    <Col md={4} key={submission._id} className="mb-4">
+                      <Card className="submission-card">
+                        <Card.Body>
+                          <Card.Title>{submission.title}</Card.Title>
+                          <Card.Text>
+                            <strong>Status:</strong> 
+                            <span style={{ color: getStatusColor(submission.status) }}>
+                              {submission.status}
+                            </span>
+                          </Card.Text>
+                          <Card.Text>
+                            <strong>Abstract:</strong> {submission.abstract}
+                          </Card.Text>
+                          <Card.Text>
+                            <strong>Keywords:</strong> {submission.keywords.join(', ')}
+                          </Card.Text>
+                          <Card.Text>
+                            <strong>Members:</strong> {submission.members.join(', ')}
+                          </Card.Text>
+                          <Card.Text>
+                            <strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}
+                          </Card.Text>
+                          <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                            View Document
+                          </a>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))
+                )}
+              </Row>
+            )}
+          </Container>
+        );
+    }
+  };
+
+  const handleSubmitFeedback = async () => {
+    try {
+        // Implement the logic to submit feedback
+        console.log('Feedback submitted:', feedbackForm);
+        setShowModal(false);
+        // Optionally, refresh the submissions list
+        fetchSubmissions();
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+    }
+  };
+
+  return (
+    <div className="d-flex flex-column" style={{ height: "100vh" }}>
+      {/* Topbar */}
+      <Topbar userInfo={userInfo} handleLogout={handleLogout} />
+
+      {/* Navbar */}
+      <StudentNavbar activeSection={activeSection} handleSectionChange={setActiveSection} />
+
+      {/* Main Content */}
+      <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px" }}>
+        <Routes>
+          <Route path="/dashboard" element={renderContent()} />
+          <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
+          <Route path="/submit-thesis" element={<SubmitThesis />} />
+          <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
+        </Routes>
+      </div>
+    </div>
+  );
 };
 
 export default StudentDashboard;

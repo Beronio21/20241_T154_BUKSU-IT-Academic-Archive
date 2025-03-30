@@ -8,8 +8,9 @@ import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmissi
 import StudentList from '../../components/StudentList';
 import TeacherNavbar from '../../Navbar/Teacher-Navbar/TeacherNavbar';
 import TeacherTopbar from '../../Topbar/Teacher-Topbar/TeacherTopbar';
-import { Modal } from 'react-bootstrap';
+import { Modal, Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import './TeacherDashboard.css'; // Import your CSS file for custom styles
 
 const TeacherDashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -62,6 +63,7 @@ const TeacherDashboard = () => {
             setSubmissions(response.data.data);
         } catch (error) {
             console.error('Error fetching submissions:', error);
+            setError('Failed to fetch submissions.');
         } finally {
             setLoading(false);
         }
@@ -129,36 +131,12 @@ const TeacherDashboard = () => {
             case 'dashboard':
             default:
                 return (
-                    <div className="review-submission-container">
-                        <header className="review-header">
-                            <h2>Capstone Research Paper</h2>
-                            <div className="search-bar">
-                                <input
-                                    type="text"
-                                    placeholder="Search by title..."
-                                    value={titleSearch}
-                                    onChange={(e) => setTitleSearch(e.target.value)}
-                                    className="form-control search-input"
-                                />
-                                <input
-                                    type="date"
-                                    value={dateSearch}
-                                    onChange={(e) => setDateSearch(e.target.value)}
-                                    className="form-control date-input"
-                                />
-                                <select
-                                    value={categorySearch}
-                                    onChange={(e) => setCategorySearch(e.target.value)}
-                                    className="form-control category-input"
-                                >
-                                    <option value="">Select a category</option>
-                                    {categories.map((cat) => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </header>
-
+                    <Container>
+                        <Row className="mb-4">
+                            <Col>
+                                <h2>Capstone Research Paper Submissions</h2>
+                            </Col>
+                        </Row>
                         {loading ? (
                             <div className="loading-container">
                                 <div className="spinner-border text-primary" role="status">
@@ -166,126 +144,57 @@ const TeacherDashboard = () => {
                                 </div>
                             </div>
                         ) : error ? (
-                            <div className="error-message">
-                                {error}
-                            </div>
+                            <Alert variant="danger">{error}</Alert>
                         ) : (
-                            <div className="submissions-grid">
+                            <Row>
                                 {submissions.length === 0 ? (
-                                    <div className="no-submissions">
-                                        <i className="bi bi-inbox text-muted"></i>
-                                        <p>No submissions to review</p>
-                                    </div>
+                                    <Col>
+                                        <Alert variant="info">No submissions to review</Alert>
+                                    </Col>
                                 ) : (
-                                    filteredSubmissions.map((submission) => (
-                                        <div key={submission._id} className="submission-card">
-                                            <div className="submission-header">
-                                                <h3>{submission.title}</h3>
-                                                <span 
-                                                    className="status-badge"
-                                                    style={{ backgroundColor: getStatusColor(submission.status) }}
-                                                >
-                                                    {submission.status}
-                                                </span>
-                                            </div>
-                                            <div className="submission-content">
-                                                <div className="info-group">
-                                                    <label>Abstract:</label>
-                                                    <p className="abstract-text">{submission.abstract}</p>
-                                                </div>
-                                                <div className="info-group">
-                                                    <label>Keywords:</label>
-                                                    <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
-                                                </div>
-                                                <div className="info-group">
-                                                    <label>Members:</label>
-                                                    <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
-                                                </div>
-                                                <div className="info-group">
-                                                    <label>Student Email:</label>
-                                                    <p>{submission.email || 'N/A'}</p>
-                                                </div>
-                                                <div className="info-group">
-                                                    <label>Submitted:</label>
-                                                    <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
-                                                </div>
-                                            </div>
-                                            <div className="submission-actions">
-                                                <a 
-                                                    href={submission.docsLink}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="btn-view"
-                                                >
-                                                    <i className="bi bi-eye-fill me-2"></i>
-                                                    View Document
-                                                </a>
-                                            </div>
-                                        </div>
+                                    submissions.map((submission) => (
+                                        <Col md={4} key={submission._id} className="mb-4">
+                                            <Card className="submission-card h-100">
+                                                <Card.Body>
+                                                    <Card.Title>{submission.title}</Card.Title>
+                                                    <Card.Text>
+                                                        <strong>Status:</strong> 
+                                                        <span style={{ color: getStatusColor(submission.status) }}>
+                                                            {submission.status}
+                                                        </span>
+                                                    </Card.Text>
+                                                    <Card.Text>
+                                                        <strong>Abstract:</strong> {submission.abstract}
+                                                    </Card.Text>
+                                                    <Card.Text>
+                                                        <strong>Keywords:</strong> {submission.keywords.join(', ')}
+                                                    </Card.Text>
+                                                    <Card.Text>
+                                                        <strong>Members:</strong> {submission.members.join(', ')}
+                                                    </Card.Text>
+                                                    <Card.Text>
+                                                        <strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}
+                                                    </Card.Text>
+                                                    <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                                                        View Document
+                                                    </a>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
                                     ))
                                 )}
-                            </div>
+                            </Row>
                         )}
-
-                        <Modal show={showModal} onHide={() => setShowModal(false)} className="feedback-modal">
-                            <Modal.Header closeButton>
-                                <Modal.Title>Submit Feedback</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <div className="feedback-form">
-                                    <div className="form-group">
-                                        <label>Your Feedback</label>
-                                        <textarea
-                                            value={feedbackForm.comment}
-                                            onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
-                                            placeholder="Enter your feedback..."
-                                            rows="4"
-                                            className="form-control"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Status</label>
-                                        <select
-                                            value={feedbackForm.status}
-                                            onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
-                                            className="form-control"
-                                            required
-                                        >
-                                            <option value="pending">Pending</option>
-                                            <option value="approved">Approve</option>
-                                            <option value="rejected">Reject</option>
-                                            <option value="revision">Needs Revision</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <button 
-                                    onClick={handleSubmitFeedback} 
-                                    className="btn-submit" 
-                                    disabled={!feedbackForm.comment.trim()}
-                                >
-                                    Submit Feedback
-                                </button>
-                                <button 
-                                    onClick={() => setShowModal(false)} 
-                                    className="btn-cancel"
-                                >
-                                    Cancel
-                                </button>
-                            </Modal.Footer>
-                        </Modal>
-                    </div>
+                    </Container>
                 );
         }
     };
 
     return (
-        <div className="d-flex">
+        <div className="d-flex flex-column" style={{ height: "100vh" }}>
             <TeacherTopbar userInfo={userInfo} handleLogout={handleLogout} />
             <TeacherNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
-            <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
+            <div className="flex-grow-1 p-4">
                 <Routes>
                     <Route path="/dashboard" element={renderContent()} />
                     <Route path="/profile" element={<TeacherProfile userInfo={userInfo} />} />
