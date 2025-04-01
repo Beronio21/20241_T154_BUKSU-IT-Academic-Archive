@@ -29,6 +29,7 @@ const StudentDashboard = () => {
   const [feedbackForm, setFeedbackForm] = useState({ comment: "", status: "pending" });
   const [selectedThesis, setSelectedThesis] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [approvedCapstones, setApprovedCapstones] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -72,6 +73,25 @@ const StudentDashboard = () => {
     } catch (error) {
       console.error("Error fetching submissions:", error);
       setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch approved capstones
+  useEffect(() => {
+    fetchApprovedCapstones();
+  }, []);
+
+  const fetchApprovedCapstones = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/thesis/approved'); // Fetch only approved capstones
+      const data = await response.json();
+      if (data.status === 'success') {
+        setApprovedCapstones(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching approved capstones:', error);
     } finally {
       setLoading(false);
     }
@@ -131,7 +151,7 @@ const StudentDashboard = () => {
         return (
           <div className="review-submission-container">
             <header className="review-header">
-              <h2>Capstone Research Paper</h2>
+              <h2>Approved Capstone Research</h2>
               <div className="search-bar">
                 <input
                   type="text"
@@ -171,43 +191,42 @@ const StudentDashboard = () => {
               </div>
             ) : (
               <div className="submissions-grid">
-                {submissions.length === 0 ? (
+                {approvedCapstones.length === 0 ? (
                   <div className="no-submissions">
                     <i className="bi bi-inbox text-muted"></i>
-                    <p>No submissions to review</p>
+                    <p>No approved capstones available</p>
                   </div>
                 ) : (
-                  filteredSubmissions.map((submission) => (
-                    <div key={submission._id} className="submission-card">
+                  approvedCapstones.map((capstone) => (
+                    <div key={capstone._id} className="submission-card">
                       <div className="submission-header">
-                        <h3>{submission.title}</h3>
+                        <h3>{capstone.title}</h3>
                         <span 
                           className="status-badge"
-                          style={{ backgroundColor: getStatusColor(submission.status) }}
+                          style={{ backgroundColor: getStatusColor(capstone.status) }}
                         >
-                          {submission.status}
+                          {capstone.status}
                         </span>
                       </div>
                       <div className="submission-content">
                         <div className="info-group">
-                          <label>Abstract:</label>
-                          <p className="abstract-text">{submission.abstract}</p>
+                          <label>Objective:</label>
+                          <p className="abstract-text">{capstone.objective}</p>
                         </div>
                         <div className="info-group">
                           <label>Keywords:</label>
-                          <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
+                          <p className="keywords-list">{capstone.keywords.join(', ')}</p>
                         </div>
                         <div className="info-group">
-                          <label>Members:</label>
-                          <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
-                        </div>
-                        <div className="info-group">
-                          <label>Student Email:</label>
-                          <p>{submission.email || 'N/A'}</p>
-                        </div>
-                        <div className="info-group">
-                          <label>Submitted:</label>
-                          <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
+                          <label>Document Link:</label>
+                          <a 
+                            href={capstone.docsLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="doc-link"
+                          >
+                            View Document
+                          </a>
                         </div>
                       </div>
                       

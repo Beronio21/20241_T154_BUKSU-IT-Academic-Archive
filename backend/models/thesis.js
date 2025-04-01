@@ -39,7 +39,7 @@ const thesisSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'revision'],
+        enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
     },
     feedback: [{

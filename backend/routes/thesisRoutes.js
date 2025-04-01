@@ -302,4 +302,53 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// Admin approves a thesis submission
+router.put('/approve/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; // Expecting status to be 'approved' or 'rejected'
+
+        const thesis = await Thesis.findByIdAndUpdate(id, { status }, { new: true });
+        
+        if (!thesis) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Thesis not found'
+            });
+        }
+
+        res.json({
+            status: 'success',
+            message: `Thesis ${status} successfully`,
+            data: thesis
+        });
+    } catch (error) {
+        console.error('Error approving thesis:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to approve thesis',
+            error: error.message
+        });
+    }
+});
+
+// Get all approved submissions (for students)
+router.get('/approved', async (req, res) => {
+    try {
+        const submissions = await Thesis.find({ status: 'approved' })
+            .sort({ createdAt: -1 }); // Sort by newest first
+
+        res.json({
+            status: 'success',
+            data: submissions
+        });
+    } catch (error) {
+        console.error('Error fetching approved submissions:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch approved submissions'
+        });
+    }
+});
+
 module.exports = router; 

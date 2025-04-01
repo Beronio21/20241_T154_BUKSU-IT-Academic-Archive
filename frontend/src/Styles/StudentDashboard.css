@@ -1,0 +1,29 @@
+.student-dashboard {
+    padding: 20px;
+}
+
+.capstone-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.capstone-table th,
+.capstone-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.capstone-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.abstract-container {
+    max-height: 150px; /* Set a maximum height for the abstract */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+    border-radius: 4px; /* Optional: Add rounded corners */
+    background-color: #f9f9f9; /* Optional: Light background color */
+} 

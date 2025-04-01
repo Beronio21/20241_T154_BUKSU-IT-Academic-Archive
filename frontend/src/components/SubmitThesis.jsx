@@ -191,7 +191,8 @@ const SubmitThesis = () => {
                 docsLink: formData.docsLink,
                 email: userInfo.email,
                 category: formData.category,
-                objective: formData.objective
+                objective: formData.objective,
+                status: 'pending'
             };
 
             console.log('Submitting thesis data:', submissionData);
