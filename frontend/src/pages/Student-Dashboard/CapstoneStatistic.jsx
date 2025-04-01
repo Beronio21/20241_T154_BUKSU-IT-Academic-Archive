@@ -1,57 +1,100 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './CapstoneStatistic.css';
 
 const CapstoneStatistic = () => {
-    const [statistics, setStatistics] = useState({
-        totalCapstones: 0,
-        yearlyApprovals: {},
-        categoryCounts: {}
-    });
+    const [statistics, setStatistics] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const fetchStatistics = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/thesis/statistics');
+                setStatistics(response.data.data);
+                setLoading(false);
+            } catch (err) {
+                setError('Failed to load statistics. Please try again later.');
+                setLoading(false);
+            }
+        };
+
         fetchStatistics();
     }, []);
 
-    const fetchStatistics = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/thesis/statistics');
-            if (response.data.status === 'success') {
-                setStatistics(response.data.data);
-            }
-        } catch (error) {
-            console.error('Error fetching statistics:', error);
-            setError('Failed to load statistics');
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (loading) {
+        return <div className="loading">Loading statistics...</div>;
+    }
+
+    if (error) {
+        return <div className="error">{error}</div>;
+    }
+
+    if (!statistics) {
+        return <div className="error">No statistics available</div>;
+    }
 
     return (
-        <div className="capstone-statistic-container">
-            <h2>Capstone Statistics</h2>
-            {loading ? (
-                <p>Loading statistics...</p>
-            ) : error ? (
-                <p>{error}</p>
-            ) : (
-                <div>
-                    <p>Total Capstones: {statistics.totalCapstones}</p>
-                    <h3>Yearly Approvals</h3>
-                    <ul>
-                        {Object.entries(statistics.yearlyApprovals).map(([year, count]) => (
-                            <li key={year}>{year}: {count}</li>
-                        ))}
-                    </ul>
-                    <h3>Category Counts</h3>
-                    <ul>
-                        {Object.entries(statistics.categoryCounts).map(([category, count]) => (
-                            <li key={category}>{category}: {count}</li>
-                        ))}
+        <div className="statistics-container">
+            <div className="statistics-header">
+                <h1>Capstone Statistics</h1>
+                <p>Overview of capstone submissions and approvals</p>
+            </div>
+
+            <div className="statistics-grid">
+                <div className="stat-card">
+                    <h3>Total Capstones</h3>
+                    <div className="stat-number">{statistics.totalCapstones}</div>
+                    <div className="stat-label">Total submissions</div>
+                </div>
+
+                <div className="stat-card">
+                    <h3>Approved Capstones</h3>
+                    <div className="stat-number">
+                        {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
+                    </div>
+                    <div className="stat-label">Total approved submissions</div>
+                </div>
+
+                <div className="stat-card">
+                    <h3>Categories</h3>
+                    <div className="stat-number">{Object.keys(statistics.categoryCounts).length}</div>
+                    <div className="stat-label">Different categories</div>
+                </div>
+            </div>
+
+            <div className="chart-container">
+                <h3>Approvals by Year</h3>
+                <div className="chart">
+                    {/* Add a chart library here if needed */}
+                    <ul className="category-list">
+                        {Object.entries(statistics.yearlyApprovals)
+                            .sort(([a], [b]) => b - a)
+                            .map(([year, count]) => (
+                                <li key={year} className="category-item">
+                                    <span className="category-name">{year}</span>
+                                    <span className="category-count">{count} approved</span>
+                                </li>
+                            ))}
                     </ul>
                 </div>
-            )}
+            </div>
+
+            <div className="chart-container">
+                <h3>Capstones by Category</h3>
+                <div className="chart">
+                    <ul className="category-list">
+                        {Object.entries(statistics.categoryCounts)
+                            .sort(([, a], [, b]) => b - a)
+                            .map(([category, count]) => (
+                                <li key={category} className="category-item">
+                                    <span className="category-name">{category}</span>
+                                    <span className="category-count">{count} submissions</span>
+                                </li>
+                            ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };

@@ -351,4 +351,51 @@ router.get('/approved', async (req, res) => {
     }
 });
 
+// Get capstone statistics
+router.get('/statistics', async (req, res) => {
+    try {
+        const totalCapstones = await Thesis.countDocuments();
+        const yearlyApprovals = await Thesis.aggregate([
+            {
+                $match: { status: 'approved' }
+            },
+            {
+                $group: {
+                    _id: { $year: '$createdAt' },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+        const categoryCounts = await Thesis.aggregate([
+            {
+                $group: {
+                    _id: '$category',
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        res.json({
+            status: 'success',
+            data: {
+                totalCapstones,
+                yearlyApprovals: yearlyApprovals.reduce((acc, curr) => {
+                    acc[curr._id] = curr.count;
+                    return acc;
+                }, {}),
+                categoryCounts: categoryCounts.reduce((acc, curr) => {
+                    acc[curr._id] = curr.count;
+                    return acc;
+                }, {})
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching statistics:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch statistics'
+        });
+    }
+});
+
 module.exports = router; 
