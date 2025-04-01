@@ -11,27 +11,14 @@ const SubmitThesis = () => {
         members: [''],
         adviserEmail: '',
         docsLink: '',
-        category: '',
         email: JSON.parse(localStorage.getItem('user-info'))?.email || '',
+        category: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [openPicker] = useDrivePicker();
 
-    const categories = [
-        'Web Development',
-        'Mobile Development',
-        'Artificial Intelligence',
-        'Machine Learning',
-        'Data Science',
-        'Cybersecurity',
-        'Internet of Things',
-        'Cloud Computing',
-        'Network Administration',
-        'Database Management',
-        'Software Engineering',
-        'Information Systems'
-    ];
+    const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
     useEffect(() => {
         const userInfoString = localStorage.getItem('user-info');
@@ -45,12 +32,13 @@ const SubmitThesis = () => {
 
     const handleInputChange = (e, index = null) => {
         const { name, value } = e.target;
-        if (index !== null) {
-            const items = [...formData[name]];
-            items[index] = value;
+
+        if ((name === 'members' || name === 'keywords') && index !== null) {
+            const updatedArray = [...formData[name]];
+            updatedArray[index] = value;
             setFormData(prev => ({
                 ...prev,
-                [name]: items
+                [name]: updatedArray
             }));
         } else {
             setFormData(prev => ({
@@ -176,57 +164,85 @@ const SubmitThesis = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Validate required fields
-        if (!formData.title || !formData.category || !formData.objective || !formData.abstract) {
-            alert('Please fill in all required fields');
+        if (!formData.title.trim()) {
+            setError('Research title is required');
             return;
         }
+        if (!formData.abstract.trim()) {
+            setError('Abstract is required');
+            return;
+        }
+        if (!formData.keywords.some(keyword => keyword.trim())) {
+            setError('At least one keyword is required');
+            return;
+        }
+        setLoading(true);
+        setError(null);
 
         try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+
+            const submissionData = {
+                title: formData.title,
+                abstract: formData.abstract,
+                keywords: formData.keywords.filter(keyword => keyword.trim() !== ''),
+                members: formData.members.filter(member => member.trim() !== ''),
+                adviserEmail: formData.adviserEmail,
+                docsLink: formData.docsLink,
+                email: userInfo.email,
+                category: formData.category,
+                objective: formData.objective
+            };
+
+            console.log('Submitting thesis data:', submissionData);
+
             const response = await fetch('http://localhost:8080/api/thesis/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userInfo.token}` // Authorization Logic
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(submissionData)
             });
 
             const data = await response.json();
+            console.log('Server response:', data);
 
-            if (response.ok) {
-                alert('Research paper submitted successfully!');
-                // Reset form or redirect
-                setFormData({
-                    title: '',
-                    abstract: '',
-                    objective: '',
-                    keywords: [''],
-                    members: [''],
-                    adviserEmail: '',
-                    docsLink: '',
-                    category: '',
-                    email: JSON.parse(localStorage.getItem('user-info'))?.email || ''
-                });
-            } else {
-                alert(data.message || 'Failed to submit research paper');
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to submit thesis');
             }
+
+            alert('Thesis submitted successfully!');
+            setFormData({
+                title: '',
+                abstract: '',
+                keywords: [''],
+                members: [''],
+                adviserEmail: '',
+                docsLink: '',
+                email: '',
+                category: '',
+                objective: ''
+            });
         } catch (error) {
-            console.error('Error submitting research paper:', error);
-            alert('An error occurred while submitting the research paper');
+            console.error('Submission error:', error);
+            setError(error.message);
+            alert('Failed to submit thesis: ' + error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="submit-thesis-container container mt-4">
             <div className="thesis-form">
-                <h2 className="mb-4">Submit Capstone Research Paper</h2>
+                <h2>Submit Capstone Research Paper</h2>
 
                 <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
                     <div className="row mb-3">
                         <div className="col-md-12">
                             <div className="form-group">
-                                <label htmlFor="title" className="form-label fw-bold">Title</label>
+                                <label htmlFor="title">Research Title</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -235,35 +251,13 @@ const SubmitThesis = () => {
                                     value={formData.title}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="Enter research title"
+                                    placeholder="Enter your research title"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div className="form-group mb-3">
-                        <label htmlFor="category" className="form-label fw-bold">Research Category</label>
-                        <select
-                            id="category"
-                            name="category"
-                            className="form-select shadow-sm"
-                            value={formData.category}
-                            onChange={handleInputChange}
-                            required
-                        >
-                            <option value="">Select a category</option>
-                            {categories.map((cat, index) => (
-                                <option key={index} value={cat}>
-                                    {cat}
-                                </option>
-                            ))}
-                        </select>
-                        <small className="text-muted">
-                            Select the most relevant category for your research
-                        </small>
-                    </div>
-
-                    <div className="form-group mb-3">
+                    <div className="form-group">
                         <label htmlFor="objective" className="form-label fw-bold">Research Objective</label>
                         <textarea
                             id="objective"
@@ -271,27 +265,32 @@ const SubmitThesis = () => {
                             className="form-control shadow-sm"
                             value={formData.objective}
                             onChange={handleInputChange}
-                            placeholder="State the main objective of your research"
+                            placeholder="Enter the main objective of your research"
                             rows="3"
                             required
                         />
                         <small className="text-muted">
-                            Clearly state what your research aims to achieve
+                            Clearly state the primary goal of your research
                         </small>
                     </div>
 
-                    <div className="form-group mb-3">
-                        <label htmlFor="abstract" className="form-label fw-bold">Abstract</label>
-                        <textarea
-                            id="abstract"
-                            name="abstract"
-                            className="form-control shadow-sm"
-                            value={formData.abstract}
-                            onChange={handleInputChange}
-                            placeholder="Enter research abstract"
-                            rows="4"
-                            required
-                        />
+                    <div className="row mb-3">
+                        <div className="col-md-12">
+                            <div className="form-group">
+                                <label htmlFor="abstract">Abstract</label>
+                                <textarea
+                                    className="form-control"
+                                    id="abstract"
+                                    name="abstract"
+                                    value={formData.abstract}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Enter your research abstract"
+                                    rows="4"
+                                    style={{ resize: 'vertical' }}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="form-group mb-4">
@@ -366,18 +365,22 @@ const SubmitThesis = () => {
                         </div>
                     </div>
 
-                    <div className="form-group mb-3">
-                        <label htmlFor="adviserEmail">Adviser Email:</label>
-                        <input
-                            type="email"
-                            id="adviserEmail"
-                            name="adviserEmail"
-                            className="form-control"
-                            value={formData.adviserEmail}
-                            onChange={handleInputChange}
-                            required
-                            placeholder="Enter adviser's email"
-                        />
+                    <div className="row mb-3">
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label htmlFor="adviserEmail">Adviser Email:</label>
+                                <input
+                                    type="email"
+                                    id="adviserEmail"
+                                    name="adviserEmail"
+                                    className="form-control"
+                                    value={formData.adviserEmail}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Enter adviser's email"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="form-group mb-4">
@@ -471,6 +474,24 @@ const SubmitThesis = () => {
                                 Select from Google Drive
                             </button>
                         </div>
+                        
+                        
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="category">Category</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            required
+                        >
+                            <option value="">Select a category</option>
+                            {categories.map((cat) => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <button

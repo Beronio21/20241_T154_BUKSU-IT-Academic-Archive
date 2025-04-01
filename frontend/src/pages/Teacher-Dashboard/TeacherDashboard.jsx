@@ -29,25 +29,13 @@ const TeacherDashboard = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const [searchTitle, setSearchTitle] = useState('');
-    const [searchDate, setSearchDate] = useState('');
-    const [searchCategory, setSearchCategory] = useState('');
-    const [searchObjective, setSearchObjective] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterDate, setFilterDate] = useState('');
+    const [titleSearch, setTitleSearch] = useState('');
+    const [dateSearch, setDateSearch] = useState('');
+    const [categorySearch, setCategorySearch] = useState('');
     
-    const categories = [
-        'Web Development',
-        'Mobile Development',
-        'Artificial Intelligence',
-        'Machine Learning',
-        'Data Science',
-        'Cybersecurity',
-        'Internet of Things',
-        'Cloud Computing',
-        'Network Administration',
-        'Database Management',
-        'Software Engineering',
-        'Information Systems'
-    ];
+    const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
 
     useEffect(() => {
         const storedUserInfo = localStorage.getItem('user-info');
@@ -125,12 +113,11 @@ const TeacherDashboard = () => {
     };
 
     const filteredSubmissions = submissions.filter(submission => {
-        const matchesTitle = submission.title.toLowerCase().includes(searchTitle.toLowerCase());
-        const matchesDate = !searchDate || new Date(submission.createdAt).toLocaleDateString() === new Date(searchDate).toLocaleDateString();
-        const matchesCategory = !searchCategory || submission.category === searchCategory;
-        const matchesObjective = !searchObjective || submission.objective.toLowerCase().includes(searchObjective.toLowerCase());
+        const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
+        const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
+        const matchesCategory = categorySearch ? submission.category === categorySearch : true;
 
-        return matchesTitle && matchesDate && matchesCategory && matchesObjective;
+        return matchesTitle && matchesDate && matchesCategory;
     });
 
     const renderContent = () => {
@@ -163,35 +150,26 @@ const TeacherDashboard = () => {
                                 <input
                                     type="text"
                                     placeholder="Search by title..."
-                                    value={searchTitle}
-                                    onChange={(e) => setSearchTitle(e.target.value)}
+                                    value={titleSearch}
+                                    onChange={(e) => setTitleSearch(e.target.value)}
                                     className="form-control search-input"
                                 />
                                 <input
                                     type="date"
-                                    value={searchDate}
-                                    onChange={(e) => setSearchDate(e.target.value)}
+                                    value={dateSearch}
+                                    onChange={(e) => setDateSearch(e.target.value)}
                                     className="form-control date-input"
                                 />
                                 <select
-                                    className="form-select"
-                                    value={searchCategory}
-                                    onChange={(e) => setSearchCategory(e.target.value)}
+                                    value={categorySearch}
+                                    onChange={(e) => setCategorySearch(e.target.value)}
+                                    className="form-control category-input"
                                 >
                                     <option value="">Select a category</option>
-                                    {categories.map((cat, index) => (
-                                        <option key={index} value={cat}>
-                                            {cat}
-                                        </option>
+                                    {categories.map((cat) => (
+                                        <option key={cat} value={cat}>{cat}</option>
                                     ))}
                                 </select>
-                                <input
-                                    type="text"
-                                    placeholder="Search by objective..."
-                                    value={searchObjective}
-                                    onChange={(e) => setSearchObjective(e.target.value)}
-                                    className="form-control search-input"
-                                />
                             </div>
                         </header>
 
@@ -214,43 +192,48 @@ const TeacherDashboard = () => {
                                     </div>
                                 ) : (
                                     filteredSubmissions.map((submission) => (
-                                        <div key={submission._id} className="submission-card mb-4">
-                                            <div className="card">
-                                                <div className="card-header d-flex justify-content-between align-items-center">
-                                                    <h5 className="mb-0">{submission.title}</h5>
-                                                    <span className={`badge bg-${getStatusColor(submission.status)}`}>
-                                                        {submission.status}
-                                                    </span>
+                                        <div key={submission._id} className="submission-card">
+                                            <div className="submission-header">
+                                                <h3>{submission.title}</h3>
+                                                <span 
+                                                    className="status-badge"
+                                                    style={{ backgroundColor: getStatusColor(submission.status) }}
+                                                >
+                                                    {submission.status}
+                                                </span>
+                                            </div>
+                                            <div className="submission-content">
+                                                <div className="info-group">
+                                                    <label>Abstract:</label>
+                                                    <p className="abstract-text">{submission.abstract}</p>
                                                 </div>
-                                                <div className="card-body">
-                                                    <div className="row">
-                                                        <div className="col-md-6">
-                                                            <p><strong>Category:</strong> {submission.category}</p>
-                                                            <p><strong>Objective:</strong> {submission.objective}</p>
-                                                            <p><strong>Abstract:</strong> {submission.abstract}</p>
-                                                            <p><strong>Keywords:</strong> {submission.keywords.join(', ')}</p>
-                                                            <p><strong>Members:</strong> {submission.members.join(', ')}</p>
-                                                        </div>
-                                                        <div className="col-md-6">
-                                                            <p><strong>Student Email:</strong> {submission.email}</p>
-                                                            <p><strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}</p>
-                                                            <div className="mt-3">
-                                                                <button
-                                                                    className="btn btn-primary me-2"
-                                                                    onClick={() => window.open(submission.docsLink, '_blank')}
-                                                                >
-                                                                    View Document
-                                                                </button>
-                                                                <button
-                                                                    className="btn btn-secondary"
-                                                                    onClick={() => handleAddFeedback(submission)}
-                                                                >
-                                                                    Add Feedback
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div className="info-group">
+                                                    <label>Keywords:</label>
+                                                    <p className="keywords-list">{submission.keywords ? submission.keywords.join(', ') : 'No keywords available'}</p>
                                                 </div>
+                                                <div className="info-group">
+                                                    <label>Members:</label>
+                                                    <p>{submission.members ? submission.members.join(', ') : 'No members listed'}</p>
+                                                </div>
+                                                <div className="info-group">
+                                                    <label>Student Email:</label>
+                                                    <p>{submission.email || 'N/A'}</p>
+                                                </div>
+                                                <div className="info-group">
+                                                    <label>Submitted:</label>
+                                                    <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
+                                                </div>
+                                            </div>
+                                            <div className="submission-actions">
+                                                <a 
+                                                    href={submission.docsLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn-view"
+                                                >
+                                                    <i className="bi bi-eye-fill me-2"></i>
+                                                    View Document
+                                                </a>
                                             </div>
                                         </div>
                                     ))

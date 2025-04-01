@@ -82,12 +82,13 @@ router.post('/submit', async (req, res) => {
     }
 });
 
-// Get all submissions (for students)
+// Get all submissions (for admins)
 router.get('/submissions', async (req, res) => {
     try {
         console.log('Fetching all submissions');
         const submissions = await Thesis.find()
-            .sort({ createdAt: -1 }); // Sort by newest first
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .select('title abstract keywords members email status createdAt docsLink objective'); // Include objective
 
         console.log('Found submissions:', submissions.length);
         
@@ -110,7 +111,7 @@ router.get('/submissions/adviser', async (req, res) => {
         const { email } = req.query;
         const submissions = await Thesis.find({ 
             adviserEmail: email 
-        }).select('title abstract keywords members email status createdAt docsLink');
+        }).select('title abstract keywords members email status createdAt docsLink objective');
 
         res.json({
             status: 'success',

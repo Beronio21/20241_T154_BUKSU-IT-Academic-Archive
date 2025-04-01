@@ -190,6 +190,10 @@ const ReviewSubmission = () => {
                                         <label>Submitted:</label>
                                         <p>{new Date(submission.createdAt).toLocaleDateString()}</p>
                                     </div>
+                                    <div className="info-group">
+                                        <label>Objective:</label>
+                                        <p>{submission.objective || 'No objective available'}</p>
+                                    </div>
                                 </div>
                                 <div className="submission-actions">
                                     <a 
