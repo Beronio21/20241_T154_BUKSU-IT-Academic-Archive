@@ -210,6 +210,10 @@ const StudentDashboard = () => {
                       </div>
                       <div className="submission-content">
                         <div className="info-group">
+                          <label>Abstract:</label>
+                          <p className="abstract-text">{capstone.abstract}</p>
+                        </div>
+                        <div className="info-group">
                           <label>Objective:</label>
                           <p className="abstract-text">{capstone.objective}</p>
                         </div>
