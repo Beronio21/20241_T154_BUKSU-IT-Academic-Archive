@@ -17,6 +17,7 @@ import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
 
 // Other Components
 import NotFound from './NotFound';
+import CapstoneStatistics from './pages/Student-Dashboard/CapstoneStatistic';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -86,6 +87,17 @@ function App() {
                 <ProtectedRoute 
                   element={<AdminDashboard />} 
                   allowedRole="admin"
+                />
+              } 
+            />
+
+            {/* New route for Capstone Statistics */}
+            <Route 
+              path="/capstone-statistics" 
+              element={
+                <ProtectedRoute 
+                  element={<CapstoneStatistics />} 
+                  allowedRole="student"
                 />
               } 
             />

@@ -28,7 +28,7 @@ const AdminTopbar = ({ userInfo }) => {
                             style={{ background: 'none', border: 'none' }}
                         >
                             <img
-                                src={userInfo?.image || 'https://via.placeholder.com/32'}
+                                src={userInfo?.image || '/path/to/local/image.png'}
                                 alt="Profile"
                                 className="rounded-circle me-2"
                                 width="32"

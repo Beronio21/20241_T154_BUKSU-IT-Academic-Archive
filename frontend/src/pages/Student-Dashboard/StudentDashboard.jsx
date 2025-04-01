@@ -10,6 +10,7 @@ import SendGmail from "../../Communication/SendGmail";
 import ScheduleTable from "../../components/ScheduleTable";
 import Topbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
+import CapstoneStatistic from "./CapstoneStatistic";
 import { Button, Container, Row, Col, Table, Alert, Dropdown, Modal } from "react-bootstrap";
 import "./StudentDashboard.css";
 import axios from 'axios';
@@ -157,6 +158,10 @@ const StudentDashboard = () => {
         return <StudentProfile userInfo={userInfo} />;
       case "submit-thesis":
         return <SubmitThesis />;
+      case "docs":
+        return <Docs />;
+      case "statistics":
+        return <CapstoneStatistic />;
       case "dashboard":
       default:
         return (
@@ -386,13 +391,18 @@ const StudentDashboard = () => {
     }
   };
 
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+    navigate(`/student-dashboard/${section}`);
+  };
+
   return (
     <div className="d-flex flex-column" style={{ height: "100vh" }}>
       {/* Topbar */}
       <Topbar userInfo={userInfo} />
 
       {/* Navbar */}
-      <StudentNavbar activeSection={activeSection} handleSectionChange={setActiveSection} />
+      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px" }}>
@@ -404,6 +414,7 @@ const StudentDashboard = () => {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/send-gmail" element={<SendGmail />} />
           <Route path="/schedule" element={<ScheduleTable />} />
+          <Route path="/statistics" element={<CapstoneStatistic />} />
           <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
         </Routes>
       </div>
