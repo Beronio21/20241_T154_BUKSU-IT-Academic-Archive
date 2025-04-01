@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { Container, Row, Col, Alert, Card, Form, Spinner } from "react-bootstrap";
 import axios from "axios";
-import "./StudentDashboard.css";
 
 import StudentProfile from "../../Profile/Student-Profile/StudentProfile";
 import SubmitThesis from "../../components/Submit-Thesis/SubmitThesis";
@@ -26,7 +25,6 @@ const StudentDashboard = () => {
   const categories = ["IoT", "AI", "ML", "Sound", "Camera"];
   const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
 
-  // Fetch user info from localStorage and validate
   useEffect(() => {
     const data = localStorage.getItem("user-info");
     if (!data) return navigate("/login");
@@ -38,7 +36,6 @@ const StudentDashboard = () => {
     if (location.pathname === "/student-dashboard") navigate("/student-dashboard/dashboard");
   }, [navigate, location]);
 
-  // Fetch submissions from API
   useEffect(() => {
     fetchSubmissions();
   }, []);
@@ -60,7 +57,6 @@ const StudentDashboard = () => {
     }
   };
 
-  // Filter submissions based on search criteria
   const filteredSubmissions = submissions.filter((submission) => {
     const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
     const matchesCategory = categorySearch ? submission.category === categorySearch : true;
@@ -68,7 +64,6 @@ const StudentDashboard = () => {
     return matchesTitle && matchesCategory && matchesYear;
   });
 
-  // Render content based on active section
   const renderContent = () => {
     switch (activeSection) {
       case "profile":
@@ -79,50 +74,50 @@ const StudentDashboard = () => {
       default:
         return (
           <Container>
-            <Row className="mb-4 pb-3">
+            <Row className="mb-4">
               <Col>
                 <h2>Capstone Research Paper</h2>
-                {/* Search bar */}
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      placeholder="Search by title"
-                      value={titleSearch}
-                      onChange={(e) => setTitleSearch(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-
-                {/* Year and Category dropdowns */}
-                <Row className="mb-3">
-                  <Col md={6}>
-                    <Form.Select
-                      value={yearSearch}
-                      onChange={(e) => setYearSearch(e.target.value)}
-                    >
-                      <option value="">All Years</option>
-                      {years.map((year) => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Select
-                      value={categorySearch}
-                      onChange={(e) => setCategorySearch(e.target.value)}
-                    >
-                      <option value="">All Categories</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>{category}</option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>
+              </Col>
+            </Row>
+            <Row className="mb-3 p">
+              <Col md={12}>
+                <Form.Control
+                  type="text"
+                  placeholder="Search by title"
+                  value={titleSearch}
+                  onChange={(e) => setTitleSearch(e.target.value)}
+                  style={{ fontSize: '1.1rem', padding: '0.75rem' }}
+                />
               </Col>
             </Row>
 
-            {/* Show loading spinner while fetching data */}
+            <Row className="mb-3">
+              <Col md={3} lg={2}>
+                <Form.Select
+                  value={yearSearch}
+                  onChange={(e) => setYearSearch(e.target.value)}
+                  style={{ fontSize: '1.1rem', padding: '0.75rem' }}
+                >
+                  <option value="">All Years</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </Form.Select>
+              </Col>
+              <Col md={3} lg={2}>
+                <Form.Select
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                  style={{ fontSize: '1.1rem', padding: '0.75rem' }}
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </Form.Select>
+              </Col>
+            </Row>
+
             {loading ? (
               <div className="loading-container text-center">
                 <Spinner animation="border" variant="primary" />
@@ -162,9 +157,9 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ height: "100vh" }}>
+    <div className="d-flex flex-column bg-white" style={{ minHeight: "100vh", overflowY: "auto" }}>
       <StudentNavbar activeSection={activeSection} handleSectionChange={setActiveSection} />
-      <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px" }}>
+      <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px", overflowY: "auto" }}>
         <Routes>
           <Route path="/dashboard" element={renderContent()} />
           <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
-import { FaPlus, FaEdit, FaTrash, FaTimes, FaCheckCircle } from 'react-icons/fa';  // Import icons for better UI
 
 const CapstoneManagement = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -15,11 +13,11 @@ const CapstoneManagement = () => {
         docsLink: '',
         email: '',
         category: '',
-        id: null
+        id: null, // For editing
+        objective: '', // Add objective to form state
     });
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
@@ -29,8 +27,11 @@ const CapstoneManagement = () => {
 
     const fetchSubmissions = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/thesis/submissions');
-            setSubmissions(response.data.data);
+            const response = await fetch('http://localhost:8080/api/thesis/submissions');
+            const data = await response.json();
+            if (data.status === 'success') {
+                setSubmissions(data.data);
+            }
         } catch (error) {
             console.error('Error fetching submissions:', error);
         } finally {
@@ -94,13 +95,14 @@ const CapstoneManagement = () => {
 
         try {
             if (isEditing) {
+                // Update existing submission
                 await axios.put(`http://localhost:8080/api/thesis/${formData.id}`, formData);
             } else {
+                // Create new submission
                 await axios.post('http://localhost:8080/api/thesis/submit', formData);
             }
-            fetchSubmissions();
+            fetchSubmissions(); // Refresh submissions
             resetForm();
-            setShowModal(false);  // Close modal after submission
         } catch (error) {
             console.error('Error submitting thesis:', error);
             setError('Failed to submit thesis');
@@ -117,17 +119,17 @@ const CapstoneManagement = () => {
             docsLink: submission.docsLink,
             email: submission.email,
             category: submission.category,
-            id: submission._id
+            id: submission._id, // Set ID for editing
+            objective: submission.objective, // Set objective for editing
         });
         setIsEditing(true);
-        setShowModal(true);
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this submission?')) {
             try {
                 await axios.delete(`http://localhost:8080/api/thesis/delete/${id}`);
-                fetchSubmissions();
+                fetchSubmissions(); // Refresh submissions
             } catch (error) {
                 console.error('Error deleting thesis:', error);
             }
@@ -144,193 +146,186 @@ const CapstoneManagement = () => {
             docsLink: '',
             email: '',
             category: '',
-            id: null
+            id: null,
+            objective: '',
         });
         setIsEditing(false);
     };
 
     return (
-        <div className="container py-5">
-            <h2 className="my-4 text-center text-primary">Capstone Management</h2>
-            <Button 
-                variant="primary" 
-                size="lg" 
-                onClick={() => setShowModal(true)} 
-                className="mb-4 shadow-lg d-flex align-items-center justify-content-center">
-                <FaPlus className="me-2" /> Add New Submission
-            </Button>
+        <div className="capstone-management-container">
+            <h2>Capstone Management</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="title">Research Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                    />
+                </div>
 
-            {/* Modal */}
-            <Modal 
-                show={showModal} 
-                onHide={() => setShowModal(false)} 
-                centered
-                dialogClassName="modal-modern"  // Custom class for modern styling
-                className="animate__animated animate__fadeIn">
-                <Modal.Header closeButton>
-                    <Modal.Title>{isEditing ? 'Edit Submission' : 'Submit New Thesis'}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group controlId="title" className="mb-3">
-                            <Form.Label>Research Title</Form.Label>
-                            <Form.Control
+                <div className="form-group">
+                    <label htmlFor="objective">Research Objective</label>
+                    <textarea
+                        id="objective"
+                        name="objective"
+                        value={formData.objective}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        placeholder="Enter the research objective"
+                        rows="3"
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="abstract">Abstract</label>
+                    <textarea
+                        id="abstract"
+                        name="abstract"
+                        value={formData.abstract}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="keywords">Keywords</label>
+                    {formData.keywords.map((keyword, index) => (
+                        <div key={index} className="d-flex">
+                            <input
                                 type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleInputChange}
+                                name="keywords"
+                                value={keyword}
+                                onChange={(e) => handleInputChange(e, index)}
+                                className="form-control"
+                                placeholder="Enter a keyword"
                                 required
-                                placeholder="Enter the research title"
-                                className="shadow-sm"
                             />
-                        </Form.Group>
+                            <button type="button" onClick={() => removeKeyword(index)} className="btn btn-secondary">Remove</button>
+                        </div>
+                    ))}
+                    <button type="button" onClick={addKeyword} className="btn btn-secondary">Add Keyword</button>
+                </div>
 
-                        <Form.Group controlId="abstract" className="mb-3">
-                            <Form.Label>Abstract</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                name="abstract"
-                                value={formData.abstract}
-                                onChange={handleInputChange}
-                                required
-                                placeholder="Write your abstract here"
-                                className="shadow-sm"
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="keywords" className="mb-3">
-                            <Form.Label>Keywords</Form.Label>
-                            {formData.keywords.map((keyword, index) => (
-                                <Row key={index} className="mb-3">
-                                    <Col>
-                                        <Form.Control
-                                            type="text"
-                                            name="keywords"
-                                            value={keyword}
-                                            onChange={(e) => handleInputChange(e, index)}
-                                            required
-                                            className="shadow-sm"
-                                        />
-                                    </Col>
-                                    <Col>
-                                        <Button variant="danger" type="button" onClick={() => removeKeyword(index)} className="w-100">
-                                            Remove
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            ))}
-                            <Button variant="outline-secondary" type="button" onClick={addKeyword} className="w-100 mb-3">
-                                Add Keyword
-                            </Button>
-                        </Form.Group>
-
-                        <Form.Group controlId="members" className="mb-3">
-                            <Form.Label>Members</Form.Label>
-                            {formData.members.map((member, index) => (
-                                <Row key={index} className="mb-3">
-                                    <Col>
-                                        <Form.Control
-                                            type="text"
-                                            name="members"
-                                            value={member}
-                                            onChange={(e) => handleInputChange(e, index)}
-                                            required
-                                            placeholder="Enter member name"
-                                            className="shadow-sm"
-                                        />
-                                    </Col>
-                                    <Col>
-                                        <Button variant="danger" type="button" onClick={() => removeMember(index)} className="w-100">
-                                            Remove
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            ))}
-                            <Button variant="outline-secondary" type="button" onClick={addMember} className="w-100 mb-3">
-                                Add Member
-                            </Button>
-                        </Form.Group>
-
-                        <Form.Group controlId="adviserEmail" className="mb-3">
-                            <Form.Label>Adviser Email</Form.Label>
-                            <Form.Control
-                                type="email"
-                                name="adviserEmail"
-                                value={formData.adviserEmail}
-                                onChange={handleInputChange}
-                                required
-                                placeholder="Enter adviser email"
-                                className="shadow-sm"
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="docsLink" className="mb-3">
-                            <Form.Label>Document Link</Form.Label>
-                            <Form.Control
+                <div className="form-group">
+                    <label htmlFor="members">Members</label>
+                    {formData.members.map((member, index) => (
+                        <div key={index} className="d-flex">
+                            <input
                                 type="text"
-                                name="docsLink"
-                                value={formData.docsLink}
-                                onChange={handleInputChange}
+                                name="members"
+                                value={member}
+                                onChange={(e) => handleInputChange(e, index)}
+                                className="form-control"
+                                placeholder="Enter a member's name"
                                 required
-                                placeholder="Enter document link"
-                                className="shadow-sm"
                             />
-                        </Form.Group>
+                            <button type="button" onClick={() => removeMember(index)} className="btn btn-secondary">Remove</button>
+                        </div>
+                    ))}
+                    <button type="button" onClick={addMember} className="btn btn-secondary">Add Member</button>
+                </div>
 
-                        <Form.Group controlId="category" className="mb-3">
-                            <Form.Label>Category</Form.Label>
-                            <Form.Control
-                                as="select"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleInputChange}
-                                required
-                                className="shadow-sm"
-                            >
-                                <option value="">Select a category</option>
-                                {categories.map((cat) => (
-                                    <option key={cat} value={cat}>{cat}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
+                <div className="form-group">
+                    <label htmlFor="adviserEmail">Adviser Email</label>
+                    <input
+                        type="email"
+                        id="adviserEmail"
+                        name="adviserEmail"
+                        value={formData.adviserEmail}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                    />
+                </div>
 
-                        <Button variant="primary" type="submit" className="w-100 py-2 mt-3">
-                            <FaCheckCircle className="me-2" />
-                            {isEditing ? 'Update Submission' : 'Submit Submission'}
-                        </Button>
-                        {error && <div className="mt-3 text-danger">{error}</div>}
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                <div className="form-group">
+                    <label htmlFor="docsLink">Document Link</label>
+                    <input
+                        type="text"
+                        id="docsLink"
+                        name="docsLink"
+                        value={formData.docsLink}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="category">Category</label>
+                    <select
+                        id="category"
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                    >
+                        <option value="">Select a category</option>
+                        {categories.map((cat) => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <button type="submit" className="btn btn-primary">{isEditing ? 'Update Submission' : 'Submit Submission'}</button>
+                {error && <div className="error">{error}</div>}
+            </form>
 
             {loading ? (
-                <p className="text-center">Loading submissions...</p>
+                <p>Loading submissions...</p>
             ) : (
-                <table className="table table-striped mt-4">
+                <table className="capstone-table">
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Category</th>
-                            <th>Submission Date</th>
+                            <th>Objective</th>
+                            <th>Members</th>
+                            <th>Email</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {submissions.map(submission => (
-                            <tr key={submission._id}>
-                                <td>{submission.title}</td>
-                                <td>{submission.category}</td>
-                                <td>{new Date(submission.createdAt).toLocaleDateString()}</td>
-                                <td>
-                                    <Button variant="warning" onClick={() => handleEdit(submission)} className="me-2">
-                                        <FaEdit />
-                                    </Button>
-                                    <Button variant="danger" onClick={() => handleDelete(submission._id)}>
-                                        <FaTrash />
-                                    </Button>
+                        {submissions.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" style={{ textAlign: 'center' }}>
+                                    No submissions available
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            submissions.map((submission) => (
+                                <tr key={submission._id}>
+                                    <td>{submission.title}</td>
+                                    <td>{submission.objective}</td>
+                                    <td>{submission.members.join(', ')}</td>
+                                    <td>{submission.email}</td>
+                                    <td>{submission.status}</td>
+                                    <td>
+                                        <button 
+                                            onClick={() => handleEdit(submission)}
+                                            className="btn-edit"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button 
+                                            onClick={() => handleDelete(submission._id)}
+                                            className="btn-delete"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             )}
@@ -338,4 +333,4 @@ const CapstoneManagement = () => {
     );
 };
 
-export default CapstoneManagement;
+export default CapstoneManagement; 

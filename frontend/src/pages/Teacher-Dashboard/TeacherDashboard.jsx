@@ -98,7 +98,7 @@ const TeacherDashboard = () => {
                                 </Col>
                             </Row>
                             <Row className="mb-3">
-                                <Col md={6}>
+                                <Col md={3} lg={2}>
                                     <Form.Select
                                         value={yearSearch}
                                         onChange={(e) => setYearSearch(e.target.value)}
@@ -109,7 +109,7 @@ const TeacherDashboard = () => {
                                         ))}
                                     </Form.Select>
                                 </Col>
-                                <Col md={6}>
+                                <Col md={3} lg={2}>
                                     <Form.Select
                                         value={categorySearch}
                                         onChange={(e) => setCategorySearch(e.target.value)}
