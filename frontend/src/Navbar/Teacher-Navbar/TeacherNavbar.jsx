@@ -34,20 +34,10 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard' },
         { name: 'My Profile', section: 'profile' },
-        { name: 'Submit Capstone', section: 'submit-thesis' },
-        { name: 'Review Capstone', section: 'review-submissions' }
+        { name: 'Submit Capstone', section: 'submit-thesis' }
     ];
 
-    const thesisManagementItems = [
- 
- 
-
-    ];
-
-    const additionalNavItems = [
-
- 
-    ];
+    const additionalNavItems = [];
 
     const renderNavItem = (item) => (
         <li className="nav-item" key={item.section}>
@@ -60,45 +50,6 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
             >
                 {item.name}
             </button>
-        </li>
-    );
-
-    const renderThesisManagementDropdown = () => (
-        <li className="nav-item">
-            <div className="dropdown w-100">
-                <button
-                    className="nav-link w-100 text-start rounded dropdown-toggle"
-                    data-bs-toggle="dropdown"
-                    style={getNavButtonStyle(false)}
-                    onMouseEnter={(e) => handleMouseEnter(e, false)}
-                    onMouseLeave={(e) => handleMouseLeave(e, false)}
-                >
-                    Capstone Management
-                </button>
-                <ul className="dropdown-menu">
-                    {thesisManagementItems.map((item) => (
-                        <li key={item.section}>
-                            <button
-                                className={`dropdown-item ${
-                                    activeSection === item.section ? 'bg-primary text-white' : ''
-                                }`}
-                                onClick={() => handleSectionChange(item.section)}
-                                style={{
-                                    fontSize: '14px',
-                                    padding: '8px 16px',
-                                    backgroundColor: activeSection === item.section ? '#0d6efd' : 'transparent',
-                                    color: activeSection === item.section ? '#fff' : '#333',
-                                    transition: 'all 0.2s ease',
-                                }}
-                                onMouseEnter={(e) => handleMouseEnter(e, activeSection === item.section)}
-                                onMouseLeave={(e) => handleMouseLeave(e, activeSection === item.section)}
-                            >
-                                {item.name}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
         </li>
     );
 
@@ -126,7 +77,6 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                 <div className="px-3">
                     <ul className="nav flex-column gap-1">
                         {mainNavItems.map(renderNavItem)}
-                        {renderThesisManagementDropdown()}
                         {additionalNavItems.map(renderNavItem)}
                     </ul>
                 </div>
