@@ -1,108 +1,134 @@
-/* Sidebar Styles */
 .sidebar {
-    width: 250px;
+    width: 220px; /* Adjusted for better layout */
     height: 100vh;
-    background: linear-gradient(135deg, #1A1F36, #253A5A); /* Blue Gradient */
-    color: #FFFFFF;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow-y: auto;
-    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 1rem;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Sidebar Header */
-.sidebar-header {
+.sidebar-content {
+    flex-grow: 1;
     display: flex;
-    align-items: center;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    flex-direction: column;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 1rem;
 }
 
 .sidebar-logo {
-    width: 45px;
+    width: 80px;
     height: auto;
 }
 
 .sidebar-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: bold;
-    color: #E3F2FD;
-    margin-left: 12px;
+    color: #2c3e50;
+    margin-top: 0.5rem;
 }
 
-/* Navigation Menu */
 .nav {
-    padding: 20px 0;
+    padding: 0;
+    flex-grow: 1; /* Allows navigation to take available space */
 }
 
 .nav-item {
-    width: 100%;
+    list-style: none;
+    margin: 0.5rem 0;
 }
 
-/* Navigation Links */
 .nav-link {
-    width: 100%;
-    padding: 12px 20px;
-    font-size: 16px;
-    color: #C1D1E8;
-    background: transparent;
-    border: none;
     display: flex;
     align-items: center;
-    gap: 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
+    padding: 10px;
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: 0.2s;
+    cursor: pointer;
 }
 
-.nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    transform: scale(1.05);
+.nav-link i {
+    margin-right: 8px;
+    font-size: 1.1rem;
 }
 
-/* Active Link State */
+.nav-link:hover,
 .nav-link.active {
-    background: #3A6EA5;
+    background-color: #007bff;
     color: white;
-    border-left: 4px solid #1E88E5;
-    font-weight: bold;
+    border-radius: 5px;
 }
 
-/* Sidebar Footer (User Info) */
-.sidebar-footer {
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
+/* Logout Button */
+.logout-container {
+    margin-top: auto; /* Pushes the logout button to the bottom */
+    padding-top: 1rem;
 }
 
-.user-info {
-    color: #E3F2FD;
+.logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: left;
 }
 
-.user-name {
-    font-weight: bold;
-    font-size: 1rem;
+.logout-btn i {
+    margin-right: 8px;
+    font-size: 1.1rem;
 }
 
-.user-email {
-    font-size: 0.875rem;
-    margin: 5px 0;
-}
-
-.user-role {
-    font-size: 0.75rem;
-    color: #B0BEC5;
+.logout-btn:hover {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
 }
 
 /* Responsive Sidebar */
 @media (max-width: 768px) {
     .sidebar {
-        width: 220px;
+        width: 60px;
+    }
+
+    .sidebar-title {
+        display: none;
+    }
+
+    .nav-link {
+        justify-content: center;
+    }
+
+    .nav-link i {
+        margin-right: 0;
+    }
+
+    .logout-btn {
+        justify-content: center;
+    }
+
+    .logout-btn i {
+        margin-right: 0;
     }
 }

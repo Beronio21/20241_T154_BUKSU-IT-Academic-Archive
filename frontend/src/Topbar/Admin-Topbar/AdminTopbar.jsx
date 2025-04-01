@@ -32,7 +32,7 @@ const AdminTopbar = ({ userInfo }) => {
                             width="32"
                             height="32"
                         />
-                        <span>{userInfo?.name || 'Administrator'}</span>
+                        <span className="d-none d-md-inline">{userInfo?.name || 'Administrator'}</span>
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
                         <li>

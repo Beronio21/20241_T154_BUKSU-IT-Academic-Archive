@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
-// Import icons for better UI
+import { FaPlus, FaEdit, FaTrash, FaTimes, FaCheckCircle } from 'react-icons/fa';  // Import icons for better UI
 
 const CapstoneManagement = () => {
     const [submissions, setSubmissions] = useState([]);

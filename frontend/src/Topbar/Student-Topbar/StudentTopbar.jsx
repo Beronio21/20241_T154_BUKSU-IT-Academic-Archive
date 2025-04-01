@@ -25,34 +25,6 @@ const StudentTopbar = ({
     return (
         <nav className="student-topbar navbar navbar-expand-lg bg-light shadow-sm">
             <div className="container-fluid d-flex justify-content-between align-items-center">
-                {/* Search Bar */}
-                <div className="search-bar d-flex gap-3">
-                    <input
-                        type="text"
-                        placeholder="Search by title"
-                        value={titleSearch}
-                        onChange={(e) => setTitleSearch(e.target.value)}
-                        className="form-control"
-                    />
-                    <input
-                        type="date"
-                        value={dateSearch}
-                        onChange={(e) => setDateSearch(e.target.value)}
-                        className="form-control"
-                    />
-                    <select
-                        value={categorySearch}
-                        onChange={(e) => setCategorySearch(e.target.value)}
-                        className="form-control"
-                    >
-                        <option value="">Select a category</option>
-                        {categories.map((cat) => (
-                            <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* User Profile Dropdown */}
                 <div className="dropdown">
                     <button
                         className="p-0 dropdown-toggle d-flex align-items-center profile-btn"

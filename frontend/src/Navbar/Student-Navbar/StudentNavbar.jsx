@@ -9,8 +9,6 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard', path: '/student-dashboard/dashboard', icon: 'bi bi-house' },
         { name: 'My Profile', section: 'profile', path: '/student-dashboard/profile', icon: 'bi bi-person' },
-        { name: 'Submit Capstone', section: 'submit-thesis', path: '/student-dashboard/submit-thesis', icon: 'bi bi-upload' },
-        { name: 'View Capstone', section: 'view-capstone', path: '/student-dashboard/view-', icon: 'bi bi-eye' }
     ];
 
     const handleNavigation = (section, path) => {
@@ -18,6 +16,14 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
             handleSectionChange(section);
         }
         navigate(path);
+    };
+
+    const handleLogout = () => {
+        if (window.confirm("Are you sure you want to logout?")) {
+            localStorage.clear();
+            sessionStorage.clear();
+            navigate("/login", { replace: true });
+        }
     };
 
     return (
@@ -40,6 +46,13 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
                         </li>
                     ))}
                 </ul>
+
+                {/* Logout Button */}
+                <div className="logout-container">
+                    <button className="btn btn-danger logout-btn" onClick={handleLogout}>
+                        <i className="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </div>
             </div>
         </div>
     );

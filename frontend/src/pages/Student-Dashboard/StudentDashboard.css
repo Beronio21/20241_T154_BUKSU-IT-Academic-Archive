@@ -1,220 +1,112 @@
-.dashboard-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.d-flex {
-  display: flex;
-  flex: 1;
-}
-
-/* Sidebar (Navbar) */
-.sidebar {
-  width: 250px;
-  transition: all 0.3s ease-in-out;
-}
-
-.sidebar.closed {
-  width: 60px;
-}
-
-/* Main Content */
-.dashboard-content {
-  flex-grow: 1;
-  padding: 20px;
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.sidebar-open .dashboard-content {
-  margin-left: 250px;
-}
-
-.sidebar-closed .dashboard-content {
-  margin-left: 60px;
-}
-
-/* ✅ Fix: Ensure search bar & filters are aligned */
-.topbar {
+/* Modern Search Bar and Filters */
+.search-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background: #fff;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.search-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+
+.search-bar:focus,
+.filter-dropdown:focus {
+  border-color: #0062cc;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 98, 204, 0.2); /* Light blue outline */
 }
 
 .search-bar {
-  flex-grow: 1;
-  min-width: 200px;
+  flex-grow: 1; /* Allow it to grow in available space */
 }
 
 .filter-dropdown {
-  min-width: 120px;
+  min-width: 180px;
 }
 
-/* ✅ Fix: Proper Grid Layout */
+/* Modern Grid Layout */
 .capstone-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* ✅ Responsive grid */
-  gap: 16px;
-  justify-content: flex-start; /* ✅ Aligns to top-left */
-  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+  gap: 20px;
+  justify-items: stretch;
+  margin-bottom: 40px;
+}
+
+/* Capstone Card Styling */
+.capstone-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.capstone-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+/* Card Content Styling */
+.capstone-card .card-body {
   padding: 20px;
 }
 
-/* ✅ Fix: Make each card uniform */
-.capstone-card {
-  width: 100%;
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 15px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  word-wrap: break-word;
-}
-
-/* ✅ Fix: Keep status badges aligned */
-.status-badge {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: white;
-  font-size: 0.8rem;
-  text-align: center;
-}
-
-.bg-success {
-  background-color: #28a745;
-}
-
-.bg-warning {
-  background-color: #ffc107;
-}
-
-/* ✅ Fix: Text alignment & button styles */
-.submission-title {
-  font-size: 1rem;
+.card-title {
+  font-size: 1.25rem;
   font-weight: bold;
-  margin-bottom: 8px;
-  text-align: left;
+  margin-bottom: 15px;
+  color: #333;
 }
 
-/* General Button Styles */
-/* Button Container (for aligning buttons in cards) */
-.capstone-card .btn-container {
-  display: flex;
-  justify-content: space-between; /* Align buttons to left and right */
-  gap: 10px; /* Space between the buttons */
-  margin-top: auto; /* Push buttons to the bottom of the card */
-  flex-wrap: wrap; /* Wrap buttons on smaller screens */
+.card-text {
+  color: #555;
+  margin-bottom: 10px;
 }
 
-/* Mobile responsiveness for buttons */
+.card-text strong {
+  font-weight: 600;
+}
+
+.card .btn-primary {
+  background: linear-gradient(135deg, #0062cc, #4e73df); /* Gradient */
+  border-radius: 25px;
+  padding: 12px 25px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.card .btn-primary:hover {
+  background: linear-gradient(135deg, #4e73df, #0062cc);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+}
+
+.card .btn-primary:active {
+  background: linear-gradient(135deg, #0056b3, #3e6bb0);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+}
+
+/* Adjust Layout for Smaller Screens */
 @media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-bar,
+  .filter-dropdown {
+    max-width: 100%;
+  }
+
+  .capstone-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Smaller cards on mobile */
+  }
+
   .capstone-card .btn-container {
-    justify-content: center; /* Center buttons on small screens */
-  }
-
-  .btn-sm {
-    width: 100%; /* Make buttons full width on mobile */
-    text-align: center; /* Center text */
-  }
-}
-
-
-.btn-sm {
-  padding: 10px 20px; /* Increased padding for a better size */
-  font-size: 0.875rem;
-  font-weight: 600; /* Slightly bolder text */
-  text-transform: uppercase;
-  border: none;
-  border-radius: 8px; /* Rounded corners */
-  transition: all 0.3s ease; /* Smooth transition for hover and active effects */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #0062cc, #4e73df); /* Gradient background for a professional look */
-  color: white;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #4e73df, #0062cc); /* Reverse the gradient on hover */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
-  transform: translateY(-2px); /* Slightly lift the button for depth */
-}
-
-.btn-primary:active {
-  background: linear-gradient(135deg, #0056b3, #3e6bb0); /* Darker gradient on active */
-  transform: translateY(0); /* Remove lift effect */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow on active */
-}
-
-.btn-secondary {
-  background: linear-gradient(135deg, #6c757d, #adb5bd); /* Soft gradient for secondary buttons */
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: linear-gradient(135deg, #adb5bd, #6c757d); /* Reverse gradient for hover */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
-  transform: translateY(-2px); /* Slight hover lift */
-}
-
-.btn-secondary:active {
-  background: linear-gradient(135deg, #5a6268, #90999f); /* Darker secondary gradient on active */
-  transform: translateY(0); /* Reset the hover effect */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow */
-}
-
-/* Alternative Button Styles */
-.btn-outline {
-  background: transparent;
-  color: #0062cc;
-  border: 2px solid #0062cc;
-}
-
-.btn-outline:hover {
-  background: #0062cc;
-  color: white;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Hover effect with shadow */
-}
-
-.btn-outline:active {
-  background: #004085;
-  color: white;
-  border-color: #004085;
-}
-
-/* Button Container (for aligning buttons in cards) */
-.capstone-card .btn-container {
-  display: flex;
-  justify-content: flex-end; /* Align buttons to the right */
-  gap: 10px; /* Space between the buttons */
-  margin-top: auto; /* Push buttons to the bottom of the card */
-  flex-wrap: wrap; /* Wrap buttons on smaller screens */
-}
-
-/* Mobile responsiveness for buttons */
-@media (max-width: 768px) {
-  .capstone-card .btn-container {
-    justify-content: center; /* Center buttons on small screens */
-  }
-
-  .btn-sm {
-    width: 100%; /* Make buttons full width on mobile */
-    text-align: center; /* Center text */
+    justify-content: center; /* Center buttons on smaller screens */
   }
 }

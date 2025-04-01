@@ -41,21 +41,6 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, user }) => {
                         </li>
                     ))}
                 </ul>
-                {/* Capstone Management Section */}
-                <div className="capstone-management">
-                    <h6 className="capstone-title">Capstone Management</h6>
-                    <ul className="nav flex-column">
-                        <li className="nav-item">
-                            <button
-                                className="nav-link"
-                                onClick={() => handleNavigation('capstone-management', '/teacher-dashboard/capstone-management')}
-                            >
-                                <i className="bi bi-folder"></i>
-                                Manage Capstone
-                            </button>
-                        </li>
-                    </ul>
-                </div>
             </div>
             {user && (
                 <div className="sidebar-footer">
