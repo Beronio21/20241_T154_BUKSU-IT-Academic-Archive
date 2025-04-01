@@ -111,7 +111,7 @@ router.get('/submissions/adviser', async (req, res) => {
         const { email } = req.query;
         const submissions = await Thesis.find({ 
             adviserEmail: email 
-        }).select('title abstract keywords members email status createdAt docsLink objective');
+        }).select('title abstract keywords members email status createdAt docsLink category');
 
         res.json({
             status: 'success',

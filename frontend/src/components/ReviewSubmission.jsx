@@ -129,7 +129,15 @@ const ReviewSubmission = () => {
                     value={dateSearch}
                     onChange={(e) => setDateSearch(e.target.value)}
                 />
-               
+               <select
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                >
+                    <option value="">Select a category</option>
+                    {categories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
             </div>
 
             {loading ? (
@@ -185,6 +193,10 @@ const ReviewSubmission = () => {
                                     <div className="info-group">
                                         <label>Objective:</label>
                                         <p>{submission.objective || 'No objective available'}</p>
+                                    </div>
+                                    <div className="info-group">
+                                        <label>Category:</label>
+                                        <p>{submission.category || 'No category available'}</p>
                                     </div>
                                 </div>
                                 <div className="submission-actions">
