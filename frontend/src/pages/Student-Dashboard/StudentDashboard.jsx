@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { Container, Row, Col, Alert, Card, Form, Spinner } from "react-bootstrap";
 import axios from "axios";
+import "./StudentDashboard.css";
 
 import StudentProfile from "../../Profile/Student-Profile/StudentProfile";
 import SubmitThesis from "../../components/Submit-Thesis/SubmitThesis";

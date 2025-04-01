@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AdminTopbar.css'; // External CSS
 
 const AdminTopbar = ({ userInfo }) => {
     const navigate = useNavigate();
@@ -14,12 +13,12 @@ const AdminTopbar = ({ userInfo }) => {
     };
 
     return (
-        <nav className="admin-topbar navbar navbar-expand-lg bg-light shadow-sm">
+        <nav className="admin-topbar navbar navbar-expand-lg navbar-light bg-transparent shadow-none">
             <div className="container-fluid d-flex justify-content-end align-items-center">
-                
-                {/* User Profile Dropdown */}
+                {/* Profile Dropdown */}
                 <div className="dropdown">
-                    <button className="p-0 dropdown-toggle d-flex align-items-center profile-btn"
+                    <button
+                        className="p-0 dropdown-toggle d-flex align-items-center profile-btn bg-transparent border-0 text-dark"
                         type="button"
                         id="adminDropdown"
                         data-bs-toggle="dropdown"
@@ -32,7 +31,7 @@ const AdminTopbar = ({ userInfo }) => {
                             width="32"
                             height="32"
                         />
-                        <span className="d-none d-md-inline">{userInfo?.name || 'Administrator'}</span>
+                        <span className="text-dark">{userInfo?.name || 'Administrator'}</span>
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
                         <li>
@@ -48,7 +47,6 @@ const AdminTopbar = ({ userInfo }) => {
                         </li>
                     </ul>
                 </div>
-
             </div>
         </nav>
     );

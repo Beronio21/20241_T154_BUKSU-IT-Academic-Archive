@@ -10,7 +10,6 @@ import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import ReviewSubmission from '../../components/Review-Submissions/ReviewSubmission';
 import CapstoneManagement from '../../components/Capstone-Management/CapstoneManagement';
 
-
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');

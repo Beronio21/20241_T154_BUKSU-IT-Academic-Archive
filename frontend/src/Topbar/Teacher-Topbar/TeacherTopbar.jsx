@@ -1,17 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-const TeacherTopbar = ({ 
-    userInfo, 
-    searchTerm, 
-    setSearchTerm, 
-    yearFilter, 
-    setYearFilter, 
-    topicFilter, 
-    setTopicFilter, 
-    filterCapstones
-}) => {
+const TeacherTopbar = ({ userInfo }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -22,30 +12,13 @@ const TeacherTopbar = ({
         }
     };
 
-    const topics = ["All Topics", "IoT", "AI", "ML", "Sound", "Camera"];
-
-    // Pass the filter parameters to the parent (dashboard or other component) to filter the capstones
-    const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);
-        filterCapstones(searchTerm, yearFilter, topicFilter);
-    };
-
-    const handleYearChange = (e) => {
-        setYearFilter(e.target.value);
-        filterCapstones(searchTerm, e.target.value, topicFilter);
-    };
-
-    const handleTopicChange = (e) => {
-        setTopicFilter(e.target.value);
-        filterCapstones(searchTerm, yearFilter, e.target.value);
-    };
-
     return (
-        <nav className="teacher-topbar navbar navbar-expand-lg">
+        <nav className="teacher-topbar navbar navbar-expand-lg navbar-light bg-transparent shadow-none">
             <div className="container-fluid d-flex justify-content-end align-items-center">
                 {/* User Profile Dropdown */}
-                <div className="dropdown d-flex align-items-center">
-                    <button className="p-0 dropdown-toggle d-flex align-items-center profile-btn"
+                <div className="dropdown">
+                    <button
+                        className="p-0 dropdown-toggle d-flex align-items-center profile-btn bg-transparent border-0 text-dark"
                         type="button"
                         id="userDropdown"
                         data-bs-toggle="dropdown"
@@ -58,7 +31,7 @@ const TeacherTopbar = ({
                             width="32"
                             height="32"
                         />
-                        <span>{userInfo?.name || 'Teacher'}</span>
+                        <span className="text-dark">{userInfo?.name || 'Teacher'}</span>
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li>
