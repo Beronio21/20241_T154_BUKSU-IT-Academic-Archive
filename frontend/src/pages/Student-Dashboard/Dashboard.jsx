@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './CapstoneStatistic.css';
+import './Dashboard.css';
 
-const CapstoneStatistic = () => {
+const Dashboard = () => {
     const [statistics, setStatistics] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -37,7 +37,7 @@ const CapstoneStatistic = () => {
     return (
         <div className="statistics-container">
             <div className="statistics-header">
-                <h1>Capstone Statistics</h1>
+                <h1>Dashboard</h1>
                 <p>Overview of capstone submissions and approvals</p>
             </div>
 
@@ -61,12 +61,19 @@ const CapstoneStatistic = () => {
                     <div className="stat-number">{Object.keys(statistics.categoryCounts).length}</div>
                     <div className="stat-label">Different categories</div>
                 </div>
+
+                <div className="stat-card">
+                    <h3>Latest Year</h3>
+                    <div className="stat-number">
+                        {Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))}
+                    </div>
+                    <div className="stat-label">Most recent submissions</div>
+                </div>
             </div>
 
             <div className="chart-container">
                 <h3>Approvals by Year</h3>
                 <div className="chart">
-                    {/* Add a chart library here if needed */}
                     <ul className="category-list">
                         {Object.entries(statistics.yearlyApprovals)
                             .sort(([a], [b]) => b - a)
@@ -99,4 +106,4 @@ const CapstoneStatistic = () => {
     );
 };
 
-export default CapstoneStatistic; 
+export default Dashboard; 

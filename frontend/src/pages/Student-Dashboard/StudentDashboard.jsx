@@ -10,10 +10,10 @@ import SendGmail from "../../Communication/SendGmail";
 import ScheduleTable from "../../components/ScheduleTable";
 import Topbar from "../../Topbar/Student-Topbar/StudentTopbar";
 import StudentNavbar from "../../Navbar/Student-Navbar/StudentNavbar";
-import CapstoneStatistic from "./CapstoneStatistic";
 import { Button, Container, Row, Col, Table, Alert, Dropdown, Modal } from "react-bootstrap";
 import "./StudentDashboard.css";
 import axios from 'axios';
+import Dashboard from './Dashboard';
 
 const StudentDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -161,7 +161,7 @@ const StudentDashboard = () => {
       case "docs":
         return <Docs />;
       case "statistics":
-        return <CapstoneStatistic />;
+        return <Dashboard />;
       case "dashboard":
       default:
         return (
@@ -414,7 +414,7 @@ const StudentDashboard = () => {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/send-gmail" element={<SendGmail />} />
           <Route path="/schedule" element={<ScheduleTable />} />
-          <Route path="/statistics" element={<CapstoneStatistic />} />
+          <Route path="/statistics" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
         </Routes>
       </div>

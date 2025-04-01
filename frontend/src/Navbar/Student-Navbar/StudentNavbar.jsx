@@ -32,10 +32,10 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
 
     // Navigation items configuration
     const mainNavItems = [
-        { name: 'Dashboard', section: 'dashboard' },
+        { name: 'Dashboard', section: 'statistics' },
+        { name: 'Search Capstone', section: 'dashboard' },
         { name: 'My Profile', section: 'profile' },
-        { name: 'View Capstone', section: 'docs' },
-        { name: 'Capstone Statistics', section: 'statistics' }
+        { name: 'View Capstone', section: 'docs' }
     ];
 
     const additionalNavItems = [
