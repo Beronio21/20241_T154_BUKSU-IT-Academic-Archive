@@ -129,15 +129,7 @@ const ReviewSubmission = () => {
                     value={dateSearch}
                     onChange={(e) => setDateSearch(e.target.value)}
                 />
-                <select
-                    value={categorySearch}
-                    onChange={(e) => setCategorySearch(e.target.value)}
-                >
-                    <option value="">Select a category</option>
-                    {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                </select>
+               
             </div>
 
             {loading ? (
