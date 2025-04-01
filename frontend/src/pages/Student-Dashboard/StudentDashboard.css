@@ -25,30 +25,48 @@
 .alert {
     margin-top: 20px; /* Space above alerts */
 }
-.search-input {
-    width: 100%; /* Full width */
-    max-width: 600px; /* Set a maximum width */
-    margin: 0 auto; /* Center the input */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for border color and shadow */
+.student-dashboard {
+    padding: 20px;
 }
 
-.search-input:focus {
-    border-color: #007bff; /* Change border color on focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
-    outline: none; /* Remove default outline */
+.search-filter {
+    margin-bottom: 20px;
 }
 
-.submissions-table {
-    width: 100%; /* Full width */
-}
-
-.loading-spinner {
+.card-container {
     display: flex;
-    justify-content: center; /* Center the loading spinner */
-    align-items: center; /* Center vertically */
-    height: 100px; /* Fixed height for loading area */
+    flex-wrap: wrap;
+    gap: 20px; /* Space between cards */
 }
 
-.alert {
-    margin-top: 20px; /* Space above alerts */
+.capstone-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 1 1 calc(33% - 20px); /* Responsive card width */
+    min-width: 300px; /* Minimum width for cards */
+}
+
+.capstone-card h3 {
+    margin: 0 0 10px;
+}
+
+.capstone-card p {
+    margin: 5px 0;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
 }

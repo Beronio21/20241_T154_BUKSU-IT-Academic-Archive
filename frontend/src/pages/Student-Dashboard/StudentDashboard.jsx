@@ -30,10 +30,12 @@ const StudentDashboard = () => {
   const [selectedThesis, setSelectedThesis] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [approvedCapstones, setApprovedCapstones] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [categories, setCategories] = useState(['IoT', 'AI', 'ML', 'Sound', 'Camera']);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
 
   // Ensure user authentication
   useEffect(() => {
@@ -118,6 +120,15 @@ const StudentDashboard = () => {
     return matchesTitle && matchesDate && matchesCategory && matchesStatus;
   });
 
+  // Filter capstones based on search term, date, and category
+  const filteredCapstones = approvedCapstones.filter(capstone => {
+    const matchesTitle = capstone.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDate = selectedDate ? new Date(capstone.createdAt).toLocaleDateString() === new Date(selectedDate).toLocaleDateString() : true;
+    const matchesCategory = selectedCategory ? capstone.category === selectedCategory : true;
+
+    return matchesTitle && matchesDate && matchesCategory;
+  });
+
   const getStatusColor = (status) => {
     switch (status) {
         case 'pending':
@@ -149,91 +160,54 @@ const StudentDashboard = () => {
       case "dashboard":
       default:
         return (
-          <div className="review-submission-container">
-            <header className="review-header">
-              <h2>Approved Capstone Research</h2>
-              <div className="search-bar">
-                <input
-                  type="text"
-                  placeholder="Search by title"
-                  value={titleSearch}
-                  onChange={(e) => setTitleSearch(e.target.value)}
-                  className="form-control search-input"
-                />
-                <input
-                  type="date"
-                  value={dateSearch}
-                  onChange={(e) => setDateSearch(e.target.value)}
-                  className="form-control date-input"
-                />
-                <select
-                  value={categorySearch}
-                  onChange={(e) => setCategorySearch(e.target.value)}
-                  className="form-control"
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
-            </header>
+          <div className="student-dashboard">
+            <h2>Approved Capstone Research</h2>
+
+            {/* Search and Filter Section */}
+            <div className="search-filter">
+              <input
+                type="text"
+                placeholder="Search by title"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="form-control"
+              />
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="form-control"
+              />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="form-control"
+              >
+                <option value="">Select a category</option>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
 
             {loading ? (
-              <div className="loading-container">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            ) : error ? (
-              <div className="error-message">
-                {error}
-              </div>
+              <p>Loading approved capstones...</p>
             ) : (
-              <div className="submissions-grid">
-                {approvedCapstones.length === 0 ? (
-                  <div className="no-submissions">
-                    <i className="bi bi-inbox text-muted"></i>
-                    <p>No approved capstones available</p>
-                  </div>
+              <div className="card-container">
+                {filteredCapstones.length === 0 ? (
+                  <p>No approved capstones available</p>
                 ) : (
-                  approvedCapstones.map((capstone) => (
-                    <div key={capstone._id} className="submission-card">
-                      <div className="submission-header">
-                        <h3>{capstone.title}</h3>
-                        <span 
-                          className="status-badge"
-                          style={{ backgroundColor: getStatusColor(capstone.status) }}
-                        >
-                          {capstone.status}
-                        </span>
-                      </div>
-                      <div className="submission-content">
-                        <div className="info-group">
-                          <label>Abstract:</label>
-                          <p className="abstract-text">{capstone.abstract}</p>
-                        </div>
-                        <div className="info-group">
-                          <label>Objective:</label>
-                          <p className="abstract-text">{capstone.objective}</p>
-                        </div>
-                        <div className="info-group">
-                          <label>Keywords:</label>
-                          <p className="keywords-list">{capstone.keywords.join(', ')}</p>
-                        </div>
-                        <div className="info-group">
-                          <label>Document Link:</label>
-                          <a 
-                            href={capstone.docsLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="doc-link"
-                          >
-                            View Document
-                          </a>
-                        </div>
-                      </div>
-                      
+                  filteredCapstones.map((capstone) => (
+                    <div className="capstone-card" key={capstone._id}>
+                      <h3>{capstone.title}</h3>
+                      <p><strong>Abstract:</strong> {capstone.abstract}</p>
+                      <p><strong>Objective:</strong> {capstone.objective}</p>
+                      <p><strong>Keywords:</strong> {capstone.keywords.join(', ')}</p>
+                      <p><strong>Date Submitted:</strong> {new Date(capstone.createdAt).toLocaleDateString()}</p>
+                      <p><strong>Category:</strong> {capstone.category}</p>
+                      <a href={capstone.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                        View Document
+                      </a>
                     </div>
                   ))
                 )}
