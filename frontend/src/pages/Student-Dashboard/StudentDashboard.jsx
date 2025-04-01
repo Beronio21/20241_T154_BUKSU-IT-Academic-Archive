@@ -58,6 +58,7 @@ const StudentDashboard = () => {
   };
 
   const truncateText = (text, maxLength = 50) => {
+    if (typeof text !== 'string') return ''; // Return empty string if text is not a string
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
@@ -141,8 +142,8 @@ const StudentDashboard = () => {
                           <Card.Title>{truncateText(submission.title)}</Card.Title>
                           <Card.Text><strong>Status:</strong> {truncateText(submission.status)}</Card.Text>
                           <Card.Text><strong>Abstract:</strong> {truncateText(submission.abstract)}</Card.Text>
-                          <Card.Text><strong>Keywords:</strong> {truncateText(submission.keywords.join(', '))}</Card.Text>
-                          <Card.Text><strong>Members:</strong> {truncateText(submission.members.join(', '))}</Card.Text>
+                          <Card.Text><strong>Keywords:</strong> {truncateText(submission.keywords ? submission.keywords.join(', ') : '')}</Card.Text>
+                          <Card.Text><strong>Members:</strong> {truncateText(submission.members ? submission.members.join(', ') : '')}</Card.Text>
                           <Card.Text><strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}</Card.Text>
                           <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
                             View Document
