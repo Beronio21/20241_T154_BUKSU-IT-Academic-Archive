@@ -6,10 +6,10 @@ const Notification = require('../models/notification');
 // Submit thesis
 router.post('/submit', async (req, res) => {
     try {
-        const { title, abstract, keywords, members, adviserEmail, docsLink, email, category } = req.body;
+        const { title, abstract, keywords, members, adviserEmail, docsLink, email, category, objective } = req.body;
 
         // Validate required fields
-        if (!title || !abstract || !keywords || !members || !adviserEmail || !docsLink || !email || !category) {
+        if (!title || !abstract || !keywords || !members || !adviserEmail || !docsLink || !email || !category || !objective) {
             return res.status(400).json({
                 status: 'error',
                 message: 'All fields are required'
@@ -34,6 +34,7 @@ router.post('/submit', async (req, res) => {
             docsLink,
             email,
             category,
+            objective,
             status: 'pending'
         });
 
@@ -81,12 +82,13 @@ router.post('/submit', async (req, res) => {
     }
 });
 
-// Get all submissions (for students)
+// Get all submissions (for admins)
 router.get('/submissions', async (req, res) => {
     try {
         console.log('Fetching all submissions');
         const submissions = await Thesis.find()
-            .sort({ createdAt: -1 }); // Sort by newest first
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .select('title abstract keywords members email status createdAt docsLink objective'); // Include objective
 
         console.log('Found submissions:', submissions.length);
         
@@ -109,7 +111,7 @@ router.get('/submissions/adviser', async (req, res) => {
         const { email } = req.query;
         const submissions = await Thesis.find({ 
             adviserEmail: email 
-        }).select('title abstract keywords members email status createdAt docsLink');
+        }).select('title abstract keywords members email status createdAt docsLink category');
 
         res.json({
             status: 'success',
@@ -296,6 +298,55 @@ router.put('/:id', async (req, res) => {
             status: 'error',
             message: 'Failed to update thesis',
             error: error.message
+        });
+    }
+});
+
+// Admin approves a thesis submission
+router.put('/approve/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; // Expecting status to be 'approved' or 'rejected'
+
+        const thesis = await Thesis.findByIdAndUpdate(id, { status }, { new: true });
+        
+        if (!thesis) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Thesis not found'
+            });
+        }
+
+        res.json({
+            status: 'success',
+            message: `Thesis ${status} successfully`,
+            data: thesis
+        });
+    } catch (error) {
+        console.error('Error approving thesis:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to approve thesis',
+            error: error.message
+        });
+    }
+});
+
+// Get all approved submissions (for students)
+router.get('/approved', async (req, res) => {
+    try {
+        const submissions = await Thesis.find({ status: 'approved' })
+            .sort({ createdAt: -1 }); // Sort by newest first
+
+        res.json({
+            status: 'success',
+            data: submissions
+        });
+    } catch (error) {
+        console.error('Error fetching approved submissions:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch approved submissions'
         });
     }
 });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Modal from 'react-bootstrap/Modal';
 
+
 const StudentProfile = () => {
     // Initialize all form fields with empty strings
     const initialFormState = {
@@ -166,7 +167,7 @@ const StudentProfile = () => {
     };
 
     return (
-        <div className="container-fluid py-3 pt-1" style={{ backgroundColor: 'white', height: '100vh', overflow: 'hidden' }}>
+        <div className="container-fluid py-2 px-4" style={{ backgroundColor: '#f8f9fa', height: '100vh', overflow: 'hidden' }}>
             {/* Top Status Bar */}
             <div className="row mb-2">
                 <div className="col-12">
@@ -596,4 +597,4 @@ const StudentProfile = () => {
     );
 };
 
-export default StudentProfile;
+export default StudentProfile; 

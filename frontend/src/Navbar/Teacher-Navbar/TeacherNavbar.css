@@ -1,5 +1,6 @@
+/* Sidebar Styles */
 .sidebar {
-    width: 220px; /* Reduced width for better fit */
+    width: 220px;
     height: 100vh;
     background-color: #ffffff;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -12,8 +13,39 @@
     transition: all 0.3s ease-in-out;
 }
 
+/* Collapsed Sidebar */
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.expanded {
+    width: 220px;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+    position: absolute;
+    right: -15px;
+    top: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar-toggle:hover {
+    background-color: #0056b3;
+}
+
+/* Sidebar Content */
 .sidebar-content {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-header {
@@ -33,8 +65,10 @@
     margin-top: 0.5rem;
 }
 
+/* Navigation Links */
 .nav {
     padding: 0;
+    flex-grow: 1;
 }
 
 .nav-item {
@@ -68,38 +102,36 @@
     background-color: #007bff;
     color: white;
     border-radius: 5px;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-.capstone-management {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #ddd;
-}
-
-.capstone-title {
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-}
-
+/* Sidebar Footer */
 .sidebar-footer {
-    padding: 1rem;
+    margin-top: auto;
     text-align: center;
-    border-top: 1px solid #ddd;
+    padding-top: 1rem;
 }
 
 .user-info {
-    font-size: 0.85rem;
-    color: #555;
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .user-name {
+    font-size: 0.9rem;
     font-weight: bold;
+    color: #333;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: #555;
 }
 
 .user-role {
     font-size: 0.8rem;
+    font-weight: bold;
     color: #007bff;
 }
 
@@ -109,8 +141,11 @@
         width: 60px;
     }
 
-    .sidebar-title,
-    .user-info p {
+    .sidebar.expanded {
+        width: 220px;
+    }
+
+    .sidebar-title {
         display: none;
     }
 
@@ -120,5 +155,13 @@
 
     .nav-link i {
         margin-right: 0;
+    }
+
+    .sidebar-footer {
+        display: none;
+    }
+
+    .sidebar-toggle {
+        right: -20px;
     }
 }

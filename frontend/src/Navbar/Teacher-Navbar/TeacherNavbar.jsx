@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './TeacherNavbar.css';
+import './TeacherNavbar.jsx';
 import logo from '../../Images/buksulogov2.png';
 
 const TeacherNavbar = ({ activeSection, handleSectionChange, user }) => {

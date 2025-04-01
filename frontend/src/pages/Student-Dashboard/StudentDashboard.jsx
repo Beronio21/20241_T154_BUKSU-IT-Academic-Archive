@@ -57,6 +57,10 @@ const StudentDashboard = () => {
     }
   };
 
+  const truncateText = (text, maxLength = 50) => {
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
+
   const filteredSubmissions = submissions.filter((submission) => {
     const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
     const matchesCategory = categorySearch ? submission.category === categorySearch : true;
@@ -79,7 +83,7 @@ const StudentDashboard = () => {
                 <h2>Capstone Research Paper</h2>
               </Col>
             </Row>
-            <Row className="mb-3 p">
+            <Row className="mb-3">
               <Col md={12}>
                 <Form.Control
                   type="text"
@@ -90,7 +94,6 @@ const StudentDashboard = () => {
                 />
               </Col>
             </Row>
-
             <Row className="mb-3">
               <Col md={3} lg={2}>
                 <Form.Select
@@ -133,13 +136,13 @@ const StudentDashboard = () => {
                 ) : (
                   filteredSubmissions.map((submission) => (
                     <Col md={4} key={submission._id} className="mb-4">
-                      <Card className="submission-card">
+                      <Card className="submission-card" style={{ minHeight: "250px" }}>
                         <Card.Body>
-                          <Card.Title>{submission.title}</Card.Title>
-                          <Card.Text><strong>Status:</strong> {submission.status}</Card.Text>
-                          <Card.Text><strong>Abstract:</strong> {submission.abstract}</Card.Text>
-                          <Card.Text><strong>Keywords:</strong> {submission.keywords.join(', ')}</Card.Text>
-                          <Card.Text><strong>Members:</strong> {submission.members.join(', ')}</Card.Text>
+                          <Card.Title>{truncateText(submission.title)}</Card.Title>
+                          <Card.Text><strong>Status:</strong> {truncateText(submission.status)}</Card.Text>
+                          <Card.Text><strong>Abstract:</strong> {truncateText(submission.abstract)}</Card.Text>
+                          <Card.Text><strong>Keywords:</strong> {truncateText(submission.keywords.join(', '))}</Card.Text>
+                          <Card.Text><strong>Members:</strong> {truncateText(submission.members.join(', '))}</Card.Text>
                           <Card.Text><strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}</Card.Text>
                           <a href={submission.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
                             View Document

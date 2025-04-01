@@ -1,0 +1,1 @@
+<p><strong>Category:</strong> {submission.category || 'No category available'}</p> 
