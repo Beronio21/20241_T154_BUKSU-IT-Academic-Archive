@@ -369,7 +369,7 @@ const SubmitThesis = () => {
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <div className="form-group">
-                                <label htmlFor="adviserEmail">Adviser Email:</label>
+                                <label htmlFor="adviserEmail">Admin Email:</label>
                                 <input
                                     type="email"
                                     id="adviserEmail"
@@ -378,7 +378,7 @@ const SubmitThesis = () => {
                                     value={formData.adviserEmail}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="Enter adviser's email"
+                                    placeholder="Enter Admin's email"
                                 />
                             </div>
                         </div>
