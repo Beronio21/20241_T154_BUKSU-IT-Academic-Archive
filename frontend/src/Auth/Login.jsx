@@ -187,19 +187,43 @@ const GoogleLogin = () => {
           </div>
 
           {showModal && (
-            <div className="modal-container">
-              <div className="modal-content">
+            <div className="modal-container" style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              position: 'fixed', 
+              top: 0, 
+              left: 0, 
+              right: 0, 
+              bottom: 0, 
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+            }}>
+              <div className="modal-content" style={{ 
+                width: '500px', // Reduced width
+                padding: '5px', // Reduced padding
+                backgroundColor: '#fff', // White background
+                borderRadius: '8px', // Rounded corners
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for depth
+              }}>
                 <h4 className="modal-title">Choose Your Account Type</h4>
                 <div className="user-type-options">
                   <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
                     <div className="user-type-icon">
-                      <img src="./src/Images/Teacher.png" alt="Teacher" />
+                      <img 
+                        src="./src/Images/Teacher.png" 
+                        alt="Teacher" 
+                        style={{ width: '50px', height: '50px' }}
+                      />
                     </div>
                     <p>Teacher</p>
                   </div>
                   <div className="user-type-card" onClick={() => navigate("/student-register")}>
                     <div className="user-type-icon">
-                      <img src="./src/Images/user.png" alt="Student" />
+                      <img 
+                        src="./src/Images/user.png" 
+                        alt="Student" 
+                        style={{ width: '50px', height: '50px' }}
+                      />
                     </div>
                     <p>Student</p>
                   </div>
