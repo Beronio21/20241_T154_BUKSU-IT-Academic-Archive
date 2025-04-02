@@ -250,26 +250,7 @@ const TeacherRegister = () => {
               </div>
 
               {/* Divider Text */}
-              <div className="col-12 text-center mt-3">
-                <p className="mb-0">or Register with</p>
-              </div>
-
-              {/* Google Register Button */}
-              <div className="col-12 text-center mt-2">
-                <button
-                  type="button"
-                  className="google-login-btn"
-                  onClick={googleLogin}
-                  disabled={loading}
-                >
-                  <img
-                    src="../src/Images/Googlelogo.png"
-                    alt="Google logo"
-                    style={{ width: '45px', height: '20px', marginLeft: '2px' }}
-                  />
-                  {loading ? "Signing in..." : "Register with Google"}
-                </button>
-              </div>
+              
             </form>
           </div>
         </div>
