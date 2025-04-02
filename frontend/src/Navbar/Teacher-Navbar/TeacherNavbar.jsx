@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
 
 const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
     const navigate = useNavigate();
@@ -71,6 +72,16 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
             <div className="d-flex flex-column h-100">
                 {/* Header */}
                 <div className="p-4 text-center border-bottom">
+                    <img 
+                      src={logobuksu} 
+                      alt="Logo" 
+                      style={{ 
+                        width: '80px', // Set width
+                        height: '80px', // Set height
+                        borderRadius: '50%', // Make it circular
+                        marginBottom: '10px' 
+                      }} 
+                    />
                     <h5 className="text-black text-start fw-bold mb-0">Teacher Portal</h5>
                 </div>
 

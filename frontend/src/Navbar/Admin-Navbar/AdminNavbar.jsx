@@ -1,4 +1,5 @@
 import React from 'react';
+import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
 import CapstoneManagement from '../../components/CapstoneManagement';
 
 const AdminNavbar = ({ activeSection, handleSectionChange }) => {
@@ -70,6 +71,16 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
       <div className="d-flex flex-column h-100">
         {/* Header */}
         <div className="p-4 text-center border-bottom">
+          <img 
+            src={logobuksu} 
+            alt="Logo" 
+            style={{ 
+              width: '80px', // Set width
+              height: '80px', // Set height
+              borderRadius: '50%', // Make it circular
+              marginBottom: '10px' 
+            }} 
+          />
           <h5 className="text-black text-start fw-bold mb-0">Admin Panel</h5>
         </div>
 
