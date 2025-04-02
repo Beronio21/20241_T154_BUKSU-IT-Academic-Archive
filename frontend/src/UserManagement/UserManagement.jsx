@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal, Button } from 'react-bootstrap';
 
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
@@ -187,9 +188,6 @@ const UserManagement = () => {
                             <td>{user[`${type}_id`] || 'Not set'}</td>
                             <td>
                                 {user.name}
-                                {user.lock && (
-                                    <i className="fas fa-lock" style={{ marginLeft: '5px', color: 'red' }} title="Being edited"></i>
-                                )}
                             </td>
                             <td>{user.email}</td>
                             <td>
@@ -224,7 +222,6 @@ const UserManagement = () => {
                                     onClick={() => handleEdit(user, type)}
                                     title="Edit User"
                                     style={{ marginRight: '5px', padding: '2px 5px' }}
-                                    disabled={user.lock}
                                 >
                                     <i className="fas fa-edit"></i> Edit
                                 </button>
@@ -284,16 +281,11 @@ const UserManagement = () => {
                 {renderTable(filteredTeachers, 'teacher')}
 
                 {isEditing && editingUser && (
-                    <div className="edit-modal">
-                        <div className="modal-content">
-                            <h3>Edit {editingUser.type === 'student' ? 'Student' : 'Teacher'}</h3>
-                            <button 
-                                className="btn-close" 
-                                onClick={() => handleCancelEdit(editingUser._id)}
-                                title="Close"
-                            >
-                                &times;
-                            </button>
+                    <Modal show={isEditing} onHide={() => setIsEditing(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit {editingUser.type === 'student' ? 'Student' : 'Teacher'}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
                             <form onSubmit={(e) => {
                                 e.preventDefault();
                                 handleUpdate(editingUser._id, editingUser.type, editingUser);
@@ -307,6 +299,7 @@ const UserManagement = () => {
                                             ...editingUser,
                                             name: e.target.value
                                         })}
+                                        className="form-control"
                                     />
                                 </div>
 
@@ -319,6 +312,7 @@ const UserManagement = () => {
                                             ...editingUser,
                                             email: e.target.value
                                         })}
+                                        className="form-control"
                                     />
                                 </div>
 
@@ -333,6 +327,7 @@ const UserManagement = () => {
                                                     ...editingUser,
                                                     student_id: e.target.value
                                                 })}
+                                                className="form-control"
                                             />
                                         </div>
                                         <div className="form-group">
@@ -344,6 +339,7 @@ const UserManagement = () => {
                                                     ...editingUser,
                                                     course: e.target.value
                                                 })}
+                                                className="form-control"
                                             />
                                         </div>
                                         <div className="form-group">
@@ -355,6 +351,7 @@ const UserManagement = () => {
                                                     ...editingUser,
                                                     year: e.target.value
                                                 })}
+                                                className="form-control"
                                             />
                                         </div>
                                     </>
@@ -369,6 +366,7 @@ const UserManagement = () => {
                                                     ...editingUser,
                                                     teacher_id: e.target.value
                                                 })}
+                                                className="form-control"
                                             />
                                         </div>
                                         <div className="form-group">
@@ -380,6 +378,7 @@ const UserManagement = () => {
                                                     ...editingUser,
                                                     department: e.target.value
                                                 })}
+                                                className="form-control"
                                             />
                                         </div>
                                     </>
@@ -393,50 +392,36 @@ const UserManagement = () => {
                                             ...editingUser,
                                             password: e.target.value
                                         })}
+                                        className="form-control"
                                     />
                                 </div>
 
                                 <div className="modal-buttons">
-                                    <button type="submit" className="btn btn-save btn-sm">
-                                        Save Changes
-                                    </button>
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-cancel btn-sm"
-                                        onClick={() => {
-                                            setIsEditing(false);
-                                            setEditingUser(null);
-                                        }}
-                                    >
-                                        Cancel
-                                    </button>
+                                    <Button type="submit" variant="success">Save Changes</Button>
+                                    <Button variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
+                        </Modal.Body>
+                    </Modal>
                 )}
 
                 {isViewing && selectedUser && (
-                    <div className="view-modal">
-                        <div className="modal-content">
-                            <h3>User Details</h3>
+                    <Modal show={isViewing} onHide={() => setIsViewing(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>User Details</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
                             <div>
                                 <p><strong>ID:</strong> {selectedUser[`${selectedUser.type}_id`]}</p>
                                 <p><strong>Name:</strong> {selectedUser.name}</p>
                                 <p><strong>Email:</strong> {selectedUser.email}</p>
                                 <p><strong>Type:</strong> {selectedUser.type}</p>
                             </div>
-                            <button 
-                                className="btn-close" 
-                                onClick={() => {
-                                    setIsViewing(false);
-                                    setSelectedUser(null);
-                                }}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => setIsViewing(false)}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
                 )}
             </section>
         );
