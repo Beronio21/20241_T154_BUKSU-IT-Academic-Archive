@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
 const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
     const navigate = useNavigate();
@@ -33,9 +34,9 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
 
     // Navigation items configuration
     const mainNavItems = [
-        { name: 'Dashboard', section: 'dashboard' },
-        { name: 'My Profile', section: 'profile' },
-        { name: 'Submit Capstone', section: 'submit-thesis' },
+        { name: 'Dashboard', section: 'dashboard', icon: 'fas fa-tachometer-alt' },
+        { name: 'My Profile', section: 'profile', icon: 'fas fa-user' },
+        { name: 'Submit Capstone', section: 'submit-thesis', icon: 'fas fa-upload' },
         // { name: 'Review Capstone', section: 'review-submissions' }
     ];
 
@@ -50,6 +51,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                 onMouseEnter={(e) => handleMouseEnter(e, activeSection === item.section)}
                 onMouseLeave={(e) => handleMouseLeave(e, activeSection === item.section)}
             >
+                <i className={item.icon} style={{ marginRight: '8px' }}></i>
                 {item.name}
             </button>
         </li>

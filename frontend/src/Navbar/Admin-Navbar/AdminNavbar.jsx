@@ -1,5 +1,6 @@
 import React from 'react';
 import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 import CapstoneManagement from '../../components/CapstoneManagement';
 
 const AdminNavbar = ({ activeSection, handleSectionChange }) => {
@@ -31,13 +32,13 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
 
   // Navigation items configuration
   const navItems = [
-    { name: 'Dashboard', section: 'dashboard' },
-    { name: 'User Management', section: 'user-management' },
-    { name: 'Student Records', section: 'student-records' },
-    { name: 'Teacher Records', section: 'teacher-records' },
-    { name: 'Review Capstone', section: 'review-submissions' },
-    { name: 'Capstone Management', section: 'capstone-management' },
-    { name: 'Admin Register', section: 'admin-register' },
+    { name: 'Dashboard', section: 'dashboard', icon: 'fas fa-tachometer-alt' },
+    { name: 'User Management', section: 'user-management', icon: 'fas fa-users' },
+    { name: 'Student Records', section: 'student-records', icon: 'fas fa-user-graduate' },
+    { name: 'Teacher Records', section: 'teacher-records', icon: 'fas fa-chalkboard-teacher' },
+    { name: 'Review Capstone', section: 'review-submissions', icon: 'fas fa-file-alt' },
+    { name: 'Capstone Management', section: 'capstone-management', icon: 'fas fa-cogs' },
+    { name: 'Admin Register', section: 'admin-register', icon: 'fas fa-user-plus' },
   ];
 
   const renderNavItem = (item) => (
@@ -49,6 +50,7 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
         onMouseEnter={(e) => handleMouseEnter(e, activeSection === item.section)}
         onMouseLeave={(e) => handleMouseLeave(e, activeSection === item.section)}
       >
+        <i className={item.icon} style={{ marginRight: '8px' }}></i>
         {item.name}
       </button>
     </li>
