@@ -206,13 +206,13 @@ const GoogleLogin = () => {
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for depth
               }}>
                 <h4 className="modal-title">Choose Your Account Type</h4>
-                <div className="user-type-options">
-                  <div className="user-type-card" onClick={() => navigate("/teacher-register")}>
+                <div className="user-type-options" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="user-type-card" onClick={() => navigate("/teacher-register")} style={{ marginRight: '10px' }}>
                     <div className="user-type-icon">
                       <img 
                         src="./src/Images/Teacher.png" 
                         alt="Teacher" 
-                        style={{ width: '50px', height: '50px' }}
+                        style={{ width: '100px', height: '100px' }}
                       />
                     </div>
                     <p>Teacher</p>
@@ -222,7 +222,7 @@ const GoogleLogin = () => {
                       <img 
                         src="./src/Images/user.png" 
                         alt="Student" 
-                        style={{ width: '50px', height: '50px' }}
+                        style={{ width: '100px', height: '100px' }}
                       />
                     </div>
                     <p>Student</p>
