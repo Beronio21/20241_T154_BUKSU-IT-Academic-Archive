@@ -10,13 +10,17 @@
 
 /* Ensure body takes full height */
 body {
-  background-color: #f8f9fa !important;
+  background: none;
   height: 100%;
+  background-image: url('../Images/Vector.png');
+  background-size: cover;
+  background-position: center;
 }
 
 /* Login container */
 .login-container {
   background-color: #fff;
+  
   padding: 30px;
   border-radius: 20px !important;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
