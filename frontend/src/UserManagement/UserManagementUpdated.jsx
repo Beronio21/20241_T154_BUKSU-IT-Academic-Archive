@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './UserManagement.css'; // Ensure to import the CSS file
 
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
@@ -294,161 +293,157 @@ const UserManagement = () => {
                 {renderTable(filteredTeachers, 'teacher')}
 
                 {isEditing && editingUser && (
-                    <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <h3>Edit {editingUser.type === 'student' ? 'Student' : 'Teacher'}</h3>
-                                <button 
-                                    className="btn-close" 
-                                    onClick={() => handleCancelEdit(editingUser._id)}
-                                    title="Close"
-                                >
-                                    &times;
-                                </button>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    handleUpdate(editingUser._id, editingUser.type, editingUser);
-                                }}>
-                                    <div className="form-group">
-                                        <label>Name</label>
-                                        <input
-                                            type="text"
-                                            value={editingUser.name || ''}
-                                            onChange={(e) => setEditingUser({
-                                                ...editingUser,
-                                                name: e.target.value
-                                            })}
-                                        />
-                                    </div>
+                    <div className="edit-modal">
+                        <div className="modal-content">
+                            <h3>Edit {editingUser.type === 'student' ? 'Student' : 'Teacher'}</h3>
+                            <button 
+                                className="btn-close" 
+                                onClick={() => handleCancelEdit(editingUser._id)}
+                                title="Close"
+                            >
+                                &times;
+                            </button>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                handleUpdate(editingUser._id, editingUser.type, editingUser);
+                            }}>
+                                <div className="form-group">
+                                    <label>Name</label>
+                                    <input
+                                        type="text"
+                                        value={editingUser.name || ''}
+                                        onChange={(e) => setEditingUser({
+                                            ...editingUser,
+                                            name: e.target.value
+                                        })}
+                                    />
+                                </div>
 
-                                    <div className="form-group">
-                                        <label>Email</label>
-                                        <input
-                                            type="email"
-                                            value={editingUser.email || ''}
-                                            onChange={(e) => setEditingUser({
-                                                ...editingUser,
-                                                email: e.target.value
-                                            })}
-                                        />
-                                    </div>
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input
+                                        type="email"
+                                        value={editingUser.email || ''}
+                                        onChange={(e) => setEditingUser({
+                                            ...editingUser,
+                                            email: e.target.value
+                                        })}
+                                    />
+                                </div>
 
-                                    {editingUser.type === 'student' ? (
-                                        <>
-                                            <div className="form-group">
-                                                <label>Student ID</label>
-                                                <input
-                                                    type="text"
-                                                    value={editingUser.student_id || ''}
-                                                    onChange={(e) => setEditingUser({
-                                                        ...editingUser,
-                                                        student_id: e.target.value
-                                                    })}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Course</label>
-                                                <input
-                                                    type="text"
-                                                    value={editingUser.course || ''}
-                                                    onChange={(e) => setEditingUser({
-                                                        ...editingUser,
-                                                        course: e.target.value
-                                                    })}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Year</label>
-                                                <input
-                                                    type="number"
-                                                    value={editingUser.year || ''}
-                                                    onChange={(e) => setEditingUser({
-                                                        ...editingUser,
-                                                        year: e.target.value
-                                                    })}
-                                                />
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="form-group">
-                                                <label>Teacher ID</label>
-                                                <input
-                                                    type="text"
-                                                    value={editingUser.teacher_id || ''}
-                                                    onChange={(e) => setEditingUser({
-                                                        ...editingUser,
-                                                        teacher_id: e.target.value
-                                                    })}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Department</label>
-                                                <input
-                                                    type="text"
-                                                    value={editingUser.department || ''}
-                                                    onChange={(e) => setEditingUser({
-                                                        ...editingUser,
-                                                        department: e.target.value
-                                                    })}
-                                                />
-                                            </div>
-                                        </>
-                                    )}
+                                {editingUser.type === 'student' ? (
+                                    <>
+                                        <div className="form-group">
+                                            <label>Student ID</label>
+                                            <input
+                                                type="text"
+                                                value={editingUser.student_id || ''}
+                                                onChange={(e) => setEditingUser({
+                                                    ...editingUser,
+                                                    student_id: e.target.value
+                                                })}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Course</label>
+                                            <input
+                                                type="text"
+                                                value={editingUser.course || ''}
+                                                onChange={(e) => setEditingUser({
+                                                    ...editingUser,
+                                                    course: e.target.value
+                                                })}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Year</label>
+                                            <input
+                                                type="number"
+                                                value={editingUser.year || ''}
+                                                onChange={(e) => setEditingUser({
+                                                    ...editingUser,
+                                                    year: e.target.value
+                                                })}
+                                            />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="form-group">
+                                            <label>Teacher ID</label>
+                                            <input
+                                                type="text"
+                                                value={editingUser.teacher_id || ''}
+                                                onChange={(e) => setEditingUser({
+                                                    ...editingUser,
+                                                    teacher_id: e.target.value
+                                                })}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Department</label>
+                                            <input
+                                                type="text"
+                                                value={editingUser.department || ''}
+                                                onChange={(e) => setEditingUser({
+                                                    ...editingUser,
+                                                    department: e.target.value
+                                                })}
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
-                                    <div className="form-group">
-                                        <label>New Password (leave blank to keep current)</label>
-                                        <input
-                                            type="password"
-                                            onChange={(e) => setEditingUser({
-                                                ...editingUser,
-                                                password: e.target.value
-                                            })}
-                                        />
-                                    </div>
+                                <div className="form-group">
+                                    <label>New Password (leave blank to keep current)</label>
+                                    <input
+                                        type="password"
+                                        onChange={(e) => setEditingUser({
+                                            ...editingUser,
+                                            password: e.target.value
+                                        })}
+                                    />
+                                </div>
 
-                                    <div className="modal-buttons">
-                                        <button type="submit" className="btn btn-save btn-sm">
-                                            Save Changes
-                                        </button>
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-cancel btn-sm"
-                                            onClick={() => {
-                                                setIsEditing(false);
-                                                setEditingUser(null);
-                                            }}
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                <div className="modal-buttons">
+                                    <button type="submit" className="btn btn-save btn-sm">
+                                        Save Changes
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-cancel btn-sm"
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setEditingUser(null);
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 )}
 
                 {isViewing && selectedUser && (
-                    <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <h3>User Details</h3>
-                                <div>
-                                    <p><strong>ID:</strong> {selectedUser[`${selectedUser.type}_id`]}</p>
-                                    <p><strong>Name:</strong> {selectedUser.name}</p>
-                                    <p><strong>Email:</strong> {selectedUser.email}</p>
-                                    <p><strong>Type:</strong> {selectedUser.type}</p>
-                                </div>
-                                <button 
-                                    className="btn-close" 
-                                    onClick={() => {
-                                        setIsViewing(false);
-                                        setSelectedUser(null);
-                                    }}
-                                >
-                                    Close
-                                </button>
+                    <div className="view-modal">
+                        <div className="modal-content">
+                            <h3>User Details</h3>
+                            <div>
+                                <p><strong>ID:</strong> {selectedUser[`${selectedUser.type}_id`]}</p>
+                                <p><strong>Name:</strong> {selectedUser.name}</p>
+                                <p><strong>Email:</strong> {selectedUser.email}</p>
+                                <p><strong>Type:</strong> {selectedUser.type}</p>
                             </div>
+                            <button 
+                                className="btn-close" 
+                                onClick={() => {
+                                    setIsViewing(false);
+                                    setSelectedUser(null);
+                                }}
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 )}

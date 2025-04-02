@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import useDrivePicker from 'react-google-drive-picker';
-import './SubmitThesis.css';
 
 const SubmitThesis = () => {
     const [formData, setFormData] = useState({
@@ -146,7 +145,6 @@ const SubmitThesis = () => {
                 }
             });
         };
-
         // Get or create the folder and then open the picker
         getOrCreateFolder().then(openPickerAndUpload);
     };
@@ -235,276 +233,160 @@ const SubmitThesis = () => {
     };
 
     return (
-        <div className="submit-thesis-container container mt-4">
-            <div className="thesis-form">
-                <h2>Submit Capstone Research Paper</h2>
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-8">
+                    <div className="card shadow rounded-lg border-0">
+                        <div className="card-body p-4">
+                            <h2 className="text-center mb-4">Submit Capstone Research Paper</h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="title" className="form-label">Research Title</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="title"
+                                        name="title"
+                                        value={formData.title}
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Enter your research title"
+                                    />
+                                </div>
 
-                <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
-                    <div className="row mb-3">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                                <label htmlFor="title">Research Title</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="title"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Enter your research title"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                                <div className="mb-3">
+                                    <label htmlFor="objective" className="form-label">Research Objective</label>
+                                    <textarea
+                                        className="form-control"
+                                        id="objective"
+                                        name="objective"
+                                        value={formData.objective}
+                                        onChange={handleInputChange}
+                                        rows="3"
+                                        required
+                                        placeholder="Enter your research objective"
+                                    />
+                                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="objective" className="form-label fw-bold">Research Objective</label>
-                        <textarea
-                            id="objective"
-                            name="objective"
-                            className="form-control shadow-sm"
-                            value={formData.objective}
-                            onChange={handleInputChange}
-                            placeholder="Enter the main objective of your research"
-                            rows="3"
-                            required
-                        />
-                        <small className="text-muted">
-                            Clearly state the primary goal of your research
-                        </small>
-                    </div>
+                                <div className="mb-3">
+                                    <label htmlFor="abstract" className="form-label">Abstract</label>
+                                    <textarea
+                                        className="form-control"
+                                        id="abstract"
+                                        name="abstract"
+                                        value={formData.abstract}
+                                        onChange={handleInputChange}
+                                        rows="4"
+                                        required
+                                        placeholder="Enter your research abstract"
+                                    />
+                                </div>
 
-                    <div className="row mb-3">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                                <label htmlFor="abstract">Abstract</label>
-                                <textarea
-                                    className="form-control"
-                                    id="abstract"
-                                    name="abstract"
-                                    value={formData.abstract}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Enter your research abstract"
-                                    rows="4"
-                                    style={{ resize: 'vertical' }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="form-group mb-4">
-                        <label htmlFor="keywords" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Keywords:</label>
-                        {formData.keywords.map((keyword, index) => (
-                            <div key={index} className="mb-3 position-relative">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="keywords"
-                                    value={keyword}
-                                    onChange={(e) => handleInputChange(e, index)}
-                                    placeholder="Enter keyword"
-                                    required
-                                    style={{
-                                        borderRadius: '8px',
-                                        padding: '0.8rem 1.2rem',
-                                        border: '1px solid #ccc',
-                                        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-                                        transition: 'border-color 0.3s ease',
-                                        outline: 'none',
-                                        fontSize: '1rem',
-                                    }}
-                                    onFocus={(e) => e.target.style.borderColor = '#007BFF'}
-                                    onBlur={(e) => e.target.style.borderColor = '#ccc'}
-                                />
-                                {formData.keywords.length > 1 && (
-                                    <span
-                                        onClick={() => removeKeyword(index)}
-                                        className="text-danger position-absolute"
-                                        style={{
-                                            top: '50%',
-                                            right: '10px',
-                                            transform: 'translateY(-50%)',
-                                            cursor: 'pointer',
-                                            fontSize: '0.9rem',
-                                            fontWeight: '500',
-                                            textDecoration: 'none',
-                                            padding: '0.2rem 0.5rem',
-                                            transition: 'background-color 0.3s ease, color 0.3s ease',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.color = '#fff';
-                                            e.target.style.backgroundColor = '#dc3545';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.color = 'red';
-                                            e.target.style.backgroundColor = 'transparent';
-                                        }}
+                                <div className="mb-3">
+                                    <label htmlFor="keywords" className="form-label">Keywords</label>
+                                    {formData.keywords.map((keyword, index) => (
+                                        <div className="input-group mb-2" key={index}>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="keywords"
+                                                value={keyword}
+                                                onChange={(e) => handleInputChange(e, index)}
+                                                placeholder={`Keyword ${index + 1}`}
+                                                required
+                                            />
+                                            {formData.keywords.length > 1 && (
+                                                <button
+                                                    className="btn btn-outline-danger"
+                                                    type="button"
+                                                    onClick={() => removeKeyword(index)}
+                                                >
+                                                    Remove
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                    <button
+                                        className="btn btn-outline-primary"
+                                        type="button"
+                                        onClick={addKeyword}
                                     >
-                                        <i className="fas fa-trash-alt me-1"></i> Remove
-                                    </span>
+                                        Add Keyword
+                                    </button>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="adviserEmail" className="form-label">Adviser Email</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="adviserEmail"
+                                        name="adviserEmail"
+                                        value={formData.adviserEmail}
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Enter adviser email"
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="docsLink" className="form-label">Document Link</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="docsLink"
+                                        name="docsLink"
+                                        value={formData.docsLink}
+                                        onChange={handleInputChange}
+                                        placeholder="Upload Document Link"
+                                    />
+                                    <button
+                                        className="btn btn-outline-secondary mt-2"
+                                        type="button"
+                                        onClick={handleOpenPicker}
+                                    >
+                                        Open Google Drive Picker
+                                    </button>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="category" className="form-label">Category</label>
+                                    <select
+                                        className="form-select"
+                                        id="category"
+                                        name="category"
+                                        value={formData.category}
+                                        onChange={handleInputChange}
+                                        required
+                                    >
+                                        <option value="">Select Category</option>
+                                        {categories.map((category) => (
+                                            <option key={category} value={category}>
+                                                {category}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="d-grid">
+                                    <button
+                                        className="btn btn-primary"
+                                        type="submit"
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Submitting...' : 'Submit Thesis'}
+                                    </button>
+                                </div>
+
+                                {error && (
+                                    <div className="mt-3 alert alert-danger" role="alert">
+                                        {error}
+                                    </div>
                                 )}
-                            </div>
-                        ))}
-                        <div className="d-flex justify-content-start mb-3">
-                            <button
-                                type="button"
-                                onClick={addKeyword}
-                                className="btn btn-outline-primary"
-                                style={{
-                                    padding: '0.6rem 1.5rem',
-                                    borderRadius: '8px',
-                                    fontWeight: '500',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                }}
-                            >
-                                <i className="fas fa-plus"></i> Add Keyword
-                            </button>
+                            </form>
                         </div>
                     </div>
-
-                    <div className="row mb-3">
-                        <div className="col-md-6">
-                            <div className="form-group">
-                                <label htmlFor="adviserEmail">Admin Email:</label>
-                                <input
-                                    type="email"
-                                    id="adviserEmail"
-                                    name="adviserEmail"
-                                    className="form-control"
-                                    value={formData.adviserEmail}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Enter Admin's email"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="form-group mb-4">
-                        <label htmlFor="members" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Members:</label>
-                        {formData.members.map((member, index) => (
-                            <div key={index} className="mb-3 position-relative">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="members"
-                                    value={member}
-                                    onChange={(e) => handleInputChange(e, index)}
-                                    placeholder="Enter member name"
-                                    required
-                                    style={{
-                                        borderRadius: '8px',
-                                        padding: '0.8rem 1.2rem',
-                                        border: '1px solid #ccc',
-                                        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-                                        transition: 'border-color 0.3s ease',
-                                        outline: 'none',
-                                        fontSize: '1rem',
-                                    }}
-                                    onFocus={(e) => e.target.style.borderColor = '#007BFF'}
-                                    onBlur={(e) => e.target.style.borderColor = '#ccc'}
-                                />
-                                <span
-                                    onClick={() => removeMember(index)}
-                                    className="text-danger position-absolute"
-                                    style={{
-                                        top: '50%',
-                                        right: '10px',
-                                        transform: 'translateY(-50%)',
-                                        cursor: 'pointer',
-                                        fontSize: '0.9rem',
-                                        fontWeight: '500',
-                                        textDecoration: 'none',
-                                        padding: '0.2rem 0.5rem',
-                                        transition: 'background-color 0.3s ease, color 0.3s ease',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.target.style.color = '#fff';
-                                        e.target.style.backgroundColor = '#dc3545';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.target.style.color = 'red';
-                                        e.target.style.backgroundColor = 'transparent';
-                                    }}
-                                >
-                                    <i className="fas fa-trash-alt me-1"></i> Remove
-                                </span>
-                            </div>
-                        ))}
-                        <div className="d-flex justify-content-start mb-3">
-                            <button
-                                type="button"
-                                onClick={addMember}
-                                className="btn btn-outline-primary"
-                                style={{
-                                    padding: '0.6rem 1.5rem',
-                                    borderRadius: '8px',
-                                    fontWeight: '600',
-                                    fontSize: '1rem',
-                                    backgroundColor: 'transparent',
-                                    borderColor: '#007BFF',
-                                    color: '#007BFF',
-                                    transition: 'all 0.3s ease',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                                onMouseEnter={(e) => e.target.style.borderColor = '#0056b3'}
-                                onMouseLeave={(e) => e.target.style.borderColor = '#007BFF'}
-                            >
-                                <i className="fas fa-plus me-2"></i> Add Member
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="form-group mb-3">
-                        <label>Document Link:</label>
-                        <div className="d-flex align-items-center">
-                            <span className="me-3">
-                                {formData.docsLink || 'No document selected'}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={handleOpenPicker}
-                                className="btn btn-outline-info btn-sm"
-                            >
-                                Select from Google Drive
-                            </button>
-                        </div>
-                        
-                        
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="category">Category</label>
-                        <select
-                            id="category"
-                            name="category"
-                            value={formData.category}
-                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                            required
-                        >
-                            <option value="">Select a category</option>
-                            {categories.map((cat) => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="btn btn-success btn-lg w-100"
-                        disabled={loading}
-                    >
-                        {loading ? 'Submitting...' : 'Submit Thesis'}
-                    </button>
-
-                    {error && <div className="text-danger mt-3">{error}</div>}
-                </form>
+                </div>
             </div>
         </div>
     );

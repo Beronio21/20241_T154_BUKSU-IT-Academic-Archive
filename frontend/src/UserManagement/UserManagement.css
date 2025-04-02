@@ -1,283 +1,56 @@
-.user-management-container {
-    display: flex;
-}
-
-
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar li {
-    margin: 10px 0;
-    cursor: pointer;
-}
-
-.main-content {
-    flex: 1;
+/* Centering the modal on the screen */
+.modal-content {
+    max-width: 600px;  /* Max width of the modal */
+    margin: auto;      /* Center it horizontally */
     padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.user-table {
-    margin-bottom: 40px;
-}
-
-.user-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.user-table th, .user-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-.user-table th {
-    background-color: #f2f2f2;
-}
-
-.user-management-section {
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
-.students-table, .teachers-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-.students-table th, .teachers-table th,
-.students-table td, .teachers-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.students-table th, .teachers-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-.students-table tr:nth-child(even), .teachers-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.students-table tr:hover, .teachers-table tr:hover {
-    background-color: #ddd;
-}
-
-.btn-view, .btn-edit {
-    padding: 5px 10px;
-    margin-right: 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-view {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.btn-edit {
-    background-color: #008CBA;
-    color: white;
-}
-
-.table-section {
-    margin: 2rem 0;
-    overflow-x: auto;
-    padding: 0 20px;
-    width: 100%;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-th, td {
-    padding: 15px 20px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    white-space: nowrap;
-}
-
-th {
-    background-color: #f5f5f5;
-    font-weight: 600;
-    font-size: 1.1em;
-}
-
-td {
-    font-size: 1em;
-}
-
-table th:nth-child(1),
-table td:nth-child(1) {
-    min-width: 150px;
-}
-
-table th:nth-child(2),
-table td:nth-child(2) {
-    min-width: 200px;
-}
-
-table th:nth-child(3),
-table td:nth-child(3) {
-    min-width: 250px;
-}
-
-table th:last-child,
-table td:last-child {
-    min-width: 200px;
-}
-
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    font-weight: 500;
-}
-
-.status-badge.complete {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-}
-
-.status-badge.incomplete {
-    background-color: #fff3e0;
-    color: #ef6c00;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.action-buttons button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.9em;
-}
-
-.btn-view {
-    background-color: #e3f2fd;
-    color: #1976d2;
-}
-
-.btn-edit {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-}
-
-.btn-delete {
-    background-color: #ffebee;
-    color: #c62828;
-}
-
-.password-hash {
-    font-family: monospace;
-    background-color: #f5f5f5;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.edit-modal {
+/* Fullscreen overlay for background */
+.view-modal, .edit-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent background */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.error-message {
-    padding: 1rem;
-    background-color: #ffebee;
-    color: #c62828;
-    border-radius: 4px;
-    margin: 1rem 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.error-message button {
-    background-color: #c62828;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.loading {
-    text-align: center;
-    padding: 2rem;
-    color: #666;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+    justify-content: center;  /* Center horizontally */
+    align-items: center;      /* Center vertically */
+    z-index: 9999;            /* Ensure it's above other content */
 }
 
 .modal-buttons {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
-.btn-save {
-    background-color: #4CAF50;
-    color: white;
+.modal-buttons button {
+    padding: 8px 15px;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: #006BB2;
+    color: white;
+    border-radius: 5px;
 }
 
-.btn-cancel {
-    background-color: #f44336;
-    color: white;
+.modal-buttons button:hover {
+    background-color: #00588C;
+}
+
+.btn-close {
+    font-size: 24px;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    background: none;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #333;
+}
+
+.btn-close:hover {
+    color: red;
 }

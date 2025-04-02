@@ -1,80 +1,149 @@
-/* ReviewSubmission.css */
+/* General Container Styles */
 .review-submission-container {
-  padding: 20px;
-  background-color: #f9f9f9;
+    padding: 20px; /* Add padding for spacing */
+    background-color: #f8f9fa; /* Light background for contrast */
+    height: 100vh; /* Full height of the viewport */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+/* Header Styles */
+.review-header {
+    margin-bottom: 20px; /* Increased margin for better spacing */
 }
 
 .review-header h2 {
-  font-size: 24px;
-  font-weight: 600;
-  color: #007bff;
+    font-size: 2.5rem; /* Larger font size for the header */
+    color: #343a40; /* Darker text for better readability */
 }
 
+/* Search Bar Styles */
 .search-bar {
-  margin-bottom: 20px;
+    margin-bottom: 30px; /* Increased margin for better spacing */
 }
 
-.long-search {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+.search-bar input,
+.search-bar select {
+    border-radius: 5px; /* Rounded corners for inputs */
 }
 
-.submissions-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+/* Submission Grid Styles */
+.submissions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px; /* Increased space between cards */
 }
 
 .submission-card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1 1 calc(33.333% - 30px); /* Responsive card width with gap adjustment */
+    min-width: 320px; /* Minimum width for cards */
+    background-color: #ffffff; /* White background for cards */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for cards */
+    transition: transform 0.2s; /* Smooth hover effect */
+    padding: 20px; /* Padding inside the card for spacing */
 }
 
-.card-body {
-  padding: 20px;
+.submission-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
 }
 
-.card-title {
-  font-size: 18px;
-  font-weight: 600;
+/* Card Header Styles */
+.submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.card-text {
-  font-size: 14px;
+.submission-header h3 {
+    font-size: 1.75rem; /* Larger font size for titles */
+    color: #007bff; /* Primary color for titles */
+}
+
+/* Status Badge Styles */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Submission Content Styles */
+.submission-content {
+    margin-top: 15px; /* Increased margin for better spacing */
+}
+
+.info-group {
+    margin-bottom: 15px; /* Space between info groups */
+}
+
+.info-group label {
+    font-weight: bold; /* Bold labels for clarity */
+}
+
+/* Submission Actions Styles */
+.submission-actions {
+    margin-top: 20px; /* Increased margin for better spacing */
+    display: flex;
+    justify-content: space-between; /* Space between buttons */
+}
+
+.btn-view {
+    background-color: #007bff; /* Primary button color */
+    color: white; /* White text for contrast */
+}
+
+.btn-feedback {
+    background-color: #6c757d; /* Secondary button color */
+    color: white; /* White text for contrast */
+}
+
+/* Modal Styles */
+.feedback-modal .modal-header {
+    background-color: #007bff; /* Primary color for header */
+    color: white; /* White text for contrast */
+}
+
+.feedback-modal .modal-footer {
+    display: flex;
+    justify-content: space-between; /* Space between buttons */
 }
 
 .feedback-modal .modal-dialog {
-  max-width: 600px;
+    max-width: 800px; /* Set a maximum width for the modal */
 }
 
-.feedback-form {
-  padding: 10px 0;
+.feedback-modal .modal-body {
+    padding: 20px; /* Increase padding inside the modal body */
 }
 
-.form-group {
-  margin-bottom: 15px;
+/* Loading and Error Message Styles */
+.loading-container {
+    text-align: center;
+    margin: 30px 0; /* Increased margin for better spacing */
 }
 
-.form-control {
-  font-size: 14px;
+.error-message {
+    color: #dc3545; /* Bootstrap danger color */
+    text-align: center;
+    margin: 30px 0; /* Increased margin for better spacing */
 }
 
-.btn-submit {
-  background-color: #007bff;
-  color: white;
-  font-size: 14px;
-  padding: 8px 20px;
-  border-radius: 5px;
-  border: none;
+/* No Submissions Styles */
+.no-submissions {
+    text-align: center;
+    margin: 30px 0; /* Increased margin for better spacing */
 }
 
-.btn-cancel {
-  background-color: #ccc;
-  color: #333;
-  font-size: 14px;
-  padding: 8px 20px;
-  border-radius: 5px;
-  border: none;
+.no-submissions i {
+    font-size: 2.5rem; /* Larger icon size */
+    color: #6c757d; /* Muted color */
+}
+
+/* Card Hover Effect */
+.card {
+    transition: transform 0.2s; /* Smooth hover effect */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
 }
