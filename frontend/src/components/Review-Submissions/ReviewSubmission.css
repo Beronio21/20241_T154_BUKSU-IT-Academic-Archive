@@ -1,0 +1,80 @@
+/* ReviewSubmission.css */
+.review-submission-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.review-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.long-search {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.submissions-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.submission-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card-text {
+  font-size: 14px;
+}
+
+.feedback-modal .modal-dialog {
+  max-width: 600px;
+}
+
+.feedback-form {
+  padding: 10px 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  font-size: 14px;
+}
+
+.btn-submit {
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 5px;
+  border: none;
+}
+
+.btn-cancel {
+  background-color: #ccc;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 5px;
+  border: none;
+}
