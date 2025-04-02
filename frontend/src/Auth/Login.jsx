@@ -6,6 +6,7 @@ import { googleAuth, emailLogin } from "../api";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../Styles/Login.css";
+import GoogleLogo from '../Images/GoogleLogo.png';
 
 const GoogleLogin = () => {
   const [email, setEmail] = useState("");
@@ -160,19 +161,21 @@ const GoogleLogin = () => {
             <div className="d-flex justify-content-center my-4">
               <p className="text-center mb-0">Or Login with</p>
             </div>
-            <button
-              type="button"
-              className="google-login-btn"
-              onClick={googleLogin}
-              disabled={loading}
-            >
-              <img
-                src="../src/Images/Googlelogo.png"
-                alt="Google logo"
-                style={{ width: '45px', height: '20px', marginLeft: '2px' }}
-              />
-              {loading ? "Signing in..." : "Sign in with Google"}
-            </button>
+            <div className="d-flex justify-content-center">
+              <button
+                type="button"
+                className="google-login-btn"
+                onClick={googleLogin}
+                disabled={loading}
+              >
+                <img
+                  src={GoogleLogo}
+                  alt="Google logo"
+                  style={{ width: '45px', height: '20px', marginLeft: '2px' }}
+                />
+                {loading ? "Signing in..." : "Sign in with Google"}
+              </button>
+            </div>
             <div className="d-flex justify-content-center align-items-center mt-4">
               <p className="text-center mb-0">
                 Don't have an account?{" "}
