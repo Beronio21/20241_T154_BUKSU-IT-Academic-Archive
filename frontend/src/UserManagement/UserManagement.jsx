@@ -69,20 +69,11 @@ const UserManagement = () => {
                 }
             };
 
-            // Check if the user is already locked
-            const lockCheckResponse = await axios.get(`http://localhost:8080/api/users/${user._id}/lock-status`, config);
-            if (lockCheckResponse.data.lock) {
-                alert('This user is currently being edited by another admin.');
-                return;
-            }
-
-            // Set lock
-            await axios.post(`http://localhost:8080/api/users/${user._id}/lock`, {}, config);
-
+            // Remove lock check and setting
             setEditingUser({ ...user, type });
             setIsEditing(true);
         } catch (error) {
-            console.error('Error checking or setting lock:', error);
+            console.error('Error starting edit:', error);
             alert('Failed to start editing. Please try again.');
         }
     };
@@ -103,7 +94,7 @@ const UserManagement = () => {
 
             await axios.put(endpoint, updatedData, config);
 
-            // Release lock
+            // Ensure lock is released
             await axios.post(`http://localhost:8080/api/users/${userId}/unlock`, {}, config);
 
             fetchData();
@@ -153,7 +144,7 @@ const UserManagement = () => {
                 }
             };
 
-            // Release lock
+            // Ensure lock is released
             await axios.post(`http://localhost:8080/api/users/${userId}/unlock`, {}, config);
 
             setIsEditing(false);

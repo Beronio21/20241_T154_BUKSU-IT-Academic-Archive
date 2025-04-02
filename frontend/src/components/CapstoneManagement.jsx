@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Modal, Button } from 'react-bootstrap';
 
 const CapstoneManagement = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -17,6 +18,7 @@ const CapstoneManagement = () => {
         objective: '', // Add objective to form state
     });
     const [isEditing, setIsEditing] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [error, setError] = useState(null);
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
@@ -103,6 +105,7 @@ const CapstoneManagement = () => {
             }
             fetchSubmissions(); // Refresh submissions
             resetForm();
+            setShowEditModal(false);
         } catch (error) {
             console.error('Error submitting thesis:', error);
             setError('Failed to submit thesis');
@@ -123,6 +126,7 @@ const CapstoneManagement = () => {
             objective: submission.objective, // Set objective for editing
         });
         setIsEditing(true);
+        setShowEditModal(true);
     };
 
     const handleDelete = async (id) => {
@@ -155,130 +159,138 @@ const CapstoneManagement = () => {
     return (
         <div className="capstone-management-container">
             <h2>Capstone Management</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="title">Research Title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="objective">Research Objective</label>
-                    <textarea
-                        id="objective"
-                        name="objective"
-                        value={formData.objective}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        placeholder="Enter the research objective"
-                        rows="3"
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="abstract">Abstract</label>
-                    <textarea
-                        id="abstract"
-                        name="abstract"
-                        value={formData.abstract}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="keywords">Keywords</label>
-                    {formData.keywords.map((keyword, index) => (
-                        <div key={index} className="d-flex">
+            <Button variant="primary" onClick={() => setShowEditModal(true)}>Add New Submission</Button>
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{isEditing ? 'Edit Submission' : 'Add New Submission'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="title">Research Title</label>
                             <input
                                 type="text"
-                                name="keywords"
-                                value={keyword}
-                                onChange={(e) => handleInputChange(e, index)}
+                                id="title"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleInputChange}
                                 className="form-control"
-                                placeholder="Enter a keyword"
                                 required
                             />
-                            <button type="button" onClick={() => removeKeyword(index)} className="btn btn-secondary">Remove</button>
                         </div>
-                    ))}
-                    <button type="button" onClick={addKeyword} className="btn btn-secondary">Add Keyword</button>
-                </div>
 
-                <div className="form-group">
-                    <label htmlFor="members">Members</label>
-                    {formData.members.map((member, index) => (
-                        <div key={index} className="d-flex">
+                        <div className="form-group">
+                            <label htmlFor="objective">Research Objective</label>
+                            <textarea
+                                id="objective"
+                                name="objective"
+                                value={formData.objective}
+                                onChange={handleInputChange}
+                                className="form-control"
+                                placeholder="Enter the research objective"
+                                rows="3"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="abstract">Abstract</label>
+                            <textarea
+                                id="abstract"
+                                name="abstract"
+                                value={formData.abstract}
+                                onChange={handleInputChange}
+                                className="form-control"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="keywords">Keywords</label>
+                            {formData.keywords.map((keyword, index) => (
+                                <div key={index} className="d-flex">
+                                    <input
+                                        type="text"
+                                        name="keywords"
+                                        value={keyword}
+                                        onChange={(e) => handleInputChange(e, index)}
+                                        className="form-control"
+                                        placeholder="Enter a keyword"
+                                        required
+                                    />
+                                    <button type="button" onClick={() => removeKeyword(index)} className="btn btn-secondary">Remove</button>
+                                </div>
+                            ))}
+                            <button type="button" onClick={addKeyword} className="btn btn-secondary">Add Keyword</button>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="members">Members</label>
+                            {formData.members.map((member, index) => (
+                                <div key={index} className="d-flex">
+                                    <input
+                                        type="text"
+                                        name="members"
+                                        value={member}
+                                        onChange={(e) => handleInputChange(e, index)}
+                                        className="form-control"
+                                        placeholder="Enter a member's name"
+                                        required
+                                    />
+                                    <button type="button" onClick={() => removeMember(index)} className="btn btn-secondary">Remove</button>
+                                </div>
+                            ))}
+                            <button type="button" onClick={addMember} className="btn btn-secondary">Add Member</button>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="adviserEmail">Admin Email</label>
+                            <input
+                                type="email"
+                                id="adviserEmail"
+                                name="adviserEmail"
+                                value={formData.adviserEmail}
+                                onChange={handleInputChange}
+                                className="form-control"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="docsLink">Document Link</label>
                             <input
                                 type="text"
-                                name="members"
-                                value={member}
-                                onChange={(e) => handleInputChange(e, index)}
+                                id="docsLink"
+                                name="docsLink"
+                                value={formData.docsLink}
+                                onChange={handleInputChange}
                                 className="form-control"
-                                placeholder="Enter a member's name"
                                 required
                             />
-                            <button type="button" onClick={() => removeMember(index)} className="btn btn-secondary">Remove</button>
                         </div>
-                    ))}
-                    <button type="button" onClick={addMember} className="btn btn-secondary">Add Member</button>
-                </div>
 
-                <div className="form-group">
-                    <label htmlFor="adviserEmail">Adviser Email</label>
-                    <input
-                        type="email"
-                        id="adviserEmail"
-                        name="adviserEmail"
-                        value={formData.adviserEmail}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        required
-                    />
-                </div>
+                        <div className="form-group">
+                            <label htmlFor="category">Category</label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={formData.category}
+                                onChange={handleInputChange}
+                                className="form-control"
+                                required
+                            >
+                                <option value="">Select a category</option>
+                                {categories.map((cat) => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                <div className="form-group">
-                    <label htmlFor="docsLink">Document Link</label>
-                    <input
-                        type="text"
-                        id="docsLink"
-                        name="docsLink"
-                        value={formData.docsLink}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="category">Category</label>
-                    <select
-                        id="category"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        required
-                    >
-                        <option value="">Select a category</option>
-                        {categories.map((cat) => (
-                            <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <button type="submit" className="btn btn-primary">{isEditing ? 'Update Submission' : 'Submit Submission'}</button>
-                {error && <div className="error">{error}</div>}
-            </form>
+                        <Button variant="primary" type="submit">{isEditing ? 'Update Submission' : 'Submit Submission'}</Button>
+                        {error && <div className="error">{error}</div>}
+                    </form>
+                </Modal.Body>
+            </Modal>
 
             {loading ? (
                 <p>Loading submissions...</p>
@@ -310,18 +322,18 @@ const CapstoneManagement = () => {
                                     <td>{submission.email}</td>
                                     <td>{submission.status}</td>
                                     <td>
-                                        <button 
+                                        <Button 
                                             onClick={() => handleEdit(submission)}
                                             className="btn-edit"
                                         >
                                             Edit
-                                        </button>
-                                        <button 
+                                        </Button>
+                                        <Button 
                                             onClick={() => handleDelete(submission._id)}
                                             className="btn-delete"
                                         >
                                             Delete
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))
