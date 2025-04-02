@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+/* Ensure body takes full height */
+body {
+  height: 100%;
+}
+
+/* Add a specific class for the login page */
+.login-page {
+  background-image: url('../Images/Vector.png');
+  background-size: cover; /* Ensures the image covers the entire area */
+  background-position: center; /* Centers the image */
+  height: 100vh; /* Ensures it takes full height of the viewport */
+  width: 100vw; /* Ensures it takes full width of the viewport */
+  display: flex; /* Use flexbox to center the content */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+
