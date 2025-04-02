@@ -179,9 +179,8 @@ const GoogleLogin = () => {
             <div className="d-flex justify-content-center align-items-center mt-4">
               <p className="text-center mb-0">
                 Don't have an account?{" "}
-                <span className="register-link" onClick={() => setShowModal(true)}>
-                  Register
-                </span>
+                <span className="text-primary" onClick={() => setShowModal(true)}
+                                                      style={{cursor: "pointer"}}>Register</span>
               </p>
             </div>
           </div>

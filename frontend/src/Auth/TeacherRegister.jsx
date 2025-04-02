@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import "../Styles/TeacherRegister.css"; // Make sure to create a separate CSS file for teacher registration.
+import logobuksu from '../Images/logobuksu.jpg'; // Import the logo using require
 
 const TeacherRegister = () => {
   const [formData, setFormData] = useState({
@@ -110,7 +111,7 @@ const TeacherRegister = () => {
         <div className="col-md-6 d-flex justify-content-center align-items-center">
           <div className="left-container d-flex justify-content-center align-items-center h-100">
             <img
-              src="src/images/buksulogo.png" // Assuming 'buksulogo.png' is in the public/images folder
+              src={logobuksu} // Use the imported logo
               alt="Illustration"
               className="img-fluid rounded"
               style={{ maxHeight: "80%", width: "auto" }}
