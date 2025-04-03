@@ -27,6 +27,9 @@
 }
 .student-dashboard {
     padding: 20px;
+    background-color: #ffffff; /* Black background for the dashboard */
+    color: #fff; /* White text for better contrast */
+    min-height: 100vh; /* Ensure it covers the full height */
 }
 
 s.search-filter {

@@ -85,18 +85,18 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
         >
             <div className="d-flex flex-column h-100">
                 {/* Header */}
-                <div className="p-4 text-center border-bottom">
+                <div className="p-4 d-flex align-items-center border-bottom">
                     <img 
                       src={logobuksu} 
                       alt="Logo" 
                       style={{ 
-                        width: '80px', // Set width
-                        height: '80px', // Set height
+                        width: '35px', // Set smaller width
+                        height: '35px', // Set smaller height
                         borderRadius: '50%', // Make it circular
-                        marginBottom: '10px' 
+                        marginRight: '10px' // Space between logo and title
                       }} 
                     />
-                    <h5 className="text-black text-start fw-bold mb-0">Student Portal</h5>
+                    <h5 className="text-black fw-bold mb-0">Student Portal</h5>{/* Smaller font size */}
                 </div>
 
                 {/* Navigation Items */}

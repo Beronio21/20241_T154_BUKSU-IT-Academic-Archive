@@ -73,18 +73,18 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
         >
             <div className="d-flex flex-column h-100">
                 {/* Header */}
-                <div className="p-4 text-center border-bottom">
+                <div className="p-4 d-flex align-items-center border-bottom">
                     <img 
                       src={logobuksu} 
                       alt="Logo" 
                       style={{ 
-                        width: '80px', // Set width
-                        height: '80px', // Set height
+                        width: '35px', // Set smaller width
+                        height: '35px', // Set smaller height
                         borderRadius: '50%', // Make it circular
-                        marginBottom: '10px' 
+                        marginRight: '10px' // Space between logo and title
                       }} 
                     />
-                    <h5 className="text-black text-start fw-bold mb-0">Teacher Portal</h5>
+                    <h5 className="text-black fw-bold mb-0">Teacher Portal</h5>
                 </div>
 
                 {/* Navigation Items */}
@@ -97,13 +97,13 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
 
                 {/* User Info Section */}
                 <div className="p-4 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '20px' }}>
-                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
+                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
                         {userInfo?.name || 'Teacher'}
                     </p>
-                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
+                    <p className="mb-0" style={{ fontSize: '12px', color: '#333' }}>
                         {userInfo?.email || 'Email not available'}
                     </p>
-                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
+                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
                         {userInfo?.role || 'User Type not available'}
                     </p>
                 </div>
