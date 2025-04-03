@@ -37,8 +37,7 @@ const Dashboard = () => {
     return (
         <div className="statistics-container">
             <div className="statistics-header">
-                <h1>Dashboard</h1>
-                <p>Overview of capstone submissions and approvals</p>
+                <h3>Summary</h3>
             </div>
 
             <div className="statistics-grid">

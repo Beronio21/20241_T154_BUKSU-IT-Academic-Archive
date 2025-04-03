@@ -29,9 +29,25 @@
     padding: 20px;
 }
 
-.search-filter {
-    margin-bottom: 20px;
+s.search-filter {
+    display: flex;
+    flex-wrap: wrap; /* Ensures it wraps on smaller screens */
+    gap: 10px; /* Space between elements */
+    align-items: center; /* Aligns items vertically */
 }
+
+.search-input {
+    flex: 1 1 100%; /* Full width on top */
+    max-width: 600px;
+    margin-bottom: 10px;
+}
+
+.search-filter input[type="date"],
+.search-filter select {
+    flex: 1 1 calc(50% - 10px); /* Ensures equal space for date & category */
+    min-width: 150px;
+}
+
 
 .card-container {
     display: flex;

@@ -15,9 +15,10 @@
     margin-bottom: 0.5rem;
 }
 
-.statistics-header p {
-    color: #666;
-    font-size: 1.1rem;
+.statistics-header {
+    text-align: left; /* Aligns text content to the left */
+    display: flex;
+    justify-content: flex-start; /* Ensures the div itself aligns left */
 }
 
 .statistics-grid {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
-const StudentNavbar = ({ activeSection, handleSectionChange }) => {
+const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
     const navigate = useNavigate();
 
     // Style related functions
@@ -32,18 +32,19 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
         }
     };
 
-    // Navigation items configuration
+    // Navigation items configuration based on user type
     const mainNavItems = [
         { name: 'Dashboard', section: 'statistics', icon: 'fas fa-tachometer-alt' },
-        { name: 'Search Capstone', section: 'dashboard', icon: 'fas fa-search' },
-        { name: 'My Profile', section: 'profile', icon: 'fas fa-user' },
-        { name: 'View Capstone', section: 'docs', icon: 'fas fa-file-alt' },
+        { name: 'Capstone Archives', section: 'dashboard', icon: 'fas fa-book' },
     ];
 
-    const additionalNavItems = [
-        
-    
-    ];
+    // Add additional navigation items based on user type
+    const additionalNavItems = userInfo?.role === 'admin' ? [
+        { name: 'Manage Users', section: 'manage-users', icon: 'fas fa-users-cog' },
+        { name: 'Reports', section: 'reports', icon: 'fas fa-chart-line' },
+    ] : userInfo?.role === 'teacher' ? [
+        { name: 'Manage Submissions', section: 'manage-submissions', icon: 'fas fa-tasks' },
+    ] : [];
 
     const renderNavItem = (item) => (
         <li className="nav-item" key={item.section}>
@@ -63,10 +64,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
     const renderThesisManagementDropdown = () => (
         <li className="nav-item">
             <div className="dropdown w-100">
-               
-                 
-       
-          
+                {/* Add dropdown content here if needed */}
             </div>
         </li>
     );
@@ -108,6 +106,19 @@ const StudentNavbar = ({ activeSection, handleSectionChange }) => {
                         {renderThesisManagementDropdown()}
                         {additionalNavItems.map(renderNavItem)}
                     </ul>
+                </div>
+                      
+                {/* User Info Section */}
+                <div className="p-4 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '20px' }}>
+                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
+                        {userInfo?.name || 'Student'}
+                    </p>
+                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
+                        {userInfo?.email || 'Email not available'}
+                    </p>
+                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
+                        {userInfo?.role || 'User Type not available'}
+                    </p>
                 </div>
             </div>
         </div>

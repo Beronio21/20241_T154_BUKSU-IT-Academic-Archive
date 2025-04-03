@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
-const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
+const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
     const navigate = useNavigate();
 
     // Style related functions
@@ -93,6 +93,19 @@ const TeacherNavbar = ({ activeSection, handleSectionChange }) => {
                         {mainNavItems.map(renderNavItem)}
                         {additionalNavItems.map(renderNavItem)}
                     </ul>
+                </div>
+
+                {/* User Info Section */}
+                <div className="p-4 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '20px' }}>
+                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
+                        {userInfo?.name || 'Teacher'}
+                    </p>
+                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
+                        {userInfo?.email || 'Email not available'}
+                    </p>
+                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
+                        {userInfo?.role || 'User Type not available'}
+                    </p>
                 </div>
             </div>
         </div>

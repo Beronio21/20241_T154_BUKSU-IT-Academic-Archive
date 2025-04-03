@@ -79,60 +79,6 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
         <nav className="navbar fixed-top navbar-expand-lg">
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
-                   
-                    <button 
-                        className="p-0 me-3 position-relative" 
-                        title="Messages" 
-                        style={{ background: 'none', border: 'none', color: 'inherit' }}
-                        onClick={() => navigate('/student-dashboard/send-gmail')}
-                    >
-                        <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: 'inherit' }}></i>
-                    </button>
-                    <div style={notificationStyles.container}>
-                        <button 
-                            className="p-0 me-4 position-relative" 
-                            title="Notifications"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
-                            onClick={() => setShowNotifications(!showNotifications)}
-                        >
-                            <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: 'inherit' }}></i>
-                            {unreadCount > 0 && (
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={notificationStyles.badge}>
-                                    {unreadCount}
-                                </span>
-                            )}
-                        </button>
-
-                        {showNotifications && (
-                            <div className="dropdown-menu show" style={notificationStyles.dropdown}>
-                                <div className="dropdown-header" style={notificationStyles.header}>
-                                    <h6 className="m-0">Notifications</h6>
-                                </div>
-                                <div className="dropdown-list" style={notificationStyles.list}>
-                                    {notifications.length === 0 ? (
-                                        <div style={notificationStyles.emptyMessage}>
-                                            No notifications
-                                        </div>
-                                    ) : (
-                                        notifications.map(notification => (
-                                            <div 
-                                                key={notification._id}
-                                                className="dropdown-item"
-                                                style={notificationStyles.item(!notification.read)}
-                                                onClick={() => !notification.read && markAsRead(notification._id)}
-                                            >
-                                                <div className="fw-bold">{notification.title}</div>
-                                                <div>{notification.message}</div>
-                                                <div style={notificationStyles.timestamp}>
-                                                    {formatDate(notification.createdAt)}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
                     <div className="dropdown">
                         <button 
                             className="p-0 dropdown-toggle d-flex align-items-center"

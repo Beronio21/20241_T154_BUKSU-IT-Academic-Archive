@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
@@ -165,40 +164,51 @@ const StudentDashboard = () => {
       case "dashboard":
       default:
         return (
-          <div className="student-dashboard">
-            <h2>Approved Capstone Research</h2>
-
+          <div className="student-dashboard pt-0">
             {/* Search and Filter Section */}
-            <div className="search-filter">
-              <input
-                type="text"
-                placeholder="Search by title"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-control"
-              />
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="form-control"
-              />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="form-control"
-              >
-                <option value="">Select a category</option>
-                {categories.map((category, index) => (
-                  <option key={index} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
+                <div className="search-filter">
+                  {/* Search Input (Full Width on Top) */}
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="form-control mb-2"
+                    style={{ width: "100%", minWidth: "250px" }}
+                  />
+
+                  {/* Year and Category (Bottom, Side by Side) */}
+                  <div className="d-flex" style={{ gap: "10px" }}>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      className="form-control"
+                      style={{ flex: "1 1 0", minWidth: "150px" }}
+                    />
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="form-control"
+                      style={{ flex: "1 1 0", minWidth: "150px" }}
+                    >
+                      <option value="">Category</option>
+                      {categories.length > 0 ? (
+                        categories.map((category, index) => (
+                          <option key={index} value={category}>{category}</option>
+                        ))
+                      ) : (
+                        <option disabled>No Categories</option>
+                      )}
+                    </select>
+                  </div>
+                </div>
+
 
             {loading ? (
               <p>Loading approved capstones...</p>
             ) : (
-              <div className="card-container">
+              <div className="card-container p-4">
                 {filteredCapstones.length === 0 ? (
                   <p>No approved capstones available</p>
                 ) : (
@@ -402,10 +412,10 @@ const StudentDashboard = () => {
       <Topbar userInfo={userInfo} />
 
       {/* Navbar */}
-      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
+      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} userInfo={userInfo} />
 
       {/* Main Content */}
-      <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px" }}>
+      <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px", }}>
         <Routes>
           <Route path="/dashboard" element={renderContent()} />
           <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />

@@ -120,7 +120,7 @@ const ReviewSubmission = () => {
             <div className="search-bar">
                 <input
                     type="text"
-                    placeholder="Search by title"
+                    placeholder=""
                     value={titleSearch}
                     onChange={(e) => setTitleSearch(e.target.value)}
                 />
