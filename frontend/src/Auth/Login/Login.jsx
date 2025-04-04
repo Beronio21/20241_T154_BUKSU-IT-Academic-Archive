@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "./Login.css";
 import googleLogo from '../../Images/Googlelogo.png'; // Google logo
-import bukSULogo from '../../Images/buksulogov2.png'; // BukSU logo
+import bukSULogo from '../../Images/logobuksu.jpg'; // BukSU logo
 import VectorImage from '../../Images/Vector.png'; // Import the background image
 
 
@@ -138,8 +138,9 @@ const GoogleLogin = () => {
                 {/* Left: Logo and Info */}
                 <div className="left-section p-4 text-center bg-light d-flex flex-column align-items-center">
                     <img src={bukSULogo} alt="BukSU Logo" className="mb-3" style={{maxWidth: "180px"}}/>
-                    <h4 className="fw-bold">Bukidnon State University</h4>
-                    <p>Educate. Innovate. Lead.</p>
+                    <h4 className="fw-bold">IT Capstone Archive</h4>
+                    <p>Explore and manage capstone projects submitted by students.</p>
+                    
                 </div>
 
                 {/* Right: Login Form */}

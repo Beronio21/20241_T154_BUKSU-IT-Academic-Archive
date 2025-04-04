@@ -150,7 +150,7 @@ const TeacherDashboard = () => {
     return (
         <div className="d-flex">
             <TeacherTopbar userInfo={userInfo} handleLogout={handleLogout} />
-            <TeacherNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} userInfo={userInfo} />
+            <TeacherNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
             <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
                 <Routes>
                     <Route path="/dashboard" element={renderContent()} />

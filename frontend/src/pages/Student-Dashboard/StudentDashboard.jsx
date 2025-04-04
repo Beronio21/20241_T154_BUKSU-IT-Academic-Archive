@@ -1,3 +1,4 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
@@ -412,7 +413,7 @@ const StudentDashboard = () => {
       <Topbar userInfo={userInfo} />
 
       {/* Navbar */}
-      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} userInfo={userInfo} />
+      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px", }}>

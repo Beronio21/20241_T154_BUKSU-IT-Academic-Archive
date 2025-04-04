@@ -2,57 +2,74 @@
     padding: 20px;
     max-width: 800px;
     margin: 0 auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.thesis-form {
+.submit-thesis-form {
     background: white;
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
 }
 
-.form-group {
+.submit-thesis-form .form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.submit-thesis-form .form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
 }
 
-.form-group input {
+.submit-thesis-form .form-group input,
+.submit-thesis-form .form-group select,
+.submit-thesis-form .form-group textarea {
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.member-input {
+.submit-thesis-form .form-group input:focus,
+.submit-thesis-form .form-group select:focus,
+.submit-thesis-form .form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+.submit-thesis-form .member-input {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
 }
 
-.add-member,
-.remove-member {
+.submit-thesis-form .add-member,
+.submit-thesis-form .remove-member {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.add-member {
+.submit-thesis-form .add-member {
     background-color: #28a745;
     color: white;
 }
 
-.remove-member {
+.submit-thesis-form .remove-member {
     background-color: #dc3545;
     color: white;
 }
 
-.submit-button {
+.submit-thesis-form .submit-button {
     background-color: #007bff;
     color: white;
     padding: 10px 20px;
@@ -62,12 +79,12 @@
     width: 100%;
 }
 
-.submit-button:disabled {
+.submit-thesis-form .submit-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
-.error-message {
+.submit-thesis-form .error-message {
     color: #dc3545;
     margin-top: 10px;
     padding: 10px;
@@ -75,39 +92,28 @@
     border-radius: 4px;
 }
 
-.document-link-container {
+.submit-thesis-form .document-link-container {
     display: flex;
     align-items: center;
 }
 
-.document-link-container input {
+.submit-thesis-form .document-link-container input {
     flex: 1;
     margin-right: 10px;
 }
 
-.document-link-container button {
+.submit-thesis-form .document-link-container button {
     white-space: nowrap;
 }
 
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: vertical;
-    min-height: 100px;
-    font-family: inherit;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-group textarea:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.form-group small {
+.submit-thesis-form .form-group small {
     display: block;
     margin-top: 5px;
     color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .submit-thesis-form {
+        grid-template-columns: 1fr;
+    }
 } 

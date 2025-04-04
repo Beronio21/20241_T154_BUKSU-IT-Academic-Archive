@@ -235,29 +235,23 @@ const SubmitThesis = () => {
     };
 
     return (
-        <div className="submit-thesis-container container mt-4">
-            <div className="thesis-form">
+        <div className="submit-thesis-container">
+            <div className="submit-thesis-form">
                 <h2>Submit Capstone Research Paper</h2>
-
-                <form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
-                    <div className="row mb-3">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                                <label htmlFor="title">Research Title</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="title"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Enter your research title"
-                                />
-                            </div>
-                        </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="title">Research Title</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            required
+                            placeholder="Enter your research title"
+                        />
                     </div>
-
                     <div className="form-group">
                         <label htmlFor="objective" className="form-label fw-bold">Research Objective</label>
                         <textarea
@@ -274,26 +268,20 @@ const SubmitThesis = () => {
                             Clearly state the primary goal of your research
                         </small>
                     </div>
-
-                    <div className="row mb-3">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                                <label htmlFor="abstract">Abstract</label>
-                                <textarea
-                                    className="form-control"
-                                    id="abstract"
-                                    name="abstract"
-                                    value={formData.abstract}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Enter your research abstract"
-                                    rows="4"
-                                    style={{ resize: 'vertical' }}
-                                />
-                            </div>
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="abstract">Abstract</label>
+                        <textarea
+                            className="form-control"
+                            id="abstract"
+                            name="abstract"
+                            value={formData.abstract}
+                            onChange={handleInputChange}
+                            required
+                            placeholder="Enter your research abstract"
+                            rows="4"
+                            style={{ resize: 'vertical' }}
+                        />
                     </div>
-
                     <div className="form-group mb-4">
                         <label htmlFor="keywords" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Keywords:</label>
                         {formData.keywords.map((keyword, index) => (
@@ -365,7 +353,6 @@ const SubmitThesis = () => {
                             </button>
                         </div>
                     </div>
-
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <div className="form-group">
@@ -383,7 +370,6 @@ const SubmitThesis = () => {
                             </div>
                         </div>
                     </div>
-
                     <div className="form-group mb-4">
                         <label htmlFor="members" style={{ fontWeight: '600', fontSize: '1.1rem', color: '#333' }}>Members:</label>
                         {formData.members.map((member, index) => (
@@ -460,7 +446,6 @@ const SubmitThesis = () => {
                             </button>
                         </div>
                     </div>
-
                     <div className="form-group mb-3">
                         <label>Document Link:</label>
                         <div className="d-flex align-items-center">
@@ -475,10 +460,7 @@ const SubmitThesis = () => {
                                 Select from Google Drive
                             </button>
                         </div>
-                        
-                        
                     </div>
-
                     <div className="form-group">
                         <label htmlFor="category">Category</label>
                         <select
@@ -494,16 +476,14 @@ const SubmitThesis = () => {
                             ))}
                         </select>
                     </div>
-
                     <button
                         type="submit"
-                        className="btn btn-success btn-lg w-100"
+                        className="submit-button"
                         disabled={loading}
                     >
                         {loading ? 'Submitting...' : 'Submit Thesis'}
                     </button>
-
-                    {error && <div className="text-danger mt-3">{error}</div>}
+                    {error && <div className="error-message">{error}</div>}
                 </form>
             </div>
         </div>
