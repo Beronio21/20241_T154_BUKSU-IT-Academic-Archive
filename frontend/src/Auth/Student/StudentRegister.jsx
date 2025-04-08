@@ -54,6 +54,7 @@ const StudentRegister = () => {
 
   const [error, setError] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(true);
   const navigate = useNavigate();
@@ -152,8 +153,10 @@ const StudentRegister = () => {
       });
 
       if (response.status === 201) {
-        alert("Registration successful!");
-        navigate("/login");
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } else {
         setError(response.data.message || "Registration failed. Please try again.");
         setShowErrorModal(true);
@@ -216,6 +219,17 @@ const StudentRegister = () => {
         show={showEmailModal} 
         onClose={() => setShowEmailModal(false)} 
       />
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="success-modal">
+          <div className="success-modal__content">
+            <div className="success-modal__icon">✓</div>
+            <h3 className="success-modal__title">Success!</h3>
+            <p className="success-modal__message">Registration successful! Redirecting to login...</p>
+          </div>
+        </div>
+      )}
 
       {/* Error Modal */}
       {showErrorModal && (

@@ -16,6 +16,7 @@ const TeacherRegister = () => {
   });
   const [error, setError] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -96,8 +97,10 @@ const TeacherRegister = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration successful!");
-        navigate("/login");
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } else {
         if (data.message && data.message.includes("duplicate key error")) {
           setError("This email is already registered. Please use a different email or try logging in.");
@@ -152,6 +155,18 @@ const TeacherRegister = () => {
 
   return (
     <div className="std-reg__container">
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="success-modal">
+          <div className="success-modal__content">
+            <div className="success-modal__icon">✓</div>
+            <h3 className="success-modal__title">Success!</h3>
+            <p className="success-modal__message">Registration successful! Redirecting to login...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
       {showErrorModal && (
         <div className="error-modal">
           <div className="error-modal__content">
