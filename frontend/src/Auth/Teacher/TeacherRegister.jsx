@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import "./TeacherRegister.css"; // Ensure you have the appropriate styles
+import axios from "axios";
 
 const TeacherRegister = () => {
   const [formData, setFormData] = useState({
@@ -9,8 +10,8 @@ const TeacherRegister = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    department: "",
     teacher_id: "",
+    department: "",
     gender: "",
     role: "teacher",
   });
@@ -81,36 +82,46 @@ const TeacherRegister = () => {
 
     if (!validateForm()) {
       setLoading(false);
-      setShowErrorModal(true);
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/register", {
-        method: "POST",
+      // Prepare the data according to the model requirements
+      const registrationData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        teacher_id: formData.teacher_id,
+        department: formData.department,
+        gender: formData.gender.toLowerCase(),
+        role: "teacher"
+      };
+
+      const response = await axios.post("http://localhost:8080/api/register", registrationData, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.status === 201) {
         setShowSuccessModal(true);
         setTimeout(() => {
           navigate("/login");
         }, 2000);
       } else {
-        if (data.message && data.message.includes("duplicate key error")) {
-          setError("This email is already registered. Please use a different email or try logging in.");
-        } else {
-          setError(data.message || "Registration failed. Please try again.");
-        }
+        setError(response.data.message || "Registration failed. Please try again.");
         setShowErrorModal(true);
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      if (error.response?.data?.message) {
+        if (error.response.data.message.includes("duplicate key error")) {
+          setError("This email is already registered. Please use a different email or try logging in.");
+        } else {
+          setError(error.response.data.message);
+        }
+      } else {
+        setError("An error occurred. Please try again.");
+      }
       setShowErrorModal(true);
     } finally {
       setLoading(false);

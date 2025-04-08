@@ -41,14 +41,14 @@ const EmailRequirementsModal = ({ show, onClose }) => {
 
 const StudentRegister = () => {
   const [formData, setFormData] = useState({
-    institution_id: "",
+    name: "",
     email: "",
-    full_name: "",
-    course: "",
-    school_year: "",
-    gender: "",
     password: "",
     confirmPassword: "",
+    student_id: "",
+    course: "",
+    year: "",
+    gender: "",
     role: "student",
   });
 
@@ -70,9 +70,8 @@ const StudentRegister = () => {
 
   const validateForm = () => {
     // Check required fields
-    if (!formData.institution_id || !formData.email || !formData.full_name || 
-        !formData.course || !formData.school_year || !formData.gender || 
-        !formData.password || !formData.confirmPassword) {
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || 
+        !formData.student_id || !formData.course || !formData.year || !formData.gender) {
       setError("Please fill in all required fields");
       return false;
     }
@@ -146,7 +145,19 @@ const StudentRegister = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/register", formData, {
+      // Prepare the data according to the model requirements
+      const registrationData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        student_id: formData.student_id,
+        course: formData.course,
+        year: formData.year,
+        gender: formData.gender.toLowerCase(),
+        role: "student"
+      };
+
+      const response = await axios.post("http://localhost:8080/api/register", registrationData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -270,15 +281,15 @@ const StudentRegister = () => {
             
             <form onSubmit={handleSubmit} className="std-reg__form">
               <div className="std-reg__form-grid">
-                {/* Institution ID */}
+                {/* Name */}
                 <div className="std-reg__input-group">
                   <input
                     type="text"
-                    id="institution_id"
-                    name="institution_id"
+                    id="name"
+                    name="name"
                     className="std-reg__input"
-                    placeholder="Institution ID"
-                    value={formData.institution_id}
+                    placeholder="Full Name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                   />
@@ -298,15 +309,15 @@ const StudentRegister = () => {
                   />
                 </div>
 
-                {/* Full Name */}
+                {/* Student ID */}
                 <div className="std-reg__input-group">
                   <input
                     type="text"
-                    id="full_name"
-                    name="full_name"
+                    id="student_id"
+                    name="student_id"
                     className="std-reg__input"
-                    placeholder="Full Name"
-                    value={formData.full_name}
+                    placeholder="Student ID"
+                    value={formData.student_id}
                     onChange={handleChange}
                     required
                   />
@@ -326,17 +337,17 @@ const StudentRegister = () => {
                   />
                 </div>
 
-                {/* School Year */}
+                {/* Year */}
                 <div className="std-reg__input-group">
                   <select
-                    id="school_year"
-                    name="school_year"
+                    id="year"
+                    name="year"
                     className="std-reg__input"
-                    value={formData.school_year}
+                    value={formData.year}
                     onChange={handleChange}
                     required
                   >
-                    <option value="" disabled>School Year</option>
+                    <option value="" disabled>Year</option>
                     <option value="1">1st Year</option>
                     <option value="2">2nd Year</option>
                     <option value="3">3rd Year</option>
