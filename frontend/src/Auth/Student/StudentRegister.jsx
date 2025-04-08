@@ -53,6 +53,7 @@ const StudentRegister = () => {
   });
 
   const [error, setError] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(true);
   const navigate = useNavigate();
@@ -138,16 +139,7 @@ const StudentRegister = () => {
     setError("");
     setLoading(true);
 
-    // Validate year selection
-    if (!formData.school_year) {
-      setError("Please select a year.");
-      setLoading(false);
-      return;
-    }
-
-    // Password validation
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+    if (!validateForm()) {
       setLoading(false);
       return;
     }
@@ -159,14 +151,24 @@ const StudentRegister = () => {
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("Registration successful!");
         navigate("/login");
       } else {
         setError(response.data.message || "Registration failed. Please try again.");
+        setShowErrorModal(true);
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      if (error.response?.data?.message) {
+        if (error.response.data.message.includes("duplicate key error")) {
+          setError("This email is already registered. Please use a different email or try logging in.");
+        } else {
+          setError(error.response.data.message);
+        }
+      } else {
+        setError("An error occurred. Please try again.");
+      }
+      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }
@@ -214,6 +216,22 @@ const StudentRegister = () => {
         show={showEmailModal} 
         onClose={() => setShowEmailModal(false)} 
       />
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="error-modal">
+          <div className="error-modal__content">
+            <h3 className="error-modal__title">Error</h3>
+            <p className="error-modal__message">{error}</p>
+            <button
+              className="error-modal__button"
+              onClick={() => setShowErrorModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="std-reg__content">
         <div className="std-reg__left">

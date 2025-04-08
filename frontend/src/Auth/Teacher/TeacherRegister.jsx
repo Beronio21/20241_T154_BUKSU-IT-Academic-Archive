@@ -11,16 +11,66 @@ const TeacherRegister = () => {
     confirmPassword: "",
     department: "",
     teacher_id: "",
-    gender: "", // Default to empty to force selection
-    role: "teacher", // Default role
+    gender: "",
+    role: "teacher",
   });
   const [error, setError] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
+  const validateForm = () => {
+    // Check required fields
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.gender) {
+      setError("Please fill in all required fields");
+      return false;
+    }
+
+    // Validate password
+    if (!validatePassword(formData.password)) {
+      setError("Password must be at least 6 characters long");
+      return false;
+    }
+
+    // Check password match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Clear error when user starts typing
+    if (error) {
+      setError("");
+    }
+
+    // Validate password length in real-time
+    if (name === "password" && value) {
+      if (!validatePassword(value)) {
+        setError("Password must be at least 6 characters long");
+      } else {
+        setError("");
+      }
+    }
+
+    // Validate password match in real-time when confirm password changes
+    if (name === "confirmPassword" && value) {
+      if (value !== formData.password) {
+        setError("Passwords do not match");
+      } else {
+        setError("");
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -28,17 +78,9 @@ const TeacherRegister = () => {
     setError("");
     setLoading(true);
 
-    // Validate gender selection
-    if (!formData.gender) {
-      setError("Please select a gender.");
+    if (!validateForm()) {
       setLoading(false);
-      return;
-    }
-
-    // Password validation
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
+      setShowErrorModal(true);
       return;
     }
 
@@ -57,10 +99,16 @@ const TeacherRegister = () => {
         alert("Registration successful!");
         navigate("/login");
       } else {
-        setError(data.message || "Registration failed. Please try again.");
+        if (data.message && data.message.includes("duplicate key error")) {
+          setError("This email is already registered. Please use a different email or try logging in.");
+        } else {
+          setError(data.message || "Registration failed. Please try again.");
+        }
+        setShowErrorModal(true);
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
+      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }
@@ -104,8 +152,19 @@ const TeacherRegister = () => {
 
   return (
     <div className="std-reg__container">
+      {showErrorModal && (
+        <div className="error-modal">
+          <div className="error-modal__content">
+            <h3 className="error-modal__title">Error</h3>
+            <p className="error-modal__message">{error}</p>
+            <button className="error-modal__button" onClick={() => setShowErrorModal(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="std-reg__content">
-        {/* Left side */}
         <div className="std-reg__left">
           <img
             src="../src/Images/buksulogov2.png"
@@ -121,7 +180,6 @@ const TeacherRegister = () => {
           </p>
         </div>
 
-        {/* Right side - Form */}
         <div className="std-reg__right">
           <div className="std-reg__form-wrapper">
             <h2 className="std-reg__form-title">Teacher Registration</h2>
@@ -129,32 +187,11 @@ const TeacherRegister = () => {
             
             <form onSubmit={handleSubmit} className="std-reg__form">
               <div className="std-reg__form-grid">
-                {/* Input Fields */}
                 {[
-                  {
-                    id: "teacher_id",
-                    type: "text",
-                    placeholder: "Instructor ID",
-                    required: true,
-                  },
-                  {
-                    id: "email",
-                    type: "email",
-                    placeholder: "Email",
-                    required: true,
-                  },
-                  {
-                    id: "name",
-                    type: "text",
-                    placeholder: "Full Name",
-                    required: true,
-                  },
-                  {
-                    id: "department",
-                    type: "text",
-                    placeholder: "Department",
-                    required: false,
-                  },
+                  { id: "teacher_id", type: "text", placeholder: "Instructor ID", required: true },
+                  { id: "email", type: "email", placeholder: "Email", required: true },
+                  { id: "name", type: "text", placeholder: "Full Name", required: true },
+                  { id: "department", type: "text", placeholder: "Department", required: false },
                 ].map((input, index) => (
                   <div className="std-reg__input-group" key={index}>
                     <input
@@ -170,7 +207,6 @@ const TeacherRegister = () => {
                   </div>
                 ))}
 
-                {/* Gender Dropdown */}
                 <div className="std-reg__input-group">
                   <select
                     id="gender"
@@ -187,7 +223,6 @@ const TeacherRegister = () => {
                   </select>
                 </div>
 
-                {/* Password and Confirm Password */}
                 <div className="std-reg__input-group">
                   <input
                     type="password"
@@ -201,14 +236,13 @@ const TeacherRegister = () => {
                   />
                 </div>
 
-                {/* Confirm Password */}
                 <div className="std-reg__input-group">
                   <input
                     type="password"
                     id="confirmPassword"
                     name="confirmPassword"
                     className="std-reg__input"
-                    placeholder="Re-Enter Password"
+                    placeholder="Re-enter Your Password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
@@ -216,11 +250,7 @@ const TeacherRegister = () => {
                 </div>
               </div>
 
-              <button 
-                type="submit" 
-                className="std-reg__submit-btn" 
-                disabled={loading}
-              >
+              <button type="submit" className="std-reg__submit-btn" disabled={loading}>
                 {loading ? "Registering..." : "Register"}
               </button>
 
@@ -249,4 +279,4 @@ const TeacherRegister = () => {
   );
 };
 
-export default TeacherRegister; 
+export default TeacherRegister;
