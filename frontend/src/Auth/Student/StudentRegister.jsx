@@ -1,27 +1,136 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
+import { googleAuth, emailLogin } from "../../api";
 import "./StudentRegister.css";
+import axios from "axios";
+
+const EmailRequirementsModal = ({ show, onClose }) => {
+  if (!show) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>Email Requirements</h3>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <div className="modal-body">
+          <ul className="email-requirements-list">
+            <li className="requirement-item">
+              <span className="requirement-icon">✓</span>
+              Must be a valid Institutional Email
+            </li>
+            <li className="requirement-item">
+              <span className="requirement-icon">✓</span>
+              Format: ID_@student.buksu.edu.ph
+            </li>
+            <li className="requirement-item">
+              <span className="requirement-icon">✓</span>
+              Example: 20123****@student.buksu.edu.ph
+            </li>
+          </ul>
+        </div>
+        <div className="modal-footer">
+          <button className="modal-button" onClick={onClose}>Got it!</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const StudentRegister = () => {
   const [formData, setFormData] = useState({
-    student_id: "",
-    name: "",
+    institution_id: "",
     email: "",
+    full_name: "",
     course: "",
-    year: "",
+    school_year: "",
+    gender: "",
     password: "",
     confirmPassword: "",
-    role: "student", // Default role
-    gender: "",
+    role: "student",
   });
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(true);
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const buksuEmailRegex = /^[0-9]+@student\.buksu\.edu\.ph$/;
+    return buksuEmailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
+  const validateForm = () => {
+    // Check required fields
+    if (!formData.institution_id || !formData.email || !formData.full_name || 
+        !formData.course || !formData.school_year || !formData.gender || 
+        !formData.password || !formData.confirmPassword) {
+      setError("Please fill in all required fields");
+      return false;
+    }
+
+    // Validate email format
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid BUKSU student email");
+      return false;
+    }
+
+    // Validate password
+    if (!validatePassword(formData.password)) {
+      setError("Password must be at least 6 characters long");
+      return false;
+    }
+
+    // Check password match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Clear error when user starts typing
+    if (error) {
+      setError("");
+    }
+
+    // Validate email format in real-time
+    if (name === "email" && value) {
+      if (!validateEmail(value)) {
+        setError("Please Enter Valid Institution Email");
+      } else {
+        setError("");
+      }
+    }
+
+    // Validate password length in real-time
+    if (name === "password" && value) {
+      if (!validatePassword(value)) {
+        setError("Password must be at least 6 characters long");
+      } else {
+        setError("");
+      }
+    }
+
+    // Validate password match in real-time when confirm password changes
+    if (name === "confirmPassword" && value) {
+      if (value !== formData.password) {
+        setError("Passwords do not match");
+      } else {
+        setError("");
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -30,7 +139,7 @@ const StudentRegister = () => {
     setLoading(true);
 
     // Validate year selection
-    if (!formData.year) {
+    if (!formData.school_year) {
       setError("Please select a year.");
       setLoading(false);
       return;
@@ -44,21 +153,17 @@ const StudentRegister = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/register", {
-        method: "POST",
+      const response = await axios.post("http://localhost:8080/api/auth/register", formData, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Registration successful!");
         navigate("/login");
       } else {
-        setError(data.message || "Registration failed. Please try again.");
+        setError(response.data.message || "Registration failed. Please try again.");
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
@@ -105,8 +210,12 @@ const StudentRegister = () => {
 
   return (
     <div className="std-reg__container">
+      <EmailRequirementsModal 
+        show={showEmailModal} 
+        onClose={() => setShowEmailModal(false)} 
+      />
+
       <div className="std-reg__content">
-        {/* Left side */}
         <div className="std-reg__left">
           <img
             src="../src/Images/buksulogov2.png"
@@ -122,7 +231,6 @@ const StudentRegister = () => {
           </p>
         </div>
 
-        {/* Right side - Form */}
         <div className="std-reg__right">
           <div className="std-reg__form-wrapper">
             <h2 className="std-reg__form-title">Register</h2>
@@ -130,66 +238,81 @@ const StudentRegister = () => {
             
             <form onSubmit={handleSubmit} className="std-reg__form">
               <div className="std-reg__form-grid">
-                {/* Input Fields */}
-                {[
-                  {
-                    id: "student_id",
-                    type: "text",
-                    placeholder: "Institution ID",
-                    required: true,
-                  },
-                  {
-                    id: "name",
-                    type: "text",
-                    placeholder: "Full Name",
-                    required: true,
-                  },
-                  {
-                    id: "email",
-                    type: "email",
-                    placeholder: "Institution Email",
-                    required: true,
-                  },
-                  {
-                    id: "course",
-                    type: "text",
-                    placeholder: "Course",
-                    required: false,
-                  },
-                ].map((input, index) => (
-                  <div className="std-reg__input-group" key={index}>
-                    <input
-                      type={input.type}
-                      id={input.id}
-                      name={input.id}
-                      className="std-reg__input"
-                      placeholder={input.placeholder}
-                      value={formData[input.id]}
-                      onChange={handleChange}
-                      required={input.required}
-                    />
-                  </div>
-                ))}
+                {/* Institution ID */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="text"
+                    id="institution_id"
+                    name="institution_id"
+                    className="std-reg__input"
+                    placeholder="Institution ID"
+                    value={formData.institution_id}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
 
-                {/* Year Dropdown */}
+                {/* Email */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="std-reg__input"
+                    placeholder="Institution Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                {/* Full Name */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    className="std-reg__input"
+                    placeholder="Full Name"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                {/* Course */}
+                <div className="std-reg__input-group">
+                  <input
+                    type="text"
+                    id="course"
+                    name="course"
+                    className="std-reg__input"
+                    placeholder="Course"
+                    value={formData.course}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                {/* School Year */}
                 <div className="std-reg__input-group">
                   <select
-                    id="year"
-                    name="year"
+                    id="school_year"
+                    name="school_year"
                     className="std-reg__input"
-                    value={formData.year}
+                    value={formData.school_year}
                     onChange={handleChange}
                     required
                   >
                     <option value="" disabled>School Year</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
                   </select>
                 </div>
 
-                {/* Gender Dropdown */}
+                {/* Gender */}
                 <div className="std-reg__input-group">
                   <select
                     id="gender"
@@ -202,11 +325,11 @@ const StudentRegister = () => {
                     <option value="" disabled>Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="other">I prefer not to say</option>
                   </select>
                 </div>
 
-                {/* Password and Confirm Password */}
+                {/* Password */}
                 <div className="std-reg__input-group">
                   <input
                     type="password"
