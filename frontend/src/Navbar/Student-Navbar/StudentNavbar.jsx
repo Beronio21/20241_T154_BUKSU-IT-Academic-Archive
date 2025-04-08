@@ -9,12 +9,12 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
     // Style related functions
     const getNavButtonStyle = (isActive) => ({
         transition: 'all 0.2s ease',
-        padding: '12px 16px',
+        padding: '10px 16px', // Slightly reduced padding for better comfort
         border: 'none',
         backgroundColor: isActive ? '#0d6efd' : 'transparent', // Active: Blue, Inactive: Transparent
         color: isActive ? '#fff' : '#333', // Active: White, Inactive: Dark Gray
         cursor: 'pointer',
-        fontSize: '14px',
+        fontSize: '14px', // Consistent font size
         fontWeight: '500',
     });
 
@@ -77,7 +77,7 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
                 top: 0,
                 left: 0,
                 bottom: 0,
-                width: '250px',
+                width: '220px', // Adjusted width for better comfort
                 backgroundColor: '#f5f5f5', // Light gray background
                 overflowY: 'auto',
                 zIndex: 1000,
@@ -85,22 +85,22 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
         >
             <div className="d-flex flex-column h-100">
                 {/* Header */}
-                <div className="p-4 d-flex align-items-center border-bottom">
+                <div className="p-3 d-flex align-items-center border-bottom"> {/* Reduced padding */}
                     <img 
-                      src={logobuksu} 
-                      alt="Logo" 
-                      style={{ 
-                        width: '35px', // Set smaller width
-                        height: '35px', // Set smaller height
-                        borderRadius: '50%', // Make it circular
-                        marginRight: '10px' // Space between logo and title
-                      }} 
+                        src={logobuksu} 
+                        alt="Logo" 
+                        style={{ 
+                            width: '30px', // Slightly smaller logo
+                            height: '30px', // Slightly smaller logo
+                            borderRadius: '50%', // Make it circular
+                            marginRight: '8px' // Reduced margin
+                        }} 
                     />
-                    <h5 className="text-black fw-bold mb-0">Student Portal</h5>{/* Smaller font size */}
+                    <h5 className="text-black fw-bold mb-0" style={{ fontSize: '16px' }}>Student Portal</h5> {/* Adjusted font size */}
                 </div>
 
                 {/* Navigation Items */}
-                <div className="px-3">
+                <div className="px-2"> {/* Reduced padding */}
                     <ul className="nav flex-column gap-1">
                         {mainNavItems.map(renderNavItem)}
                         {renderThesisManagementDropdown()}
@@ -109,14 +109,14 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
                 </div>
                       
                 {/* User Info Section */}
-                <div className="p-4 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '20px' }}>
+                <div className="p-3 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '15px' }}> {/* Reduced padding */}
                     <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
                         {userInfo?.name || 'Student'}
                     </p>
                     <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
                         {userInfo?.email || 'Email not available'}
                     </p>
-                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
+                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
                         {userInfo?.role || 'User Type not available'}
                     </p>
                 </div>

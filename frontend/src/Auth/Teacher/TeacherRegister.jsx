@@ -3,6 +3,41 @@ import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import "./TeacherRegister.css"; // Ensure you have the appropriate styles
 import axios from "axios";
+import { googleAuth } from "../../api";
+
+const EmailRequirementsModal = ({ show, onClose }) => {
+  if (!show) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>Email Requirements</h3>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <div className="modal-body">
+          <ul className="email-requirements-list">
+            <li className="requirement-item">
+              <span className="requirement-icon">✓</span>
+              Must be a valid BUKSU Faculty Email
+            </li>
+            <li className="requirement-item">
+              <span className="requirement-icon">✓</span>
+              Format: username@buksu.edu.ph
+            </li>
+            <li className="requirement-item">
+              <span className="requirement-icon">✓</span>
+              Example: juan.delacruz@buksu.edu.ph
+            </li>
+          </ul>
+        </div>
+        <div className="modal-footer">
+          <button className="modal-button" onClick={onClose}>Got it!</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const TeacherRegister = () => {
   const [formData, setFormData] = useState({
@@ -18,8 +53,14 @@ const TeacherRegister = () => {
   const [error, setError] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const buksuEmailRegex = /^[a-zA-Z0-9._-]+@buksu\.edu\.ph$/;
+    return buksuEmailRegex.test(email);
+  };
 
   const validatePassword = (password) => {
     return password.length >= 6;
@@ -29,6 +70,12 @@ const TeacherRegister = () => {
     // Check required fields
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.gender) {
       setError("Please fill in all required fields");
+      return false;
+    }
+
+    // Validate email format
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid BUKSU faculty email");
       return false;
     }
 
@@ -54,6 +101,15 @@ const TeacherRegister = () => {
     // Clear error when user starts typing
     if (error) {
       setError("");
+    }
+
+    // Validate email format in real-time
+    if (name === "email" && value) {
+      if (!validateEmail(value)) {
+        setError("Please enter a valid BUKSU faculty email");
+      } else {
+        setError("");
+      }
     }
 
     // Validate password length in real-time
@@ -135,6 +191,8 @@ const TeacherRegister = () => {
         const result = await googleAuth(tokenResponse.access_token);
         if (result.status === "success") {
           const { user, token } = result.data;
+          
+          // Store user info in localStorage
           localStorage.setItem(
             "user-info",
             JSON.stringify({
@@ -146,12 +204,19 @@ const TeacherRegister = () => {
               token,
             })
           );
-          navigate(`/${user.role}-dashboard`);
+
+          // Redirect based on role
+          if (user.role === "teacher") {
+            navigate("/teacher-dashboard");
+          } else {
+            setError("Only teachers can register through this page");
+            setShowErrorModal(true);
+          }
         }
       } catch (error) {
         console.error("Google registration error:", error);
-        setError("Google registration failed");
-        setLoading(false);
+        setError(error.message || "Google registration failed");
+        setShowErrorModal(true);
       } finally {
         setLoading(false);
       }
@@ -159,6 +224,7 @@ const TeacherRegister = () => {
     onError: (error) => {
       console.error("Google registration error:", error);
       setError("Google registration failed");
+      setShowErrorModal(true);
       setLoading(false);
     },
     scope: "email profile",
@@ -166,6 +232,11 @@ const TeacherRegister = () => {
 
   return (
     <div className="std-reg__container">
+      <EmailRequirementsModal 
+        show={showEmailModal} 
+        onClose={() => setShowEmailModal(false)} 
+      />
+
       {/* Success Modal */}
       {showSuccessModal && (
         <div className="success-modal">
@@ -215,7 +286,7 @@ const TeacherRegister = () => {
               <div className="std-reg__form-grid">
                 {[
                   { id: "teacher_id", type: "text", placeholder: "Instructor ID", required: true },
-                  { id: "email", type: "email", placeholder: "Email", required: true },
+                  { id: "email", type: "email", placeholder: "BUKSU Faculty Email", required: true },
                   { id: "name", type: "text", placeholder: "Full Name", required: true },
                   { id: "department", type: "text", placeholder: "Department", required: false },
                 ].map((input, index) => (
