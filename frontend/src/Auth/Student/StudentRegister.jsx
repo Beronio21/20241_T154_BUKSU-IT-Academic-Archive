@@ -281,15 +281,15 @@ const StudentRegister = () => {
             
             <form onSubmit={handleSubmit} className="std-reg__form">
               <div className="std-reg__form-grid">
-                {/* Name */}
+                {/* Student ID */}
                 <div className="std-reg__input-group">
                   <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="student_id"
+                    name="student_id"
                     className="std-reg__input"
-                    placeholder="Full Name"
-                    value={formData.name}
+                    placeholder="Student ID"
+                    value={formData.student_id}
                     onChange={handleChange}
                     required
                   />
@@ -309,15 +309,15 @@ const StudentRegister = () => {
                   />
                 </div>
 
-                {/* Student ID */}
+                {/* Full Name */}
                 <div className="std-reg__input-group">
                   <input
                     type="text"
-                    id="student_id"
-                    name="student_id"
+                    id="name"
+                    name="name"
                     className="std-reg__input"
-                    placeholder="Student ID"
-                    value={formData.student_id}
+                    placeholder="Full Name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                   />
