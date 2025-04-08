@@ -276,7 +276,7 @@ const UserManagement = () => {
                                         variant="info"
                                         size="sm"
                                         className="me-2"
-                                        onClick={() => handleView(user)}
+                                    onClick={() => handleView(user)}
                                     >
                                         <FaEye />
                                     </Button>
@@ -284,15 +284,15 @@ const UserManagement = () => {
                                         variant="warning"
                                         size="sm"
                                         className="me-2"
-                                        onClick={() => handleEdit(user, type)}
+                                    onClick={() => handleEdit(user, type)}
                                     >
                                         <FaEdit />
                                     </Button>
                                     <Button
                                         variant="danger"
                                         size="sm"
-                                        onClick={() => handleDelete(user._id, type)}
-                                    >
+                                    onClick={() => handleDelete(user._id, type)}
+                                >
                                         <FaTrash />
                                     </Button>
                                 </div>
@@ -304,7 +304,7 @@ const UserManagement = () => {
         </div>
     );
 
-    return (
+        return (
         <div className="container-fluid" style={{ 
             minWidth: '1200px',
             minHeight: '100vh',
@@ -322,10 +322,10 @@ const UserManagement = () => {
                                         <FaSearch />
                                     </InputGroup.Text>
                                     <Form.Control
-                                        type="text"
-                                        placeholder="Search by name or ID..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                        type="text"
+                        placeholder="Search by name or ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </InputGroup>
                             </div>
@@ -422,24 +422,24 @@ const UserManagement = () => {
             <Modal show={isEditing} onHide={() => setIsEditing(false)} size="lg" centered>
                 <Modal.Header closeButton className="bg-primary text-white">
                     <Modal.Title>Edit {editingUser?.type === 'student' ? 'Student' : 'Teacher'}</Modal.Title>
-                </Modal.Header>
+                        </Modal.Header>
                 <Modal.Body className="p-4">
                     {editingUser && (
                         <Form onSubmit={(e) => {
-                            e.preventDefault();
-                            handleUpdate(editingUser._id, editingUser.type, editingUser);
-                        }}>
+                                e.preventDefault();
+                                handleUpdate(editingUser._id, editingUser.type, editingUser);
+                            }}>
                             <div className="row">
                                 <div className="col-md-6">
                                     <Form.Group className="mb-4">
                                         <Form.Label className="fw-bold">Name</Form.Label>
                                         <Form.Control
-                                            type="text"
-                                            value={editingUser.name || ''}
-                                            onChange={(e) => setEditingUser({
-                                                ...editingUser,
-                                                name: e.target.value
-                                            })}
+                                        type="text"
+                                        value={editingUser.name || ''}
+                                        onChange={(e) => setEditingUser({
+                                            ...editingUser,
+                                            name: e.target.value
+                                        })}
                                             className="py-2"
                                         />
                                     </Form.Group>
@@ -447,17 +447,17 @@ const UserManagement = () => {
                                     <Form.Group className="mb-4">
                                         <Form.Label className="fw-bold">Email</Form.Label>
                                         <Form.Control
-                                            type="email"
-                                            value={editingUser.email || ''}
-                                            onChange={(e) => setEditingUser({
-                                                ...editingUser,
-                                                email: e.target.value
-                                            })}
+                                        type="email"
+                                        value={editingUser.email || ''}
+                                        onChange={(e) => setEditingUser({
+                                            ...editingUser,
+                                            email: e.target.value
+                                        })}
                                             className="py-2"
-                                        />
+                                    />
                                     </Form.Group>
 
-                                    {editingUser.type === 'student' ? (
+                                {editingUser.type === 'student' ? (
                                         <Form.Group className="mb-4">
                                             <Form.Label className="fw-bold">Student ID</Form.Label>
                                             <Form.Control
@@ -484,7 +484,7 @@ const UserManagement = () => {
                                             />
                                         </Form.Group>
                                     )}
-                                </div>
+                                        </div>
                                 <div className="col-md-6">
                                     {editingUser.type === 'student' ? (
                                         <>
@@ -531,16 +531,16 @@ const UserManagement = () => {
                                     <Form.Group className="mb-4">
                                         <Form.Label className="fw-bold">New Password (leave blank to keep current)</Form.Label>
                                         <Form.Control
-                                            type="password"
-                                            onChange={(e) => setEditingUser({
-                                                ...editingUser,
-                                                password: e.target.value
-                                            })}
+                                        type="password"
+                                        onChange={(e) => setEditingUser({
+                                            ...editingUser,
+                                            password: e.target.value
+                                        })}
                                             className="py-2"
-                                        />
+                                    />
                                     </Form.Group>
                                 </div>
-                            </div>
+                                </div>
 
                             <div className="d-flex justify-content-end mt-4">
                                 <Button variant="secondary" className="me-2 px-4" onClick={() => setIsEditing(false)}>
@@ -552,8 +552,8 @@ const UserManagement = () => {
                             </div>
                         </Form>
                     )}
-                </Modal.Body>
-            </Modal>
+                        </Modal.Body>
+                    </Modal>
 
             {/* Delete Confirmation Modal */}
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
@@ -585,12 +585,12 @@ const UserManagement = () => {
                         }}>
                             Cancel
                         </Button>
-                    </div>
+                </div>
                     <div className="d-flex justify-content-end">
                         <Button variant="danger" onClick={confirmDelete}>
                             Delete
                         </Button>
-                    </div>
+            </div>
                 </Modal.Footer>
             </Modal>
         </div>

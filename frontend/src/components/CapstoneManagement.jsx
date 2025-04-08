@@ -396,41 +396,41 @@ const CapstoneManagement = () => {
                                         <FaFileAlt className="me-2" />
                                         Research Title
                                     </label>
-                                    <input
-                                        type="text"
+                            <input
+                                type="text"
                                         className="form-control"
-                                        name="title"
-                                        value={formData.title}
-                                        onChange={handleInputChange}
+                                name="title"
+                                value={formData.title}
+                                onChange={handleInputChange}
                                         placeholder="Enter research title"
-                                        required
-                                    />
-                                </div>
+                                required
+                            />
+                        </div>
                                 <div className="mb-3">
                                     <label className="form-label required">
                                         <FaFileAlt className="me-2" />
                                         Research Objective
                                     </label>
-                                    <textarea
+                            <textarea
                                         className="form-control"
-                                        name="objective"
-                                        value={formData.objective}
-                                        onChange={handleInputChange}
-                                        rows="3"
+                                name="objective"
+                                value={formData.objective}
+                                onChange={handleInputChange}
+                                rows="3"
                                         placeholder="Enter research objective"
-                                        required
-                                    />
-                                </div>
+                                required
+                            />
+                        </div>
                                 <div className="mb-3">
                                     <label className="form-label required">
                                         <FaFileAlt className="me-2" />
                                         Abstract
                                     </label>
-                                    <textarea
+                            <textarea
                                         className="form-control"
-                                        name="abstract"
-                                        value={formData.abstract}
-                                        onChange={handleInputChange}
+                                name="abstract"
+                                value={formData.abstract}
+                                onChange={handleInputChange}
                                         rows="4"
                                         placeholder="Enter research abstract"
                                         required
@@ -454,7 +454,7 @@ const CapstoneManagement = () => {
                                         ))}
                                     </select>
                                 </div>
-                            </div>
+                        </div>
                             <div className="col-md-6">
                                 <div className="mb-3">
                                     <label className="form-label required">
@@ -462,17 +462,17 @@ const CapstoneManagement = () => {
                                         Members
                                     </label>
                                     <div className="members-container mb-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                        {formData.members.map((member, index) => (
+                            {formData.members.map((member, index) => (
                                             <div key={index} className="d-flex mb-2 align-items-center">
-                                                <input
-                                                    type="text"
+                                    <input
+                                        type="text"
                                                     className="form-control"
-                                                    name="members"
-                                                    value={member}
-                                                    onChange={(e) => handleInputChange(e, index)}
+                                        name="members"
+                                        value={member}
+                                        onChange={(e) => handleInputChange(e, index)}
                                                     placeholder={`Member ${index + 1}`}
-                                                    required
-                                                />
+                                        required
+                                    />
                                                 <Button
                                                     variant="danger"
                                                     size="sm"
@@ -521,8 +521,8 @@ const CapstoneManagement = () => {
                                                 >
                                                     <FaTrash />
                                                 </Button>
-                                            </div>
-                                        ))}
+                                </div>
+                            ))}
                                     </div>
                                     <Button 
                                         variant="outline-primary" 
@@ -532,38 +532,38 @@ const CapstoneManagement = () => {
                                     >
                                         <FaPlus className="me-1" /> Add Keyword
                                     </Button>
-                                </div>
+                        </div>
 
                                 <div className="mb-3">
                                     <label className="form-label required">
                                         <FaEnvelope className="me-2" />
                                         Adviser Email
                                     </label>
-                                    <input
-                                        type="email"
+                            <input
+                                type="email"
                                         className="form-control"
-                                        name="adviserEmail"
-                                        value={formData.adviserEmail}
-                                        onChange={handleInputChange}
+                                name="adviserEmail"
+                                value={formData.adviserEmail}
+                                onChange={handleInputChange}
                                         placeholder="Enter adviser's email"
-                                        required
-                                    />
-                                </div>
+                                required
+                            />
+                        </div>
 
                                 <div className="mb-3">
                                     <label className="form-label required">
                                         <FaLink className="me-2" />
                                         Document Link
                                     </label>
-                                    <input
+                            <input
                                         type="url"
                                         className="form-control"
-                                        name="docsLink"
-                                        value={formData.docsLink}
-                                        onChange={handleInputChange}
+                                name="docsLink"
+                                value={formData.docsLink}
+                                onChange={handleInputChange}
                                         placeholder="Enter document link"
-                                        required
-                                    />
+                                required
+                            />
                                 </div>
                             </div>
                         </div>
@@ -626,12 +626,12 @@ const CapstoneManagement = () => {
                     <div className="d-flex justify-content-start">
                         <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
                             Cancel
-                        </Button>
+                                        </Button>
                     </div>
                     <div className="d-flex justify-content-end">
                         <Button variant="danger" onClick={handleDelete}>
-                            Delete
-                        </Button>
+                                            Delete
+                                        </Button>
                     </div>
                 </Modal.Footer>
             </Modal>

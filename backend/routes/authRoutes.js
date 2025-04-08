@@ -34,59 +34,103 @@ router.post('/google', async (req, res) => {
         const { email, name, picture } = googleUserInfo.data;
         console.log('Google user info:', { email, name, picture });
 
-        // Determine role based on email
-        let role;
-        if (email === 'ivanrebato01@gmail.com') {
-            role = 'admin';
-        } else if (email.endsWith('@student.buksu.edu.ph')) {
-            role = 'student';
-        } else if (email.endsWith('@gmail.com')) {
-            role = 'teacher';
-        } else {
-            return res.status(400).json({
-                status: 'error',
-                message: 'Invalid email domain'
-            });
-        }
-
-        // Find or create user
-        let user = await User.findOne({ email });
+        // First try to find a teacher
+        let teacher = await Teacher.findOne({ email });
         
-        if (!user) {
-            user = new User({
-                name,
-                email,
-                image: picture,
-                role,
-                isProfileComplete: false
+        if (teacher) {
+            const token = jwt.sign(
+                { 
+                    userId: teacher._id,
+                    email: teacher.email,
+                    role: 'teacher'
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            teacher.lastLogin = new Date();
+            await teacher.save();
+
+            return res.json({
+                status: 'success',
+                data: {
+                    user: {
+                        id: teacher._id,
+                        name: teacher.name,
+                        email: teacher.email,
+                        role: 'teacher',
+                        image: teacher.image
+                    },
+                    token
+                }
             });
-            await user.save();
         }
 
+        // If no teacher found, try student
+        const student = await User.findOne({ email });
+        if (!student) {
+            // Create new teacher if email ends with @buksu.edu.ph
+            if (email.endsWith('@buksu.edu.ph')) {
+                const newTeacher = new Teacher({
+                    name,
+                    email,
+                    image: picture,
+                    role: 'teacher',
+                    isProfileComplete: false
+                });
+                await newTeacher.save();
+
+                const token = jwt.sign(
+                    { 
+                        userId: newTeacher._id,
+                        email: newTeacher.email,
+                        role: 'teacher'
+                    },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '24h' }
+                );
+
+                return res.json({
+                    status: 'success',
+                    data: {
+                        user: {
+                            id: newTeacher._id,
+                            name: newTeacher.name,
+                            email: newTeacher.email,
+                            role: 'teacher',
+                            image: newTeacher.image
+                        },
+                        token
+                    }
+                });
+            }
+
+            return res.status(401).json({
+                status: 'error',
+                message: 'Only BUKSU faculty emails (@buksu.edu.ph) are allowed for teacher registration'
+            });
+        }
+
+        // Handle student login
         const token = jwt.sign(
             { 
-                userId: user._id, 
-                role: user.role,
-                email: user.email,
-                isProfileComplete: user.isProfileComplete
+                userId: student._id,
+                email: student.email,
+                role: student.role
             },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
-        user.lastLogin = new Date();
-        await user.save();
-
-        res.status(200).json({
+        res.json({
             status: 'success',
             data: {
                 user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    image: user.image,
-                    role: user.role,
-                    isProfileComplete: user.isProfileComplete
+                    id: student._id,
+                    name: student.name,
+                    email: student.email,
+                    role: student.role,
+                    image: student.image
                 },
                 token
             }

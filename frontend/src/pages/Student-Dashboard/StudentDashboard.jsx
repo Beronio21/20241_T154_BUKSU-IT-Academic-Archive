@@ -209,12 +209,22 @@ const StudentDashboard = () => {
             {loading ? (
               <p>Loading approved capstones...</p>
             ) : (
-              <div className="card-container p-4">
+              <div className="card-container p-4" style={{ 
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '20px',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start'
+              }}>
                 {filteredCapstones.length === 0 ? (
                   <p>No approved capstones available</p>
                 ) : (
                   filteredCapstones.map((capstone) => (
-                    <div className="capstone-card" key={capstone._id}>
+                    <div className="capstone-card" key={capstone._id} style={{
+                      flex: '0 0 calc(33.333% - 20px)',
+                      minWidth: '300px',
+                      maxWidth: '400px'
+                    }}>
                       <h3>{capstone.title}</h3>
                       <p><strong>Abstract:</strong> {capstone.abstract}</p>
                       <p><strong>Objective:</strong> {capstone.objective}</p>
@@ -408,7 +418,11 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ height: "100vh" }}>
+    <div className="d-flex flex-column" style={{ 
+      height: "100vh",
+      backgroundColor: "#ffffff",
+      overflow: "hidden"
+    }}>
       {/* Topbar */}
       <Topbar userInfo={userInfo} />
 
@@ -416,7 +430,12 @@ const StudentDashboard = () => {
       <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
 
       {/* Main Content */}
-      <div className="flex-grow-1 p-4" style={{ marginLeft: "250px", marginTop: "60px", }}>
+      <div className="flex-grow-1 p-4" style={{ 
+        marginLeft: "250px", 
+        marginTop: "60px",
+        backgroundColor: "#ffffff",
+        overflow: "auto"
+      }}>
         <Routes>
           <Route path="/dashboard" element={renderContent()} />
           <Route path="/profile" element={<StudentProfile userInfo={userInfo} />} />
