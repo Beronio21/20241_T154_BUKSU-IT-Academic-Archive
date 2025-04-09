@@ -1,0 +1,53 @@
+/* Unique Styles for Teacher Navbar */
+.teacher-navbar .nav-item {
+    list-style: none;
+    margin: 0.5rem 0;
+}
+
+.teacher-navbar .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid transparent; /* Unique Indicator */
+}
+
+/* Unique Hover Effect */
+.teacher-navbar .nav-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 3px;
+    background-color: #ff9800; /* Orange Accent */
+    transition: width 0.3s ease-in-out;
+}
+
+.teacher-navbar .nav-link:hover::before {
+    width: 100%;
+}
+
+.teacher-navbar .nav-link:hover {
+    background-color: rgba(255, 152, 0, 0.1); /* Light Orange Tint */
+    color: #ff9800; /* Orange Text */
+    border-left: 4px solid #ff9800; /* Left Accent */
+}
+
+.teacher-navbar .nav-link.active {
+    background-color: #ff9800;
+    color: white;
+    border-radius: 5px;
+    border-left: 4px solid #e65100; /* Darker Orange for Active */
+}

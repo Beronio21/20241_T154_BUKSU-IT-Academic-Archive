@@ -35,6 +35,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
     // Navigation items configuration
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard', icon: 'fas fa-tachometer-alt' },
+        { name: 'Capstone Archive', section: 'dashboard', icon: 'fas fa-book' },
         { name: 'My Profile', section: 'profile', icon: 'fas fa-user' },
         { name: 'Submit Capstone', section: 'submit-thesis', icon: 'fas fa-upload' },
         // { name: 'Review Capstone', section: 'review-submissions' }
