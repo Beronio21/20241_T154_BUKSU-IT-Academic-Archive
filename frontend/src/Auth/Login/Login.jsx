@@ -6,7 +6,7 @@ import { googleAuth, emailLogin } from "../../api";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "./Login.css";
-import googleLogo from '../../Images/Googlelogo.png'; // Google logo
+
 import bukSULogo from '../../Images/logobuksu.jpg'; // BukSU logo
 import VectorImage from '../../Images/Vector.png'; // Import the background image
 
@@ -185,7 +185,7 @@ const GoogleLogin = () => {
                         disabled={loading}
                         style={{background: "none", borderColor: "#ccc"}}
                     >
-                        <img src={googleLogo} alt="Google logo" className="me-1" style={{width: "40px"}}/>
+                       
                         <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
                     </button>
                     <div className="text-center mt-3">

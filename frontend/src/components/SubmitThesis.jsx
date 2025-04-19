@@ -201,7 +201,7 @@ const SubmitThesis = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userInfo.token}` // Authorization Logic
+                    'Authorization': `Bearer ${userInfo.token}`
                 },
                 body: JSON.stringify(submissionData)
             });
@@ -211,6 +211,26 @@ const SubmitThesis = () => {
 
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to submit thesis');
+            }
+
+            // Send notification to admin
+            const notificationResponse = await fetch('http://localhost:8080/api/notifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userInfo.token}`
+                },
+                body: JSON.stringify({
+                    recipientEmail: 'admin@example.com', // Replace with actual admin email
+                    title: 'New Capstone Submission',
+                    message: `A new capstone titled "${formData.title}" has been submitted by ${userInfo.name}.`,
+                    type: 'submission',
+                    thesisId: data.data._id
+                })
+            });
+
+            if (!notificationResponse.ok) {
+                throw new Error('Failed to send notification');
             }
 
             alert('Thesis submitted successfully!');
@@ -226,7 +246,7 @@ const SubmitThesis = () => {
                 objective: ''
             });
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error('Error:', error);
             setError(error.message);
             alert('Failed to submit thesis: ' + error.message);
         } finally {

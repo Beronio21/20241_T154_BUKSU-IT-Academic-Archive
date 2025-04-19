@@ -35,9 +35,10 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
     // Navigation items configuration
     const mainNavItems = [
         { name: 'Dashboard', section: 'dashboard', icon: 'fas fa-tachometer-alt' },
-        { name: 'Capstone Archive', section: 'dashboard', icon: 'fas fa-book' },
+        { name: 'Review Capstone', section: 'review-submissions', icon: 'fas fa-file-alt' },
         { name: 'My Profile', section: 'profile', icon: 'fas fa-user' },
         { name: 'Submit Capstone', section: 'submit-thesis', icon: 'fas fa-upload' },
+        
         // { name: 'Review Capstone', section: 'review-submissions' }
     ];
 
@@ -113,4 +114,4 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
     );
 };
 
-export default TeacherNavbar;
+export default TeacherNavbar;   

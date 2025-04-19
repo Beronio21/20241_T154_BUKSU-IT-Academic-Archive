@@ -302,13 +302,7 @@ const ReviewSubmission = () => {
                                                             >
                                                                 <FaFileAlt />
                                                             </Button>
-                                                            <Button
-                                                                variant="primary"
-                                                                size="sm"
-                                                                onClick={() => handleAddFeedback(submission)}
-                                                            >
-                                                                <FaComment />
-                                                            </Button>
+                                                            
                                                         </td>
                                                     </tr>
                                                 ))}

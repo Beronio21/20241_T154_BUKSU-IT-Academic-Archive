@@ -24,14 +24,35 @@ const AdminApproval = () => {
 
     const handleApproval = async (id, status) => {
         try {
-            await fetch(`http://localhost:8080/api/thesis/approve/${id}`, {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            const response = await fetch(`http://localhost:8080/api/thesis/approve/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userInfo.token}`
                 },
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({ status })
             });
-            fetchSubmissions(); // Refresh the list after approval
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Failed to update status');
+
+            // Send notification to teacher
+            await fetch('http://localhost:8080/api/notifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userInfo.token}`
+                },
+                body: JSON.stringify({
+                    recipientEmail: data.data.email, // Teacher's email
+                    title: `Capstone ${status}`,
+                    message: `Your capstone titled "${data.data.title}" has been ${status}.`,
+                    type: 'status_update',
+                    thesisId: id
+                })
+            });
+
+            fetchSubmissions(); // Refresh the list
         } catch (error) {
             console.error('Error approving thesis:', error);
         }
