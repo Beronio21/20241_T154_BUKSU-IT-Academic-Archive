@@ -256,26 +256,20 @@ const TeacherRegister = () => {
             <div className="success-modal__icon">✓</div>
             <h3 className="success-modal__title">Registration Successful!</h3>
             <p className="success-modal__message">
-              To upload files from Google Drive, please link your Google account.
+              To proceed, you must link your Google account for Google Drive uploads.
             </p>
             <button
               className="std-reg__google-btn"
               onClick={googleLogin}
               disabled={loading}
             >
-              <span>{loading ? "Signing in..." : "Register with Google"}</span>
+              <span>{loading ? "Signing in..." : "Link Google Account"}</span>
               <img
                 src={googleLogoUrl}
                 alt="Google logo"
                 className="std-reg__google-icon"
                 style={{ marginLeft: "10px" }}
               />
-            </button>
-            <button
-              className="modal-button"
-              onClick={() => navigate("/login")}
-            >
-              Skip for Now
             </button>
           </div>
         </div>
