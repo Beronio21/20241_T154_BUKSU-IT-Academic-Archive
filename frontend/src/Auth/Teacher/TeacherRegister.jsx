@@ -55,7 +55,11 @@ const TeacherRegister = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showGoogleLinkModal, setShowGoogleLinkModal] = useState(false);
   const navigate = useNavigate();
+
+  // Replace the local Google logo with an online version
+  const googleLogoUrl = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
 
   const validateEmail = (email) => {
     const buksuEmailRegex = /^[a-zA-Z0-9._-]+@buksu\.edu\.ph$/;
@@ -142,7 +146,6 @@ const TeacherRegister = () => {
     }
 
     try {
-      // Prepare the data according to the model requirements
       const registrationData = {
         name: formData.name,
         email: formData.email,
@@ -160,10 +163,8 @@ const TeacherRegister = () => {
       });
 
       if (response.status === 201) {
-        setShowSuccessModal(true);
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+        setShowSuccessModal(false);
+        setShowGoogleLinkModal(true);
       } else {
         setError(response.data.message || "Registration failed. Please try again.");
         setShowErrorModal(true);
@@ -244,6 +245,38 @@ const TeacherRegister = () => {
             <div className="success-modal__icon">✓</div>
             <h3 className="success-modal__title">Success!</h3>
             <p className="success-modal__message">Registration successful! Redirecting to login...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Google Linking Modal */}
+      {showGoogleLinkModal && (
+        <div className="success-modal">
+          <div className="success-modal__content">
+            <div className="success-modal__icon">✓</div>
+            <h3 className="success-modal__title">Registration Successful!</h3>
+            <p className="success-modal__message">
+              To upload files from Google Drive, please link your Google account.
+            </p>
+            <button
+              className="std-reg__google-btn"
+              onClick={googleLogin}
+              disabled={loading}
+            >
+              <span>{loading ? "Signing in..." : "Register with Google"}</span>
+              <img
+                src={googleLogoUrl}
+                alt="Google logo"
+                className="std-reg__google-icon"
+                style={{ marginLeft: "10px" }}
+              />
+            </button>
+            <button
+              className="modal-button"
+              onClick={() => navigate("/login")}
+            >
+              Skip for Now
+            </button>
           </div>
         </div>
       )}
@@ -361,12 +394,13 @@ const TeacherRegister = () => {
                 onClick={googleLogin}
                 disabled={loading}
               >
+                <span>{loading ? "Signing in..." : "Register with Google"}</span>
                 <img
-                  src="../src/Images/Googlelogo.png"
+                  src={googleLogoUrl}
                   alt="Google logo"
                   className="std-reg__google-icon"
+                  style={{ marginLeft: "10px" }}
                 />
-                <span>{loading ? "Signing in..." : "Register with Google"}</span>
               </button>
             </form>
           </div>

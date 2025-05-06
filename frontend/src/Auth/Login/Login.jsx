@@ -10,6 +10,7 @@ import "./Login.css";
 import bukSULogo from '../../Images/logobuksu.jpg'; // BukSU logo
 import VectorImage from '../../Images/Vector.png'; // Import the background image
 
+const googleLogoUrl = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
 
 const GoogleLogin = () => {
     // State variables
@@ -185,8 +186,12 @@ const GoogleLogin = () => {
                         disabled={loading}
                         style={{background: "none", borderColor: "#ccc"}}
                     >
-                       
                         <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
+                        <img
+                            src={googleLogoUrl}
+                            alt="Google logo"
+                            style={{ width: "20px", marginLeft: "10px" }}
+                        />
                     </button>
                     <div className="text-center mt-3">
                         Don't have an account? <span className="text-primary" onClick={() => setShowModal(true)}
