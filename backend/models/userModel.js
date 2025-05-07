@@ -56,7 +56,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: function() {
-            return this.role !== 'student'; // Only required for non-student roles
+            // Only require password for non-OAuth logins
+            return !this.isOAuth;
         }
     },
     isProfileComplete: {
@@ -100,6 +101,10 @@ const userSchema = new mongoose.Schema({
     lockUntil: {
         type: Date,
         default: null
+    },
+    isOAuth: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

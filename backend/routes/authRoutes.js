@@ -69,22 +69,23 @@ router.post('/google', async (req, res) => {
         // If no teacher found, try student
         const student = await User.findOne({ email });
         if (!student) {
-            // Create new teacher if email ends with @buksu.edu.ph
-            if (email.endsWith('@buksu.edu.ph')) {
-                const newTeacher = new Teacher({
+            // Create new student if email ends with @student.buksu.edu.ph
+            if (email.endsWith('@student.buksu.edu.ph')) {
+                const newStudent = new User({
                     name,
                     email,
                     image: picture,
-                    role: 'teacher',
-                    isProfileComplete: false
+                    role: 'student',
+                    isProfileComplete: false,
+                    isOAuth: true
                 });
-                await newTeacher.save();
+                await newStudent.save();
 
                 const token = jwt.sign(
                     { 
-                        userId: newTeacher._id,
-                        email: newTeacher.email,
-                        role: 'teacher'
+                        userId: newStudent._id,
+                        email: newStudent.email,
+                        role: 'student'
                     },
                     process.env.JWT_SECRET,
                     { expiresIn: '24h' }
@@ -94,11 +95,11 @@ router.post('/google', async (req, res) => {
                     status: 'success',
                     data: {
                         user: {
-                            id: newTeacher._id,
-                            name: newTeacher.name,
-                            email: newTeacher.email,
-                            role: 'teacher',
-                            image: newTeacher.image
+                            id: newStudent._id,
+                            name: newStudent.name,
+                            email: newStudent.email,
+                            role: 'student',
+                            image: newStudent.image
                         },
                         token
                     }
@@ -107,7 +108,7 @@ router.post('/google', async (req, res) => {
 
             return res.status(401).json({
                 status: 'error',
-                message: 'Only BUKSU faculty emails (@buksu.edu.ph) are allowed for teacher registration'
+                message: 'Only BUKSU faculty emails (@buksu.edu.ph) or @gmail.com are allowed for teacher registration'
             });
         }
 

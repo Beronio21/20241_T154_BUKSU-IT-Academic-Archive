@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
+const Teacher = require('../models/teacherModel');
 
 async function createTestUser() {
     try {
@@ -21,6 +22,19 @@ async function createTestUser() {
 
         await user.save();
         console.log('Test user created successfully');
+
+        // Create teacher
+        const teacher = new Teacher({
+            name: 'Test Teacher',
+            email: 'teacher@gmail.com',
+            role: 'teacher',
+            password: hashedPassword,
+            isProfileComplete: false
+        });
+
+        await teacher.save();
+        console.log('Test teacher created successfully');
+
         process.exit(0);
     } catch (error) {
         console.error('Error creating test user:', error);

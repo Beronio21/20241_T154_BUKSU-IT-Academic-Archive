@@ -62,7 +62,7 @@ const TeacherRegister = () => {
   const googleLogoUrl = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
 
   const validateEmail = (email) => {
-    const buksuEmailRegex = /^[a-zA-Z0-9._-]+@buksu\.edu\.ph$/;
+    const buksuEmailRegex = /^[a-zA-Z0-9._-]+@(buksu\.edu\.ph|gmail\.com)$/;
     return buksuEmailRegex.test(email);
   };
 
