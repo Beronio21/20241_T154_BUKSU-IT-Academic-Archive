@@ -22,7 +22,12 @@ public class MainActivity extends AppCompatActivity {
 
         WebView webView = findViewById(R.id.webview);
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Log.e("WEBVIEW_ERROR", "Error: " + description + " | URL: " + failingUrl);
+            }
+        });
         webView.getSettings().setJavaScriptEnabled(true);
 
         // Force desktop-like scaling
@@ -33,11 +38,10 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        webView.getSettings().setLoadsImagesAutomatically(true);
 
         WebView.setWebContentsDebuggingEnabled(true);
 
-        webView.loadUrl("file:///android_asset/offline.html");
+        webView.loadUrl("http://192.168.1.135:5173");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
