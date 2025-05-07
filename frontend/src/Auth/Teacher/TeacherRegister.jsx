@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import "./TeacherRegister.css"; // Ensure you have the appropriate styles
@@ -135,6 +135,14 @@ const TeacherRegister = () => {
     }
   };
 
+  useEffect(() => {
+    // Check for pending Google linking on component mount
+    const pendingGoogleLinking = localStorage.getItem('pendingGoogleLinking');
+    if (pendingGoogleLinking === 'true') {
+      setShowGoogleLinkModal(true);
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -165,6 +173,7 @@ const TeacherRegister = () => {
       if (response.status === 201) {
         setShowSuccessModal(false);
         setShowGoogleLinkModal(true);
+        localStorage.setItem('pendingGoogleLinking', 'true'); // Store state
       } else {
         setError(response.data.message || "Registration failed. Please try again.");
         setShowErrorModal(true);
@@ -191,6 +200,7 @@ const TeacherRegister = () => {
         setLoading(true);
         const result = await googleAuth(tokenResponse.access_token);
         if (result.status === "success") {
+          localStorage.removeItem('pendingGoogleLinking'); // Clear state
           const { user, token } = result.data;
           
           // Store user info in localStorage
@@ -223,6 +233,7 @@ const TeacherRegister = () => {
       }
     },
     onError: (error) => {
+      localStorage.removeItem('pendingGoogleLinking'); // Clear state on error
       console.error("Google registration error:", error);
       setError("Google registration failed");
       setShowErrorModal(true);
