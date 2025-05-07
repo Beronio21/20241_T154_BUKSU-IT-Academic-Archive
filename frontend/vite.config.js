@@ -7,5 +7,6 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true // This will automatically open the browser
-  }
+  },
+  base: "./", // Use relative paths
 })

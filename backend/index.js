@@ -54,6 +54,7 @@ app.use('/api', userRoutes);
 app.use('/api', recaptchaRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/calendar', calendarRoutes);
+app.use(cors({ origin: "http://192.168.1.135:5173" }));
 
 
 const oauth2Client = new google.auth.OAuth2(
