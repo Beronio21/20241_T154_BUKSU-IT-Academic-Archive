@@ -19,6 +19,8 @@ const ReviewSubmission = () => {
     const [titleSearch, setTitleSearch] = useState('');
     const [dateSearch, setDateSearch] = useState('');
     const [categorySearch, setCategorySearch] = useState('');
+    const [memberSearch, setMemberSearch] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
     const [categories] = useState(['IoT', 'AI', 'ML', 'Sound', 'Camera']);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
@@ -44,7 +46,11 @@ const ReviewSubmission = () => {
             const data = await response.json();
             
             if (data.status === 'success') {
-                setSubmissions(data.data);
+                // Sort submissions by createdAt in descending order (most recent first)
+                const sortedSubmissions = data.data.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setSubmissions(sortedSubmissions);
             }
         } catch (error) {
             console.error('Error fetching submissions:', error);
@@ -110,8 +116,12 @@ const ReviewSubmission = () => {
         const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
         const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
         const matchesCategory = categorySearch ? submission.category === categorySearch : true;
+        const matchesMember = memberSearch ? submission.members.some(member => 
+            member.toLowerCase().includes(memberSearch.toLowerCase())
+        ) : true;
+        const matchesStatus = statusFilter ? submission.status === statusFilter : true;
 
-        return matchesTitle && matchesDate && matchesCategory;
+        return matchesTitle && matchesDate && matchesCategory && matchesMember && matchesStatus;
     });
 
     // Pagination logic
@@ -202,19 +212,6 @@ const ReviewSubmission = () => {
                     <div className="card shadow h-100">
                         <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
                             <h3 className="mb-0">Review Capstone Research Paper Submissions</h3>
-                            <div className="d-flex align-items-center">
-                                <InputGroup style={{ width: '300px' }}>
-                                    <InputGroup.Text>
-                                        <FaSearch />
-                                    </InputGroup.Text>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Search by title..."
-                                        value={titleSearch}
-                                        onChange={(e) => setTitleSearch(e.target.value)}
-                                    />
-                                </InputGroup>
-                            </div>
                         </div>
                         <div className="card-body p-3" style={{ 
                             height: 'calc(100% - 60px)',
@@ -222,7 +219,33 @@ const ReviewSubmission = () => {
                             flexDirection: 'column'
                         }}>
                             <div className="row mb-3">
-                                <div className="col-md-4">
+                                <div className="col-md-3">
+                                    <InputGroup>
+                                        <InputGroup.Text>
+                                            <FaSearch />
+                                        </InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Search by title..."
+                                            value={titleSearch}
+                                            onChange={(e) => setTitleSearch(e.target.value)}
+                                        />
+                                    </InputGroup>
+                                </div>
+                                <div className="col-md-3">
+                                    <InputGroup>
+                                        <InputGroup.Text>
+                                            <FaSearch />
+                                        </InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Search by member name..."
+                                            value={memberSearch}
+                                            onChange={(e) => setMemberSearch(e.target.value)}
+                                        />
+                                    </InputGroup>
+                                </div>
+                                <div className="col-md-2">
                                     <InputGroup>
                                         <InputGroup.Text>
                                             <FaCalendarAlt />
@@ -234,7 +257,7 @@ const ReviewSubmission = () => {
                                         />
                                     </InputGroup>
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-2">
                                     <InputGroup>
                                         <InputGroup.Text>
                                             <FaFilter />
@@ -247,6 +270,23 @@ const ReviewSubmission = () => {
                                             {categories.map((cat) => (
                                                 <option key={cat} value={cat}>{cat}</option>
                                             ))}
+                                        </Form.Select>
+                                    </InputGroup>
+                                </div>
+                                <div className="col-md-2">
+                                    <InputGroup>
+                                        <InputGroup.Text>
+                                            <FaFilter />
+                                        </InputGroup.Text>
+                                        <Form.Select
+                                            value={statusFilter}
+                                            onChange={(e) => setStatusFilter(e.target.value)}
+                                        >
+                                            <option value="">All Status</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="approved">Approved</option>
+                                            <option value="rejected">Rejected</option>
+                                            <option value="revision">Revision</option>
                                         </Form.Select>
                                     </InputGroup>
                                 </div>
@@ -286,7 +326,7 @@ const ReviewSubmission = () => {
                                                     <tr key={submission._id}>
                                                         <td>{submission.title}</td>
                                                         <td>{submission.category}</td>
-                                                        <td>{submission.members.join(', ')}</td>
+                                                        <td>{Array.isArray(submission.members) ? submission.members.join(', ') : 'No members'}</td>
                                                         <td>{new Date(submission.createdAt).toLocaleDateString()}</td>
                                                         <td>
                                                             <Badge bg={getStatusColor(submission.status)}>
@@ -398,7 +438,7 @@ const ReviewSubmission = () => {
                             <div className="col-md-6">
                                 <div className="mb-3">
                                     <h6 className="text-muted">Members</h6>
-                                    <p className="mb-0">{selectedSubmission.members.join(', ')}</p>
+                                    <p className="mb-0">{Array.isArray(selectedSubmission.members) ? selectedSubmission.members.join(', ') : 'No members'}</p>
                                 </div>
                                 <div className="mb-3">
                                     <h6 className="text-muted">Keywords</h6>

@@ -1,119 +1,654 @@
 .submit-thesis-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 640px;
+    margin: 2rem auto;
+    background-color: transparent;
 }
 
 .submit-thesis-form {
     background: white;
-    padding: 30px;
+    padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.submit-thesis-form h2 {
+    color: #202124;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 400;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 1rem;
 }
 
 .submit-thesis-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
+    background-color: transparent;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.submit-thesis-form .form-group:hover {
+    background-color: #f8f9fa;
 }
 
 .submit-thesis-form .form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
     font-weight: 500;
+    color: #202124;
+    font-size: 0.9375rem;
 }
 
 .submit-thesis-form .form-group input,
 .submit-thesis-form .form-group select,
 .submit-thesis-form .form-group textarea {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
+    padding: 0.75rem;
+    border: 1px solid #dadce0;
     border-radius: 4px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 0.9375rem;
+    color: #202124;
+    transition: all 0.2s ease;
+    background-color: white;
 }
 
 .submit-thesis-form .form-group input:focus,
 .submit-thesis-form .form-group select:focus,
 .submit-thesis-form .form-group textarea:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #1a73e8;
+    box-shadow: 0 1px 2px 0 rgba(26,115,232,0.3);
     outline: none;
 }
 
-.submit-thesis-form .member-input {
+.submit-thesis-form .member-input,
+.submit-thesis-form .keyword-input {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
 }
 
 .submit-thesis-form .add-member,
-.submit-thesis-form .remove-member {
-    padding: 8px 16px;
+.submit-thesis-form .add-keyword,
+.submit-thesis-form .remove-member,
+.submit-thesis-form .remove-keyword {
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
 }
 
-.submit-thesis-form .add-member {
-    background-color: #28a745;
-    color: white;
+.submit-thesis-form .add-member,
+.submit-thesis-form .add-keyword {
+    color: #1a73e8;
+    background-color: transparent;
 }
 
-.submit-thesis-form .remove-member {
-    background-color: #dc3545;
-    color: white;
+.submit-thesis-form .add-member:hover,
+.submit-thesis-form .add-keyword:hover {
+    background-color: #f6f9fe;
+}
+
+.submit-thesis-form .remove-member,
+.submit-thesis-form .remove-keyword {
+    color: #d93025;
+    background-color: transparent;
+}
+
+.submit-thesis-form .remove-member:hover,
+.submit-thesis-form .remove-keyword:hover {
+    background-color: #fce8e6;
 }
 
 .submit-thesis-form .submit-button {
-    background-color: #007bff;
+    background-color: #1a73e8;
     color: white;
-    padding: 10px 20px;
+    padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 100%;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    align-self: flex-end;
+    margin-top: 1rem;
+}
+
+.submit-thesis-form .submit-button:hover:not(:disabled) {
+    background-color: #1557b0;
+    box-shadow: 0 1px 2px 0 rgba(26,115,232,0.3);
 }
 
 .submit-thesis-form .submit-button:disabled {
-    background-color: #ccc;
+    background-color: #dadce0;
     cursor: not-allowed;
 }
 
 .submit-thesis-form .error-message {
-    color: #dc3545;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8d7da;
+    color: #d93025;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #fce8e6;
     border-radius: 4px;
+    font-size: 0.875rem;
+    text-align: left;
+    font-weight: 400;
 }
 
 .submit-thesis-form .document-link-container {
     display: flex;
     align-items: center;
-}
-
-.submit-thesis-form .document-link-container input {
-    flex: 1;
-    margin-right: 10px;
+    gap: 1rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #dadce0;
 }
 
 .submit-thesis-form .document-link-container button {
-    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    color: #1a73e8;
+    background-color: transparent;
+    border: 1px solid #1a73e8;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.submit-thesis-form .form-group small {
-    display: block;
-    margin-top: 5px;
-    color: #6c757d;
+.submit-thesis-form .document-link-container button:hover {
+    background-color: #f6f9fe;
 }
 
 @media (max-width: 768px) {
-    .submit-thesis-form {
-        grid-template-columns: 1fr;
+    .submit-thesis-container {
+        padding: 1rem;
+        margin: 0;
     }
+
+    .submit-thesis-form {
+        padding: 1.5rem;
+    }
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1.25rem;
+}
+
+.modal-header .modal-title {
+    font-weight: 500;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.submission-details {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.submission-details p {
+    margin-bottom: 0.5rem;
+}
+
+.submission-details p:last-child {
+    margin-bottom: 0;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+/* Success Modal Specific Styles */
+.text-success {
+    color: #28a745;
+}
+
+.modal-body .text-center {
+    padding: 1rem 0;
+}
+
+.modal-body i.fas {
+    display: block;
+    margin: 0 auto 1.5rem;
+}
+
+.modal-body h4 {
+    color: #28a745;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.modal-body .text-muted {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+/* Button Styles */
+.modal-footer .btn {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.modal-footer .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.modal-footer .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.modal-footer .btn-primary {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #1557b0;
+    border-color: #1557b0;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Enhanced Confirmation Modal Styles */
+.confirmation-intro {
+    padding: 1.5rem 0;
+}
+
+.confirmation-icon {
+    font-size: 3rem;
+    color: #1a73e8;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.confirmation-intro h4 {
+    color: #202124;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.submission-preview {
+    background: #fff;
+    border-radius: 8px;
+}
+
+.preview-section {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.preview-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    color: #1a73e8;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    color: #1a73e8;
+}
+
+.section-content {
+    padding-left: 1rem;
+}
+
+.detail-item {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.detail-item label {
+    color: #5f6368;
+    font-weight: 500;
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.detail-item p {
+    margin: 0;
+    color: #202124;
+    flex-grow: 1;
+}
+
+.category-badge {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.members-list, .keywords-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.member-chip {
+    background-color: #f1f3f4;
+    padding: 0.4rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: #202124;
+    display: inline-flex;
+    align-items: center;
+}
+
+.member-chip i {
+    color: #5f6368;
+    margin-right: 0.4rem;
+}
+
+.keyword-chip {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    padding: 0.4rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.document-link {
+    color: #1a73e8;
+    display: flex;
+    align-items: center;
+}
+
+.document-link i {
+    margin-right: 0.5rem;
+}
+
+.confirmation-footer {
+    margin-top: 2rem;
+}
+
+.alert-info {
+    background-color: #e8f0fe;
+    border-color: #cce5ff;
+    color: #1a73e8;
+}
+
+.alert-info i {
+    color: #1a73e8;
+}
+
+/* Modal Header Enhancement */
+.modal-header.bg-primary {
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%) !important;
+}
+
+.modal-header .modal-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.modal-header .modal-title i {
+    margin-right: 0.75rem;
+    font-size: 1.4rem;
+}
+
+/* Enhanced Button Styles */
+.modal-footer .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.modal-footer .btn i {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    border: none;
+    box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2);
+}
+
+.modal-footer .btn-primary:hover {
+    background: linear-gradient(135deg, #1557b0 0%, #0a367d 100%);
+    box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+    transform: translateY(-1px);
+}
+
+.modal-footer .btn-secondary {
+    background: #f1f3f4;
+    border: 1px solid #dadce0;
+    color: #5f6368;
+    box-shadow: none;
+}
+
+.modal-footer .btn-secondary:hover {
+    background: #e8eaed;
+    color: #202124;
+    border-color: #dadce0;
+}
+
+/* Centered Confirmation Modal Styles */
+.modal-header.text-center .modal-title {
+    width: 100%;
+    text-align: center;
+}
+
+.confirmation-header-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin: 0 auto;
+    color: white;
+}
+
+.confirmation-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.confirmation-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: #e8f0fe;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.confirmation-icon {
+    font-size: 2.5rem;
+    color: #1a73e8;
+}
+
+.confirmation-title {
+    color: #202124;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.submission-details-centered {
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.detail-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.detail-section:hover {
+    transform: translateY(-2px);
+}
+
+.detail-section-title {
+    color: #5f6368;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.detail-section-title i {
+    color: #1a73e8;
+}
+
+.detail-content {
+    margin-top: 0.75rem;
+}
+
+.research-title {
+    font-size: 1.1rem;
+    color: #202124;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.members-list-centered, .keywords-list-centered {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.member-chip, .keyword-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.member-chip {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+.member-chip i {
+    font-size: 0.8rem;
+}
+
+.keyword-chip {
+    background: #f1f3f4;
+    color: #5f6368;
+}
+
+.document-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    font-size: 1rem;
+}
+
+.document-status i {
+    font-size: 1.2rem;
+}
+
+.confirmation-notice {
+    max-width: 400px;
+    margin: 2rem auto 0;
+}
+
+.confirmation-notice .alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.confirmation-notice i {
+    font-size: 1.2rem;
+}
+
+/* Modal Footer Enhancement */
+.modal-footer.justify-content-center {
+    border-top: 1px solid #e8eaed;
+    padding: 1.25rem;
+}
+
+.modal-footer .btn {
+    min-width: 120px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    border: none;
+    box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2);
+}
+
+.modal-footer .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+}
+
+.modal-footer .btn-secondary {
+    background: #f1f3f4;
+    color: #5f6368;
+    border: 1px solid #dadce0;
+}
+
+.modal-footer .btn-secondary:hover {
+    background: #e8eaed;
+    color: #202124;
 } 

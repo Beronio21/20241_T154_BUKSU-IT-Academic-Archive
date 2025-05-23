@@ -41,14 +41,22 @@ const UserManagement = () => {
             const teacherRes = await axios.get('http://localhost:8080/api/teachers', config);
 
             if (Array.isArray(studentRes.data)) {
-                setStudents(studentRes.data);
+                // Sort students by createdAt in descending order (most recent first)
+                const sortedStudents = studentRes.data.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setStudents(sortedStudents);
             } else {
                 console.warn('Unexpected student data format:', studentRes.data);
                 setStudents([]);
             }
 
             if (Array.isArray(teacherRes.data)) {
-                setTeachers(teacherRes.data);
+                // Sort teachers by createdAt in descending order (most recent first)
+                const sortedTeachers = teacherRes.data.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setTeachers(sortedTeachers);
             } else {
                 console.warn('Unexpected teacher data format:', teacherRes.data);
                 setTeachers([]);

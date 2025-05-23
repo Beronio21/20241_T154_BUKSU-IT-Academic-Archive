@@ -29,7 +29,11 @@ const TeacherRecords = () => {
             };
 
             const response = await axios.get('http://localhost:8080/api/teachers', config);
-            setTeachers(response.data);
+            // Sort teachers by createdAt in descending order (most recent first)
+            const sortedTeachers = response.data.sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            setTeachers(sortedTeachers);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching teacher records:', error);

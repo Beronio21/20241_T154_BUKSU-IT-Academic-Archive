@@ -38,7 +38,11 @@ const CapstoneManagement = () => {
             const response = await fetch('http://localhost:8080/api/thesis/submissions');
             const data = await response.json();
             if (data.status === 'success') {
-                setSubmissions(data.data);
+                // Sort submissions by createdAt in descending order (most recent first)
+                const sortedSubmissions = data.data.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setSubmissions(sortedSubmissions);
             }
         } catch (error) {
             console.error('Error fetching submissions:', error);
@@ -195,7 +199,9 @@ const CapstoneManagement = () => {
     // Filter and pagination logic
     const filteredSubmissions = submissions.filter(submission =>
         submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        submission.members.some(member => member.toLowerCase().includes(searchTerm.toLowerCase()))
+        (Array.isArray(submission.members) && submission.members.some(member => 
+            member.toLowerCase().includes(searchTerm.toLowerCase())
+        ))
     );
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -340,7 +346,7 @@ const CapstoneManagement = () => {
                                                     <tr key={submission._id}>
                                                         <td>{submission.title}</td>
                                                         <td>{submission.objective}</td>
-                                                        <td>{submission.members.join(', ')}</td>
+                                                        <td>{Array.isArray(submission.members) ? submission.members.join(', ') : 'No members'}</td>
                                                         <td>{submission.email}</td>
                                                         <td>
                                                             <span className={`badge ${submission.status?.toLowerCase() === 'approved' ? 'bg-success' : 'bg-warning'}`}>

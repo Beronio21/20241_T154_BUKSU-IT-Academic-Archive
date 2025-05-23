@@ -29,7 +29,11 @@ const StudentRecords = () => {
             };
 
             const response = await axios.get('http://localhost:8080/api/students', config);
-            setStudents(response.data);
+            // Sort students by createdAt in descending order (most recent first)
+            const sortedStudents = response.data.sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            setStudents(sortedStudents);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching student records:', error);
