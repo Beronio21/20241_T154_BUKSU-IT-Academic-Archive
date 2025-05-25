@@ -9,8 +9,7 @@ import "./Login.css";
 
 import bukSULogo from '../../Images/logobuksu.jpg'; // BukSU logo
 import VectorImage from '../../Images/Vector.png'; // Import the background image
-
-const googleLogoUrl = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
+import GoogleLogo from '../../Images/GoogleLogo.png'; // Import Google logo
 
 const GoogleLogin = () => {
     // State variables
@@ -199,17 +198,17 @@ const GoogleLogin = () => {
                     </form>
                     <div className="text-center my-3">Or Login with</div>
                     <button
-                        className="btn btn-light border w-100 d-flex align-items-center justify-content-center shadow-sm"
+                        className="btn btn-light border w-100 d-flex align-items-center justify-content-center gap-0 shadow-sm"
                         onClick={googleLogin}
                         disabled={loading}
                         style={{background: "none", borderColor: "#ccc"}}
                     >
-                        <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
                         <img
-                            src={googleLogoUrl}
+                            src={GoogleLogo}
                             alt="Google logo"
-                            style={{ width: "20px", marginLeft: "10px" }}
+                            style={{ width: "37px", height: "19px" }}
                         />
+                        <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Sign in with Google"}</span>
                     </button>
                     <div className="text-center mt-3">
                         Don't have an account? <span className="text-primary" onClick={() => setShowModal(true)}
