@@ -361,7 +361,7 @@ const ReviewSubmission = () => {
 
             {/* Feedback Modal */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
-                <Modal.Header closeButton className="bg-primary text-white">
+                <Modal.Header closeButton={false} className="bg-primary text-white">
                     <Modal.Title>Submit Feedback</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="p-4">
@@ -412,7 +412,7 @@ const ReviewSubmission = () => {
             {/* View Submission Modal */}
             {selectedSubmission && (
                 <Modal show={!!selectedSubmission} onHide={() => setSelectedSubmission(null)} size="lg" centered>
-                    <Modal.Header closeButton className="bg-primary text-white">
+                    <Modal.Header closeButton={false} className="bg-primary text-white">
                         <Modal.Title>Submission Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="p-4">

@@ -695,7 +695,7 @@ const CapstoneManagement = () => {
 
             {/* Edit/Add Modal */}
             <Modal show={showEditModal} onHide={() => setShowEditModal(false)} size="xl" centered>
-                <Modal.Header closeButton className="bg-primary text-white">
+                <Modal.Header closeButton={false} className="bg-primary text-white">
                     <Modal.Title>
                         {isEditing ? (
                             <>
@@ -1255,6 +1255,7 @@ const CapstoneManagement = () => {
                 className="review-modal"
             >
                 <Modal.Header 
+                    closeButton={false}
                     className="bg-gradient-primary text-white border-0" 
                     style={{ 
                         borderRadius: '0',
