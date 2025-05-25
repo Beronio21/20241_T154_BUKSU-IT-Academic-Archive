@@ -48,13 +48,31 @@ const GoogleLogin = () => {
         setErrorMessage("");
         setLoading(true);
 
-        if (!recaptchaToken) {
-            setErrorMessage("Please complete the reCAPTCHA.");
-            setLoading(false);
-            return;
-        }
-
         try {
+            // Try to login first to check if it's an admin
+            const result = await emailLogin(email, password);
+            
+            if (result.status === "success" && result.data.user.role === "admin") {
+                // Skip reCAPTCHA for admin users
+                localStorage.setItem("user-info", JSON.stringify({
+                    id: result.data.user._id,
+                    name: result.data.user.name,
+                    email: result.data.user.email,
+                    image: result.data.user.image,
+                    role: result.data.user.role,
+                    token: result.data.token
+                }));
+                navigate(`/${result.data.user.role}-dashboard`);
+                return;
+            }
+
+            // For non-admin users, verify reCAPTCHA
+            if (!recaptchaToken) {
+                setErrorMessage("Please complete the reCAPTCHA.");
+                setLoading(false);
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/api/verify-recaptcha", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -68,18 +86,18 @@ const GoogleLogin = () => {
                 return;
             }
 
-            const result = await emailLogin(email, password);
+            // If we get here, it means it's a non-admin user and reCAPTCHA passed
+            // We already have the login result from earlier
             if (result.status === "success") {
-                const {user, token} = result.data;
                 localStorage.setItem("user-info", JSON.stringify({
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    image: user.image,
-                    role: user.role,
-                    token
+                    id: result.data.user._id,
+                    name: result.data.user.name,
+                    email: result.data.user.email,
+                    image: result.data.user.image,
+                    role: result.data.user.role,
+                    token: result.data.token
                 }));
-                navigate(`/${user.role}-dashboard`);
+                navigate(`/${result.data.user.role}-dashboard`);
             } else {
                 setErrorMessage(result.message || "Login failed");
             }

@@ -64,7 +64,9 @@ const Dashboard = () => {
                 <div className="stat-card">
                     <h3>Latest Year</h3>
                     <div className="stat-number">
-                        {Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))}
+                        {Object.keys(statistics.yearlyApprovals).length > 0 
+                            ? Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))
+                            : 'No Data'}
                     </div>
                     <div className="stat-label">Most recent submissions</div>
                 </div>

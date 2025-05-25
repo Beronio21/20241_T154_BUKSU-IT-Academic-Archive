@@ -210,30 +210,84 @@ const StudentDashboard = () => {
               <p>Loading approved capstones...</p>
             ) : (
               <div className="card-container p-4" style={{ 
-                display: 'flex',
-                flexWrap: 'wrap',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
                 gap: '20px',
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start'
+                padding: '20px'
               }}>
                 {filteredCapstones.length === 0 ? (
                   <p>No approved capstones available</p>
                 ) : (
                   filteredCapstones.map((capstone) => (
                     <div className="capstone-card" key={capstone._id} style={{
-                      flex: '0 0 calc(33.333% - 20px)',
-                      minWidth: '300px',
-                      maxWidth: '400px'
-                    }}>
-                      <h3>{capstone.title}</h3>
-                      <p><strong>Abstract:</strong> {capstone.abstract}</p>
-                      <p><strong>Objective:</strong> {capstone.objective}</p>
-                      <p><strong>Keywords:</strong> {capstone.keywords.join(', ')}</p>
-                      <p><strong>Date Submitted:</strong> {new Date(capstone.createdAt).toLocaleDateString()}</p>
-                      <p><strong>Category:</strong> {capstone.category}</p>
-                      <a href={capstone.docsLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                        View Document
-                      </a>
+                      aspectRatio: '1',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      padding: '20px',
+                      backgroundColor: '#fff',
+                      borderRadius: '10px',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => handleViewDetails(capstone)}
+                    >
+                      <h3 style={{
+                        fontSize: '1.1rem',
+                        marginBottom: '10px',
+                        display: '-webkit-box',
+                        WebkitLineClamp: '2',
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        lineHeight: '1.3'
+                      }}>{capstone.title}</h3>
+                      
+                      <div style={{ flex: 1, overflow: 'hidden', marginBottom: '10px' }}>
+                        <p style={{
+                          fontSize: '0.9rem',
+                          color: '#666',
+                          display: '-webkit-box',
+                          WebkitLineClamp: '3',
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          margin: '0 0 10px 0'
+                        }}>
+                          <strong>Abstract:</strong> {capstone.abstract}
+                        </p>
+                        
+                        <p style={{
+                          fontSize: '0.9rem',
+                          color: '#666',
+                          display: '-webkit-box',
+                          WebkitLineClamp: '2',
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          margin: '0 0 10px 0'
+                        }}>
+                          <strong>Keywords:</strong> {capstone.keywords.join(', ')}
+                        </p>
+                      </div>
+
+                      <div style={{
+                        marginTop: 'auto',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                        fontSize: '0.8rem',
+                        color: '#888'
+                      }}>
+                        <span>{new Date(capstone.createdAt).toLocaleDateString()}</span>
+                        <span style={{
+                          backgroundColor: '#e8f4ff',
+                          color: '#0066cc',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          fontWeight: '500'
+                        }}>{capstone.category}</span>
+                      </div>
                     </div>
                   ))
                 )}
@@ -295,101 +349,84 @@ const StudentDashboard = () => {
               onHide={() => setShowDetailsModal(false)} 
               size="lg"
               className="thesis-details-modal"
+              backdrop="static"
             >
-              <Modal.Header closeButton>
-                <Modal.Title>Thesis Details</Modal.Title>
+              <Modal.Header className="border-0 pb-0" style={{
+                background: 'linear-gradient(135deg, #0062cc 0%, #0044cc 100%)',
+                color: 'white',
+                padding: '20px 30px'
+              }}>
+                <Modal.Title style={{ width: '100%' }}>
+                  <div className="d-flex flex-column">
+                    <h4 className="mb-2" style={{ fontSize: '1.5rem', fontWeight: '600' }}>Thesis Details</h4>
+                    <p className="mb-0" style={{ fontSize: '0.9rem', opacity: '0.9' }}>
+                      Comprehensive overview of the research paper
+                    </p>
+                  </div>
+                </Modal.Title>
               </Modal.Header>
-              <Modal.Body>
+              <Modal.Body style={{ padding: '30px' }}>
                 {selectedThesis && (
                   <div className="thesis-details">
-                    <div className="detail-section">
-                      <h4>Title</h4>
-                      <p>{selectedThesis.title}</p>
+                    <div className="detail-section mb-4">
+                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Title</h4>
+                      <p className="p-3 bg-light rounded" style={{ fontSize: '1.1rem' }}>{selectedThesis.title}</p>
                     </div>
-                    <div className="detail-section">
-                      <h4>Status</h4>
-                      <span 
-                        className="status-badge"
-                        style={{ backgroundColor: getStatusColor(selectedThesis.status) }}
-                      >
-                        {selectedThesis.status}
-                      </span>
+                    <div className="detail-section mb-4">
+                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Abstract</h4>
+                      <p className="p-3 bg-light rounded" style={{ lineHeight: '1.6' }}>{selectedThesis.abstract}</p>
                     </div>
-                    <div className="detail-section">
-                      <h4>Abstract</h4>
-                      <p className="abstract-text">{selectedThesis.abstract}</p>
-                    </div>
-                    <div className="detail-section">
-                      <h4>Keywords</h4>
-                      <div className="keywords-list">
-                        {selectedThesis.keywords.map((keyword, index) => (
-                          <span key={index} className="keyword-tag">{keyword}</span>
+                    <div className="detail-section mb-4">
+                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Members</h4>
+                      <div className="members-list p-3 bg-light rounded">
+                        {selectedThesis.members.map((member, index) => (
+                          <div key={index} className="member-item mb-2" style={{ fontSize: '1rem' }}>
+                            • {member}
+                          </div>
                         ))}
                       </div>
                     </div>
-                    <div className="detail-section">
-                      <h4>Members</h4>
-                      <ul className="members-list">
-                        {selectedThesis.members.map((member, index) => (
-                          <li key={index}>{member}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="detail-section">
-                      <h4>Submission Information</h4>
-                      <div className="info-grid">
-                        <div className="info-item">
-                          <label>Student Email:</label>
-                          <p>{selectedThesis.email}</p>
+                    <div className="detail-section mb-4">
+                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Submission Information</h4>
+                      <div className="info-grid p-3 bg-light rounded">
+                        <div className="info-item mb-3">
+                          <label className="text-muted mb-1">Student Email:</label>
+                          <p className="mb-0" style={{ fontSize: '1rem' }}>{selectedThesis.email}</p>
+                        </div>
+                        <div className="info-item mb-3">
+                          <label className="text-muted mb-1">Submitted Date:</label>
+                          <p className="mb-0" style={{ fontSize: '1rem' }}>{new Date(selectedThesis.createdAt).toLocaleDateString()}</p>
                         </div>
                         <div className="info-item">
-                          <label>Submitted Date:</label>
-                          <p>{new Date(selectedThesis.createdAt).toLocaleDateString()}</p>
-                        </div>
-                        <div className="info-item">
-                          <label>Document Link:</label>
+                          <label className="text-muted mb-1">Document Link:</label>
                           <a 
                             href={selectedThesis.docsLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="doc-link"
+                            className="btn btn-primary mt-2"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                           >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                              <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                              <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                            </svg>
                             View Document
                           </a>
                         </div>
                       </div>
                     </div>
-                    {selectedThesis.feedback && selectedThesis.feedback.length > 0 && (
-                      <div className="detail-section">
-                        <h4>Feedback History</h4>
-                        <div className="feedback-list">
-                          {selectedThesis.feedback.map((feedback, index) => (
-                            <div key={index} className="feedback-item">
-                              <div className="feedback-header">
-                                <span className="feedback-status" style={{ backgroundColor: getStatusColor(feedback.status) }}>
-                                  {feedback.status}
-                                </span>
-                                <span className="feedback-date">
-                                  {new Date(feedback.dateSubmitted).toLocaleDateString()}
-                                </span>
-                              </div>
-                              <p className="feedback-comment">{feedback.comment}</p>
-                              <div className="feedback-meta">
-                                <span>By: {feedback.teacherName}</span>
-                                <span>{feedback.teacherEmail}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
               </Modal.Body>
-              <Modal.Footer>
+              <Modal.Footer className="border-0" style={{ padding: '20px 30px' }}>
                 <button 
                   onClick={() => setShowDetailsModal(false)} 
-                  className="btn-cancel"
+                  className="btn btn-secondary"
+                  style={{
+                    padding: '10px 24px',
+                    fontSize: '1rem',
+                    fontWeight: '500'
+                  }}
                 >
                   Close
                 </button>
