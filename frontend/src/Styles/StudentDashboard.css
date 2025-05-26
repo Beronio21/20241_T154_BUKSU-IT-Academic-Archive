@@ -1,3 +1,77 @@
+:root {
+  --primary-blue: #1a75ff;
+  --secondary-blue: #4d94ff;
+  --light-blue: #e6f0ff;
+  --white: #ffffff;
+}
+
+.dashboard-container {
+  background-color: var(--white);
+  min-height: 100vh;
+}
+
+.sidebar {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  width: 250px;
+  padding: 20px;
+  height: 100vh;
+  position: fixed;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+  background-color: var(--light-blue);
+}
+
+.dashboard-card {
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-header {
+  background-color: var(--secondary-blue);
+  color: var(--white);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.nav-item {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav-item:hover {
+  background-color: var(--secondary-blue);
+}
+
+.active {
+  background-color: var(--secondary-blue);
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.stats-card {
+  background-color: var(--white);
+  border-left: 4px solid var(--primary-blue);
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .student-dashboard {
     padding: 20px;
 }

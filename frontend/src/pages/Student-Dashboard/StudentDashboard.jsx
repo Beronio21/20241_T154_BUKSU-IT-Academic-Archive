@@ -232,16 +232,34 @@ const StudentDashboard = () => {
                     }}
                     onClick={() => handleViewDetails(capstone)}
                     >
-                      <h3 style={{
-                        fontSize: '1.1rem',
-                        marginBottom: '10px',
-                        display: '-webkit-box',
-                        WebkitLineClamp: '2',
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        lineHeight: '1.3'
-                      }}>{capstone.title}</h3>
+                      <div style={{
+                        minHeight: '80px',
+                        backgroundColor: '#e8f5e9',
+                        borderRadius: '6px',
+                        borderLeft: '4px solid #2e7d32',
+                        padding: '8px 12px',
+                        marginBottom: '15px',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          backgroundColor: '#c8e6c9',
+                          transform: 'translateX(5px)'
+                        }
+                      }}>
+                        <h3 style={{
+                          fontSize: '1.1rem',
+                          margin: '0',
+                          color: '#1a237e',
+                          fontWeight: '600',
+                          display: '-webkit-box',
+                          WebkitLineClamp: '3',
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          lineHeight: '1.4',
+                          wordWrap: 'break-word',
+                          wordBreak: 'break-word'
+                        }}>{capstone.title}</h3>
+                      </div>
                       
                       <div style={{ flex: 1, overflow: 'hidden', marginBottom: '10px' }}>
                         <p style={{
@@ -398,22 +416,9 @@ const StudentDashboard = () => {
                           <p className="mb-0" style={{ fontSize: '1rem' }}>{new Date(selectedThesis.createdAt).toLocaleDateString()}</p>
                         </div>
                         <div className="info-item">
-                          <label className="text-muted mb-1">Document Link:</label>
-                          <a 
-                            href={selectedThesis.docsLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-primary mt-2"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-earmark-text" viewBox="0 0 16 16">
-                              <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
-                              <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
-                            </svg>
-                            View Document
-                          </a>
+                        
                         </div>
-                      </div>
+                      </div>  
                     </div>
                   </div>
                 )}
