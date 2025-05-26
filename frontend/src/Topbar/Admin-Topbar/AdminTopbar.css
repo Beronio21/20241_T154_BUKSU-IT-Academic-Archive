@@ -4,8 +4,6 @@
     right: 0;
     left: 0;
     height: 60px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1030;
 }
 
@@ -222,8 +220,6 @@
 }
 
 .navbar {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
     height: 60px;
     z-index: 1000;
