@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Button, Table, Form, InputGroup, Pagination } from 'react-bootstrap';
-import { FaSearch, FaEdit, FaTrash, FaEye, FaPlus } from 'react-icons/fa';
+import { Modal, Button, Table, Form, InputGroup, Pagination, Badge, Alert } from 'react-bootstrap';
+import { FaSearch, FaEye, FaEdit, FaTrash, FaUserPlus, FaExclamationTriangle } from 'react-icons/fa';
 
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
@@ -13,13 +13,15 @@ const UserManagement = () => {
     const [isViewing, setIsViewing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
-    
-    // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
-    const [activeTab, setActiveTab] = useState('students'); // 'students' or 'teachers'
+    const [activeTab, setActiveTab] = useState('students');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
+
+    // Calculate pagination indexes first
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem('user-info'));
@@ -41,24 +43,20 @@ const UserManagement = () => {
             const teacherRes = await axios.get('http://localhost:8080/api/teachers', config);
 
             if (Array.isArray(studentRes.data)) {
-                // Sort students by createdAt in descending order (most recent first)
                 const sortedStudents = studentRes.data.sort((a, b) => 
                     new Date(b.createdAt) - new Date(a.createdAt)
                 );
                 setStudents(sortedStudents);
             } else {
-                console.warn('Unexpected student data format:', studentRes.data);
                 setStudents([]);
             }
 
             if (Array.isArray(teacherRes.data)) {
-                // Sort teachers by createdAt in descending order (most recent first)
                 const sortedTeachers = teacherRes.data.sort((a, b) => 
                     new Date(b.createdAt) - new Date(a.createdAt)
                 );
                 setTeachers(sortedTeachers);
             } else {
-                console.warn('Unexpected teacher data format:', teacherRes.data);
                 setTeachers([]);
             }
 
@@ -71,28 +69,22 @@ const UserManagement = () => {
         }
     };
 
-    // Pagination logic
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const filteredUsers = (users, type) => {
+        return users.filter(user => 
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (user[`${type}_id`] && user[`${type}_id`].toString().toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+    };
 
-    const filteredStudents = students.filter(student => 
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (student.student_id && student.student_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const currentItems = activeTab === 'students' 
+        ? filteredUsers(students, 'student').slice(indexOfFirstItem, indexOfLastItem)
+        : filteredUsers(teachers, 'teacher').slice(indexOfFirstItem, indexOfLastItem);
 
-    const filteredTeachers = teachers.filter(teacher => 
-        teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (teacher.teacher_id && teacher.teacher_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const totalItems = activeTab === 'students' 
+        ? filteredUsers(students, 'student').length 
+        : filteredUsers(teachers, 'teacher').length;
 
-    const currentStudents = filteredStudents.slice(indexOfFirstItem, indexOfLastItem);
-    const currentTeachers = filteredTeachers.slice(indexOfFirstItem, indexOfLastItem);
-
-    const totalPages = Math.ceil(
-        activeTab === 'students' 
-            ? filteredStudents.length / itemsPerPage 
-            : filteredTeachers.length / itemsPerPage
-    );
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -100,26 +92,7 @@ const UserManagement = () => {
 
     const renderPagination = () => {
         let items = [];
-        const maxVisiblePages = 5;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-        if (endPage - startPage + 1 < maxVisiblePages) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
-
-        if (startPage > 1) {
-            items.push(
-                <Pagination.Item key={1} onClick={() => handlePageChange(1)}>
-                    1
-                </Pagination.Item>
-            );
-            if (startPage > 2) {
-                items.push(<Pagination.Ellipsis key="start-ellipsis" />);
-            }
-        }
-
-        for (let number = startPage; number <= endPage; number++) {
+        for (let number = 1; number <= totalPages; number++) {
             items.push(
                 <Pagination.Item
                     key={number}
@@ -131,23 +104,10 @@ const UserManagement = () => {
             );
         }
 
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                items.push(<Pagination.Ellipsis key="end-ellipsis" />);
-            }
-            items.push(
-                <Pagination.Item key={totalPages} onClick={() => handlePageChange(totalPages)}>
-                    {totalPages}
-                </Pagination.Item>
-            );
-        }
-
         return (
             <div className="d-flex justify-content-between align-items-center mt-3">
-                <div className="d-flex align-items-center">
-                    <span className="me-2">Page {currentPage} of {totalPages}</span>
-                    <span className="me-2">|</span>
-                    <span>Total Items: {activeTab === 'students' ? filteredStudents.length : filteredTeachers.length}</span>
+                <div>
+                    <span>Total Items: {totalItems}</span>
                 </div>
                 <Pagination className="mb-0">
                     <Pagination.Prev
@@ -164,27 +124,61 @@ const UserManagement = () => {
         );
     };
 
+    const renderTable = (users, type) => (
+        <div className="table-responsive">
+            <Table striped bordered hover className="mt-3">
+                <thead>
+                    <tr>
+                        <th>{type === 'student' ? 'Student ID' : 'Teacher ID'}</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>{type === 'student' ? 'Course' : 'Department'}</th>
+                        {type === 'student' && <th>Year</th>}
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map(user => (
+                        <tr key={user._id}>
+                            <td>{user[`${type}_id`] || 'Not set'}</td>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
+                            <td>{user[type === 'student' ? 'course' : 'department'] || 'Not set'}</td>
+                            {type === 'student' && <td>{user.year || 'Not set'}</td>}
+                            <td>
+                                <span className={`badge ${user.isProfileComplete ? 'bg-success' : 'bg-danger'}`}>
+                                    {user.isProfileComplete ? 'Complete' : 'Incomplete'}
+                                </span>
+                            </td>
+                            <td>
+                                <div className="d-flex gap-2">
+                                    <Button variant="info" size="sm" onClick={() => handleView(user)}>
+                                        View
+                                    </Button>
+                                    <Button variant="warning" size="sm" onClick={() => handleEdit(user, type)}>
+                                        Edit
+                                    </Button>
+                                    <Button variant="danger" size="sm" onClick={() => handleDelete(user._id, type)}>
+                                        Delete
+                                    </Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </div>
+    );
+
     const handleView = (user) => {
         setSelectedUser(user);
         setIsViewing(true);
     };
 
     const handleEdit = async (user, type) => {
-        try {
-            const userInfo = JSON.parse(localStorage.getItem('user-info'));
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${userInfo?.token}`,
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            setEditingUser({ ...user, type });
-            setIsEditing(true);
-        } catch (error) {
-            console.error('Error starting edit:', error);
-            alert('Failed to start editing. Please try again.');
-        }
+        setEditingUser({ ...user, type });
+        setIsEditing(true);
     };
 
     const handleUpdate = async (userId, type, updatedData) => {
@@ -202,8 +196,6 @@ const UserManagement = () => {
                 : `http://localhost:8080/api/teachers/${userId}`;
 
             await axios.put(endpoint, updatedData, config);
-            await axios.post(`http://localhost:8080/api/users/${userId}/unlock`, {}, config);
-
             fetchData();
             setIsEditing(false);
             setEditingUser(null);
@@ -246,73 +238,7 @@ const UserManagement = () => {
         }
     };
 
-    const renderTable = (users, type) => (
-        <div className="table-responsive" style={{ 
-            maxHeight: 'calc(100vh - 250px)', 
-            minHeight: 'calc(100vh - 250px)',
-            minWidth: '1100px',
-            overflow: 'auto'
-        }}>
-            <Table striped bordered hover className="mt-3 mb-0">
-                <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
-                    <tr>
-                        <th style={{ width: '100px' }}>{type === 'student' ? 'Student ID' : 'Teacher ID'}</th>
-                        <th style={{ width: '200px' }}>Name</th>
-                        <th style={{ width: '250px' }}>Email</th>
-                        <th style={{ width: '180px' }}>{type === 'student' ? 'Course' : 'Department'}</th>
-                        {type === 'student' && <th style={{ width: '80px' }}>Year</th>}
-                        <th style={{ width: '90px' }}>Status</th>
-                        <th style={{ width: '120px' }}>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user._id}>
-                            <td>{user[`${type}_id`] || 'Not set'}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user[type === 'student' ? 'course' : 'department'] || 'Not set'}</td>
-                            {type === 'student' && <td>{user.year || 'Not set'}</td>}
-                            <td>
-                                <span className={`badge ${user.isProfileComplete ? 'bg-success' : 'bg-danger'}`}>
-                                    {user.isProfileComplete ? 'Complete' : 'Incomplete'}
-                                </span>
-                            </td>
-                            <td>
-                                <div className="d-flex justify-content-start">
-                                    <Button
-                                        variant="info"
-                                        size="sm"
-                                        className="me-2"
-                                    onClick={() => handleView(user)}
-                                    >
-                                        <FaEye />
-                                    </Button>
-                                    <Button
-                                        variant="warning"
-                                        size="sm"
-                                        className="me-2"
-                                    onClick={() => handleEdit(user, type)}
-                                    >
-                                        <FaEdit />
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        size="sm"
-                                    onClick={() => handleDelete(user._id, type)}
-                                >
-                                        <FaTrash />
-                                    </Button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
-        </div>
-    );
-
-        return (
+    return (
         <div className="container-fluid" style={{ 
             minWidth: '1200px',
             minHeight: '100vh',
@@ -325,15 +251,37 @@ const UserManagement = () => {
                         <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
                             <h3 className="mb-0">User Management</h3>
                             <div className="d-flex align-items-center">
+                                <div className="btn-group me-3">
+                                    <button
+                                        className={`btn ${activeTab === 'students' ? 'btn-light' : 'btn-outline-light'}`}
+                                        onClick={() => {
+                                            setActiveTab('students');
+                                            setCurrentPage(1);
+                                        }}
+                                        style={{ minWidth: '100px' }}
+                                    >
+                                        Students
+                                    </button>
+                                    <button
+                                        className={`btn ${activeTab === 'teachers' ? 'btn-light' : 'btn-outline-light'}`}
+                                        onClick={() => {
+                                            setActiveTab('teachers');
+                                            setCurrentPage(1);
+                                        }}
+                                        style={{ minWidth: '100px' }}
+                                    >
+                                        Teachers
+                                    </button>
+                                </div>
                                 <InputGroup style={{ width: '300px' }}>
                                     <InputGroup.Text>
                                         <FaSearch />
                                     </InputGroup.Text>
                                     <Form.Control
-                        type="text"
-                        placeholder="Search by name or ID..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        type="text"
+                                        placeholder="Search by name or ID..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </InputGroup>
                             </div>
@@ -343,78 +291,200 @@ const UserManagement = () => {
                             display: 'flex',
                             flexDirection: 'column'
                         }}>
-                            <ul className="nav nav-tabs mb-3">
-                                <li className="nav-item">
-                                    <button
-                                        className={`nav-link ${activeTab === 'students' ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setActiveTab('students');
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        Students
-                                    </button>
-                                </li>
-                                <li className="nav-item">
-                                    <button
-                                        className={`nav-link ${activeTab === 'teachers' ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setActiveTab('teachers');
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        Teachers
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <div style={{ flex: 1, overflow: 'hidden' }}>
-                                {activeTab === 'students' ? renderTable(currentStudents, 'student') : renderTable(currentTeachers, 'teacher')}
-                            </div>
-                            
-                            <div className="mt-2" style={{ minHeight: '40px' }}>
-                                {renderPagination()}
-                            </div>
+                            {error ? (
+                                <div className="alert alert-danger m-3">{error}</div>
+                            ) : (
+                                <div style={{ flex: 1, overflow: 'hidden' }}>
+                                    <div className="table-responsive" style={{ 
+                                        maxHeight: 'calc(100vh - 250px)', 
+                                        minHeight: 'calc(100vh - 250px)',
+                                        overflow: 'auto'
+                                    }}>
+                                        <Table hover className="mb-0">
+                                            <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
+                                                <tr>
+                                                    <th style={{ width: '15%', minWidth: '120px' }}>
+                                                        {activeTab === 'students' ? 'Student ID' : 'Teacher ID'}
+                                                    </th>
+                                                    <th style={{ width: '20%', minWidth: '180px' }}>Name</th>
+                                                    <th style={{ width: '25%', minWidth: '200px' }}>Email</th>
+                                                    <th style={{ width: '15%', minWidth: '150px' }}>
+                                                        {activeTab === 'students' ? 'Course' : 'Department'}
+                                                    </th>
+                                                    {activeTab === 'students' && (
+                                                        <th style={{ width: '10%', minWidth: '80px' }}>Year</th>
+                                                    )}
+                                                    <th style={{ width: '10%', minWidth: '100px' }}>Status</th>
+                                                    <th style={{ width: '15%', minWidth: '150px' }}>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {currentItems.map(user => (
+                                                    <tr key={user._id}>
+                                                        <td>{user[`${activeTab.slice(0, -1)}_id`] || 'Not set'}</td>
+                                                        <td>
+                                                            <div className="text-truncate" style={{ maxWidth: '180px' }}>
+                                                                {user.name}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div className="text-truncate" style={{ maxWidth: '200px' }}>
+                                                                {user.email}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div className="text-truncate" style={{ maxWidth: '150px' }}>
+                                                                {user[activeTab === 'students' ? 'course' : 'department'] || 'Not set'}
+                                                            </div>
+                                                        </td>
+                                                        {activeTab === 'students' && (
+                                                            <td>{user.year || 'Not set'}</td>
+                                                        )}
+                                                        <td>
+                                                            <Badge 
+                                                                bg={user.isProfileComplete ? 'success' : 'warning'}
+                                                                className="px-2 py-1"
+                                                            >
+                                                                {user.isProfileComplete ? 'Complete' : 'Incomplete'}
+                                                            </Badge>
+                                                        </td>
+                                                        <td>
+                                                            <div className="d-flex gap-2">
+                                                                <Button
+                                                                    variant="outline-primary"
+                                                                    size="sm"
+                                                                    className="d-inline-flex align-items-center justify-content-center"
+                                                                    onClick={() => handleView(user)}
+                                                                    style={{
+                                                                        width: '32px',
+                                                                        height: '32px',
+                                                                        padding: 0,
+                                                                        borderRadius: '4px'
+                                                                    }}
+                                                                    title="View Details"
+                                                                >
+                                                                    <FaEye size={14} />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="outline-warning"
+                                                                    size="sm"
+                                                                    className="d-inline-flex align-items-center justify-content-center"
+                                                                    onClick={() => handleEdit(user, activeTab.slice(0, -1))}
+                                                                    style={{
+                                                                        width: '32px',
+                                                                        height: '32px',
+                                                                        padding: 0,
+                                                                        borderRadius: '4px'
+                                                                    }}
+                                                                    title="Edit User"
+                                                                >
+                                                                    <FaEdit size={14} />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="outline-danger"
+                                                                    size="sm"
+                                                                    className="d-inline-flex align-items-center justify-content-center"
+                                                                    onClick={() => handleDelete(user._id, activeTab.slice(0, -1))}
+                                                                    style={{
+                                                                        width: '32px',
+                                                                        height: '32px',
+                                                                        padding: 0,
+                                                                        borderRadius: '4px'
+                                                                    }}
+                                                                    title="Delete User"
+                                                                >
+                                                                    <FaTrash size={14} />
+                                                                </Button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
+                                        {currentItems.length === 0 && (
+                                            <div className="text-center py-5">
+                                                <p className="text-muted mb-0">No users found</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="mt-2" style={{ minHeight: '40px' }}>
+                                        {renderPagination()}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* Delete Modal */}
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+                <Modal.Header closeButton={false} className="bg-danger text-white">
+                    <Modal.Title>
+                        <FaTrash className="me-2" />
+                        Confirm Delete User
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="delete-confirmation-content">
+                        <Alert variant="warning" className="mb-4">
+                            <FaExclamationTriangle className="me-2" />
+                            Are you sure you want to delete this user? This action cannot be undone.
+                        </Alert>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             {/* View Modal */}
-            <Modal show={isViewing} onHide={() => setIsViewing(false)} size="lg" centered>
-                <Modal.Header closeButton className="bg-primary text-white">
-                    <Modal.Title>User Details</Modal.Title>
+            <Modal show={isViewing} onHide={() => setIsViewing(false)} centered size="lg">
+                <Modal.Header closeButton={false} className="bg-primary text-white py-3">
+                    <Modal.Title className="h5 mb-0">
+                        <FaUserPlus className="me-2" />
+                        User Details
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="p-4">
                     {selectedUser && (
-                        <div className="row">
+                        <div className="row g-4">
                             <div className="col-md-6">
                                 <div className="mb-3">
-                                    <h6 className="text-muted">ID</h6>
-                                    <p className="mb-0">{selectedUser[`${selectedUser.type}_id`]}</p>
+                                    <label className="text-muted small mb-1">ID</label>
+                                    <p className="mb-0 fw-bold">{selectedUser[`${selectedUser.type}_id`]}</p>
                                 </div>
                                 <div className="mb-3">
-                                    <h6 className="text-muted">Name</h6>
-                                    <p className="mb-0">{selectedUser.name}</p>
+                                    <label className="text-muted small mb-1">Name</label>
+                                    <p className="mb-0 fw-bold">{selectedUser.name}</p>
                                 </div>
                                 <div className="mb-3">
-                                    <h6 className="text-muted">Email</h6>
-                                    <p className="mb-0">{selectedUser.email}</p>
+                                    <label className="text-muted small mb-1">Email</label>
+                                    <p className="mb-0 fw-bold">{selectedUser.email}</p>
                                 </div>
                             </div>
                             <div className="col-md-6">
                                 <div className="mb-3">
-                                    <h6 className="text-muted">Type</h6>
-                                    <p className="mb-0">{selectedUser.type}</p>
+                                    <label className="text-muted small mb-1">Role</label>
+                                    <p className="mb-0 text-capitalize fw-bold">{selectedUser.type}</p>
                                 </div>
                                 <div className="mb-3">
-                                    <h6 className="text-muted">{selectedUser.type === 'student' ? 'Course' : 'Department'}</h6>
-                                    <p className="mb-0">{selectedUser[selectedUser.type === 'student' ? 'course' : 'department']}</p>
+                                    <label className="text-muted small mb-1">
+                                        {selectedUser.type === 'student' ? 'Course' : 'Department'}
+                                    </label>
+                                    <p className="mb-0 fw-bold">
+                                        {selectedUser[selectedUser.type === 'student' ? 'course' : 'department']}
+                                    </p>
                                 </div>
                                 {selectedUser.type === 'student' && (
                                     <div className="mb-3">
-                                        <h6 className="text-muted">Year</h6>
-                                        <p className="mb-0">{selectedUser.year}</p>
+                                        <label className="text-muted small mb-1">Year</label>
+                                        <p className="mb-0 fw-bold">{selectedUser.year}</p>
                                     </div>
                                 )}
                             </div>
@@ -427,77 +497,66 @@ const UserManagement = () => {
             </Modal>
 
             {/* Edit Modal */}
-            <Modal show={isEditing} onHide={() => setIsEditing(false)} size="lg" centered>
-                <Modal.Header closeButton className="bg-primary text-white">
-                    <Modal.Title>Edit {editingUser?.type === 'student' ? 'Student' : 'Teacher'}</Modal.Title>
-                        </Modal.Header>
+            <Modal show={isEditing} onHide={() => setIsEditing(false)} centered size="lg">
+                <Modal.Header closeButton={false} className="bg-primary text-white py-3">
+                    <Modal.Title className="h5 mb-0">
+                        <FaEdit className="me-2" />
+                        Edit {editingUser?.type === 'student' ? 'Student' : 'Teacher'}
+                    </Modal.Title>
+                </Modal.Header>
                 <Modal.Body className="p-4">
                     {editingUser && (
                         <Form onSubmit={(e) => {
-                                e.preventDefault();
-                                handleUpdate(editingUser._id, editingUser.type, editingUser);
-                            }}>
-                            <div className="row">
+                            e.preventDefault();
+                            handleUpdate(editingUser._id, editingUser.type, editingUser);
+                        }}>
+                            <div className="row g-3">
                                 <div className="col-md-6">
-                                    <Form.Group className="mb-4">
-                                        <Form.Label className="fw-bold">Name</Form.Label>
+                                    <Form.Group>
+                                        <Form.Label className="small">Name</Form.Label>
                                         <Form.Control
-                                        type="text"
-                                        value={editingUser.name || ''}
-                                        onChange={(e) => setEditingUser({
-                                            ...editingUser,
-                                            name: e.target.value
-                                        })}
-                                            className="py-2"
+                                            type="text"
+                                            value={editingUser.name || ''}
+                                            onChange={(e) => setEditingUser({
+                                                ...editingUser,
+                                                name: e.target.value
+                                            })}
                                         />
                                     </Form.Group>
-
-                                    <Form.Group className="mb-4">
-                                        <Form.Label className="fw-bold">Email</Form.Label>
-                                        <Form.Control
-                                        type="email"
-                                        value={editingUser.email || ''}
-                                        onChange={(e) => setEditingUser({
-                                            ...editingUser,
-                                            email: e.target.value
-                                        })}
-                                            className="py-2"
-                                    />
-                                    </Form.Group>
-
-                                {editingUser.type === 'student' ? (
-                                        <Form.Group className="mb-4">
-                                            <Form.Label className="fw-bold">Student ID</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                value={editingUser.student_id || ''}
-                                                onChange={(e) => setEditingUser({
-                                                    ...editingUser,
-                                                    student_id: e.target.value
-                                                })}
-                                                className="py-2"
-                                            />
-                                        </Form.Group>
-                                    ) : (
-                                        <Form.Group className="mb-4">
-                                            <Form.Label className="fw-bold">Teacher ID</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                value={editingUser.teacher_id || ''}
-                                                onChange={(e) => setEditingUser({
-                                                    ...editingUser,
-                                                    teacher_id: e.target.value
-                                                })}
-                                                className="py-2"
-                                            />
-                                        </Form.Group>
-                                    )}
-                                        </div>
+                                </div>
                                 <div className="col-md-6">
-                                    {editingUser.type === 'student' ? (
-                                        <>
-                                            <Form.Group className="mb-4">
-                                                <Form.Label className="fw-bold">Course</Form.Label>
+                                    <Form.Group>
+                                        <Form.Label className="small">Email</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            value={editingUser.email || ''}
+                                            onChange={(e) => setEditingUser({
+                                                ...editingUser,
+                                                email: e.target.value
+                                            })}
+                                        />
+                                    </Form.Group>
+                                </div>
+                                <div className="col-md-6">
+                                    <Form.Group>
+                                        <Form.Label className="small">
+                                            {editingUser.type === 'student' ? 'Student ID' : 'Teacher ID'}
+                                        </Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            value={editingUser[`${editingUser.type}_id`] || ''}
+                                            onChange={(e) => setEditingUser({
+                                                ...editingUser,
+                                                [`${editingUser.type}_id`]: e.target.value
+                                            })}
+                                        />
+                                    </Form.Group>
+                                </div>
+                                {editingUser.type === 'student' ? (
+                                    <>
+                                        <div className="col-md-6">
+                                            <Form.Group>
+                                                <Form.Label className="small">Course</Form.Label>
                                                 <Form.Control
                                                     type="text"
                                                     value={editingUser.course || ''}
@@ -505,11 +564,12 @@ const UserManagement = () => {
                                                         ...editingUser,
                                                         course: e.target.value
                                                     })}
-                                                    className="py-2"
                                                 />
                                             </Form.Group>
-                                            <Form.Group className="mb-4">
-                                                <Form.Label className="fw-bold">Year</Form.Label>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <Form.Group>
+                                                <Form.Label className="small">Year</Form.Label>
                                                 <Form.Control
                                                     type="number"
                                                     value={editingUser.year || ''}
@@ -517,13 +577,14 @@ const UserManagement = () => {
                                                         ...editingUser,
                                                         year: e.target.value
                                                     })}
-                                                    className="py-2"
                                                 />
                                             </Form.Group>
-                                        </>
-                                    ) : (
-                                        <Form.Group className="mb-4">
-                                            <Form.Label className="fw-bold">Department</Form.Label>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="col-md-6">
+                                        <Form.Group>
+                                            <Form.Label className="small">Department</Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 value={editingUser.department || ''}
@@ -531,75 +592,35 @@ const UserManagement = () => {
                                                     ...editingUser,
                                                     department: e.target.value
                                                 })}
-                                                className="py-2"
                                             />
                                         </Form.Group>
-                                    )}
-
-                                    <Form.Group className="mb-4">
-                                        <Form.Label className="fw-bold">New Password (leave blank to keep current)</Form.Label>
+                                    </div>
+                                )}
+                                <div className="col-12">
+                                    <Form.Group>
+                                        <Form.Label className="small">New Password (leave blank to keep current)</Form.Label>
                                         <Form.Control
-                                        type="password"
-                                        onChange={(e) => setEditingUser({
-                                            ...editingUser,
-                                            password: e.target.value
-                                        })}
-                                            className="py-2"
-                                    />
+                                            type="password"
+                                            onChange={(e) => setEditingUser({
+                                                ...editingUser,
+                                                password: e.target.value
+                                            })}
+                                        />
                                     </Form.Group>
                                 </div>
-                                </div>
+                            </div>
 
-                            <div className="d-flex justify-content-end mt-4">
-                                <Button variant="secondary" className="me-2 px-4" onClick={() => setIsEditing(false)}>
+                            <div className="d-flex justify-content-end gap-2 mt-4">
+                                <Button variant="secondary" onClick={() => setIsEditing(false)}>
                                     Cancel
                                 </Button>
-                                <Button variant="primary" type="submit" className="px-4">
+                                <Button variant="primary" type="submit">
                                     Save Changes
                                 </Button>
                             </div>
                         </Form>
                     )}
-                        </Modal.Body>
-                    </Modal>
-
-            {/* Delete Confirmation Modal */}
-            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-                <Modal.Header className="bg-danger text-white">
-                    <Modal.Title>Confirm Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>Are you sure you want to delete this user?</p>
-                    {userToDelete && (
-                        <>
-                            <p className="mb-0"><strong>Name:</strong> {userToDelete.name}</p>
-                            <p className="mb-0"><strong>Email:</strong> {userToDelete.email}</p>
-                            <p className="mb-0"><strong>Role:</strong> {userToDelete.type === 'student' ? 'Student' : 'Teacher'}</p>
-                            {userToDelete.type === 'student' && (
-                                <p className="mb-0"><strong>Student ID:</strong> {userToDelete.student_id}</p>
-                            )}
-                            {userToDelete.type === 'teacher' && (
-                                <p className="mb-0"><strong>Teacher ID:</strong> {userToDelete.teacher_id}</p>
-                            )}
-                            <p className="mt-2 text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
-                        </>
-                    )}
                 </Modal.Body>
-                <Modal.Footer className="d-flex justify-content-between px-4">
-                    <div className="d-flex justify-content-start">
-                        <Button variant="secondary" onClick={() => {
-                            setShowDeleteModal(false);
-                            setUserToDelete(null);
-                        }}>
-                            Cancel
-                        </Button>
-                </div>
-                    <div className="d-flex justify-content-end">
-                        <Button variant="danger" onClick={confirmDelete}>
-                            Delete
-                        </Button>
-            </div>
-                </Modal.Footer>
             </Modal>
         </div>
     );

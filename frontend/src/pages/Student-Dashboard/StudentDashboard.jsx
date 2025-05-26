@@ -166,150 +166,226 @@ const StudentDashboard = () => {
       default:
         return (
           <div className="student-dashboard pt-0">
-            {/* Search and Filter Section */}
-                <div className="search-filter">
-                  {/* Search Input (Full Width on Top) */}
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="form-control mb-2"
-                    style={{ width: "100%", minWidth: "250px" }}
-                  />
-
-                  {/* Year and Category (Bottom, Side by Side) */}
-                  <div className="d-flex" style={{ gap: "10px" }}>
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="form-control"
-                      style={{ flex: "1 1 0", minWidth: "150px" }}
-                    />
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="form-control"
-                      style={{ flex: "1 1 0", minWidth: "150px" }}
-                    >
-                      <option value="">Category</option>
-                      {categories.length > 0 ? (
-                        categories.map((category, index) => (
-                          <option key={index} value={category}>{category}</option>
-                        ))
-                      ) : (
-                        <option disabled>No Categories</option>
-                      )}
-                    </select>
+            {loading ? (
+              <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Dashboard Header */}
+                <div className="dashboard-header mb-4" style={{
+                  background: 'linear-gradient(135deg, #f5f7ff 0%, #ffffff 100%)',
+                  borderRadius: '15px',
+                  padding: '25px',
+                  boxShadow: '0 2px 15px rgba(0, 0, 0, 0.05)'
+                }}>
+                  <h2 style={{ 
+                    fontSize: '1.75rem', 
+                    color: '#2c3e50',
+                    marginBottom: '15px',
+                    fontWeight: '600'
+                  }}>Research Archive</h2>
+                  <p style={{ 
+                    color: '#666', 
+                    fontSize: '1.1rem',
+                    marginBottom: '20px' 
+                  }}>Explore approved research papers and capstone projects</p>
+                  
+                  {/* Search and Filter Section with improved styling */}
+                  <div className="search-filter" style={{
+                    background: '#ffffff',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                  }}>
+                    <div className="row g-3">
+                      <div className="col-12">
+                        <div className="input-group">
+                          <span className="input-group-text" style={{ background: '#f8f9fa' }}>
+                            <i className="fas fa-search"></i>
+                          </span>
+                          <input
+                            type="text"
+                            placeholder="Search for research papers..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="form-control"
+                            style={{ 
+                              padding: '12px',
+                              fontSize: '1rem',
+                              border: '1px solid #dee2e6'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <input
+                          type="date"
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          className="form-control"
+                          style={{ padding: '12px' }}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <select
+                          value={selectedCategory}
+                          onChange={(e) => setSelectedCategory(e.target.value)}
+                          className="form-control"
+                          style={{ padding: '12px' }}
+                        >
+                          <option value="">All Categories</option>
+                          {categories.map((category, index) => (
+                            <option key={index} value={category}>{category}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-
-            {loading ? (
-              <p>Loading approved capstones...</p>
-            ) : (
-              <div className="card-container p-4" style={{ 
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: '20px',
-                padding: '20px'
-              }}>
-                {filteredCapstones.length === 0 ? (
-                  <p>No approved capstones available</p>
-                ) : (
-                  filteredCapstones.map((capstone) => (
-                    <div className="capstone-card" key={capstone._id} style={{
-                      aspectRatio: '1',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      padding: '20px',
-                      backgroundColor: '#fff',
-                      borderRadius: '10px',
-                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => handleViewDetails(capstone)}
-                    >
-                      <div style={{
-                        minHeight: '80px',
-                        backgroundColor: '#e8f5e9',
-                        borderRadius: '6px',
-                        borderLeft: '4px solid #2e7d32',
-                        padding: '8px 12px',
-                        marginBottom: '15px',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#c8e6c9',
-                          transform: 'translateX(5px)'
-                        }
-                      }}>
-                        <h3 style={{
-                          fontSize: '1.1rem',
-                          margin: '0',
-                          color: '#1a237e',
-                          fontWeight: '600',
-                          display: '-webkit-box',
-                          WebkitLineClamp: '3',
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          lineHeight: '1.4',
-                          wordWrap: 'break-word',
-                          wordBreak: 'break-word'
-                        }}>{capstone.title}</h3>
-                      </div>
-                      
-                      <div style={{ flex: 1, overflow: 'hidden', marginBottom: '10px' }}>
-                        <p style={{
-                          fontSize: '0.9rem',
-                          color: '#666',
-                          display: '-webkit-box',
-                          WebkitLineClamp: '3',
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          margin: '0 0 10px 0'
-                        }}>
-                          <strong>Abstract:</strong> {capstone.abstract}
-                        </p>
-                        
-                        <p style={{
-                          fontSize: '0.9rem',
-                          color: '#666',
-                          display: '-webkit-box',
-                          WebkitLineClamp: '2',
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          margin: '0 0 10px 0'
-                        }}>
-                          <strong>Keywords:</strong> {capstone.keywords.join(', ')}
-                        </p>
-                      </div>
-
-                      <div style={{
-                        marginTop: 'auto',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-end',
-                        fontSize: '0.8rem',
-                        color: '#888'
-                      }}>
-                        <span>{new Date(capstone.createdAt).toLocaleDateString()}</span>
-                        <span style={{
-                          backgroundColor: '#e8f4ff',
-                          color: '#0066cc',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          fontWeight: '500'
-                        }}>{capstone.category}</span>
-                      </div>
+                {/* Cards Grid */}
+                <div className="card-container" style={{ 
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                  gap: '25px',
+                  padding: '10px'
+                }}>
+                  {filteredCapstones.length === 0 ? (
+                    <div className="no-results" style={{
+                      textAlign: 'center',
+                      padding: '40px',
+                      gridColumn: '1 / -1',
+                      background: '#f8f9fa',
+                      borderRadius: '12px'
+                    }}>
+                      <i className="fas fa-search" style={{ fontSize: '2rem', color: '#6c757d', marginBottom: '15px' }}></i>
+                      <p style={{ fontSize: '1.1rem', color: '#6c757d', margin: '0' }}>No research papers found</p>
                     </div>
-                  ))
-                )}
-              </div>
+                  ) : (
+                    filteredCapstones.map((capstone) => (
+                      <div 
+                        className="capstone-card" 
+                        key={capstone._id} 
+                        onClick={() => handleViewDetails(capstone)}
+                        style={{
+                          background: '#ffffff',
+                          borderRadius: '12px',
+                          boxShadow: '0 3px 10px rgba(0, 0, 0, 0.08)',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          cursor: 'pointer',
+                          overflow: 'hidden',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          '&:hover': {
+                            transform: 'translateY(-5px)',
+                            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.12)'
+                          }
+                        }}
+                      >
+                        <div style={{ padding: '20px' }}>
+                          {/* Title Container */}
+                          <div style={{
+                            minHeight: '80px',
+                            backgroundColor: '#e8f5e9',
+                            borderRadius: '8px',
+                            borderLeft: '4px solid #2e7d32',
+                            padding: '12px 15px',
+                            marginBottom: '15px',
+                            transition: 'all 0.3s ease',
+                          }}>
+                            <h3 style={{
+                              fontSize: '1.1rem',
+                              margin: '0',
+                              color: '#1a237e',
+                              fontWeight: '600',
+                              display: '-webkit-box',
+                              WebkitLineClamp: '3',
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              lineHeight: '1.4',
+                              wordWrap: 'break-word',
+                              wordBreak: 'break-word'
+                            }}>{capstone.title}</h3>
+                          </div>
+
+                          {/* Abstract */}
+                          <div style={{ marginBottom: '20px' }}>
+                            <p style={{
+                              fontSize: '0.95rem',
+                              color: '#555',
+                              display: '-webkit-box',
+                              WebkitLineClamp: '3',
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              lineHeight: '1.5',
+                              margin: '0'
+                            }}>
+                              {capstone.abstract}
+                            </p>
+                          </div>
+
+                          {/* Keywords */}
+                          <div style={{ marginBottom: '20px' }}>
+                            <div style={{ 
+                              display: 'flex', 
+                              flexWrap: 'wrap', 
+                              gap: '8px' 
+                            }}>
+                              {capstone.keywords.map((keyword, index) => (
+                                <span key={index} style={{
+                                  backgroundColor: '#f0f4ff',
+                                  color: '#3949ab',
+                                  padding: '4px 10px',
+                                  borderRadius: '15px',
+                                  fontSize: '0.85rem',
+                                  fontWeight: '500'
+                                }}>
+                                  {keyword}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Footer */}
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginTop: 'auto',
+                            paddingTop: '15px',
+                            borderTop: '1px solid #eee'
+                          }}>
+                            <span style={{
+                              fontSize: '0.9rem',
+                              color: '#666'
+                            }}>
+                              {new Date(capstone.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              })}
+                            </span>
+                            <span style={{
+                              backgroundColor: '#e3f2fd',
+                              color: '#1565c0',
+                              padding: '5px 12px',
+                              borderRadius: '15px',
+                              fontSize: '0.9rem',
+                              fontWeight: '500'
+                            }}>
+                              {capstone.category}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)} className="feedback-modal">

@@ -9,6 +9,8 @@ import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import AdminRegister from '../../Auth/AdminRegister';
 import ReviewSubmission from '../../components/ReviewSubmission';
 import CapstoneManagement from '../../components/CapstoneManagement';
+import { Table } from 'react-bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 const AdminDashboard = () => {
@@ -159,46 +161,67 @@ const AdminDashboard = () => {
             </div>
 
             <section className="mt-4">
-              <h2 className="h4">Recently Created Accounts</h2>
-              <div className="table-responsive">
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Role</th>
-                      <th>ID</th>
-                      <th>Email</th>
-                      <th>Created Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentAccounts.map((account) => (
-                      <tr key={account._id}>
-                        <td>{account.name}</td>
-                        <td>
-                          <span
-                            className={`badge bg-${
-                              account.role === 'student' ? 'primary' : 'secondary'
-                            }`}
-                          >
-                            {account.role}
-                          </span>
-                        </td>
-                        <td>{account.student_id || account.teacher_id}</td>
-                        <td>{account.email}</td>
-                        <td>
-                          {new Date(account.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="card shadow">
+                <div className="card-header bg-primary text-white py-3">
+                  <h2 className="h4 mb-0">Recently Created Accounts</h2>
+                </div>
+                <div className="card-body p-0">
+                  <div className="table-responsive">
+                    <div style={{ minHeight: '300px' }}>
+                      <Table hover className="mb-0">
+                        <thead>
+                          <tr>
+                            <th className="px-4 py-3 border-bottom" style={{ width: '200px' }}>Name</th>
+                            <th className="px-4 py-3 border-bottom" style={{ width: '100px' }}>Role</th>
+                            <th className="px-4 py-3 border-bottom" style={{ width: '150px' }}>ID</th>
+                            <th className="px-4 py-3 border-bottom" style={{ width: '250px' }}>Email</th>
+                            <th className="px-4 py-3 border-bottom" style={{ width: '200px' }}>Created Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {recentAccounts.map((account) => (
+                            <tr key={account._id}>
+                              <td className="px-4 py-3">{account.name}</td>
+                              <td className="px-4 py-3">
+                                <span
+                                  className={`badge ${
+                                    account.student_id 
+                                      ? 'bg-primary-subtle text-primary'
+                                      : 'bg-secondary-subtle text-secondary'
+                                  } px-3 py-2 rounded-pill d-inline-flex align-items-center`}
+                                  style={{ fontSize: '0.85em', fontWeight: '500' }}
+                                >
+                                  <i className={`bi ${
+                                    account.student_id 
+                                      ? 'bi-mortarboard-fill'
+                                      : 'bi-person-workspace'
+                                  } me-1`}></i>
+                                  {account.student_id ? 'Student' : 'Teacher'}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3">{account.student_id || account.teacher_id}</td>
+                              <td className="px-4 py-3">{account.email}</td>
+                              <td className="px-4 py-3">
+                                {new Date(account.createdAt).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                      {recentAccounts.length === 0 && (
+                        <div className="text-center py-5">
+                          <p className="text-muted mb-0">No recent accounts found</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
           </>
