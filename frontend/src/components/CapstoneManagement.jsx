@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge, Alert } from 'react-bootstrap';
-import { FaSearch, FaEdit, FaTrash, FaPlus, FaExclamationTriangle, FaFileAlt, FaUser, FaKey, FaEnvelope, FaLink, FaInfoCircle, FaTimes, FaFolder, FaUserTie, FaCheckCircle, FaClipboardCheck, FaExclamationCircle, FaClock, FaSave, FaCheck } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaTrash, FaPlus, FaExclamationTriangle, FaFileAlt, FaUser, FaKey, FaEnvelope, FaLink, FaInfoCircle, FaTimes, FaFolder, FaUserTie, FaCheckCircle, FaClipboardCheck, FaExclamationCircle, FaClock, FaSave, FaCheck, FaHistory } from 'react-icons/fa';
 
 const CapstoneManagement = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -26,6 +26,7 @@ const CapstoneManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [showObjectiveModal, setShowObjectiveModal] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [reviewData, setReviewData] = useState({
@@ -42,6 +43,11 @@ const CapstoneManagement = () => {
         comments: '',
         reviewedBy: ''
     });
+    const [showRevisionHistoryModal, setShowRevisionHistoryModal] = useState(false);
+    const [revisionHistory, setRevisionHistory] = useState([]);
+    const [revisionHistoryLoading, setRevisionHistoryLoading] = useState(false);
+    const [revisionCurrentPage, setRevisionCurrentPage] = useState(1);
+    const [revisionTotalPages, setRevisionTotalPages] = useState(1);
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
@@ -284,7 +290,11 @@ const CapstoneManagement = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentSubmissions = filteredSubmissions.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
+
+    useEffect(() => {
+        const pages = Math.ceil(filteredSubmissions.length / itemsPerPage);
+        setTotalPages(pages);
+    }, [filteredSubmissions, itemsPerPage]);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -356,7 +366,26 @@ const CapstoneManagement = () => {
         );
     };
 
-    const handleReview = (submission) => {
+    const fetchRevisionHistory = async (thesisId) => {
+        try {
+            setRevisionHistoryLoading(true);
+            const response = await axios.get(
+                `http://localhost:8080/api/thesis/submissions/${thesisId}/reviews?page=${revisionCurrentPage}&limit=5`
+            );
+            
+            if (response.data.status === 'success') {
+                setRevisionHistory(response.data.data.feedback.items);
+                setRevisionTotalPages(response.data.data.feedback.pagination.pages);
+            }
+        } catch (error) {
+            console.error('Error fetching revision history:', error);
+            setError('Failed to fetch revision history');
+        } finally {
+            setRevisionHistoryLoading(false);
+        }
+    };
+
+    const handleReview = async (submission) => {
         setSelectedSubmission(submission);
         setReviewData({
             status: submission.status || 'pending',
@@ -364,7 +393,67 @@ const CapstoneManagement = () => {
             reviewedBy: submission.reviewedBy || '',
             reviewDate: submission.reviewDate ? new Date(submission.reviewDate) : new Date(),
         });
+        
+        // Fetch revision history when opening review modal
+        await fetchRevisionHistory(submission._id);
         setShowReviewModal(true);
+    };
+
+    const renderStatusBadge = (status, reviewedBy = null) => {
+        let badgeProps = {
+            bg: 'info',
+            icon: <FaClock className="me-1" size={12} />,
+            text: 'PENDING'
+        };
+
+        switch(status?.toLowerCase()) {
+            case 'approved':
+                badgeProps = {
+                    bg: 'success',
+                    icon: <FaCheckCircle className="me-1" size={12} />,
+                    text: 'APPROVED'
+                };
+                break;
+            case 'rejected':
+                badgeProps = {
+                    bg: 'danger',
+                    icon: <FaTimes className="me-1" size={12} />,
+                    text: 'REJECTED'
+                };
+                break;
+            case 'revision':
+                badgeProps = {
+                    bg: 'warning',
+                    icon: <FaExclamationCircle className="me-1" size={12} />,
+                    text: 'NEEDS REVISION'
+                };
+                break;
+            case 'pending':
+                badgeProps = {
+                    bg: 'info',
+                    icon: <FaClock className="me-1" size={12} />,
+                    text: 'UNDER REVIEW'
+                };
+                break;
+        }
+
+        return (
+            <div style={statusStyles.statusContainer}>
+                <Badge 
+                    bg={badgeProps.bg}
+                    style={statusStyles.badge}
+                    className="d-flex align-items-center justify-content-center"
+                >
+                    {badgeProps.icon}
+                    {badgeProps.text}
+                </Badge>
+                {reviewedBy && (
+                    <div style={statusStyles.reviewerText}>
+                        by {reviewedBy}
+                    </div>
+                )}
+            </div>
+        );
     };
 
     const validateReviewerName = (name) => {
@@ -384,7 +473,7 @@ const CapstoneManagement = () => {
         if (!comments.trim()) {
             return 'Review comments are required';
         }
-        if (comments.trim().length < 10) {
+        if (comments.trim().length < 2) {
             return 'Review comments must be at least 10 characters long';
         }
         if (comments.length > 1000) {
@@ -603,24 +692,21 @@ const CapstoneManagement = () => {
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div style={statusStyles.statusContainer}>
-                                                                <Badge 
-                                                                    bg={
-                                                                        submission.status?.toLowerCase() === 'approved' ? 'success' :
-                                                                        submission.status?.toLowerCase() === 'rejected' ? 'danger' :
-                                                                        submission.status?.toLowerCase() === 'revision' ? 'warning' :
-                                                                        'info'
-                                                                    }
-                                                                    style={statusStyles.badge}
+                                                            {renderStatusBadge(submission.status, submission.reviewedBy)}
+                                                            {submission.status === 'revision' && (
+                                                                <Button
+                                                                    variant="link"
+                                                                    size="sm"
+                                                                    className="p-0 mt-1 d-block"
+                                                                    onClick={() => {
+                                                                        setSelectedSubmission(submission);
+                                                                        fetchRevisionHistory(submission._id);
+                                                                        setShowRevisionHistoryModal(true);
+                                                                    }}
                                                                 >
-                                                                    {submission.status?.toUpperCase() || 'PENDING'}
-                                                                </Badge>
-                                                                {submission.reviewedBy && (
-                                                                    <div style={statusStyles.reviewerText}>
-                                                                        by {submission.reviewedBy}
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                                    View History
+                                                                </Button>
+                                                            )}
                                                         </td>
                                                         <td>
                                                             <div className="d-flex align-items-center justify-content-start gap-2">
@@ -726,9 +812,7 @@ const CapstoneManagement = () => {
 
                                                 <h6 className="text-muted mb-2">Status</h6>
                                                 <p className="mb-3">
-                                                    <Badge bg={selectedSubmission.status?.toLowerCase() === 'approved' ? 'success' : 'warning'}>
-                                                        {selectedSubmission.status || 'Pending'}
-                                                    </Badge>
+                                                    {renderStatusBadge(selectedSubmission.status, selectedSubmission.reviewedBy)}
                                                 </p>
                                             </div>
                                             <div className="col-md-6">
@@ -1677,6 +1761,116 @@ const CapstoneManagement = () => {
                     <h4 className="mb-3">{successTitle}</h4>
                     <p className="mb-0 text-muted">{successMessage}</p>
                 </Modal.Body>
+            </Modal>
+
+            {/* Revision History Modal */}
+            <Modal
+                show={showRevisionHistoryModal}
+                onHide={() => {
+                    setShowRevisionHistoryModal(false);
+                    setRevisionCurrentPage(1);
+                }}
+                centered
+                size="lg"
+                className="revision-history-modal"
+            >
+                <Modal.Header className="bg-primary text-white">
+                    <Modal.Title>
+                        <FaHistory className="me-2" />
+                        Revision History
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="p-4">
+                    {revisionHistoryLoading ? (
+                        <div className="text-center py-4">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            {revisionHistory.length === 0 ? (
+                                <Alert variant="info">
+                                    <FaInfoCircle className="me-2" />
+                                    No revision history available
+                                </Alert>
+                            ) : (
+                                <div className="revision-timeline">
+                                    {revisionHistory.map((revision, index) => (
+                                        <div key={index} className="revision-item mb-4">
+                                            <div className="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    {renderStatusBadge(revision.status)}
+                                                </div>
+                                                <small className="text-muted">
+                                                    {new Date(revision.reviewDate).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    })}
+                                                </small>
+                                            </div>
+                                            <Card className="bg-light">
+                                                <Card.Body>
+                                                    <div className="mb-2">
+                                                        <strong>Reviewer:</strong> {revision.reviewedBy}
+                                                    </div>
+                                                    <div>
+                                                        <strong>Comments:</strong>
+                                                        <p className="mb-0 mt-1">{revision.comment}</p>
+                                                    </div>
+                                                </Card.Body>
+                                            </Card>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {revisionTotalPages > 1 && (
+                                <div className="d-flex justify-content-center mt-4">
+                                    <Pagination>
+                                        <Pagination.Prev
+                                            disabled={revisionCurrentPage === 1}
+                                            onClick={() => {
+                                                setRevisionCurrentPage(prev => prev - 1);
+                                                fetchRevisionHistory(selectedSubmission._id);
+                                            }}
+                                        />
+                                        {[...Array(revisionTotalPages)].map((_, idx) => (
+                                            <Pagination.Item
+                                                key={idx + 1}
+                                                active={revisionCurrentPage === idx + 1}
+                                                onClick={() => {
+                                                    setRevisionCurrentPage(idx + 1);
+                                                    fetchRevisionHistory(selectedSubmission._id);
+                                                }}
+                                            >
+                                                {idx + 1}
+                                            </Pagination.Item>
+                                        ))}
+                                        <Pagination.Next
+                                            disabled={revisionCurrentPage === revisionTotalPages}
+                                            onClick={() => {
+                                                setRevisionCurrentPage(prev => prev + 1);
+                                                fetchRevisionHistory(selectedSubmission._id);
+                                            }}
+                                        />
+                                    </Pagination>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => {
+                        setShowRevisionHistoryModal(false);
+                        setRevisionCurrentPage(1);
+                    }}>
+                        Close
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </div>
     );
