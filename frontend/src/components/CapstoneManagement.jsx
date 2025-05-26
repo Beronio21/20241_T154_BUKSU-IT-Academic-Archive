@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge, Alert } from 'react-bootstrap';
-import { FaSearch, FaEdit, FaTrash, FaPlus, FaExclamationTriangle, FaFileAlt, FaUser, FaKey, FaEnvelope, FaLink, FaInfoCircle, FaTimes, FaFolder, FaUserTie, FaCheckCircle, FaClipboardCheck, FaExclamationCircle, FaClock, FaSave } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaTrash, FaPlus, FaExclamationTriangle, FaFileAlt, FaUser, FaKey, FaEnvelope, FaLink, FaInfoCircle, FaTimes, FaFolder, FaUserTie, FaCheckCircle, FaClipboardCheck, FaExclamationCircle, FaClock, FaSave, FaCheck } from 'react-icons/fa';
 
 const CapstoneManagement = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -33,6 +33,14 @@ const CapstoneManagement = () => {
         comments: '',
         reviewedBy: '',
         reviewDate: new Date(),
+    });
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [successIcon, setSuccessIcon] = useState(null);
+    const [successTitle, setSuccessTitle] = useState('');
+    const [reviewErrors, setReviewErrors] = useState({
+        comments: '',
+        reviewedBy: ''
     });
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
@@ -128,6 +136,18 @@ const CapstoneManagement = () => {
         }));
     };
 
+    const showSuccess = (title, message, icon = <FaCheckCircle className="text-success" size={48} />) => {
+        setSuccessTitle(title);
+        setSuccessMessage(message);
+        setSuccessIcon(icon);
+        setShowSuccessModal(true);
+        
+        // Auto hide after 3 seconds
+        setTimeout(() => {
+            setShowSuccessModal(false);
+        }, 3000);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -169,15 +189,25 @@ const CapstoneManagement = () => {
         try {
             if (isEditing) {
                 await axios.put(`http://localhost:8080/api/thesis/${formData.id}`, formData);
+                showSuccess(
+                    'Research Updated',
+                    'The research paper has been successfully updated.',
+                    <FaEdit className="text-primary" size={48} />
+                );
             } else {
                 await axios.post('http://localhost:8080/api/thesis/submit', formData);
+                showSuccess(
+                    'Research Added',
+                    'The research paper has been successfully added.',
+                    <FaPlus className="text-success" size={48} />
+                );
             }
             fetchSubmissions();
             resetForm();
             setShowEditModal(false);
         } catch (error) {
             console.error('Error submitting thesis:', error);
-            setError('Failed to submit thesis. Please try again.');
+            setError(error.response?.data?.message || 'Failed to submit thesis. Please try again.');
         }
     };
 
@@ -202,11 +232,17 @@ const CapstoneManagement = () => {
         if (selectedSubmission) {
             try {
                 await axios.delete(`http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`);
+                showSuccess(
+                    'Research Deleted',
+                    'The research paper has been successfully deleted.',
+                    <FaTrash className="text-danger" size={48} />
+                );
                 fetchSubmissions();
                 setShowDeleteModal(false);
                 setSelectedSubmission(null);
             } catch (error) {
                 console.error('Error deleting thesis:', error);
+                setError(error.response?.data?.message || 'Failed to delete thesis. Please try again.');
             }
         }
     };
@@ -331,20 +367,67 @@ const CapstoneManagement = () => {
         setShowReviewModal(true);
     };
 
+    const validateReviewerName = (name) => {
+        if (!name.trim()) {
+            return 'Reviewer name is required';
+        }
+        if (name.trim().length < 3) {
+            return 'Reviewer name must be at least 3 characters long';
+        }
+        if (!/^[a-zA-Z\s.]+$/.test(name)) {
+            return 'Reviewer name should only contain letters, spaces, and dots';
+        }
+        return '';
+    };
+
+    const validateComments = (comments) => {
+        if (!comments.trim()) {
+            return 'Review comments are required';
+        }
+        if (comments.trim().length < 10) {
+            return 'Review comments must be at least 10 characters long';
+        }
+        if (comments.length > 1000) {
+            return 'Review comments cannot exceed 1000 characters';
+        }
+        return '';
+    };
+
+    const handleReviewInputChange = (field, value) => {
+        setReviewData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+
+        // Real-time validation
+        if (field === 'reviewedBy') {
+            setReviewErrors(prev => ({
+                ...prev,
+                reviewedBy: validateReviewerName(value)
+            }));
+        } else if (field === 'comments') {
+            setReviewErrors(prev => ({
+                ...prev,
+                comments: validateComments(value)
+            }));
+        }
+    };
+
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         
-        // Validate required fields
-        if (!reviewData.reviewedBy.trim()) {
-            setError('Reviewer name is required');
-            return;
-        }
-        if (!reviewData.status) {
-            setError('Please select a review status');
-            return;
-        }
-        if (!reviewData.comments.trim()) {
-            setError('Review comments are required');
+        // Validate all fields
+        const commentsError = validateComments(reviewData.comments);
+        const reviewerError = validateReviewerName(reviewData.reviewedBy);
+
+        setReviewErrors({
+            comments: commentsError,
+            reviewedBy: reviewerError
+        });
+
+        if (commentsError || reviewerError || !reviewData.status) {
+            setError('Please correct all errors before submitting.');
             return;
         }
 
@@ -361,18 +444,28 @@ const CapstoneManagement = () => {
             );
 
             if (response.data.status === 'success') {
-                // Show success message
-                setError(null);
-                await fetchSubmissions(); // Refresh the submissions list
+                showSuccess(
+                    'Review Submitted',
+                    `The research paper has been successfully ${reviewData.status}.`,
+                    reviewData.status === 'approved' ? 
+                        <FaCheckCircle className="text-success" size={48} /> :
+                        reviewData.status === 'rejected' ?
+                        <FaTimes className="text-danger" size={48} /> :
+                        <FaExclamationCircle className="text-warning" size={48} />
+                );
+                
+                await fetchSubmissions();
                 setShowReviewModal(false);
                 setSelectedSubmission(null);
-                
-                // Reset review form
                 setReviewData({
                     status: '',
                     comments: '',
                     reviewedBy: '',
                     reviewDate: new Date()
+                });
+                setReviewErrors({
+                    comments: '',
+                    reviewedBy: ''
                 });
             } else {
                 setError('Failed to update review. Please try again.');
@@ -1248,7 +1341,11 @@ const CapstoneManagement = () => {
             {/* Review Modal */}
             <Modal 
                 show={showReviewModal} 
-                onHide={() => setShowReviewModal(false)}
+                onHide={() => {
+                    setShowReviewModal(false);
+                    setReviewErrors({ comments: '', reviewedBy: '' });
+                    setError(null);
+                }}
                 centered
                 size="lg"
                 backdrop="static"
@@ -1420,41 +1517,48 @@ const CapstoneManagement = () => {
                                         </div>
                                     </div>
 
-                                    {/* Comments Section with Character Count */}
+                                    {/* Comments Section with Enhanced Error Handling */}
                                     <div className="mb-4">
                                         <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
                                             REVIEW COMMENTS
                                         </h6>
                                         <div className="comments-section bg-light rounded-3 p-4">
-                                            <textarea
-                                                className="form-control border-0 bg-white"
-                                                rows="6"
-                                                placeholder="Provide detailed feedback and suggestions for improvement..."
-                                                value={reviewData.comments}
-                                                onChange={(e) => {
-                                                    const value = e.target.value;
-                                                    if (value.length <= 1000) {
-                                                        setReviewData(prev => ({ 
-                                                            ...prev, 
-                                                            comments: value 
-                                                        }));
-                                                    }
-                                                }}
-                                                style={{ resize: 'none' }}
-                                            />
-                                            <div className="mt-3 d-flex justify-content-between align-items-center">
-                                                <small className="text-muted">
-                                                    <FaInfoCircle className="me-2" />
-                                                    Please provide constructive feedback
-                                                </small>
-                                                <small className={`${reviewData.comments.length > 900 ? 'text-warning' : 'text-muted'}`}>
-                                                    {reviewData.comments.length}/1000 characters
-                                                </small>
+                                            <div className={`form-group ${reviewErrors.comments ? 'has-error' : ''}`}>
+                                                <textarea
+                                                    className={`form-control border ${reviewErrors.comments ? 'border-danger' : 'border-0'} bg-white`}
+                                                    rows="6"
+                                                    placeholder="Provide detailed feedback and suggestions for improvement..."
+                                                    value={reviewData.comments}
+                                                    onChange={(e) => handleReviewInputChange('comments', e.target.value)}
+                                                    style={{ 
+                                                        resize: 'none',
+                                                        borderWidth: reviewErrors.comments ? '2px' : '1px'
+                                                    }}
+                                                />
+                                                {reviewErrors.comments && (
+                                                    <div className="text-danger mt-2 d-flex align-items-center">
+                                                        <FaExclamationTriangle className="me-2" size={14} />
+                                                        <small>{reviewErrors.comments}</small>
+                                                    </div>
+                                                )}
+                                                <div className="mt-3 d-flex justify-content-between align-items-center">
+                                                    <small className="text-muted">
+                                                        <FaInfoCircle className="me-2" />
+                                                        Please provide constructive feedback
+                                                    </small>
+                                                    <small className={`${
+                                                        reviewData.comments.length > 900 ? 'text-warning' :
+                                                        reviewData.comments.length > 800 ? 'text-info' :
+                                                        'text-muted'
+                                                    }`}>
+                                                        {reviewData.comments.length}/1000 characters
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Reviewer Information */}
+                                    {/* Reviewer Information with Enhanced Error Handling */}
                                     <div className="mb-4">
                                         <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
                                             REVIEWER INFORMATION
@@ -1462,18 +1566,25 @@ const CapstoneManagement = () => {
                                         <div className="reviewer-info bg-light rounded-3 p-4">
                                             <div className="row g-3">
                                                 <div className="col-md-6">
-                                                    <label className="form-label required">Reviewer Name</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        placeholder="Enter reviewer's name"
-                                                        value={reviewData.reviewedBy}
-                                                        onChange={(e) => setReviewData(prev => ({
-                                                            ...prev,
-                                                            reviewedBy: e.target.value
-                                                        }))}
-                                                        required
-                                                    />
+                                                    <div className={`form-group ${reviewErrors.reviewedBy ? 'has-error' : ''}`}>
+                                                        <label className="form-label required">Reviewer Name</label>
+                                                        <input
+                                                            type="text"
+                                                            className={`form-control ${reviewErrors.reviewedBy ? 'border-danger' : ''}`}
+                                                            placeholder="Enter reviewer's name"
+                                                            value={reviewData.reviewedBy}
+                                                            onChange={(e) => handleReviewInputChange('reviewedBy', e.target.value)}
+                                                            style={{ 
+                                                                borderWidth: reviewErrors.reviewedBy ? '2px' : '1px'
+                                                            }}
+                                                        />
+                                                        {reviewErrors.reviewedBy && (
+                                                            <div className="text-danger mt-2 d-flex align-items-center">
+                                                                <FaExclamationTriangle className="me-2" size={14} />
+                                                                <small>{reviewErrors.reviewedBy}</small>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <div className="col-md-6">
                                                     <label className="form-label required">Review Date</label>
@@ -1481,10 +1592,7 @@ const CapstoneManagement = () => {
                                                         type="date"
                                                         className="form-control"
                                                         value={reviewData.reviewDate.toISOString().split('T')[0]}
-                                                        onChange={(e) => setReviewData(prev => ({
-                                                            ...prev,
-                                                            reviewDate: new Date(e.target.value)
-                                                        }))}
+                                                        onChange={(e) => handleReviewInputChange('reviewDate', new Date(e.target.value))}
                                                         required
                                                     />
                                                 </div>
@@ -1552,6 +1660,23 @@ const CapstoneManagement = () => {
                         </Alert>
                     </div>
                 )}
+            </Modal>
+
+            {/* Success Modal */}
+            <Modal 
+                show={showSuccessModal} 
+                onHide={() => setShowSuccessModal(false)}
+                centered
+                size="sm"
+                className="success-modal"
+            >
+                <Modal.Body className="text-center p-4">
+                    <div className="mb-3">
+                        {successIcon}
+                    </div>
+                    <h4 className="mb-3">{successTitle}</h4>
+                    <p className="mb-0 text-muted">{successMessage}</p>
+                </Modal.Body>
             </Modal>
         </div>
     );
