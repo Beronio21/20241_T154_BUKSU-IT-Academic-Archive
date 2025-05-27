@@ -1,0 +1,112 @@
+.logout-modal .modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.logout-modal .modal-header {
+    padding: 1rem 1rem 0;
+}
+
+.logout-modal .modal-header .btn-close {
+    padding: 0.5rem;
+    margin: 0;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.logout-modal .modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.logout-modal .modal-body {
+    padding: 2rem !important;
+}
+
+.logout-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.logout-icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    border: 2px solid rgba(0, 123, 255, 0.1);
+}
+
+.logout-modal h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.logout-modal p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.logout-modal .btn {
+    padding: 0.625rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    min-width: 130px;
+    transition: all 0.2s ease;
+}
+
+.logout-modal .btn:hover {
+    transform: translateY(-1px);
+}
+
+.logout-modal .btn:active {
+    transform: translateY(0);
+}
+
+.logout-modal .btn-cancel {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    color: #495057;
+}
+
+.logout-modal .btn-cancel:hover {
+    background-color: #e9ecef;
+    border-color: #dde2e6;
+    color: #212529;
+}
+
+.logout-modal .btn-logout {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+}
+
+.logout-modal .btn-logout:hover {
+    background: linear-gradient(135deg, #0a58ca 0%, #084298 100%);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+/* Animation */
+.modal.fade .modal-dialog {
+    transition: transform 0.2s ease-out !important;
+}
+
+.modal.fade.show .modal-dialog {
+    transform: none;
+}
+
+/* Backdrop styling */
+.modal-backdrop.show {
+    opacity: 0.2;
+} 

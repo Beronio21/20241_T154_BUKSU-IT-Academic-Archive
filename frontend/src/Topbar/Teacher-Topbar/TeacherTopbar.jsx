@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBell, FaUserCircle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import axios from 'axios';
+import LogoutModal from '../../components/LogoutModal';
 import './TeacherTopbar.css';
 
 const TeacherTopbar = ({ userInfo }) => {
@@ -10,6 +11,7 @@ const TeacherTopbar = ({ userInfo }) => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -47,11 +49,9 @@ const TeacherTopbar = ({ userInfo }) => {
     };
 
     const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) {
-            localStorage.clear();
-            sessionStorage.clear();
-            navigate('/', { replace: true });
-        }
+        localStorage.clear();
+        sessionStorage.clear();
+        navigate('/', { replace: true });
     };
 
     const formatTimeAgo = (dateString) => {
@@ -118,7 +118,7 @@ const TeacherTopbar = ({ userInfo }) => {
                             <li>
                                 <button 
                                     className="dropdown-item text-danger" 
-                                    onClick={handleLogout}
+                                    onClick={() => setShowLogoutModal(true)}
                                 >
                                     <i className="bi bi-box-arrow-right me-2"></i>
                                     Logout
@@ -128,6 +128,13 @@ const TeacherTopbar = ({ userInfo }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Logout Modal */}
+            <LogoutModal
+                show={showLogoutModal}
+                onHide={() => setShowLogoutModal(false)}
+                onConfirm={handleLogout}
+            />
         </nav>
     );
 };

@@ -1,0 +1,132 @@
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 1rem;
+    z-index: 1030;
+}
+
+.navbar .container-fluid {
+    padding: 0;
+}
+
+/* Profile dropdown styles */
+.dropdown-toggle {
+    cursor: pointer;
+    padding: 0.5rem !important;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-toggle::after {
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.dropdown-toggle img {
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-toggle span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Dropdown menu styles */
+.dropdown-menu {
+    margin-top: 0.5rem !important;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    min-width: 200px;
+}
+
+.dropdown-item {
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(3px);
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #dc354520;
+}
+
+.dropdown-item i {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    opacity: 0.1;
+}
+
+/* Notification styles */
+.notification-button {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    position: relative;
+    cursor: pointer;
+    color: #2c3e50;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.notification-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem;
+    font-size: 0.7rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.5rem;
+    }
+
+    .dropdown-toggle span {
+        display: none;
+    }
+
+    .dropdown-menu {
+        min-width: 180px;
+    }
+} 

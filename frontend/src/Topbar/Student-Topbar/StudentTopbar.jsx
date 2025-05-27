@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LogoutModal from '../../components/LogoutModal';
+import './StudentTopbar.css';
 
 const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifications, notifications, markAsRead }) => {
     const navigate = useNavigate();
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) {
-            localStorage.clear();
-            sessionStorage.clear();
-            navigate('/', { replace: true });
-        }
+        localStorage.clear();
+        sessionStorage.clear();
+        navigate('/', { replace: true });
     };
 
     const formatDate = (dateString) => {
@@ -106,7 +107,7 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                             </li>
                             <li><hr className="dropdown-divider" /></li>
                             <li>
-                                <button className="dropdown-item text-danger" onClick={handleLogout}>
+                                <button className="dropdown-item text-danger" onClick={() => setShowLogoutModal(true)}>
                                     <i className="bi bi-box-arrow-right me-2 fs-5"></i>
                                     Logout
                                 </button>
@@ -115,6 +116,13 @@ const StudentTopbar = ({ userInfo, unreadCount, setShowNotifications, showNotifi
                     </div>
                 </div>
             </div>
+
+            {/* Logout Modal */}
+            <LogoutModal
+                show={showLogoutModal}
+                onHide={() => setShowLogoutModal(false)}
+                onConfirm={handleLogout}
+            />
         </nav>
     );
 };
