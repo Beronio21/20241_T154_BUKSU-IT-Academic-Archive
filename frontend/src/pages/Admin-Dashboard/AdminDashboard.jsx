@@ -12,7 +12,6 @@ import CapstoneManagement from '../../components/CapstoneManagement';
 import { Table } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -40,10 +39,6 @@ const AdminDashboard = () => {
 
     const handlePopState = () => {
       window.history.pushState(null, null, window.location.pathname);
-      // Removed logout confirmation
-      // if (window.confirm('Are you sure you want to leave this page?')) {
-      //   handleLogout();
-      // }
     };
 
     window.history.pushState(null, null, window.location.pathname);
@@ -56,31 +51,37 @@ const AdminDashboard = () => {
     };
   }, []);
 
-  // Fetch statistics from the backend
+  // Fetch dashboard stats
   const fetchStats = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('user-info'));
       const config = {
-        headers: {
-          'Authorization': `Bearer ${userInfo?.token}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { Authorization: `Bearer ${userInfo.token}` }
       };
 
-      const studentsResponse = await axios.get('http://localhost:8080/api/students', config);
-      const teachersResponse = await axios.get('http://localhost:8080/api/teachers', config);
+      // Fetch students count
+      const studentsRes = await axios.get('http://localhost:8080/api/students', config);
+      const teachersRes = await axios.get('http://localhost:8080/api/teachers', config);
+      const thesesRes = await axios.get('http://localhost:8080/api/thesis', config);
 
-      // Combine student and teacher data, and sort by creation date
-      const allUsers = [...studentsResponse.data, ...teachersResponse.data]
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 5);
-
-      setRecentAccounts(allUsers);
       setStats({
-        totalStudents: studentsResponse.data.length,
-        totalTeachers: teachersResponse.data.length,
-        activeTheses: 0, // You can update this if you have active theses data
+        totalStudents: Array.isArray(studentsRes.data) ? studentsRes.data.length : 0,
+        totalTeachers: Array.isArray(teachersRes.data) ? teachersRes.data.length : 0,
+        activeTheses: Array.isArray(thesesRes.data) ? thesesRes.data.length : 0,
       });
+
+      // Get recent accounts (last 5 from both students and teachers)
+      const allAccounts = [
+        ...(Array.isArray(studentsRes.data) ? studentsRes.data.map(s => ({ ...s, type: 'student' })) : []),
+        ...(Array.isArray(teachersRes.data) ? teachersRes.data.map(t => ({ ...t, type: 'teacher' })) : [])
+      ];
+
+      // Sort by creation date and take last 5
+      const sortedAccounts = allAccounts.sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+      ).slice(0, 5);
+
+      setRecentAccounts(sortedAccounts);
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
@@ -92,7 +93,7 @@ const AdminDashboard = () => {
     localStorage.removeItem("user-info");
     // Redirect to login page
     navigate("/login");
-};
+  };
 
   // Change active section
   const handleSectionChange = (section) => {
@@ -118,8 +119,7 @@ const AdminDashboard = () => {
       case 'dashboard':
       default:
         return (
-          <>
-            <AdminTopbar userInfo={userInfo} />
+          <div className="dashboard-content p-4">
             <header className="d-flex align-items-center justify-content-between mb-4">
               <div>
                 <h1 className="h3">Welcome, {userInfo?.name}</h1>
@@ -133,98 +133,70 @@ const AdminDashboard = () => {
               />
             </header>
 
-            <div className="row g-3">
+            {/* Dashboard content */}
+            <div className="row g-4">
+              {/* Stats Cards */}
               <div className="col-md-4">
-                <div className="card text-center">
+                <div className="card shadow-sm">
                   <div className="card-body">
                     <h5 className="card-title">Total Students</h5>
-                    <p className="display-6 fw-bold text-primary">{stats.totalStudents}</p>
+                    <h2 className="mb-0">{stats.totalStudents}</h2>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
-                <div className="card text-center">
+                <div className="card shadow-sm">
                   <div className="card-body">
                     <h5 className="card-title">Total Teachers</h5>
-                    <p className="display-6 fw-bold text-primary">{stats.totalTeachers}</p>
+                    <h2 className="mb-0">{stats.totalTeachers}</h2>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
-                <div className="card text-center">
+                <div className="card shadow-sm">
                   <div className="card-body">
                     <h5 className="card-title">Active Theses</h5>
-                    <p className="display-6 fw-bold text-primary">{stats.activeTheses}</p>
+                    <h2 className="mb-0">{stats.activeTheses}</h2>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <section className="mt-4">
-              <div className="card shadow">
-                <div className="card-header bg-primary text-white py-3">
-                  <h2 className="h4 mb-0">Recently Created Accounts</h2>
-                </div>
-                <div className="card-body p-0">
-                  <div className="table-responsive">
-                    <div style={{ minHeight: '300px' }}>
-                      <Table hover className="mb-0">
+              {/* Recent Accounts Table */}
+              <div className="col-12">
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title mb-4">Recent Accounts</h5>
+                    <div className="table-responsive">
+                      <Table hover className="align-middle">
                         <thead>
                           <tr>
-                            <th className="px-4 py-3 border-bottom" style={{ width: '200px' }}>Name</th>
-                            <th className="px-4 py-3 border-bottom" style={{ width: '100px' }}>Role</th>
-                            <th className="px-4 py-3 border-bottom" style={{ width: '150px' }}>ID</th>
-                            <th className="px-4 py-3 border-bottom" style={{ width: '250px' }}>Email</th>
-                            <th className="px-4 py-3 border-bottom" style={{ width: '200px' }}>Created Date</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Type</th>
+                            <th>Date Created</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {recentAccounts.map((account) => (
-                            <tr key={account._id}>
-                              <td className="px-4 py-3">{account.name}</td>
-                              <td className="px-4 py-3">
-                                <span
-                                  className={`badge ${
-                                    account.student_id 
-                                      ? 'bg-primary-subtle text-primary'
-                                      : 'bg-secondary-subtle text-secondary'
-                                  } px-3 py-2 rounded-pill d-inline-flex align-items-center`}
-                                  style={{ fontSize: '0.85em', fontWeight: '500' }}
-                                >
-                                  <i className={`bi ${
-                                    account.student_id 
-                                      ? 'bi-mortarboard-fill'
-                                      : 'bi-person-workspace'
-                                  } me-1`}></i>
-                                  {account.student_id ? 'Student' : 'Teacher'}
+                          {recentAccounts.map((account, index) => (
+                            <tr key={index}>
+                              <td>{account.name}</td>
+                              <td>{account.email}</td>
+                              <td>
+                                <span className={`badge ${account.type === 'student' ? 'bg-info' : 'bg-success'}`}>
+                                  {account.type}
                                 </span>
                               </td>
-                              <td className="px-4 py-3">{account.student_id || account.teacher_id}</td>
-                              <td className="px-4 py-3">{account.email}</td>
-                              <td className="px-4 py-3">
-                                {new Date(account.createdAt).toLocaleDateString('en-US', {
-                                  year: 'numeric',
-                                  month: 'short',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                })}
-                              </td>
+                              <td>{new Date(account.createdAt).toLocaleDateString()}</td>
                             </tr>
                           ))}
                         </tbody>
                       </Table>
-                      {recentAccounts.length === 0 && (
-                        <div className="text-center py-5">
-                          <p className="text-muted mb-0">No recent accounts found</p>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
-          </>
+            </div>
+          </div>
         );
     }
   };
@@ -232,8 +204,11 @@ const AdminDashboard = () => {
   return (
     <div className="d-flex">
       <AdminNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
-      <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
-        {renderContent()}
+      <div className="flex-grow-1" style={{ marginLeft: '250px' }}>
+        <AdminTopbar userInfo={userInfo} />
+        <div style={{ paddingTop: '60px' }}>
+          {renderContent()}
+        </div>
       </div>
     </div>
   );

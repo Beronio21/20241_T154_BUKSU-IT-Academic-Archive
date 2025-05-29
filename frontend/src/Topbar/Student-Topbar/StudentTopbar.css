@@ -1,20 +1,23 @@
 .navbar {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
     padding: 0.5rem 1rem;
     z-index: 1030;
+    border: none;
+    box-shadow: none;
 }
 
 .navbar .container-fluid {
     padding: 0;
+    background: transparent;
 }
 
 /* Profile dropdown styles */
 .dropdown-toggle {
     cursor: pointer;
     padding: 0.5rem !important;
-    border-radius: 8px;
+    border-radius: 0;
     transition: background-color 0.2s;
+    border: none;
 }
 
 .dropdown-toggle:hover {
@@ -28,8 +31,8 @@
 
 .dropdown-toggle img {
     object-fit: cover;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+    box-shadow: none;
 }
 
 .dropdown-toggle span {
