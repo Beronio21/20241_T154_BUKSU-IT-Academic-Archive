@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table, Form, InputGroup, Pagination, Badge, Alert } from 'react-bootstrap';
 import { FaSearch, FaEye, FaEdit, FaTrash, FaUserPlus, FaExclamationTriangle } from 'react-icons/fa';
+import SuccessModal from '../components/SuccessModal';
 
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
@@ -17,6 +18,7 @@ const UserManagement = () => {
     const [itemsPerPage] = useState(5);
     const [activeTab, setActiveTab] = useState('students');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
 
     // Calculate pagination indexes first
@@ -231,7 +233,7 @@ const UserManagement = () => {
             fetchData();
             setShowDeleteModal(false);
             setUserToDelete(null);
-            alert('User deleted successfully');
+            setShowSuccessModal(true);
         } catch (error) {
             console.error('Error deleting user:', error);
             alert('Failed to delete user');
@@ -622,6 +624,14 @@ const UserManagement = () => {
                     )}
                 </Modal.Body>
             </Modal>
+
+            {/* Success Modal */}
+            <SuccessModal
+                show={showSuccessModal}
+                onHide={() => setShowSuccessModal(false)}
+                title="User Deleted Successfully"
+                message="The user has been successfully removed from the system."
+            />
         </div>
     );
 };

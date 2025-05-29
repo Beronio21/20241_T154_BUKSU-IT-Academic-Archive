@@ -14,27 +14,27 @@ const LogoutModal = ({ show, onHide, onConfirm }) => {
             keyboard={false}
         >
             <Modal.Body className="text-center p-4">
-                <div className="logout-icon-wrapper mb-4">
+                <div className="logout-icon-wrapper mb-3">
                     <div className="logout-icon-circle">
-                        <FaUserCircle size={40} className="text-primary" />
+                        <FaUserCircle size={48} className="text-primary" />
                     </div>
                 </div>
-                <h4 className="mb-3">Sign Out</h4>
+                <h4 className="mb-2">Sign Out</h4>
                 <p className="text-muted mb-4">
-                    Are you sure you want to sign out of your account?
+                    Are you sure you want to sign out?
                 </p>
-                <div className="d-flex justify-content-center gap-3">
+                <div className="d-flex justify-content-center gap-2">
                     <Button
                         variant="light"
                         onClick={onHide}
-                        className="btn-cancel px-4 py-2"
+                        className="btn-cancel px-4"
                     >
-                        Stay Signed In
+                        Cancel
                     </Button>
                     <Button
-                        variant="primary"
+                        variant="danger"
                         onClick={onConfirm}
-                        className="btn-logout px-4 py-2 d-flex align-items-center justify-content-center gap-2"
+                        className="btn-logout px-4 d-flex align-items-center justify-content-center gap-2"
                     >
                         <FaSignOutAlt size={16} />
                         Sign Out

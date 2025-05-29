@@ -1,35 +1,27 @@
-.logout-modal .modal-content {
+.success-modal {
+    z-index: 1050 !important;
+}
+
+.success-modal .modal-content {
     border: none;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1051;
 }
 
-.logout-modal .modal-header {
-    padding: 1rem 1rem 0;
-}
-
-.logout-modal .modal-header .btn-close {
-    padding: 0.5rem;
-    margin: 0;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-}
-
-.logout-modal .modal-header .btn-close:hover {
-    opacity: 1;
-}
-
-.logout-modal .modal-body {
+.success-modal .modal-body {
     padding: 1.75rem !important;
+    position: relative;
 }
 
-.logout-icon-wrapper {
+.success-icon-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.logout-icon-circle {
+.success-icon-circle {
     width: 72px;
     height: 72px;
     border-radius: 50%;
@@ -37,62 +29,53 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(220, 53, 69, 0.1);
+    border: 2px solid rgba(40, 167, 69, 0.1);
     transition: all 0.2s ease;
 }
 
-.logout-modal h4 {
+.success-modal h4 {
     color: #2c3e50;
     font-weight: 600;
     font-size: 1.35rem;
     margin-bottom: 0.5rem;
 }
 
-.logout-modal p {
+.success-modal p {
     font-size: 0.95rem;
     line-height: 1.5;
     color: #6c757d;
 }
 
-.logout-modal .btn {
+.success-modal .btn {
     padding: 0.5rem 1.5rem;
     font-weight: 500;
     border-radius: 6px;
     font-size: 0.95rem;
     min-width: 100px;
     transition: all 0.2s ease;
+    position: relative;
+    z-index: 1052;
 }
 
-.logout-modal .btn:hover {
+.success-modal .btn:hover {
     transform: translateY(-1px);
 }
 
-.logout-modal .btn:active {
+.success-modal .btn:active {
     transform: translateY(0);
 }
 
-.logout-modal .btn-cancel {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    color: #495057;
-}
-
-.logout-modal .btn-cancel:hover {
-    background-color: #e9ecef;
-    border-color: #dde2e6;
-    color: #212529;
-}
-
-.logout-modal .btn-logout {
-    background-color: #dc3545;
+.success-modal .btn-confirm {
+    background-color: #28a745;
     border: none;
     color: white;
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    cursor: pointer;
 }
 
-.logout-modal .btn-logout:hover {
-    background-color: #c82333;
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+.success-modal .btn-confirm:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 
 /* Animation */
@@ -107,4 +90,10 @@
 /* Backdrop styling */
 .modal-backdrop.show {
     opacity: 0.2;
+    z-index: 1049;
+}
+
+/* Ensure modal is clickable */
+.success-modal .modal-dialog {
+    pointer-events: auto;
 } 
