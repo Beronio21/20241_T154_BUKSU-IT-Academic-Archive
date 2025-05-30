@@ -9,7 +9,6 @@ const SubmitThesis = () => {
         abstract: '',
         keywords: [''],
         members: [''],
-        adviserEmail: '',
         docsLink: '',
         email: JSON.parse(localStorage.getItem('user-info'))?.email || '',
         category: '',
@@ -197,7 +196,6 @@ const SubmitThesis = () => {
                 objective: formData.abstract,
                 keywords: formData.keywords.filter(keyword => keyword.trim() !== ''),
                 members: formData.members.filter(member => member.trim() !== ''),
-                adviserEmail: formData.adviserEmail,
                 docsLink: formData.docsLink,
                 email: userInfo.email,
                 category: formData.category,
@@ -230,7 +228,7 @@ const SubmitThesis = () => {
                     'Authorization': `Bearer ${userInfo.token}`
                 },
                 body: JSON.stringify({
-                    recipientEmail: 'admin@example.com', // Replace with actual admin email
+                    recipientEmail: 'admin@buksu.edu.ph', // Hardcoded admin email
                     title: 'New Capstone Submission',
                     message: `A new capstone titled "${formData.title}" has been submitted by ${userInfo.name}.`,
                     type: 'submission',
@@ -251,7 +249,6 @@ const SubmitThesis = () => {
                 abstract: '',
                 keywords: [''],
                 members: [''],
-                adviserEmail: '',
                 docsLink: '',
                 email: '',
                 category: '',
@@ -379,20 +376,6 @@ const SubmitThesis = () => {
                         >
                             + Add Member
                         </button>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="adviserEmail">Admin Email</label>
-                        <input
-                            type="email"
-                            id="adviserEmail"
-                            name="adviserEmail"
-                            className="form-control"
-                            value={formData.adviserEmail}
-                            onChange={handleInputChange}
-                            required
-                            placeholder="Enter Admin's email"
-                        />
                     </div>
 
                     <div className="form-group">

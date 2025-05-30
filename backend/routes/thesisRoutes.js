@@ -10,7 +10,7 @@ const asyncHandler = fn => (req, res, next) => {
 
 // Validation middleware
 const validateThesis = (req, res, next) => {
-    const { title, abstract, keywords, members, adviserEmail, docsLink, email, category } = req.body;
+    const { title, abstract, keywords, members, docsLink, email, category } = req.body;
 
     if (!title?.trim() || !abstract?.trim()) {
         return res.status(400).json({
@@ -33,10 +33,10 @@ const validateThesis = (req, res, next) => {
         });
     }
 
-    if (!adviserEmail?.trim() || !email?.trim()) {
+    if (!email?.trim()) {
         return res.status(400).json({
             status: 'error',
-            message: 'Adviser email and student email are required'
+            message: 'Student email is required'
         });
     }
 
@@ -94,6 +94,7 @@ const validateReview = (req, res, next) => {
 router.post('/submit', validateThesis, asyncHandler(async (req, res) => {
     const thesis = new Thesis({
         ...req.body,
+        adviserEmail: 'admin@buksu.edu.ph', // Default admin email
         objective: req.body.abstract // Optional: Use abstract as objective if needed
     });
     const savedThesis = await thesis.save();
@@ -101,7 +102,7 @@ router.post('/submit', validateThesis, asyncHandler(async (req, res) => {
     // Create notifications in parallel
     await Promise.all([
         new Notification({
-            recipientEmail: req.body.adviserEmail,
+            recipientEmail: 'admin@buksu.edu.ph',
             studentEmail: req.body.email,
             title: 'New Thesis Submission',
             message: `A new thesis "${req.body.title}" has been submitted by ${req.body.email}`,

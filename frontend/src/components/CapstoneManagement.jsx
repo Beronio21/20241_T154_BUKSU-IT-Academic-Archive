@@ -11,7 +11,6 @@ const CapstoneManagement = () => {
         abstract: '',
         keywords: [''],
         members: [''],
-        adviserEmail: '',
         docsLink: '',
         email: '',
         category: '',
@@ -49,6 +48,7 @@ const CapstoneManagement = () => {
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
     const [showRecoveryModal, setShowRecoveryModal] = useState(false);
     const [deletedSubmissions, setDeletedSubmissions] = useState([]);
+    const [userEmail, setUserEmail] = useState('');
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
@@ -179,10 +179,6 @@ const CapstoneManagement = () => {
             setError('At least one member is required');
             return;
         }
-        if (!formData.adviserEmail.trim()) {
-            setError('Adviser email is required');
-            return;
-        }
         if (!formData.docsLink.trim()) {
             setError('Document link is required');
             return;
@@ -198,7 +194,6 @@ const CapstoneManagement = () => {
             abstract: submission.abstract,
             keywords: submission.keywords,
             members: submission.members,
-            adviserEmail: submission.adviserEmail,
             docsLink: submission.docsLink,
             email: submission.email,
             category: submission.category,
@@ -251,7 +246,6 @@ const CapstoneManagement = () => {
             abstract: '',
             keywords: [''],
             members: [''],
-            adviserEmail: '',
             docsLink: '',
             email: '',
             category: '',
@@ -503,6 +497,15 @@ const CapstoneManagement = () => {
 
         try {
             setLoading(true);
+            const submissionData = {
+                title: formData.title,
+                abstract: formData.abstract,
+                keywords: formData.keywords.filter(k => k.trim()),
+                members: formData.members.filter(m => m.trim()),
+                docsLink: formData.docsLink,
+                email: formData.email || userEmail,
+                category: formData.category
+            };
             const response = await axios.put(
                 `http://localhost:8080/api/thesis/submissions/${selectedSubmission._id}/status`,
                 {
@@ -881,22 +884,6 @@ const CapstoneManagement = () => {
                                         <h6 className="mb-0">Document Information</h6>
                                     </Card.Header>
                                     <Card.Body>
-                                        <div className="mb-3">
-                                            <label className="form-label required">
-                                                <FaEnvelope className="me-2" />
-                                                Adviser Email
-                                            </label>
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                name="adviserEmail"
-                                                value={formData.adviserEmail}
-                                                onChange={handleInputChange}
-                                                placeholder="Enter adviser's email"
-                                                required
-                                            />
-                                        </div>
-
                                         <div className="mb-0">
                                             <label className="form-label required">
                                                 <FaLink className="me-2" />
