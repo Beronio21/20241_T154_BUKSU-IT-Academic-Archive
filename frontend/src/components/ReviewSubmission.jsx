@@ -40,8 +40,14 @@ const ViewSubmission = () => {
 
     const fetchSubmissions = async () => {
         try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            if (!userInfo?.email) {
+                setError('User email not found');
+                return;
+            }
+
             const response = await fetch(
-                `http://localhost:8080/api/thesis/submissions/adviser?email=${encodeURIComponent(userInfo.email)}`
+                `http://localhost:8080/api/thesis/student-submissions/${encodeURIComponent(userInfo.email)}`
             );
             const data = await response.json();
             
@@ -51,6 +57,8 @@ const ViewSubmission = () => {
                     new Date(b.createdAt) - new Date(a.createdAt)
                 );
                 setSubmissions(sortedSubmissions);
+            } else {
+                setError(data.message || 'Failed to fetch submissions');
             }
         } catch (error) {
             console.error('Error fetching submissions:', error);
