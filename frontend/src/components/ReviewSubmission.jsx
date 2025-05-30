@@ -4,7 +4,7 @@ import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge } from 
 import { FaSearch, FaFileAlt, FaComment, FaCalendarAlt, FaFilter } from 'react-icons/fa';
 import '../Styles/ReviewSubmission.css';
 
-const ReviewSubmission = () => {
+const ViewSubmission = () => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -211,7 +211,7 @@ const ReviewSubmission = () => {
                 <div className="col-12 h-100">
                     <div className="card shadow h-100">
                         <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
-                            <h3 className="mb-0">Review Capstone Research Paper Submissions</h3>
+                            <h3 className="mb-0">View Capstone Research Paper Submissions</h3>
                         </div>
                         <div className="card-body p-3" style={{ 
                             height: 'calc(100% - 60px)',
@@ -469,4 +469,4 @@ const ReviewSubmission = () => {
     );
 };
 
-export default ReviewSubmission; 
+export default ViewSubmission; 
