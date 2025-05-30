@@ -68,7 +68,7 @@ const AdminApproval = () => {
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Objective</th>
+                            <th>Abstract</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -76,7 +76,7 @@ const AdminApproval = () => {
                         {submissions.map((submission) => (
                             <tr key={submission._id}>
                                 <td>{submission.title}</td>
-                                <td>{submission.objective}</td>
+                                <td>{submission.abstract}</td>
                                 <td>
                                     <button onClick={() => handleApproval(submission._id, 'approved')}>Approve</button>
                                     <button onClick={() => handleApproval(submission._id, 'rejected')}>Reject</button>

@@ -10,12 +10,12 @@ const asyncHandler = fn => (req, res, next) => {
 
 // Validation middleware
 const validateThesis = (req, res, next) => {
-    const { title, abstract, keywords, members, adviserEmail, docsLink, email, category, objective } = req.body;
+    const { title, abstract, keywords, members, adviserEmail, docsLink, email, category } = req.body;
 
-    if (!title?.trim() || !abstract?.trim() || !objective?.trim()) {
+    if (!title?.trim() || !abstract?.trim()) {
         return res.status(400).json({
             status: 'error',
-            message: 'Title, abstract, and objective are required'
+            message: 'Title and abstract are required'
         });
     }
 
@@ -92,7 +92,10 @@ const validateReview = (req, res, next) => {
 
 // Submit thesis
 router.post('/submit', validateThesis, asyncHandler(async (req, res) => {
-    const thesis = new Thesis(req.body);
+    const thesis = new Thesis({
+        ...req.body,
+        objective: req.body.abstract // Optional: Use abstract as objective if needed
+    });
     const savedThesis = await thesis.save();
 
     // Create notifications in parallel

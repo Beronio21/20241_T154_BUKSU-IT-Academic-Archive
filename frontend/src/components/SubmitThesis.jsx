@@ -7,7 +7,6 @@ const SubmitThesis = () => {
     const [formData, setFormData] = useState({
         title: '',
         abstract: '',
-        objective: '',
         keywords: [''],
         members: [''],
         adviserEmail: '',
@@ -195,13 +194,13 @@ const SubmitThesis = () => {
             const submissionData = {
                 title: formData.title,
                 abstract: formData.abstract,
+                objective: formData.abstract,
                 keywords: formData.keywords.filter(keyword => keyword.trim() !== ''),
                 members: formData.members.filter(member => member.trim() !== ''),
                 adviserEmail: formData.adviserEmail,
                 docsLink: formData.docsLink,
                 email: userInfo.email,
                 category: formData.category,
-                objective: formData.objective,
                 status: 'pending'
             };
 
@@ -256,7 +255,6 @@ const SubmitThesis = () => {
                 docsLink: '',
                 email: '',
                 category: '',
-                objective: ''
             });
         } catch (error) {
             console.error('Error:', error);
@@ -286,20 +284,6 @@ const SubmitThesis = () => {
                         />
                     </div>
                     
-                    <div className="form-group">
-                        <label htmlFor="objective">Research Objective</label>
-                        <textarea
-                            id="objective"
-                            name="objective"
-                            className="form-control"
-                            value={formData.objective}
-                            onChange={handleInputChange}
-                            placeholder="Enter the main objective of your research"
-                            rows="3"
-                            required
-                        />
-                    </div>
-
                     <div className="form-group">
                         <label htmlFor="abstract">Abstract</label>
                         <textarea

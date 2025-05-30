@@ -423,10 +423,6 @@ const ReviewSubmission = () => {
                                     <p className="mb-0">{selectedSubmission.title}</p>
                                 </div>
                                 <div className="mb-3">
-                                    <h6 className="text-muted">Objective</h6>
-                                    <p className="mb-0">{selectedSubmission.objective}</p>
-                                </div>
-                                <div className="mb-3">
                                     <h6 className="text-muted">Abstract</h6>
                                     <p className="mb-0">{selectedSubmission.abstract}</p>
                                 </div>

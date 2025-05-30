@@ -17,6 +17,7 @@ import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
 
 // Other Components
 import NotFound from './NotFound';
+import TrashArchives from './components/TrashArchives';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -85,6 +86,15 @@ function App() {
               element={
                 <ProtectedRoute 
                   element={<AdminDashboard />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/trash-archives" 
+              element={
+                <ProtectedRoute 
+                  element={<TrashArchives />} 
                   allowedRole="admin"
                 />
               } 

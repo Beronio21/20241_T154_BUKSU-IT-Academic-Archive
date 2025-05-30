@@ -32,7 +32,7 @@ const StudentApprovedCapstones = () => {
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Objective</th>
+                            <th>Abstract</th>
                             <th>Keywords</th>
                         </tr>
                     </thead>
@@ -40,7 +40,7 @@ const StudentApprovedCapstones = () => {
                         {approvedCapstones.map((capstone) => (
                             <tr key={capstone._id}>
                                 <td>{capstone.title}</td>
-                                <td>{capstone.objective}</td>
+                                <td>{capstone.abstract}</td>
                                 <td>{capstone.keywords.join(', ')}</td>
                             </tr>
                         ))}

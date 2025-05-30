@@ -38,6 +38,7 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
     { name: 'Teacher Records', section: 'teacher-records', icon: 'fas fa-chalkboard-teacher' },
     { name: 'Review Capstone', section: 'review-submissions', icon: 'fas fa-file-alt' },
     { name: 'Capstone Management', section: 'capstone-management', icon: 'fas fa-cogs' },
+    { name: 'Trash Archives', section: 'trash-archives', icon: 'fas fa-trash' },
     { name: 'Admin Register', section: 'admin-register', icon: 'fas fa-user-plus' },
   ];
 

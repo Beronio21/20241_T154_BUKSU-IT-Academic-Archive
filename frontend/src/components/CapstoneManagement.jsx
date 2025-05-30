@@ -16,7 +16,6 @@ const CapstoneManagement = () => {
         email: '',
         category: '',
         id: null,
-        objective: '',
     });
     const [isEditing, setIsEditing] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -27,7 +26,6 @@ const CapstoneManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
-    const [showObjectiveModal, setShowObjectiveModal] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [reviewData, setReviewData] = useState({
         status: '',
@@ -48,6 +46,9 @@ const CapstoneManagement = () => {
     const [revisionHistoryLoading, setRevisionHistoryLoading] = useState(false);
     const [revisionCurrentPage, setRevisionCurrentPage] = useState(1);
     const [revisionTotalPages, setRevisionTotalPages] = useState(1);
+    const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
+    const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+    const [deletedSubmissions, setDeletedSubmissions] = useState([]);
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
@@ -156,15 +157,10 @@ const CapstoneManagement = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
-
-        // Validate required fields
+        
+        // Required field validations
         if (!formData.title.trim()) {
-            setError('Research Title is required');
-            return;
-        }
-        if (!formData.objective.trim()) {
-            setError('Research Objective is required');
+            setError('Research title is required');
             return;
         }
         if (!formData.abstract.trim()) {
@@ -175,46 +171,25 @@ const CapstoneManagement = () => {
             setError('Category is required');
             return;
         }
-        if (!formData.members[0].trim()) {
-            setError('At least one member is required');
-            return;
-        }
-        if (!formData.keywords[0].trim()) {
+        if (!formData.keywords.some(keyword => keyword.trim())) {
             setError('At least one keyword is required');
             return;
         }
+        if (!formData.members.some(member => member.trim())) {
+            setError('At least one member is required');
+            return;
+        }
         if (!formData.adviserEmail.trim()) {
-            setError('Adviser Email is required');
+            setError('Adviser email is required');
             return;
         }
         if (!formData.docsLink.trim()) {
-            setError('Document Link is required');
+            setError('Document link is required');
             return;
         }
-
-        try {
-            if (isEditing) {
-                await axios.put(`http://localhost:8080/api/thesis/${formData.id}`, formData);
-                showSuccess(
-                    'Research Updated',
-                    'The research paper has been successfully updated.',
-                    <FaEdit className="text-primary" size={48} />
-                );
-            } else {
-                await axios.post('http://localhost:8080/api/thesis/submit', formData);
-                showSuccess(
-                    'Research Added',
-                    'The research paper has been successfully added.',
-                    <FaPlus className="text-success" size={48} />
-                );
-            }
-            fetchSubmissions();
-            resetForm();
-            setShowEditModal(false);
-        } catch (error) {
-            console.error('Error submitting thesis:', error);
-            setError(error.response?.data?.message || 'Failed to submit thesis. Please try again.');
-        }
+        
+        // Show confirmation modal if all validations pass
+        setShowConfirmModal(true);
     };
 
     const handleEdit = (submission) => {
@@ -228,38 +203,45 @@ const CapstoneManagement = () => {
             email: submission.email,
             category: submission.category,
             id: submission._id,
-            objective: submission.objective,
         });
         setIsEditing(true);
         setShowEditModal(true);
     };
 
     const handleDelete = async () => {
+        if (deleteConfirmationText !== 'DELETE') {
+            setError('Please type "DELETE" to confirm deletion.');
+            return;
+        }
+
         if (selectedSubmission) {
             try {
-                await axios.delete(`http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`);
-                showSuccess(
-                    'Research Deleted',
-                    'The research paper has been successfully deleted.',
-                    <FaTrash className="text-danger" size={48} />
+                // Move to trash instead of permanent deletion
+                const response = await axios.put(
+                    `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`,
+                    { isDeleted: true }
                 );
-                fetchSubmissions();
-                setShowDeleteModal(false);
-                setSelectedSubmission(null);
+
+                if (response.data.status === 'success') {
+                    showSuccess(
+                        'Research Moved to Trash',
+                        'The research paper has been moved to the trash archive.',
+                        <FaTrash className="text-danger" size={48} />
+                    );
+                    fetchSubmissions();
+                    setShowDeleteModal(false);
+                    setSelectedSubmission(null);
+                    setDeleteConfirmationText('');
+                }
             } catch (error) {
-                console.error('Error deleting thesis:', error);
-                setError(error.response?.data?.message || 'Failed to delete thesis. Please try again.');
+                console.error('Error moving to trash:', error);
+                setError(error.response?.data?.message || 'Failed to move to trash. Please try again.');
             }
         }
     };
 
     const confirmDelete = (submission) => {
-        // Ensure members array exists
-        const submissionWithMembers = {
-            ...submission,
-            members: submission.members || []
-        };
-        setSelectedSubmission(submissionWithMembers);
+        setSelectedSubmission(submission);
         setShowDeleteModal(true);
     };
 
@@ -274,7 +256,6 @@ const CapstoneManagement = () => {
             email: '',
             category: '',
             id: null,
-            objective: '',
         });
         setIsEditing(false);
     };
@@ -567,6 +548,112 @@ const CapstoneManagement = () => {
         }
     };
 
+    // Add recovery function
+    const recoverSubmission = async (submissionId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/api/thesis/recover/${submissionId}`,
+                { isDeleted: false }
+            );
+
+            if (response.data.status === 'success') {
+                showSuccess(
+                    'Research Recovered',
+                    'The research paper has been successfully recovered.',
+                    <FaCheckCircle className="text-success" size={48} />
+                );
+                fetchSubmissions();
+                setShowRecoveryModal(false);
+            }
+        } catch (error) {
+            console.error('Error recovering submission:', error);
+            setError(error.response?.data?.message || 'Failed to recover submission. Please try again.');
+        }
+    };
+
+    // Add a modal for recovery
+    const renderRecoveryModal = () => (
+        <Modal show={showRecoveryModal} onHide={() => setShowRecoveryModal(false)} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Recover Deleted Research</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {deletedSubmissions.length === 0 ? (
+                    <Alert variant="info">No deleted submissions found.</Alert>
+                ) : (
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {deletedSubmissions.map((submission) => (
+                                <tr key={submission._id}>
+                                    <td>{submission.title}</td>
+                                    <td>
+                                        <Button
+                                            variant="success"
+                                            size="sm"
+                                            onClick={() => recoverSubmission(submission._id)}
+                                        >
+                                            Recover
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
+            </Modal.Body>
+        </Modal>
+    );
+
+    // Update the delete modal to include confirmation text input
+    const renderDeleteModal = () => (
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm Deletion</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Alert variant="warning">
+                    <FaExclamationTriangle className="me-2" />
+                    Type "DELETE" to confirm deletion.
+                </Alert>
+                <Form.Control
+                    type="text"
+                    placeholder="Type DELETE to confirm"
+                    value={deleteConfirmationText}
+                    onChange={(e) => setDeleteConfirmationText(e.target.value)}
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                    Cancel
+                </Button>
+                <Button variant="danger" onClick={handleDelete}>
+                    <FaTrash className="me-2" />
+                    Confirm Delete
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    // Add a button to open the recovery modal
+    const renderRecoveryButton = () => (
+        <Button
+            variant="outline-secondary"
+            onClick={() => {
+                fetchDeletedSubmissions();
+                setShowRecoveryModal(true);
+            }}
+        >
+            <FaTrash className="me-2" />
+            Trash Archives
+        </Button>
+    );
+
     return (
         <div className="container-fluid" style={{ 
             minWidth: '1200px',
@@ -622,7 +709,7 @@ const CapstoneManagement = () => {
                                             <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
                                                 <tr>
                                                     <th style={{ width: '25%', minWidth: '200px' }}>Title</th>
-                                                    <th style={{ width: '25%', minWidth: '200px' }}>Objective</th>
+                                                    <th style={{ width: '25%', minWidth: '200px' }}>Abstract</th>
                                                     <th style={{ width: '20%', minWidth: '200px' }}>Members</th>
                                                     <th style={{ width: '15%', minWidth: '150px' }}>Email</th>
                                                     <th style={{ width: '8%', minWidth: '100px' }}>Status</th>
@@ -632,82 +719,11 @@ const CapstoneManagement = () => {
                                             <tbody>
                                                 {currentSubmissions.map((submission) => (
                                                     <tr key={submission._id}>
-                                                        <td>
-                                                            <div className="text-truncate" style={{ maxWidth: '200px' }} title={submission.title}>
-                                                                {submission.title}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div style={{ position: 'relative' }}>
-                                                                <div 
-                                                                    className="objective-preview" 
-                                                                    style={{ 
-                                                                        maxWidth: '200px',
-                                                                        maxHeight: '60px',
-                                                                        overflow: 'hidden',
-                                                                        position: 'relative'
-                                                                    }}
-                                                                >
-                                                                    <p className="mb-0" style={{ fontSize: '0.9rem' }}>
-                                                                        {submission.objective}
-                                                                    </p>
-                                                                    {submission.objective.length > 100 && (
-                                                                        <div 
-                                                                            className="objective-fade"
-                                                                            style={{
-                                                                                position: 'absolute',
-                                                                                bottom: 0,
-                                                                                left: 0,
-                                                                                right: 0,
-                                                                                height: '20px',
-                                                                                background: 'linear-gradient(transparent, white)'
-                                                                            }}
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                                {submission.objective.length > 100 && (
-                                                                    <Button
-                                                                        variant="link"
-                                                                        size="sm"
-                                                                        className="p-0 mt-1"
-                                                                        onClick={() => {
-                                                                            setSelectedSubmission(submission);
-                                                                            setShowObjectiveModal(true);
-                                                                        }}
-                                                                        style={{ fontSize: '0.8rem' }}
-                                                                    >
-                                                                        Read More...
-                                                                    </Button>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="text-truncate" style={{ maxWidth: '200px' }} title={Array.isArray(submission.members) ? submission.members.join(', ') : 'No members'}>
-                                                                {Array.isArray(submission.members) ? submission.members.join(', ') : 'No members'}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="text-truncate" style={{ maxWidth: '150px' }} title={submission.email}>
-                                                                {submission.email}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            {renderStatusBadge(submission.status, submission.reviewedBy)}
-                                                            {submission.status === 'revision' && (
-                                                                <Button
-                                                                    variant="link"
-                                                                    size="sm"
-                                                                    className="p-0 mt-1 d-block"
-                                                                    onClick={() => {
-                                                                        setSelectedSubmission(submission);
-                                                                        fetchRevisionHistory(submission._id);
-                                                                        setShowRevisionHistoryModal(true);
-                                                                    }}
-                                                                >
-                                                                    View History
-                                                                </Button>
-                                                            )}
-                                                        </td>
+                                                        <td>{submission.title}</td>
+                                                        <td>{submission.abstract}</td>
+                                                        <td>{submission.members.join(', ')}</td>
+                                                        <td>{submission.email}</td>
+                                                        <td>{renderStatusBadge(submission.status)}</td>
                                                         <td>
                                                             <div className="d-flex align-items-center justify-content-start gap-2">
                                                                 <Button
@@ -778,97 +794,8 @@ const CapstoneManagement = () => {
                 </div>
             </div>
 
-            {/* Delete Modal */}
-            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered size="lg">
-                <Modal.Header className="bg-danger text-white">
-                    <Modal.Title>
-                        <FaTrash className="me-2" />
-                        Confirm Delete Research Paper
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="delete-confirmation-content">
-                        <Alert variant="warning" className="mb-4">
-                            <FaExclamationTriangle className="me-2" />
-                            Are you sure you want to delete this research paper? This action cannot be undone.
-                        </Alert>
-
-                        {selectedSubmission && (
-                            <div className="research-details">
-                                <Card className="mb-3">
-                                    <Card.Header className="bg-light">
-                                        <h5 className="mb-0">Research Information</h5>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <h6 className="text-muted mb-2">Title</h6>
-                                                <p className="mb-3">{selectedSubmission.title}</p>
-                                                
-                                                <h6 className="text-muted mb-2">Category</h6>
-                                                <p className="mb-3">
-                                                    <Badge bg="info">{selectedSubmission.category}</Badge>
-                                                </p>
-
-                                                <h6 className="text-muted mb-2">Status</h6>
-                                                <p className="mb-3">
-                                                    {renderStatusBadge(selectedSubmission.status, selectedSubmission.reviewedBy)}
-                                                </p>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <h6 className="text-muted mb-2">Members</h6>
-                                                <p className="mb-3">
-                                                    {selectedSubmission.members?.map((member, index) => (
-                                                        <Badge 
-                                                            key={index} 
-                                                            bg="secondary" 
-                                                            className="me-1 mb-1"
-                                                        >
-                                                            {member}
-                                                        </Badge>
-                                                    ))}
-                                                </p>
-
-                                                <h6 className="text-muted mb-2">Adviser Email</h6>
-                                                <p className="mb-3">{selectedSubmission.adviserEmail}</p>
-
-                                                <h6 className="text-muted mb-2">Submission Date</h6>
-                                                <p className="mb-0">
-                                                    {new Date(selectedSubmission.createdAt).toLocaleDateString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric',
-                                                        hour: '2-digit',
-                                                        minute: '2-digit'
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-3">
-                                            <h6 className="text-muted mb-2">Objective</h6>
-                                            <div className="objective-preview p-3 bg-light rounded">
-                                                <p className="mb-0" style={{ lineHeight: '1.6', textAlign: 'justify' }}>
-                                                    {selectedSubmission.objective}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                        )}
-                    </div>
-                </Modal.Body>
-                <Modal.Footer className="bg-light">
-                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="danger" onClick={handleDelete}>
-                        <FaTrash className="me-2" />
-                        Delete Research Paper
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {renderDeleteModal()}
+            {renderRecoveryModal()}
 
             {/* Edit/Add Modal */}
             <Modal show={showEditModal} onHide={() => setShowEditModal(false)} size="xl" centered>
@@ -910,40 +837,6 @@ const CapstoneManagement = () => {
                                                 placeholder="Enter research title"
                                                 required
                                             />
-                                        </div>
-
-                                        <div className="mb-3">
-                                            <label className="form-label required">
-                                                <FaFileAlt className="me-2" />
-                                                Research Objective
-                                            </label>
-                                            <div className="objective-input-wrapper">
-                                                <textarea
-                                                    className="form-control"
-                                                    name="objective"
-                                                    value={formData.objective}
-                                                    onChange={handleInputChange}
-                                                    rows="5"
-                                                    placeholder="Enter a clear and concise research objective that describes the main goal of your study..."
-                                                    required
-                                                    style={{ resize: 'vertical', minHeight: '120px' }}
-                                                />
-                                                <small className="text-muted mt-2 d-block">
-                                                    <FaInfoCircle className="me-1" />
-                                                    Write a clear, specific, and measurable objective that outlines the main purpose of your research.
-                                                </small>
-                                                <div className="mt-2 d-flex justify-content-between">
-                                                    <small className="text-muted">
-                                                        Characters: {formData.objective.length}
-                                                    </small>
-                                                    {formData.objective.length > 500 && (
-                                                        <small className="text-warning">
-                                                            <FaExclamationTriangle className="me-1" />
-                                                            Consider making the objective more concise
-                                                        </small>
-                                                    )}
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div className="mb-3">
@@ -1153,273 +1046,6 @@ const CapstoneManagement = () => {
                         </div>
                     </form>
                 </Modal.Body>
-            </Modal>
-
-            {/* Objective View Modal */}
-            <Modal 
-                show={showObjectiveModal} 
-                onHide={() => setShowObjectiveModal(false)}
-                centered
-                size="lg"
-                backdrop="static"
-                className="research-details-modal"
-            >
-                <Modal.Header className="bg-gradient-primary text-white border-0" 
-                    style={{ 
-                        borderRadius: '0',
-                        background: 'linear-gradient(135deg, #0062cc 0%, #0044cc 100%)',
-                        padding: '1.5rem'
-                    }}
-                >
-                    <Modal.Title className="w-100">
-                        <div className="d-flex align-items-center">
-                            <div className="modal-icon-wrapper bg-white bg-opacity-25 rounded-circle p-2 me-3">
-                                <FaFileAlt className="text-white" size={24} />
-                            </div>
-                            <div>
-                                <h4 className="mb-1 fw-bold">Research Details</h4>
-                                <p className="mb-0" style={{ fontSize: '0.95rem', opacity: '0.9', letterSpacing: '0.3px' }}>
-                                    Comprehensive overview of the research paper
-                                </p>
-                            </div>
-                        </div>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="p-0">
-                    {selectedSubmission && (
-                        <div className="research-objective-detail">
-                            {/* Title Section */}
-                            <div className="p-4 bg-light border-bottom">
-                                <div className="d-flex justify-content-between align-items-start">
-                                    <div className="research-title-section" style={{ maxWidth: '80%' }}>
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem', fontWeight: '600' }}>
-                                            RESEARCH TITLE
-                                        </h6>
-                                        <h3 className="mb-0" style={{ 
-                                            color: '#2c3e50', 
-                                            lineHeight: '1.4',
-                                            fontWeight: '700',
-                                            letterSpacing: '0.2px'
-                                        }}>
-                                            {selectedSubmission.title}
-                                        </h3>
-                                    </div>
-                                    <Badge 
-                                        bg={selectedSubmission.status?.toLowerCase() === 'approved' ? 'success' : 'warning'}
-                                        className="px-3 py-2 ms-3"
-                                        style={{ fontSize: '0.9rem', minWidth: '100px', textAlign: 'center' }}
-                                    >
-                                        {selectedSubmission.status || 'Pending'}
-                                    </Badge>
-                                </div>
-                            </div>
-
-                            {/* Main Content */}
-                            <div className="p-4">
-                                {/* Abstract Section */}
-                                <div className="mb-4">
-                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem', fontWeight: '600' }}>
-                                        ABSTRACT
-                                    </h6>
-                                    <div className="abstract-content p-4 bg-white rounded-3 border" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                        <p style={{ 
-                                            lineHeight: '1.8', 
-                                            textAlign: 'justify',
-                                            color: '#2c3e50',
-                                            fontSize: '1rem',
-                                            marginBottom: '0'
-                                        }}>
-                                            {selectedSubmission.abstract}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Objective Section */}
-                                <div className="mb-4">
-                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem', fontWeight: '600' }}>
-                                        RESEARCH OBJECTIVE
-                                    </h6>
-                                    <div className="objective-content p-4 bg-white rounded-3 border" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                        <p style={{ 
-                                            lineHeight: '1.8', 
-                                            textAlign: 'justify',
-                                            color: '#2c3e50',
-                                            fontSize: '1rem',
-                                            marginBottom: '0'
-                                        }}>
-                                            {selectedSubmission.objective}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Category and Keywords */}
-                                <div className="row g-4 mb-4">
-                                    <div className="col-md-4">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem', fontWeight: '600' }}>
-                                            CATEGORY
-                                        </h6>
-                                        <div className="category-card bg-white p-3 rounded-3 border d-flex align-items-center" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                            <div className="category-icon-wrapper bg-info bg-opacity-10 rounded-circle p-2 me-2">
-                                                <FaFolder className="text-info" size={16} />
-                                            </div>
-                                            <span className="fw-medium" style={{ color: '#2c3e50', fontSize: '0.95rem' }}>
-                                                {selectedSubmission.category}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem', fontWeight: '600' }}>
-                                            KEYWORDS
-                                        </h6>
-                                        <div className="keywords-card bg-white p-3 rounded-3 border" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                            {selectedSubmission.keywords?.map((keyword, index) => (
-                                                <Badge 
-                                                    key={index} 
-                                                    bg="primary" 
-                                                    className="me-2 mb-2 px-3 py-2"
-                                                    style={{ 
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: '500',
-                                                        backgroundColor: '#3498db'
-                                                    }}
-                                                >
-                                                    {keyword}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Team Section */}
-                                <div className="team-section bg-light rounded-3 p-4 mb-4">
-                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                        RESEARCH TEAM
-                                    </h6>
-                                    <div className="row g-3">
-                                        {selectedSubmission.members?.map((member, index) => (
-                                            <div key={index} className="col-md-6">
-                                                <div className="member-card bg-white rounded-3 p-3 border d-flex align-items-center">
-                                                    <div className="member-avatar bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                                        <FaUser className="text-primary" size={16} />
-                                                    </div>
-                                                    <div>
-                                                        <h6 className="mb-0" style={{ color: '#2c3e50' }}>{member}</h6>
-                                                        <small className="text-muted">Team Member</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Adviser Section */}
-                                {selectedSubmission.adviserEmail && (
-                                    <div className="adviser-section">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                            RESEARCH ADVISER
-                                        </h6>
-                                        <div className="adviser-card bg-light rounded-3 p-3 border d-flex align-items-center">
-                                            <div className="adviser-avatar bg-success bg-opacity-10 rounded-circle p-2 me-3">
-                                                <FaUserTie className="text-success" size={16} />
-                                            </div>
-                                            <div>
-                                                <h6 className="mb-1" style={{ color: '#2c3e50' }}>Research Adviser</h6>
-                                                <a 
-                                                    href={`mailto:${selectedSubmission.adviserEmail}`}
-                                                    className="text-decoration-none d-flex align-items-center"
-                                                    style={{ color: '#3498db' }}
-                                                >
-                                                    <FaEnvelope className="me-2" size={14} />
-                                                    {selectedSubmission.adviserEmail}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Action Buttons Section */}
-                                <div className="action-buttons-section mt-4">
-                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem', fontWeight: '600' }}>
-                                        ACTIONS
-                                    </h6>
-                                    <div className="action-buttons-container bg-white p-4 rounded-3 border" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                                        <div className="row g-3">
-                                            <div className="col-md-4">
-                                                <Button
-                                                    variant="outline-primary"
-                                                    className="w-100 d-flex align-items-center justify-content-center gap-2 py-2"
-                                                    onClick={() => handleEdit(selectedSubmission)}
-                                                    style={{
-                                                        borderWidth: '2px',
-                                                        transition: 'all 0.2s ease',
-                                                        fontSize: '0.95rem'
-                                                    }}
-                                                >
-                                                    <FaEdit size={16} />
-                                                    <span>Edit Research</span>
-                                                </Button>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <Button
-                                                    variant="outline-warning"
-                                                    className="w-100 d-flex align-items-center justify-content-center gap-2 py-2"
-                                                    onClick={() => {
-                                                        setShowObjectiveModal(false);
-                                                        handleReview(selectedSubmission);
-                                                    }}
-                                                    style={{
-                                                        borderWidth: '2px',
-                                                        transition: 'all 0.2s ease',
-                                                        fontSize: '0.95rem'
-                                                    }}
-                                                >
-                                                    <FaClipboardCheck size={16} />
-                                                    <span>Review Paper</span>
-                                                </Button>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <Button
-                                                    variant="outline-danger"
-                                                    className="w-100 d-flex align-items-center justify-content-center gap-2 py-2"
-                                                    onClick={() => {
-                                                        setShowObjectiveModal(false);
-                                                        confirmDelete(selectedSubmission);
-                                                    }}
-                                                    style={{
-                                                        borderWidth: '2px',
-                                                        transition: 'all 0.2s ease',
-                                                        fontSize: '0.95rem'
-                                                    }}
-                                                >
-                                                    <FaTrash size={16} />
-                                                    <span>Delete Paper</span>
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer className="bg-light border-0 p-4">
-                    <Button 
-                        variant="primary" 
-                        size="lg"
-                        className="px-4 d-flex align-items-center"
-                        onClick={() => setShowObjectiveModal(false)}
-                        style={{ 
-                            background: 'linear-gradient(135deg, #0062cc 0%, #0044cc 100%)',
-                            border: 'none',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                            padding: '10px 24px',
-                            fontSize: '0.95rem',
-                            fontWeight: '500'
-                        }}
-                    >
-                        Close Details
-                    </Button>
-                </Modal.Footer>
             </Modal>
 
             {/* Review Modal */}
