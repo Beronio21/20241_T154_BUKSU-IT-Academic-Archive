@@ -85,7 +85,16 @@ const thesisSchema = new mongoose.Schema({
             default: Date.now,
             index: true
         }
-    }]
+    }],
+    isDeleted: {
+        type: Boolean,
+        default: false,
+        index: true
+    },
+    deletedAt: {
+        type: Date,
+        index: true
+    }
 }, {
     timestamps: true
 });

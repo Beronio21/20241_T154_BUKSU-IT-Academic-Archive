@@ -157,7 +157,7 @@ const CapstoneManagement = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Required field validations
         if (!formData.title.trim()) {
             setError('Research title is required');
@@ -183,7 +183,7 @@ const CapstoneManagement = () => {
             setError('Document link is required');
             return;
         }
-        
+
         // Show confirmation modal if all validations pass
         setShowConfirmModal(true);
     };
@@ -209,29 +209,25 @@ const CapstoneManagement = () => {
             return;
         }
 
-        if (selectedSubmission) {
-            try {
-                // Move to trash instead of permanent deletion
-                const response = await axios.put(
-                    `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`,
-                    { isDeleted: true }
-                );
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`
+            );
 
-                if (response.data.status === 'success') {
-                    showSuccess(
-                        'Research Moved to Trash',
-                        'The research paper has been moved to the trash archive.',
-                        <FaTrash className="text-danger" size={48} />
-                    );
-                    fetchSubmissions();
-                    setShowDeleteModal(false);
-                    setSelectedSubmission(null);
-                    setDeleteConfirmationText('');
-                }
-            } catch (error) {
-                console.error('Error moving to trash:', error);
-                setError(error.response?.data?.message || 'Failed to move to trash. Please try again.');
+            if (response.data.status === 'success') {
+                showSuccess(
+                    'Research Moved to Trash',
+                    'The research paper has been moved to the trash archive.',
+                    <FaTrash className="text-danger" size={48} />
+                );
+                fetchSubmissions(); // Refresh the list
+                setShowDeleteModal(false);
+                setSelectedSubmission(null);
+                setDeleteConfirmationText('');
             }
+        } catch (error) {
+            console.error('Error moving to trash:', error);
+            setError(error.response?.data?.message || 'Failed to move to trash. Please try again.');
         }
     };
 

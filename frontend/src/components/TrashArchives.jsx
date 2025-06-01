@@ -27,7 +27,7 @@ const TrashArchives = () => {
                 setDeletedSubmissions(response.data.data);
             }
         } catch (error) {
-            console.error('Error fetching deleted submissions:', error);
+            console.error('Error fetching trash:', error);
             setError('Failed to fetch deleted submissions. Please try again.');
         } finally {
             setLoading(false);

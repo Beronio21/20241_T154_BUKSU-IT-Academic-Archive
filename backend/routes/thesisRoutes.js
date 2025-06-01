@@ -636,6 +636,60 @@ router.get('/review-stats', asyncHandler(async (req, res) => {
     });
 }));
 
+// Add this route for soft-deleting (moving to trash)
+router.put('/delete/:thesisId', async (req, res) => {
+    try {
+        const { thesisId } = req.params;
+        const thesis = await Thesis.findByIdAndUpdate(
+            thesisId,
+            { 
+                isDeleted: true, 
+                deletedAt: new Date() 
+            },
+            { new: true }
+        );
+
+        if (!thesis) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Thesis not found'
+            });
+        }
+
+        res.json({
+            status: 'success',
+            message: 'Thesis moved to trash successfully',
+            data: thesis
+        });
+    } catch (error) {
+        console.error('Error moving to trash:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to move to trash'
+        });
+    }
+});
+
+// Add this route to fetch deleted submissions
+router.get('/trash', async (req, res) => {
+    try {
+        const deletedSubmissions = await Thesis.find({ isDeleted: true })
+            .sort({ deletedAt: -1 })
+            .lean();
+
+        res.json({
+            status: 'success',
+            data: deletedSubmissions
+        });
+    } catch (error) {
+        console.error('Error fetching trash:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch trash'
+        });
+    }
+});
+
 // Error handling middleware
 router.use((err, req, res, next) => {
     console.error('Error in thesis routes:', err);
