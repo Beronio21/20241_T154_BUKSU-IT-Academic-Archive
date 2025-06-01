@@ -438,81 +438,40 @@ const StudentDashboard = () => {
               </Modal.Footer>
             </Modal>
 
-            <Modal 
-              show={showDetailsModal} 
-              onHide={() => setShowDetailsModal(false)} 
-              size="lg"
-              className="thesis-details-modal"
-              backdrop="static"
-            >
-              <Modal.Header className="border-0 pb-0" style={{
-                background: 'linear-gradient(135deg, #0062cc 0%, #0044cc 100%)',
-                color: 'white',
-                padding: '20px 30px'
-              }}>
-                <Modal.Title style={{ width: '100%' }}>
-                  <div className="d-flex flex-column">
-                    <h4 className="mb-2" style={{ fontSize: '1.5rem', fontWeight: '600' }}>Thesis Details</h4>
-                    <p className="mb-0" style={{ fontSize: '0.9rem', opacity: '0.9' }}>
-                      Comprehensive overview of the research paper
-                    </p>
-                  </div>
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body style={{ padding: '30px' }}>
-                {selectedThesis && (
-                  <div className="thesis-details">
-                    <div className="detail-section mb-4">
-                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Title</h4>
-                      <p className="p-3 bg-light rounded" style={{ fontSize: '1.1rem' }}>{selectedThesis.title}</p>
-                    </div>
-                    <div className="detail-section mb-4">
-                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Abstract</h4>
-                      <p className="p-3 bg-light rounded" style={{ lineHeight: '1.6' }}>{selectedThesis.abstract}</p>
-                    </div>
-                    <div className="detail-section mb-4">
-                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Members</h4>
-                      <div className="members-list p-3 bg-light rounded">
-                        {selectedThesis.members.map((member, index) => (
-                          <div key={index} className="member-item mb-2" style={{ fontSize: '1rem' }}>
-                            • {member}
-                          </div>
-                        ))}
+            <div className={`custom-modal ${showDetailsModal ? 'show' : ''}`} onClick={() => setShowDetailsModal(false)}>
+              <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="custom-modal-header">
+                  <h3>Thesis Details</h3>
+                  <button onClick={() => setShowDetailsModal(false)} className="close-button">
+                    &times;
+                  </button>
+                </div>
+                <div className="custom-modal-body">
+                  {selectedThesis && (
+                    <div className="thesis-details">
+                      <div className="detail-section">
+                        <h4>Title</h4>
+                        <p>{selectedThesis.title}</p>
+                      </div>
+                      <div className="detail-section">
+                        <h4>Abstract</h4>
+                        <p>{selectedThesis.abstract}</p>
+                      </div>
+                      <div className="detail-section">
+                        <h4>Members</h4>
+                        <div className="members-list">
+                          {selectedThesis.members.map((member, index) => (
+                            <div key={index} className="member-item">
+                              • {member}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="detail-section mb-4">
-                      <h4 className="text-primary mb-3" style={{ fontSize: '1.2rem', fontWeight: '600' }}>Submission Information</h4>
-                      <div className="info-grid p-3 bg-light rounded">
-                        <div className="info-item mb-3">
-                          <label className="text-muted mb-1">Student Email:</label>
-                          <p className="mb-0" style={{ fontSize: '1rem' }}>{selectedThesis.email}</p>
-                        </div>
-                        <div className="info-item mb-3">
-                          <label className="text-muted mb-1">Submitted Date:</label>
-                          <p className="mb-0" style={{ fontSize: '1rem' }}>{new Date(selectedThesis.createdAt).toLocaleDateString()}</p>
-                        </div>
-                        <div className="info-item">
-                        
-                        </div>
-                      </div>  
-                    </div>
-                  </div>
-                )}
-              </Modal.Body>
-              <Modal.Footer className="border-0" style={{ padding: '20px 30px' }}>
-                <button 
-                  onClick={() => setShowDetailsModal(false)} 
-                  className="btn btn-secondary"
-                  style={{
-                    padding: '10px 24px',
-                    fontSize: '1rem',
-                    fontWeight: '500'
-                  }}
-                >
-                  Close
-                </button>
-              </Modal.Footer>
-            </Modal>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         );
     }

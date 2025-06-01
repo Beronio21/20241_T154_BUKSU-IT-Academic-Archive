@@ -419,59 +419,67 @@ const ViewSubmission = () => {
 
             {/* View Submission Modal */}
             {selectedSubmission && (
-                <Modal show={!!selectedSubmission} onHide={() => setSelectedSubmission(null)} size="lg" centered>
-                    <Modal.Header closeButton={false} className="bg-primary text-white">
-                        <Modal.Title>Submission Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className="p-4">
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Title</h6>
-                                    <p className="mb-0">{selectedSubmission.title}</p>
+                <div className={`custom-modal ${selectedSubmission ? 'show' : ''}`} onClick={() => setSelectedSubmission(null)}>
+                    <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="custom-modal-header">
+                            <h3>Submission Details</h3>
+                            <button onClick={() => setSelectedSubmission(null)} className="close-button">
+                                &times;
+                            </button>
+                        </div>
+                        <div className="custom-modal-body">
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Title</h6>
+                                        <p className="mb-0">{selectedSubmission.title}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Abstract</h6>
+                                        <p className="mb-0">{selectedSubmission.abstract}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Category</h6>
+                                        <p className="mb-0">{selectedSubmission.category}</p>
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Abstract</h6>
-                                    <p className="mb-0">{selectedSubmission.abstract}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Category</h6>
-                                    <p className="mb-0">{selectedSubmission.category}</p>
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Members</h6>
-                                    <p className="mb-0">{Array.isArray(selectedSubmission.members) ? selectedSubmission.members.join(', ') : 'No members'}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Keywords</h6>
-                                    <p className="mb-0">{selectedSubmission.keywords.join(', ')}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Student Email</h6>
-                                    <p className="mb-0">{selectedSubmission.email}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Document Link</h6>
-                                    <a 
-                                        href={selectedSubmission.docsLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="btn btn-link p-0"
-                                    >
-                                        View Document
-                                    </a>
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Members</h6>
+                                        <p className="mb-0">{Array.isArray(selectedSubmission.members) ? selectedSubmission.members.join(', ') : 'No members'}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Keywords</h6>
+                                        <p className="mb-0">{selectedSubmission.keywords.join(', ')}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Student Email</h6>
+                                        <p className="mb-0">{selectedSubmission.email}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Document Link</h6>
+                                        <a 
+                                            href={selectedSubmission.docsLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-link p-0"
+                                        >
+                                            View Document
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </Modal.Body>
-                    <Modal.Footer className="bg-light">
-                        <Button variant="secondary" onClick={() => setSelectedSubmission(null)}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                        <div className="custom-modal-footer">
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => setSelectedSubmission(null)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
