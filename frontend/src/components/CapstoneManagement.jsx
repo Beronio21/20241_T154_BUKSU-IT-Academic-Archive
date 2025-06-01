@@ -611,32 +611,40 @@ const CapstoneManagement = () => {
 
     // Update the delete modal to include confirmation text input
     const renderDeleteModal = () => (
-        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Confirm Deletion</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Alert variant="warning">
-                    <FaExclamationTriangle className="me-2" />
-                    Type "DELETE" to confirm deletion.
-                </Alert>
-                <Form.Control
-                    type="text"
-                    placeholder="Type DELETE to confirm"
-                    value={deleteConfirmationText}
-                    onChange={(e) => setDeleteConfirmationText(e.target.value)}
-                />
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                    Cancel
-                </Button>
-                <Button variant="danger" onClick={handleDelete}>
-                    <FaTrash className="me-2" />
-                    Confirm Delete
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        <div className={`custom-modal ${showDeleteModal ? 'show' : ''}`} onClick={() => setShowDeleteModal(false)}>
+            <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+                <div className="custom-modal-header bg-danger text-white">
+                    <h3>
+                        <FaExclamationTriangle className="me-2" />
+                        Confirm Deletion
+                    </h3>
+                    <button onClick={() => setShowDeleteModal(false)} className="close-button">
+                        &times;
+                    </button>
+                </div>
+                <div className="custom-modal-body">
+                    <Alert variant="warning">
+                        <FaExclamationTriangle className="me-2" />
+                        Type "DELETE" to confirm deletion.
+                    </Alert>
+                    <Form.Control
+                        type="text"
+                        placeholder="Type DELETE to confirm"
+                        value={deleteConfirmationText}
+                        onChange={(e) => setDeleteConfirmationText(e.target.value)}
+                    />
+                </div>
+                <div className="custom-modal-footer">
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleDelete}>
+                        <FaTrash className="me-2" />
+                        Confirm Delete
+                    </Button>
+                </div>
+            </div>
+        </div>
     );
 
     // Add a button to open the recovery modal
@@ -797,511 +805,503 @@ const CapstoneManagement = () => {
             {renderRecoveryModal()}
 
             {/* Edit/Add Modal */}
-            <Modal show={showEditModal} onHide={() => setShowEditModal(false)} size="xl" centered>
-                <Modal.Header closeButton={false} className="bg-primary text-white">
-                    <Modal.Title>
-                        {isEditing ? (
-                            <>
-                                <FaEdit className="me-2" />
-                                Edit Research Paper
-                            </>
-                        ) : (
-                            <>
-                                <FaPlus className="me-2" />
-                                Add New Research Paper
-                            </>
-                        )}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="p-4">
-                    <form onSubmit={handleSubmit}>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <Card className="mb-4">
-                                    <Card.Header className="bg-light">
-                                        <h6 className="mb-0">Basic Information</h6>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <div className="mb-3">
-                                            <label className="form-label required">
-                                                <FaFileAlt className="me-2" />
-                                                Research Title
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="title"
-                                                value={formData.title}
-                                                onChange={handleInputChange}
-                                                placeholder="Enter research title"
-                                                required
-                                            />
-                                        </div>
-
-                                        <div className="mb-3">
-                                            <label className="form-label required">
-                                                <FaFileAlt className="me-2" />
-                                                Abstract
-                                            </label>
-                                            <textarea
-                                                className="form-control"
-                                                name="abstract"
-                                                value={formData.abstract}
-                                                onChange={handleInputChange}
-                                                rows="4"
-                                                placeholder="Enter research abstract"
-                                                required
-                                            />
-                                        </div>
-
-                                        <div className="mb-0">
-                                            <label className="form-label required">
-                                                <FaFileAlt className="me-2" />
-                                                Category
-                                            </label>
-                                            <select
-                                                className="form-select"
-                                                name="category"
-                                                value={formData.category}
-                                                onChange={handleInputChange}
-                                                required
-                                            >
-                                                <option value="">Select a category</option>
-                                                {categories.map((cat) => (
-                                                    <option key={cat} value={cat}>{cat}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-
-                                <Card>
-                                    <Card.Header className="bg-light">
-                                        <h6 className="mb-0">Document Information</h6>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <div className="mb-0">
-                                            <label className="form-label required">
-                                                <FaLink className="me-2" />
-                                                Document Link
-                                            </label>
-                                            <input
-                                                type="url"
-                                                className="form-control"
-                                                name="docsLink"
-                                                value={formData.docsLink}
-                                                onChange={handleInputChange}
-                                                placeholder="Enter document link"
-                                                required
-                                            />
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-
-                            <div className="col-md-6">
-                                <Card className="mb-4">
-                                    <Card.Header className="bg-light">
-                                        <h6 className="mb-0">Team Members</h6>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <div className="members-container mb-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                            {formData.members.map((member, index) => (
-                                                <div key={index} className="d-flex mb-2 align-items-center">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="members"
-                                                        value={member}
-                                                        onChange={(e) => handleInputChange(e, index)}
-                                                        placeholder={`Member ${index + 1}`}
-                                                        required
-                                                    />
-                                                    <Button
-                                                        variant="danger"
-                                                        size="sm"
-                                                        className="ms-2"
-                                                        onClick={() => removeMember(index)}
-                                                        disabled={formData.members.length === 1}
-                                                    >
-                                                        <FaTrash />
-                                                    </Button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <Button 
-                                            variant="outline-primary" 
-                                            size="sm" 
-                                            onClick={addMember}
-                                            className="w-100"
-                                        >
-                                            <FaPlus className="me-1" /> Add Member
-                                        </Button>
-                                    </Card.Body>
-                                </Card>
-
-                                <Card>
-                                    <Card.Header className="bg-light">
-                                        <h6 className="mb-0">Keywords</h6>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <div className="keywords-container mb-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                            {formData.keywords.map((keyword, index) => (
-                                                <div key={index} className="d-flex mb-2 align-items-center">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="keywords"
-                                                        value={keyword}
-                                                        onChange={(e) => handleInputChange(e, index)}
-                                                        placeholder={`Keyword ${index + 1}`}
-                                                        required
-                                                    />
-                                                    <Button
-                                                        variant="danger"
-                                                        size="sm"
-                                                        className="ms-2"
-                                                        onClick={() => removeKeyword(index)}
-                                                        disabled={formData.keywords.length === 1}
-                                                    >
-                                                        <FaTrash />
-                                                    </Button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <Button 
-                                            variant="outline-primary" 
-                                            size="sm" 
-                                            onClick={addKeyword}
-                                            className="w-100"
-                                        >
-                                            <FaPlus className="me-1" /> Add Keyword
-                                        </Button>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                        </div>
-
-                        {error && (
-                            <Alert variant="danger" className="mt-4">
-                                <FaExclamationTriangle className="me-2" />
-                                {error}
-                            </Alert>
-                        )}
-
-                        <div className="d-flex justify-content-end mt-4">
-                            <Button 
-                                variant="secondary" 
-                                className="me-2" 
-                                onClick={() => {
-                                    setShowEditModal(false);
-                                    resetForm();
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button 
-                                variant="primary" 
-                                type="submit"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        {isEditing ? 'Updating...' : 'Submitting...'}
-                                    </>
-                                ) : (
-                                    <>
-                                        {isEditing ? (
-                                            <>
-                                                <FaEdit className="me-2" />
-                                                Update Research Paper
-                                            </>
-                                        ) : (
-                                            <>
-                                                <FaPlus className="me-2" />
-                                                Submit Research Paper
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                </Modal.Body>
-            </Modal>
-
-            {/* Review Modal */}
-            <Modal 
-                show={showReviewModal} 
-                onHide={() => {
-                    setShowReviewModal(false);
-                    setReviewErrors({ comments: '', reviewedBy: '' });
-                    setError(null);
-                }}
-                centered
-                size="lg"
-                backdrop="static"
-                className="review-modal"
-            >
-                <Modal.Header 
-                    closeButton={false}
-                    className="bg-gradient-primary text-white border-0" 
-                    style={{ 
-                        borderRadius: '0',
-                        background: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)',
-                        padding: '1.5rem'
-                    }}
-                >
-                    <Modal.Title className="w-100">
-                        <div className="d-flex align-items-center">
-                            <div className="modal-icon-wrapper bg-white bg-opacity-25 rounded-circle p-2 me-3">
-                                <FaClipboardCheck className="text-white" size={24} />
-                            </div>
-                            <div>
-                                <h4 className="mb-1 fw-bold">Review Capstone Project</h4>
-                                <p className="mb-0" style={{ fontSize: '0.95rem', opacity: '0.9', letterSpacing: '0.3px' }}>
-                                    Evaluate and provide feedback on the research paper
-                                </p>
-                            </div>
-                        </div>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="p-0">
-                    {selectedSubmission && (
-                        <div className="review-content">
-                            {/* Title Section */}
-                            <div className="p-4 bg-light border-bottom">
-                                <h6 className="text-primary mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                    RESEARCH PAPER UNDER REVIEW
-                                </h6>
-                                <h4 className="mb-0 fw-bold" style={{ color: '#2c3e50', lineHeight: '1.4' }}>
-                                    {selectedSubmission.title}
-                                </h4>
-                            </div>
-
-                            {/* Review Form */}
-                            <div className="p-4">
-                                <form onSubmit={handleReviewSubmit}>
-                                    {/* Status Section */}
-                                    <div className="mb-4">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                            REVIEW STATUS
-                                        </h6>
-                                        <div className="status-options">
-                                            <div className="row g-3">
-                                                {[
-                                                    {
-                                                        value: 'approved',
-                                                        label: 'Approved',
-                                                        icon: <FaCheckCircle size={20} />,
-                                                        color: '#198754',
-                                                        bgColor: '#19875420',
-                                                        description: 'Research paper meets all requirements and standards'
-                                                    },
-                                                    {
-                                                        value: 'rejected',
-                                                        label: 'Rejected',
-                                                        icon: <FaTimes size={20} />,
-                                                        color: '#dc3545',
-                                                        bgColor: '#dc354520',
-                                                        description: 'Research paper does not meet the required standards'
-                                                    },
-                                                    {
-                                                        value: 'revision',
-                                                        label: 'Needs Revision',
-                                                        icon: <FaExclamationCircle size={20} />,
-                                                        color: '#ffc107',
-                                                        bgColor: '#ffc10720',
-                                                        description: 'Research paper needs modifications before approval'
-                                                    },
-                                                    {
-                                                        value: 'pending',
-                                                        label: 'Under Review',
-                                                        icon: <FaClock size={20} />,
-                                                        color: '#0dcaf0',
-                                                        bgColor: '#0dcaf020',
-                                                        description: 'Research paper is currently under review process'
-                                                    }
-                                                ].map((status) => (
-                                                    <div key={status.value} className="col-md-6">
-                                                        <div 
-                                                            className={`status-card rounded-3 p-3 cursor-pointer ${
-                                                                reviewData.status === status.value ? 'selected' : ''
-                                                            }`}
-                                                            onClick={() => setReviewData(prev => ({ ...prev, status: status.value }))}
-                                                            style={{
-                                                                border: `2px solid ${reviewData.status === status.value ? status.color : '#dee2e6'}`,
-                                                                backgroundColor: reviewData.status === status.value ? status.bgColor : 'white',
-                                                                cursor: 'pointer',
-                                                                transition: 'all 0.2s ease'
-                                                            }}
-                                                        >
-                                                            <div className="d-flex align-items-center mb-2">
-                                                                <div 
-                                                                    className="status-icon rounded-circle p-2 me-3"
-                                                                    style={{ 
-                                                                        backgroundColor: status.bgColor,
-                                                                        color: status.color
-                                                                    }}
-                                                                >
-                                                                    {status.icon}
-                                                                </div>
-                                                                <div>
-                                                                    <h6 
-                                                                        className="mb-1"
-                                                                        style={{ 
-                                                                            color: reviewData.status === status.value ? status.color : '#2c3e50'
-                                                                        }}
-                                                                    >
-                                                                        {status.label}
-                                                                    </h6>
-                                                                    <small className="text-muted">
-                                                                        {status.description}
-                                                                    </small>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Review Summary Section */}
-                                    <div className="mb-4">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                            REVIEW SUMMARY
-                                        </h6>
-                                        <div className="review-summary bg-light rounded-3 p-4">
-                                            <div className="row g-3">
-                                                <div className="col-md-6">
-                                                    <div className="summary-item">
-                                                        <label className="text-muted mb-1">Current Status</label>
-                                                        <div className="d-flex align-items-center">
-                                                            <Badge 
-                                                                bg={
-                                                                    reviewData.status === 'approved' ? 'success' :
-                                                                    reviewData.status === 'rejected' ? 'danger' :
-                                                                    reviewData.status === 'revision' ? 'warning' :
-                                                                    'info'
-                                                                }
-                                                                className="px-3 py-2"
-                                                                style={{ fontSize: '0.9rem' }}
-                                                            >
-                                                                {reviewData.status.toUpperCase() || 'PENDING'}
-                                                            </Badge>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="summary-item">
-                                                        <label className="text-muted mb-1">Last Updated</label>
-                                                        <div style={{ fontSize: '0.9rem' }}>
-                                                            {reviewData.reviewDate.toLocaleDateString('en-US', {
-                                                                year: 'numeric',
-                                                                month: 'long',
-                                                                day: 'numeric'
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Comments Section with Enhanced Error Handling */}
-                                    <div className="mb-4">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                            REVIEW COMMENTS
-                                        </h6>
-                                        <div className="comments-section bg-light rounded-3 p-4">
-                                            <div className={`form-group ${reviewErrors.comments ? 'has-error' : ''}`}>
-                                                <textarea
-                                                    className={`form-control border ${reviewErrors.comments ? 'border-danger' : 'border-0'} bg-white`}
-                                                    rows="6"
-                                                    placeholder="Provide detailed feedback and suggestions for improvement..."
-                                                    value={reviewData.comments}
-                                                    onChange={(e) => handleReviewInputChange('comments', e.target.value)}
-                                                    style={{ 
-                                                        resize: 'none',
-                                                        borderWidth: reviewErrors.comments ? '2px' : '1px'
-                                                    }}
+            <div className={`custom-modal ${showEditModal ? 'show' : ''}`} onClick={() => {
+                setShowEditModal(false);
+                resetForm();
+            }}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ width: '90%', maxWidth: '1200px' }}>
+                    <div className="custom-modal-header bg-primary text-white">
+                        <h3>
+                            {isEditing ? (
+                                <>
+                                    <FaEdit className="me-2" />
+                                    Edit Research Paper
+                                </>
+                            ) : (
+                                <>
+                                    <FaPlus className="me-2" />
+                                    Add New Research Paper
+                                </>
+                            )}
+                        </h3>
+                        <button onClick={() => {
+                            setShowEditModal(false);
+                            resetForm();
+                        }} className="close-button">
+                            &times;
+                        </button>
+                    </div>
+                    <div className="custom-modal-body">
+                        <form onSubmit={handleSubmit}>
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <Card className="mb-4">
+                                        <Card.Header className="bg-light">
+                                            <h6 className="mb-0">Basic Information</h6>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div className="mb-3">
+                                                <label className="form-label required">
+                                                    <FaFileAlt className="me-2" />
+                                                    Research Title
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="title"
+                                                    value={formData.title}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Enter research title"
+                                                    required
                                                 />
-                                                {reviewErrors.comments && (
-                                                    <div className="text-danger mt-2 d-flex align-items-center">
-                                                        <FaExclamationTriangle className="me-2" size={14} />
-                                                        <small>{reviewErrors.comments}</small>
-                                                    </div>
-                                                )}
-                                                <div className="mt-3 d-flex justify-content-between align-items-center">
-                                                    <small className="text-muted">
-                                                        <FaInfoCircle className="me-2" />
-                                                        Please provide constructive feedback
-                                                    </small>
-                                                    <small className={`${
-                                                        reviewData.comments.length > 900 ? 'text-warning' :
-                                                        reviewData.comments.length > 800 ? 'text-info' :
-                                                        'text-muted'
-                                                    }`}>
-                                                        {reviewData.comments.length}/1000 characters
-                                                    </small>
-                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    {/* Reviewer Information with Enhanced Error Handling */}
-                                    <div className="mb-4">
-                                        <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                            REVIEWER INFORMATION
-                                        </h6>
-                                        <div className="reviewer-info bg-light rounded-3 p-4">
-                                            <div className="row g-3">
-                                                <div className="col-md-6">
-                                                    <div className={`form-group ${reviewErrors.reviewedBy ? 'has-error' : ''}`}>
-                                                        <label className="form-label required">Reviewer Name</label>
+                                            <div className="mb-3">
+                                                <label className="form-label required">
+                                                    <FaFileAlt className="me-2" />
+                                                    Abstract
+                                                </label>
+                                                <textarea
+                                                    className="form-control"
+                                                    name="abstract"
+                                                    value={formData.abstract}
+                                                    onChange={handleInputChange}
+                                                    rows="4"
+                                                    placeholder="Enter research abstract"
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className="mb-0">
+                                                <label className="form-label required">
+                                                    <FaFileAlt className="me-2" />
+                                                    Category
+                                                </label>
+                                                <select
+                                                    className="form-select"
+                                                    name="category"
+                                                    value={formData.category}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                >
+                                                    <option value="">Select a category</option>
+                                                    {categories.map((cat) => (
+                                                        <option key={cat} value={cat}>{cat}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+
+                                    <Card>
+                                        <Card.Header className="bg-light">
+                                            <h6 className="mb-0">Document Information</h6>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div className="mb-0">
+                                                <label className="form-label required">
+                                                    <FaLink className="me-2" />
+                                                    Document Link
+                                                </label>
+                                                <input
+                                                    type="url"
+                                                    className="form-control"
+                                                    name="docsLink"
+                                                    value={formData.docsLink}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Enter document link"
+                                                    required
+                                                />
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <Card className="mb-4">
+                                        <Card.Header className="bg-light">
+                                            <h6 className="mb-0">Team Members</h6>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div className="members-container mb-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                                {formData.members.map((member, index) => (
+                                                    <div key={index} className="d-flex mb-2 align-items-center">
                                                         <input
                                                             type="text"
-                                                            className={`form-control ${reviewErrors.reviewedBy ? 'border-danger' : ''}`}
-                                                            placeholder="Enter reviewer's name"
-                                                            value={reviewData.reviewedBy}
-                                                            onChange={(e) => handleReviewInputChange('reviewedBy', e.target.value)}
-                                                            style={{ 
-                                                                borderWidth: reviewErrors.reviewedBy ? '2px' : '1px'
-                                                            }}
+                                                            className="form-control"
+                                                            name="members"
+                                                            value={member}
+                                                            onChange={(e) => handleInputChange(e, index)}
+                                                            placeholder={`Member ${index + 1}`}
+                                                            required
                                                         />
-                                                        {reviewErrors.reviewedBy && (
-                                                            <div className="text-danger mt-2 d-flex align-items-center">
-                                                                <FaExclamationTriangle className="me-2" size={14} />
-                                                                <small>{reviewErrors.reviewedBy}</small>
-                                                            </div>
-                                                        )}
+                                                        <Button
+                                                            variant="danger"
+                                                            size="sm"
+                                                            className="ms-2"
+                                                            onClick={() => removeMember(index)}
+                                                            disabled={formData.members.length === 1}
+                                                        >
+                                                            <FaTrash />
+                                                        </Button>
                                                     </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <label className="form-label required">Review Date</label>
-                                                    <input
-                                                        type="date"
-                                                        className="form-control"
-                                                        value={reviewData.reviewDate.toISOString().split('T')[0]}
-                                                        onChange={(e) => handleReviewInputChange('reviewDate', new Date(e.target.value))}
-                                                        required
-                                                    />
+                                                ))}
+                                            </div>
+                                            <Button 
+                                                variant="outline-primary" 
+                                                size="sm" 
+                                                onClick={addMember}
+                                                className="w-100"
+                                            >
+                                                <FaPlus className="me-1" /> Add Member
+                                            </Button>
+                                        </Card.Body>
+                                    </Card>
+
+                                    <Card>
+                                        <Card.Header className="bg-light">
+                                            <h6 className="mb-0">Keywords</h6>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div className="keywords-container mb-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                                {formData.keywords.map((keyword, index) => (
+                                                    <div key={index} className="d-flex mb-2 align-items-center">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            name="keywords"
+                                                            value={keyword}
+                                                            onChange={(e) => handleInputChange(e, index)}
+                                                            placeholder={`Keyword ${index + 1}`}
+                                                            required
+                                                        />
+                                                        <Button
+                                                            variant="danger"
+                                                            size="sm"
+                                                            className="ms-2"
+                                                            onClick={() => removeKeyword(index)}
+                                                            disabled={formData.keywords.length === 1}
+                                                        >
+                                                            <FaTrash />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <Button 
+                                                variant="outline-primary" 
+                                                size="sm" 
+                                                onClick={addKeyword}
+                                                className="w-100"
+                                            >
+                                                <FaPlus className="me-1" /> Add Keyword
+                                            </Button>
+                                        </Card.Body>
+                                    </Card>
+                                </div>
+                            </div>
+
+                            {error && (
+                                <Alert variant="danger" className="mt-4">
+                                    <FaExclamationTriangle className="me-2" />
+                                    {error}
+                                </Alert>
+                            )}
+
+                            <div className="d-flex justify-content-end mt-4">
+                                <Button 
+                                    variant="secondary" 
+                                    className="me-2" 
+                                    onClick={() => {
+                                        setShowEditModal(false);
+                                        resetForm();
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button 
+                                    variant="primary" 
+                                    type="submit"
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            {isEditing ? 'Updating...' : 'Submitting...'}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {isEditing ? (
+                                                <>
+                                                    <FaEdit className="me-2" />
+                                                    Update Research Paper
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <FaPlus className="me-2" />
+                                                    Submit Research Paper
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {/* Review Modal */}
+            <div className={`custom-modal ${showReviewModal ? 'show' : ''}`} onClick={() => {
+                setShowReviewModal(false);
+                setReviewErrors({ comments: '', reviewedBy: '' });
+                setError(null);
+            }}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ width: '90%', maxWidth: '1000px' }}>
+                    <div className="custom-modal-header bg-gradient-primary text-white">
+                        <h3>
+                            <FaClipboardCheck className="me-2" />
+                            Review Capstone Project
+                        </h3>
+                        <button onClick={() => {
+                            setShowReviewModal(false);
+                            setReviewErrors({ comments: '', reviewedBy: '' });
+                            setError(null);
+                        }} className="close-button">
+                            &times;
+                        </button>
+                    </div>
+                    <div className="custom-modal-body">
+                        {selectedSubmission && (
+                            <div className="review-content">
+                                {/* Title Section */}
+                                <div className="p-4 bg-light border-bottom">
+                                    <h6 className="text-primary mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                        RESEARCH PAPER UNDER REVIEW
+                                    </h6>
+                                    <h4 className="mb-0 fw-bold" style={{ color: '#2c3e50', lineHeight: '1.4' }}>
+                                        {selectedSubmission.title}
+                                    </h4>
+                                </div>
+
+                                {/* Review Form */}
+                                <div className="p-4">
+                                    <form onSubmit={handleReviewSubmit}>
+                                        {/* Status Section */}
+                                        <div className="mb-4">
+                                            <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                                REVIEW STATUS
+                                            </h6>
+                                            <div className="status-options">
+                                                <div className="row g-3">
+                                                    {[
+                                                        {
+                                                            value: 'approved',
+                                                            label: 'Approved',
+                                                            icon: <FaCheckCircle size={20} />,
+                                                            color: '#198754',
+                                                            bgColor: '#19875420',
+                                                            description: 'Research paper meets all requirements and standards'
+                                                        },
+                                                        {
+                                                            value: 'rejected',
+                                                            label: 'Rejected',
+                                                            icon: <FaTimes size={20} />,
+                                                            color: '#dc3545',
+                                                            bgColor: '#dc354520',
+                                                            description: 'Research paper does not meet the required standards'
+                                                        },
+                                                        {
+                                                            value: 'revision',
+                                                            label: 'Needs Revision',
+                                                            icon: <FaExclamationCircle size={20} />,
+                                                            color: '#ffc107',
+                                                            bgColor: '#ffc10720',
+                                                            description: 'Research paper needs modifications before approval'
+                                                        },
+                                                        {
+                                                            value: 'pending',
+                                                            label: 'Under Review',
+                                                            icon: <FaClock size={20} />,
+                                                            color: '#0dcaf0',
+                                                            bgColor: '#0dcaf020',
+                                                            description: 'Research paper is currently under review process'
+                                                        }
+                                                    ].map((status) => (
+                                                        <div key={status.value} className="col-md-6">
+                                                            <div 
+                                                                className={`status-card rounded-3 p-3 cursor-pointer ${
+                                                                    reviewData.status === status.value ? 'selected' : ''
+                                                                }`}
+                                                                onClick={() => setReviewData(prev => ({ ...prev, status: status.value }))}
+                                                                style={{
+                                                                    border: `2px solid ${reviewData.status === status.value ? status.color : '#dee2e6'}`,
+                                                                    backgroundColor: reviewData.status === status.value ? status.bgColor : 'white',
+                                                                    cursor: 'pointer',
+                                                                    transition: 'all 0.2s ease'
+                                                                }}
+                                                            >
+                                                                <div className="d-flex align-items-center mb-2">
+                                                                    <div 
+                                                                        className="status-icon rounded-circle p-2 me-3"
+                                                                        style={{ 
+                                                                            backgroundColor: status.bgColor,
+                                                                            color: status.color
+                                                                        }}
+                                                                    >
+                                                                        {status.icon}
+                                                                    </div>
+                                                                    <div>
+                                                                        <h6 
+                                                                            className="mb-1"
+                                                                            style={{ 
+                                                                                color: reviewData.status === status.value ? status.color : '#2c3e50'
+                                                                            }}
+                                                                        >
+                                                                            {status.label}
+                                                                        </h6>
+                                                                        <small className="text-muted">
+                                                                            {status.description}
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
+
+                                        {/* Review Summary Section */}
+                                        <div className="mb-4">
+                                            <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                                REVIEW SUMMARY
+                                            </h6>
+                                            <div className="review-summary bg-light rounded-3 p-4">
+                                                <div className="row g-3">
+                                                    <div className="col-md-6">
+                                                        <div className="summary-item">
+                                                            <label className="text-muted mb-1">Current Status</label>
+                                                            <div className="d-flex align-items-center">
+                                                                <Badge 
+                                                                    bg={
+                                                                        reviewData.status === 'approved' ? 'success' :
+                                                                        reviewData.status === 'rejected' ? 'danger' :
+                                                                        reviewData.status === 'revision' ? 'warning' :
+                                                                        'info'
+                                                                    }
+                                                                    className="px-3 py-2"
+                                                                    style={{ fontSize: '0.9rem' }}
+                                                                >
+                                                                    {reviewData.status.toUpperCase() || 'PENDING'}
+                                                                </Badge>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="summary-item">
+                                                            <label className="text-muted mb-1">Last Updated</label>
+                                                            <div style={{ fontSize: '0.9rem' }}>
+                                                                {reviewData.reviewDate.toLocaleDateString('en-US', {
+                                                                    year: 'numeric',
+                                                                    month: 'long',
+                                                                    day: 'numeric'
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Comments Section with Enhanced Error Handling */}
+                                        <div className="mb-4">
+                                            <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                                REVIEW COMMENTS
+                                            </h6>
+                                            <div className="comments-section bg-light rounded-3 p-4">
+                                                <div className={`form-group ${reviewErrors.comments ? 'has-error' : ''}`}>
+                                                    <textarea
+                                                        className={`form-control border ${reviewErrors.comments ? 'border-danger' : 'border-0'} bg-white`}
+                                                        rows="6"
+                                                        placeholder="Provide detailed feedback and suggestions for improvement..."
+                                                        value={reviewData.comments}
+                                                        onChange={(e) => handleReviewInputChange('comments', e.target.value)}
+                                                        style={{ 
+                                                            resize: 'none',
+                                                            borderWidth: reviewErrors.comments ? '2px' : '1px'
+                                                        }}
+                                                    />
+                                                    {reviewErrors.comments && (
+                                                        <div className="text-danger mt-2 d-flex align-items-center">
+                                                            <FaExclamationTriangle className="me-2" size={14} />
+                                                            <small>{reviewErrors.comments}</small>
+                                                        </div>
+                                                    )}
+                                                    <div className="mt-3 d-flex justify-content-between align-items-center">
+                                                        <small className="text-muted">
+                                                            <FaInfoCircle className="me-2" />
+                                                            Please provide constructive feedback
+                                                        </small>
+                                                        <small className={`${
+                                                            reviewData.comments.length > 900 ? 'text-warning' :
+                                                            reviewData.comments.length > 800 ? 'text-info' :
+                                                            'text-muted'
+                                                        }`}>
+                                                            {reviewData.comments.length}/1000 characters
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Reviewer Information with Enhanced Error Handling */}
+                                        <div className="mb-4">
+                                            <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                                REVIEWER INFORMATION
+                                            </h6>
+                                            <div className="reviewer-info bg-light rounded-3 p-4">
+                                                <div className="row g-3">
+                                                    <div className="col-md-6">
+                                                        <div className={`form-group ${reviewErrors.reviewedBy ? 'has-error' : ''}`}>
+                                                            <label className="form-label required">Reviewer Name</label>
+                                                            <input
+                                                                type="text"
+                                                                className={`form-control ${reviewErrors.reviewedBy ? 'border-danger' : ''}`}
+                                                                placeholder="Enter reviewer's name"
+                                                                value={reviewData.reviewedBy}
+                                                                onChange={(e) => handleReviewInputChange('reviewedBy', e.target.value)}
+                                                                style={{ 
+                                                                    borderWidth: reviewErrors.reviewedBy ? '2px' : '1px'
+                                                                }}
+                                                            />
+                                                            {reviewErrors.reviewedBy && (
+                                                                <div className="text-danger mt-2 d-flex align-items-center">
+                                                                    <FaExclamationTriangle className="me-2" size={14} />
+                                                                    <small>{reviewErrors.reviewedBy}</small>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <label className="form-label required">Review Date</label>
+                                                        <input
+                                                            type="date"
+                                                            className="form-control"
+                                                            value={reviewData.reviewDate.toISOString().split('T')[0]}
+                                                            onChange={(e) => handleReviewInputChange('reviewDate', new Date(e.target.value))}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer className="bg-light border-0 p-4">
-                    <Button 
-                        variant="secondary" 
-                        className="me-2 px-4"
-                        onClick={() => {
+                        )}
+                    </div>
+                    <div className="custom-modal-footer">
+                        <Button variant="secondary" onClick={() => {
                             setShowReviewModal(false);
                             setError(null);
                             setReviewData({
@@ -1310,67 +1310,43 @@ const CapstoneManagement = () => {
                                 reviewedBy: '',
                                 reviewDate: new Date()
                             });
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button 
-                        variant="primary" 
-                        className="px-4 d-flex align-items-center"
-                        onClick={handleReviewSubmit}
-                        disabled={loading}
-                        style={{ 
-                            background: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)',
-                            border: 'none',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                        }}
-                    >
-                        {loading ? (
-                            <>
-                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                Submitting...
-                            </>
-                        ) : (
-                            <>
-                                <FaSave className="me-2" />
-                                Submit Review
-                            </>
-                        )}
-                    </Button>
-                </Modal.Footer>
-
-                {/* Error Alert */}
-                {error && (
-                    <div className="px-4 pb-4">
-                        <Alert 
-                            variant="danger" 
-                            className="mb-0 d-flex align-items-center"
-                            onClose={() => setError(null)}
-                            dismissible
-                        >
-                            <FaExclamationTriangle className="me-2" size={18} />
-                            {error}
-                        </Alert>
+                        }}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={handleReviewSubmit} disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Submitting...
+                                </>
+                            ) : (
+                                <>
+                                    <FaSave className="me-2" />
+                                    Submit Review
+                                </>
+                            )}
+                        </Button>
                     </div>
-                )}
-            </Modal>
+                </div>
+            </div>
 
             {/* Success Modal */}
-            <Modal 
-                show={showSuccessModal} 
-                onHide={() => setShowSuccessModal(false)}
-                centered
-                size="sm"
-                className="success-modal"
-            >
-                <Modal.Body className="text-center p-4">
-                    <div className="mb-3">
-                        {successIcon}
+            <div className={`custom-modal ${showSuccessModal ? 'show' : ''}`} onClick={() => setShowSuccessModal(false)}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+                    <div className="custom-modal-body text-center p-4">
+                        <div className="mb-3">
+                            {successIcon}
+                        </div>
+                        <h4 className="mb-3">{successTitle}</h4>
+                        <p className="mb-0 text-muted">{successMessage}</p>
                     </div>
-                    <h4 className="mb-3">{successTitle}</h4>
-                    <p className="mb-0 text-muted">{successMessage}</p>
-                </Modal.Body>
-            </Modal>
+                    <div className="custom-modal-footer">
+                        <Button variant="primary" onClick={() => setShowSuccessModal(false)}>
+                            Close
+                        </Button>
+                    </div>
+                </div>
+            </div>
 
             {/* Revision History Modal */}
             <Modal

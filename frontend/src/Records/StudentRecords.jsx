@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Modal, Button, InputGroup, Form, Pagination } from 'react-bootstrap';
+import { Table, Button, InputGroup, Form, Pagination } from 'react-bootstrap';
 import { FaSearch, FaEye } from 'react-icons/fa';
 import '../Styles/StudentRecords.css';
 
@@ -238,82 +238,92 @@ const StudentRecords = () => {
             </div>
 
             {/* View Modal */}
-            <Modal show={selectedStudent !== null} onHide={() => setSelectedStudent(null)} size="lg" centered>
-                <Modal.Header className="bg-primary text-white">
-                    <Modal.Title>Student Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="p-4">
-                    {selectedStudent && (
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Student ID</h6>
-                                    <p className="mb-0">{selectedStudent.student_id}</p>
+            <div className={`custom-modal ${selectedStudent !== null ? 'show' : ''}`} onClick={() => setSelectedStudent(null)}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="custom-modal-header bg-primary text-white">
+                        <h3>Student Details</h3>
+                        <button onClick={() => setSelectedStudent(null)} className="close-button">
+                            &times;
+                        </button>
+                    </div>
+                    <div className="custom-modal-body">
+                        {selectedStudent && (
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Student ID</h6>
+                                        <p className="mb-0">{selectedStudent.student_id}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Name</h6>
+                                        <p className="mb-0">{selectedStudent.name}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Email</h6>
+                                        <p className="mb-0">{selectedStudent.email}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Course</h6>
+                                        <p className="mb-0">{selectedStudent.course}</p>
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Name</h6>
-                                    <p className="mb-0">{selectedStudent.name}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Email</h6>
-                                    <p className="mb-0">{selectedStudent.email}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Course</h6>
-                                    <p className="mb-0">{selectedStudent.course}</p>
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Year Level</h6>
+                                        <p className="mb-0">{selectedStudent.year}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Thesis Title</h6>
+                                        <p className="mb-0">{selectedStudent.thesis_title || 'Not yet assigned'}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Advisor</h6>
+                                        <p className="mb-0">{selectedStudent.advisor || 'Not yet assigned'}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Defense Schedule</h6>
+                                        <p className="mb-0">{selectedStudent.defense_schedule || 'Not yet scheduled'}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Year Level</h6>
-                                    <p className="mb-0">{selectedStudent.year}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Thesis Title</h6>
-                                    <p className="mb-0">{selectedStudent.thesis_title || 'Not yet assigned'}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Advisor</h6>
-                                    <p className="mb-0">{selectedStudent.advisor || 'Not yet assigned'}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Defense Schedule</h6>
-                                    <p className="mb-0">{selectedStudent.defense_schedule || 'Not yet scheduled'}</p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer className="bg-light">
-                    <Button variant="secondary" onClick={() => setSelectedStudent(null)}>Close</Button>
-                </Modal.Footer>
-            </Modal>
+                        )}
+                    </div>
+                    <div className="custom-modal-footer">
+                        <Button variant="secondary" onClick={() => setSelectedStudent(null)}>Close</Button>
+                    </div>
+                </div>
+            </div>
 
             {/* Delete Confirmation Modal */}
-            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-                <Modal.Header className="bg-danger text-white">
-                    <Modal.Title>Confirm Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>Are you sure you want to delete this student record?</p>
-                    <p className="mb-0">This action cannot be undone.</p>
-                </Modal.Body>
-                <Modal.Footer className="d-flex justify-content-between px-4">
-                    <div className="d-flex justify-content-start">
-                        <Button variant="secondary" onClick={() => {
-                            setShowDeleteModal(false);
-                            setSelectedStudent(null);
-                        }}>
-                            Cancel
-                        </Button>
+            <div className={`custom-modal ${showDeleteModal ? 'show' : ''}`} onClick={() => setShowDeleteModal(false)}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="custom-modal-header bg-danger text-white">
+                        <h3>Confirm Delete</h3>
+                        <button onClick={() => setShowDeleteModal(false)} className="close-button">
+                            &times;
+                        </button>
                     </div>
-                    <div className="d-flex justify-content-end">
-                        <Button variant="danger" onClick={handleDelete}>
-                            Delete
-                        </Button>
+                    <div className="custom-modal-body">
+                        <p>Are you sure you want to delete this student record?</p>
+                        <p className="mb-0">This action cannot be undone.</p>
                     </div>
-                </Modal.Footer>
-            </Modal>
+                    <div className="custom-modal-footer d-flex justify-content-between px-4">
+                        <div className="d-flex justify-content-start">
+                            <Button variant="secondary" onClick={() => {
+                                setShowDeleteModal(false);
+                                setSelectedStudent(null);
+                            }}>
+                                Cancel
+                            </Button>
+                        </div>
+                        <div className="d-flex justify-content-end">
+                            <Button variant="danger" onClick={handleDelete}>
+                                Delete
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

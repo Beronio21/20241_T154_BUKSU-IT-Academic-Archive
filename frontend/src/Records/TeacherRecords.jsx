@@ -232,86 +232,96 @@ const TeacherRecords = () => {
             </div>
 
             {/* View Modal */}
-            <Modal show={selectedTeacher !== null} onHide={() => setSelectedTeacher(null)} size="lg" centered>
-                <Modal.Header className="bg-primary text-white">
-                    <Modal.Title>Teacher Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="p-4">
-                    {selectedTeacher && (
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Teacher ID</h6>
-                                    <p className="mb-0">{selectedTeacher.teacher_id}</p>
+            <div className={`custom-modal ${selectedTeacher !== null ? 'show' : ''}`} onClick={() => setSelectedTeacher(null)}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="custom-modal-header bg-primary text-white">
+                        <h3>Teacher Details</h3>
+                        <button onClick={() => setSelectedTeacher(null)} className="close-button">
+                            &times;
+                        </button>
+                    </div>
+                    <div className="custom-modal-body">
+                        {selectedTeacher && (
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Teacher ID</h6>
+                                        <p className="mb-0">{selectedTeacher.teacher_id}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Name</h6>
+                                        <p className="mb-0">{selectedTeacher.name}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Email</h6>
+                                        <p className="mb-0">{selectedTeacher.email}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Department</h6>
+                                        <p className="mb-0">{selectedTeacher.department}</p>
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Name</h6>
-                                    <p className="mb-0">{selectedTeacher.name}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Email</h6>
-                                    <p className="mb-0">{selectedTeacher.email}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Department</h6>
-                                    <p className="mb-0">{selectedTeacher.department}</p>
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Position</h6>
+                                        <p className="mb-0">{selectedTeacher.position}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Specialization</h6>
+                                        <p className="mb-0">{selectedTeacher.specialization || 'Not specified'}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Advisory Load</h6>
+                                        <p className="mb-0">{selectedTeacher.advisory_load || '0'}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Status</h6>
+                                        <p className="mb-0">
+                                            <span className={`badge ${selectedTeacher.status?.toLowerCase() === 'active' ? 'bg-success' : 'bg-danger'}`}>
+                                                {selectedTeacher.status || 'Active'}
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Position</h6>
-                                    <p className="mb-0">{selectedTeacher.position}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Specialization</h6>
-                                    <p className="mb-0">{selectedTeacher.specialization || 'Not specified'}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Advisory Load</h6>
-                                    <p className="mb-0">{selectedTeacher.advisory_load || '0'}</p>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="text-muted">Status</h6>
-                                    <p className="mb-0">
-                                        <span className={`badge ${selectedTeacher.status?.toLowerCase() === 'active' ? 'bg-success' : 'bg-danger'}`}>
-                                            {selectedTeacher.status || 'Active'}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer className="bg-light">
-                    <Button variant="secondary" onClick={() => setSelectedTeacher(null)}>Close</Button>
-                </Modal.Footer>
-            </Modal>
+                        )}
+                    </div>
+                    <div className="custom-modal-footer">
+                        <Button variant="secondary" onClick={() => setSelectedTeacher(null)}>Close</Button>
+                    </div>
+                </div>
+            </div>
 
             {/* Delete Confirmation Modal */}
-            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-                <Modal.Header className="bg-danger text-white">
-                    <Modal.Title>Confirm Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>Are you sure you want to delete this teacher record?</p>
-                    <p className="mb-0">This action cannot be undone.</p>
-                </Modal.Body>
-                <Modal.Footer className="d-flex justify-content-between px-4">
-                    <div className="d-flex justify-content-start">
-                        <Button variant="secondary" onClick={() => {
-                            setShowDeleteModal(false);
-                            setSelectedTeacher(null);
-                        }}>
-                            Cancel
-                        </Button>
+            <div className={`custom-modal ${showDeleteModal ? 'show' : ''}`} onClick={() => setShowDeleteModal(false)}>
+                <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="custom-modal-header bg-danger text-white">
+                        <h3>Confirm Delete</h3>
+                        <button onClick={() => setShowDeleteModal(false)} className="close-button">
+                            &times;
+                        </button>
                     </div>
-                    <div className="d-flex justify-content-end">
-                        <Button variant="danger" onClick={handleDelete}>
-                            Delete
-                        </Button>
+                    <div className="custom-modal-body">
+                        <p>Are you sure you want to delete this teacher record?</p>
+                        <p className="mb-0">This action cannot be undone.</p>
                     </div>
-                </Modal.Footer>
-            </Modal>
+                    <div className="custom-modal-footer d-flex justify-content-between px-4">
+                        <div className="d-flex justify-content-start">
+                            <Button variant="secondary" onClick={() => {
+                                setShowDeleteModal(false);
+                                setSelectedTeacher(null);
+                            }}>
+                                Cancel
+                            </Button>
+                        </div>
+                        <div className="d-flex justify-content-end">
+                            <Button variant="danger" onClick={handleDelete}>
+                                Delete
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
