@@ -439,7 +439,15 @@ const StudentDashboard = () => {
             </Modal>
 
             <div className={`custom-modal ${showDetailsModal ? 'show' : ''}`} onClick={() => setShowDetailsModal(false)}>
-              <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div 
+                className="custom-modal-content" 
+                onClick={(e) => e.stopPropagation()}
+                style={{ 
+                  width: '80%',  // Adjust this value as needed (60%, 70%, 90%, etc.)
+                  maxWidth: '1800px',  // Maximum width
+                  minWidth: '300px'   // Minimum width
+                }}
+              >
                 <div className="custom-modal-header">
                   <h3>Thesis Details</h3>
                   <button onClick={() => setShowDetailsModal(false)} className="close-button">
