@@ -444,152 +444,160 @@ const StudentProfile = () => {
                             </div>
                         </div>
 
-                        {/* Edit Profile Section */}
-                        <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
-                            <Modal.Header className="text-black">
-                                <Modal.Title className="w-100 text-center">Edit Profile</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body className="p-4">
-                                <form onSubmit={handleSubmit}>
-                                    <div className="row g-3">
-                                        <div className="col-md-6">
-                                            <label htmlFor="name" className="form-label">Name</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                id="name" 
-                                                name="name" 
-                                                value={formData.name} 
-                                                onChange={handleChange} 
-                                            />
+                        {/* Edit Profile Modal */}
+                        <div className={`custom-modal ${showModal ? 'show' : ''}`} onClick={() => setShowModal(false)}>
+                            <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '800px' }}>
+                                <div className="custom-modal-header bg-primary text-white">
+                                    <h3>Edit Profile</h3>
+                                    <button onClick={() => setShowModal(false)} className="close-button">
+                                        &times;
+                                    </button>
+                                </div>
+                                <div className="custom-modal-body">
+                                    <form onSubmit={handleSubmit}>
+                                        <div className="row g-3">
+                                            <div className="col-md-6">
+                                                <label htmlFor="name" className="form-label">Name</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="name" 
+                                                    name="name" 
+                                                    value={formData.name} 
+                                                    onChange={handleChange} 
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="email" className="form-label">Email</label>
+                                                <input 
+                                                    type="email" 
+                                                    className="form-control" 
+                                                    id="email" 
+                                                    name="email" 
+                                                    value={formData.email} 
+                                                    onChange={handleChange} 
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="contact_number" className="form-label">Contact Number</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="contact_number" 
+                                                    name="contact_number" 
+                                                    value={formData.contact_number} 
+                                                    onChange={handleChange} 
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="location" className="form-label">Location</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="location" 
+                                                    name="location" 
+                                                    value={formData.location} 
+                                                    onChange={handleChange} 
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="student_id" className="form-label">Student ID</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="student_id" 
+                                                    name="student_id" 
+                                                    value={formData.student_id} 
+                                                    onChange={handleChange} 
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="course" className="form-label">Course</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="course" 
+                                                    name="course" 
+                                                    value={formData.course} 
+                                                    onChange={handleChange} 
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="year" className="form-label">Year</label>
+                                                <select 
+                                                    id="year" 
+                                                    name="year" 
+                                                    className="form-select" 
+                                                    value={formData.year} 
+                                                    onChange={handleChange}
+                                                >
+                                                    <option value="">Select Year</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                </select>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="birthday" className="form-label">Birthday</label>
+                                                <input 
+                                                    type="date" 
+                                                    className="form-control" 
+                                                    id="birthday" 
+                                                    name="birthday" 
+                                                    value={formData.birthday} 
+                                                    onChange={handleChange} 
+                                                    max={`${new Date().getFullYear()}-12-31`}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="gender" className="form-label">Gender</label>
+                                                <select 
+                                                    id="gender" 
+                                                    name="gender" 
+                                                    className="form-select" 
+                                                    value={formData.gender} 
+                                                    onChange={handleChange}
+                                                >
+                                                    <option value="">Select Gender</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label htmlFor="facebook" className="form-label">Facebook</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="facebook" 
+                                                    name="facebook" 
+                                                    value={formData.facebook} 
+                                                    onChange={handleChange} 
+                                                    placeholder="Facebook Profile URL"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="email" className="form-label">Email</label>
-                                            <input 
-                                                type="email" 
-                                                className="form-control" 
-                                                id="email" 
-                                                name="email" 
-                                                value={formData.email} 
-                                                onChange={handleChange} 
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="contact_number" className="form-label">Contact Number</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                id="contact_number" 
-                                                name="contact_number" 
-                                                value={formData.contact_number} 
-                                                onChange={handleChange} 
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="location" className="form-label">Location</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                id="location" 
-                                                name="location" 
-                                                value={formData.location} 
-                                                onChange={handleChange} 
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="student_id" className="form-label">Student ID</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                id="student_id" 
-                                                name="student_id" 
-                                                value={formData.student_id} 
-                                                onChange={handleChange} 
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="course" className="form-label">Course</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                id="course" 
-                                                name="course" 
-                                                value={formData.course} 
-                                                onChange={handleChange} 
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="year" className="form-label">Year</label>
-                                            <select 
-                                                id="year" 
-                                                name="year" 
-                                                className="form-select" 
-                                                value={formData.year} 
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">Select Year</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                            </select>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="birthday" className="form-label">Birthday</label>
-                                            <input 
-                                                type="date" 
-                                                className="form-control" 
-                                                id="birthday" 
-                                                name="birthday" 
-                                                value={formData.birthday} 
-                                                onChange={handleChange} 
-                                                max={`${new Date().getFullYear()}-12-31`} // Ensure year is 4 digits
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="gender" className="form-label">Gender</label>
-                                            <select 
-                                                id="gender" 
-                                                name="gender" 
-                                                className="form-select" 
-                                                value={formData.gender} 
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">Select Gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label htmlFor="facebook" className="form-label">Facebook</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                id="facebook" 
-                                                name="facebook" 
-                                                value={formData.facebook} 
-                                                onChange={handleChange} 
-                                                placeholder="Facebook Profile URL"
-                                            />
-                                        </div>
-                                        <div className="col-12 d-flex gap-2 justify-content-end">
-                                            <button type="submit" className="btn btn-primary px-4" onClick={handleSubmit}>
-                                                <i className="bi bi-check2 me-2"></i>
-                                                Save Changes
-                                            </button>
-                                            <button 
-                                                type="button" 
-                                                className="btn btn-light"
-                                                onClick={() => setShowModal(false)}
-                                            >
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </Modal.Body>
-                        </Modal>
+                                    </form>
+                                </div>
+                                <div className="custom-modal-footer">
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-secondary"
+                                        onClick={() => setShowModal(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-primary"
+                                        onClick={handleSubmit}
+                                    >
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
