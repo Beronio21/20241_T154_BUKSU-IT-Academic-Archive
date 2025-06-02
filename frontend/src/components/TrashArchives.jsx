@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Alert, Badge, Modal, Card, Form } from 'react-bootstrap';
-import { FaTrash, FaUndo, FaExclamationTriangle } from 'react-icons/fa';
+import { Table, Button, Alert, Badge, Modal, Card, Form, InputGroup } from 'react-bootstrap';
+import { FaTrash, FaUndo, FaExclamationTriangle, FaSearch } from 'react-icons/fa';
 import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
-import AdminTopbar from '../Topbar/Admin-Topbar/AdminTopbar';
-import { useNavigate } from 'react-router-dom';
 
 const TrashArchives = () => {
     const [deletedSubmissions, setDeletedSubmissions] = useState([]);
@@ -13,11 +12,15 @@ const TrashArchives = () => {
     const [showRecoveryModal, setShowRecoveryModal] = useState(false);
     const [selectedSubmission, setSelectedSubmission] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
-    const [activeSection, setActiveSection] = useState('trash-archives');
     const [deletePermanentModal, setDeletePermanentModal] = useState(false);
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
     const [selectedPermanentDeleteId, setSelectedPermanentDeleteId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Extract the active section from the current route
+    const activeSection = location.pathname.split('/').pop();
 
     useEffect(() => {
         fetchDeletedSubmissions();
@@ -38,7 +41,6 @@ const TrashArchives = () => {
     };
 
     const handleSectionChange = (section) => {
-        setActiveSection(section);
         navigate(`/admin-dashboard/${section}`);
     };
 
@@ -130,103 +132,125 @@ const TrashArchives = () => {
             />
             
             <div className="flex-grow-1" style={{ marginLeft: '250px' }}>
-                <AdminTopbar userInfo={JSON.parse(localStorage.getItem('user-info'))} />
-                
-                <div style={{ paddingTop: '60px' }}>
-                    <div className="container-fluid" style={{ minWidth: '1200px', padding: '15px' }}>
-                        <div className="card shadow h-100">
-                            <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
-                                <h3 className="mb-0">
-                                    <FaTrash className="me-2" />
-                                    Trash Archives
-                                </h3>
-                            </div>
-                            <div className="card-body p-3" style={{ height: 'calc(100% - 60px)', display: 'flex', flexDirection: 'column' }}>
-                                {error && (
-                                    <Alert variant="danger" className="mb-4">
-                                        <FaExclamationTriangle className="me-2" />
-                                        {error}
-                                    </Alert>
-                                )}
-
-                                {successMessage && (
-                                    <Alert variant="success" className="mb-4" onClose={() => setSuccessMessage('')} dismissible>
-                                        {successMessage}
-                                    </Alert>
-                                )}
-
-                                {loading ? (
-                                    <div className="text-center py-4">
-                                        <div className="spinner-border text-primary" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>
+                <div className="container-fluid" style={{ 
+                    minWidth: '1200px',
+                    minHeight: '100vh',
+                    padding: '15px',
+                    overflow: 'hidden'
+                }}>
+                    <div className="row h-100">
+                        <div className="col-12 h-100">
+                            <div className="card shadow h-100">
+                                <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
+                                    <h3 className="mb-0">
+                                        <FaTrash className="me-2" />
+                                        Trash Archives
+                                    </h3>
+                                    <div className="d-flex align-items-center">
+                                        <InputGroup style={{ width: '300px' }}>
+                                            <InputGroup.Text>
+                                                <FaSearch />
+                                            </InputGroup.Text>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Search by title..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                            />
+                                        </InputGroup>
                                     </div>
-                                ) : (
-                                    <div style={{ flex: 1, overflow: 'hidden' }}>
-                                        <div className="table-responsive" style={{ 
-                                            maxHeight: 'calc(100vh - 250px)', 
-                                            minHeight: 'calc(100vh - 250px)',
-                                            minWidth: '1100px',
-                                            overflow: 'auto'
-                                        }}>
-                                            <Table striped bordered hover className="mt-3 mb-0">
-                                                <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
-                                                    <tr>
-                                                        <th style={{ width: '25%', minWidth: '200px' }}>Title</th>
-                                                        <th style={{ width: '25%', minWidth: '200px' }}>Category</th>
-                                                        <th style={{ width: '20%', minWidth: '200px' }}>Deleted On</th>
-                                                        <th style={{ width: '30%', minWidth: '300px' }}>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {deletedSubmissions.length === 0 ? (
+                                </div>
+                                <div className="card-body p-3" style={{ 
+                                    height: 'calc(100% - 60px)',
+                                    display: 'flex',
+                                    flexDirection: 'column'
+                                }}>
+                                    {error && (
+                                        <Alert variant="danger" className="mb-4">
+                                            <FaExclamationTriangle className="me-2" />
+                                            {error}
+                                        </Alert>
+                                    )}
+
+                                    {successMessage && (
+                                        <Alert variant="success" className="mb-4" onClose={() => setSuccessMessage('')} dismissible>
+                                            {successMessage}
+                                        </Alert>
+                                    )}
+
+                                    {loading ? (
+                                        <div className="text-center py-4">
+                                            <div className="spinner-border text-primary" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ flex: 1, overflow: 'hidden' }}>
+                                            <div className="table-responsive" style={{ 
+                                                maxHeight: 'calc(100vh - 250px)', 
+                                                minHeight: 'calc(100vh - 250px)',
+                                                minWidth: '1100px',
+                                                overflow: 'auto'
+                                            }}>
+                                                <Table striped bordered hover className="mt-3 mb-0">
+                                                    <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
                                                         <tr>
-                                                            <td colSpan="4" className="text-center py-4">
-                                                                No deleted submissions found.
-                                                            </td>
+                                                            <th style={{ width: '25%', minWidth: '200px' }}>Title</th>
+                                                            <th style={{ width: '25%', minWidth: '200px' }}>Category</th>
+                                                            <th style={{ width: '20%', minWidth: '200px' }}>Deleted On</th>
+                                                            <th style={{ width: '30%', minWidth: '300px' }}>Actions</th>
                                                         </tr>
-                                                    ) : (
-                                                        deletedSubmissions.map((submission) => (
-                                                            <tr key={submission._id}>
-                                                                <td>{submission.title}</td>
-                                                                <td><Badge bg="info">{submission.category}</Badge></td>
-                                                                <td>
-                                                                    {new Date(submission.deletedAt).toLocaleDateString('en-US', {
-                                                                        year: 'numeric',
-                                                                        month: 'long',
-                                                                        day: 'numeric',
-                                                                        hour: '2-digit',
-                                                                        minute: '2-digit',
-                                                                    })}
-                                                                </td>
-                                                                <td>
-                                                                    <div className="d-flex gap-2">
-                                                                        <Button
-                                                                            variant="success"
-                                                                            size="sm"
-                                                                            onClick={() => confirmRecover(submission)}
-                                                                        >
-                                                                            <FaUndo className="me-1" />
-                                                                            Recover
-                                                                        </Button>
-                                                                        <Button
-                                                                            variant="danger"
-                                                                            size="sm"
-                                                                            onClick={() => confirmPermanentDelete(submission._id)}
-                                                                        >
-                                                                            <FaTrash className="me-1" />
-                                                                            Delete Permanently
-                                                                        </Button>
-                                                                    </div>
+                                                    </thead>
+                                                    <tbody>
+                                                        {deletedSubmissions.length === 0 ? (
+                                                            <tr>
+                                                                <td colSpan="4" className="text-center py-4">
+                                                                    No deleted submissions found.
                                                                 </td>
                                                             </tr>
-                                                        ))
-                                                    )}
-                                                </tbody>
-                                            </Table>
+                                                        ) : (
+                                                            deletedSubmissions.map((submission) => (
+                                                                <tr key={submission._id}>
+                                                                    <td>{submission.title}</td>
+                                                                    <td><Badge bg="info">{submission.category}</Badge></td>
+                                                                    <td>
+                                                                        {new Date(submission.deletedAt).toLocaleDateString('en-US', {
+                                                                            year: 'numeric',
+                                                                            month: 'long',
+                                                                            day: 'numeric',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit',
+                                                                        })}
+                                                                    </td>
+                                                                    <td>
+                                                                        <div className="d-flex gap-2">
+                                                                            <Button
+                                                                                variant="success"
+                                                                                size="sm"
+                                                                                onClick={() => confirmRecover(submission)}
+                                                                            >
+                                                                                <FaUndo className="me-1" />
+                                                                                Recover
+                                                                            </Button>
+                                                                            <Button
+                                                                                variant="danger"
+                                                                                size="sm"
+                                                                                onClick={() => confirmPermanentDelete(submission._id)}
+                                                                            >
+                                                                                <FaTrash className="me-1" />
+                                                                                Delete Permanently
+                                                                            </Button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        )}
+                                                    </tbody>
+                                                </Table>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

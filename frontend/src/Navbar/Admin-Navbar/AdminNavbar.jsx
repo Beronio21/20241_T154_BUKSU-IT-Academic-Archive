@@ -33,12 +33,12 @@ const AdminNavbar = ({ activeSection, handleSectionChange }) => {
   // Navigation items configuration
   const navItems = [
     { name: 'Dashboard', section: 'dashboard', icon: 'fas fa-tachometer-alt' },
-    { name: 'User Management', section: 'user-management', icon: 'fas fa-users' },
-    { name: 'Student Records', section: 'student-records', icon: 'fas fa-user-graduate' },
-    { name: 'Teacher Records', section: 'teacher-records', icon: 'fas fa-chalkboard-teacher' },
-    { name: 'Capstone Management', section: 'capstone-management', icon: 'fas fa-cogs' },
+    { name: 'User Management', section: 'user-management-2', icon: 'fas fa-users' },
+    { name: 'Student Records', section: 'student-records-2', icon: 'fas fa-user-graduate' },
+    { name: 'Teacher Records', section: 'teacher-records-2', icon: 'fas fa-chalkboard-teacher' },
+    { name: 'Capstone Management', section: 'capstone-management-2', icon: 'fas fa-cogs' },
     { name: 'Trash Archives', section: 'trash-archives', icon: 'fas fa-trash' },
-    { name: 'Admin Register', section: 'admin-register', icon: 'fas fa-user-plus' },
+    { name: 'Admin Register', section: 'admin-register-2', icon: 'fas fa-user-plus' },
   ];
 
   const renderNavItem = (item) => (

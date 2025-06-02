@@ -9,6 +9,7 @@ import GoogleLogin from './Auth/Login/Login';
 import StudentRegister from './Auth/Student/StudentRegister';
 import TeacherRegister from './Auth/Teacher/TeacherRegister';
 import AdminRegister from './Auth/AdminRegister';
+import AdminRegister2 from './Auth/AdminRegister2';
 
 // Dashboard Components
 import StudentDashboard from './pages/Student-Dashboard/StudentDashboard';
@@ -18,6 +19,10 @@ import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
 // Other Components
 import NotFound from './NotFound';
 import TrashArchives from './components/TrashArchives';
+import CapstoneManagement2 from './components/CapstoneManagement2';
+import UserManagement2 from './UserManagement/UserManagement2';
+import StudentRecords2 from './Records/StudentRecords2';
+import TeacherRecords2 from './Records/TeacherRecords2';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -61,6 +66,7 @@ function App() {
             <Route path="/student-register" element={<StudentRegister />} />
             <Route path="/teacher-register" element={<TeacherRegister />} />
             <Route path="/admin-register" element={<AdminRegister />} />
+            <Route path="/admin-register-2" element={<AdminRegister2 />} />
 
             {/* Protected Dashboard Routes */}
             <Route 
@@ -95,6 +101,51 @@ function App() {
               element={
                 <ProtectedRoute 
                   element={<TrashArchives />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/capstone-management-2" 
+              element={
+                <ProtectedRoute 
+                  element={<CapstoneManagement2 />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/user-management-2" 
+              element={
+                <ProtectedRoute 
+                  element={<UserManagement2 />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/student-records-2" 
+              element={
+                <ProtectedRoute 
+                  element={<StudentRecords2 />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/teacher-records-2" 
+              element={
+                <ProtectedRoute 
+                  element={<TeacherRecords2 />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/admin-register-2" 
+              element={
+                <ProtectedRoute 
+                  element={<AdminRegister2 />} 
                   allowedRole="admin"
                 />
               } 
