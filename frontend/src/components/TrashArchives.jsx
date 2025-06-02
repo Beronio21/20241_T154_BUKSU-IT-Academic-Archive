@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Alert, Badge, Modal, Card } from 'react-bootstrap';
+import { Table, Button, Alert, Badge, Modal, Card, Form } from 'react-bootstrap';
 import { FaTrash, FaUndo, FaExclamationTriangle } from 'react-icons/fa';
 import axios from 'axios';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
@@ -14,6 +14,9 @@ const TrashArchives = () => {
     const [selectedSubmission, setSelectedSubmission] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [activeSection, setActiveSection] = useState('trash-archives');
+    const [deletePermanentModal, setDeletePermanentModal] = useState(false);
+    const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
+    const [selectedPermanentDeleteId, setSelectedPermanentDeleteId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -58,18 +61,66 @@ const TrashArchives = () => {
         setShowRecoveryModal(true);
     };
 
+    const confirmPermanentDelete = (submissionId) => {
+        setSelectedPermanentDeleteId(submissionId);
+        setDeletePermanentModal(true);
+        setDeleteConfirmationText(''); // Reset confirmation text
+    };
+
     const handlePermanentDelete = async (submissionId) => {
+        if (deleteConfirmationText !== 'DELETE') {
+            setError('Please type "DELETE" to confirm permanent deletion.');
+            return;
+        }
+
         try {
-            const response = await axios.delete(`http://localhost:8080/api/thesis/permanent-delete/${submissionId}`);
+            const response = await axios.delete(
+                `http://localhost:8080/api/thesis/permanent-delete/${submissionId}`
+            );
+
             if (response.data.status === 'success') {
                 setSuccessMessage('Submission permanently deleted!');
-                fetchDeletedSubmissions();
+                fetchDeletedSubmissions(); // Refresh the list
+                setDeletePermanentModal(false);
             }
         } catch (error) {
             console.error('Error permanently deleting submission:', error);
             setError('Failed to permanently delete submission. Please try again.');
         }
     };
+
+    const renderDeletePermanentModal = () => (
+        <Modal show={deletePermanentModal} onHide={() => setDeletePermanentModal(false)} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm Permanent Deletion</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Alert variant="danger">
+                    <FaExclamationTriangle className="me-2" />
+                    Type "DELETE" to confirm permanent deletion. This cannot be undone!
+                </Alert>
+                <Form.Control
+                    type="text"
+                    placeholder="Type DELETE to confirm"
+                    value={deleteConfirmationText}
+                    onChange={(e) => setDeleteConfirmationText(e.target.value)}
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setDeletePermanentModal(false)}>
+                    Cancel
+                </Button>
+                <Button 
+                    variant="danger" 
+                    onClick={() => handlePermanentDelete(selectedPermanentDeleteId)}
+                    disabled={deleteConfirmationText !== 'DELETE'}
+                >
+                    <FaTrash className="me-1" />
+                    Delete Permanently
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
 
     return (
         <div className="d-flex">
@@ -161,7 +212,7 @@ const TrashArchives = () => {
                                                                         <Button
                                                                             variant="danger"
                                                                             size="sm"
-                                                                            onClick={() => handlePermanentDelete(submission._id)}
+                                                                            onClick={() => confirmPermanentDelete(submission._id)}
                                                                         >
                                                                             <FaTrash className="me-1" />
                                                                             Delete Permanently
@@ -202,6 +253,8 @@ const TrashArchives = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            {renderDeletePermanentModal()}
         </div>
     );
 };

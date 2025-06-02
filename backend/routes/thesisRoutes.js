@@ -695,6 +695,28 @@ router.put('/recover/:thesisId', async (req, res) => {
     }
 });
 
+// Add this route to permanently delete a thesis
+router.delete('/permanent-delete/:thesisId', async (req, res) => {
+    try {
+        const { thesisId } = req.params;
+        await Thesis.findByIdAndDelete(thesisId);
+        
+        // Delete associated notifications
+        await Notification.deleteMany({ thesisId });
+
+        res.json({
+            status: 'success',
+            message: 'Thesis permanently deleted'
+        });
+    } catch (error) {
+        console.error('Error in permanent deletion:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to delete permanently'
+        });
+    }
+});
+
 // Error handling middleware
 router.use((err, req, res, next) => {
     console.error('Error in thesis routes:', err);
