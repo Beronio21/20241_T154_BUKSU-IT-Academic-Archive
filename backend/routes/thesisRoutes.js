@@ -657,6 +657,44 @@ router.get('/trash', async (req, res) => {
     }
 });
 
+// Add this route to recover a submission from trash
+router.put('/recover/:thesisId', async (req, res) => {
+    try {
+        const { thesisId } = req.params;
+        console.log(`Recovering thesis ${thesisId} from trash...`);
+
+        const thesis = await Thesis.findByIdAndUpdate(
+            thesisId,
+            { 
+                isDeleted: false, 
+                deletedAt: null 
+            },
+            { new: true }
+        );
+
+        if (!thesis) {
+            console.error(`Thesis ${thesisId} not found.`);
+            return res.status(404).json({
+                status: 'error',
+                message: 'Thesis not found'
+            });
+        }
+
+        console.log(`Thesis ${thesisId} recovered successfully.`);
+        res.json({
+            status: 'success',
+            message: 'Thesis recovered successfully',
+            data: thesis
+        });
+    } catch (error) {
+        console.error('Error recovering thesis:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to recover thesis'
+        });
+    }
+});
+
 // Error handling middleware
 router.use((err, req, res, next) => {
     console.error('Error in thesis routes:', err);
