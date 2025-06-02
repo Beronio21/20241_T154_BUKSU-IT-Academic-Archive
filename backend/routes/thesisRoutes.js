@@ -128,11 +128,13 @@ router.post('/submit', validateThesis, asyncHandler(async (req, res) => {
 
 // Get all submissions (for admins)
 router.get('/submissions', asyncHandler(async (req, res) => {
+    console.log('Fetching submissions...');
     const submissions = await Thesis.find()
         .sort({ createdAt: -1 })
         .lean()
-        .select('title abstract keywords members email status createdAt docsLink objective reviewComments reviewedBy reviewDate');
+        .select('title abstract keywords members email status createdAt docsLink objective reviewComments reviewedBy reviewDate isDeleted');
 
+    console.log(`Found ${submissions.length} submissions.`);
     res.json({
         status: 'success',
         count: submissions.length,
@@ -251,40 +253,39 @@ router.get('/feedback/:thesisId', async (req, res) => {
 });
 
 // Add this route to handle thesis deletion
-router.delete('/delete/:thesisId', async (req, res) => {
+router.put('/delete/:thesisId', async (req, res) => {
     try {
         const { thesisId } = req.params;
-        
-        // Find the thesis
-        const thesis = await Thesis.findById(thesisId);
-        
+        console.log(`Moving thesis ${thesisId} to trash...`);
+
+        const thesis = await Thesis.findByIdAndUpdate(
+            thesisId,
+            { 
+                isDeleted: true, 
+                deletedAt: new Date() 
+            },
+            { new: true }
+        );
+
         if (!thesis) {
+            console.error(`Thesis ${thesisId} not found.`);
             return res.status(404).json({
                 status: 'error',
                 message: 'Thesis not found'
             });
         }
 
-        // Only prevent deletion of approved theses
-
-
-        // Delete the thesis
-        await Thesis.findByIdAndDelete(thesisId);
-
-        // Delete associated notifications
-        await Notification.deleteMany({ thesisId });
-
+        console.log(`Thesis ${thesisId} moved to trash successfully.`);
         res.json({
             status: 'success',
-            message: 'Thesis deleted successfully'
+            message: 'Thesis moved to trash successfully',
+            data: thesis
         });
-
     } catch (error) {
-        console.error('Error deleting thesis:', error);
+        console.error('Error moving to trash:', error);
         res.status(500).json({
             status: 'error',
-            message: 'Failed to delete thesis',
-            error: error.message
+            message: 'Failed to move to trash'
         });
     }
 });
@@ -635,40 +636,6 @@ router.get('/review-stats', asyncHandler(async (req, res) => {
         }
     });
 }));
-
-// Add this route for soft-deleting (moving to trash)
-router.put('/delete/:thesisId', async (req, res) => {
-    try {
-        const { thesisId } = req.params;
-        const thesis = await Thesis.findByIdAndUpdate(
-            thesisId,
-            { 
-                isDeleted: true, 
-                deletedAt: new Date() 
-            },
-            { new: true }
-        );
-
-        if (!thesis) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Thesis not found'
-            });
-        }
-
-        res.json({
-            status: 'success',
-            message: 'Thesis moved to trash successfully',
-            data: thesis
-        });
-    } catch (error) {
-        console.error('Error moving to trash:', error);
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to move to trash'
-        });
-    }
-});
 
 // Add this route to fetch deleted submissions
 router.get('/trash', async (req, res) => {

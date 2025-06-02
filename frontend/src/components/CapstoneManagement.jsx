@@ -49,6 +49,7 @@ const CapstoneManagement = () => {
     const [showRecoveryModal, setShowRecoveryModal] = useState(false);
     const [deletedSubmissions, setDeletedSubmissions] = useState([]);
     const [userEmail, setUserEmail] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
 
@@ -84,10 +85,9 @@ const CapstoneManagement = () => {
             const response = await fetch('http://localhost:8080/api/thesis/submissions');
             const data = await response.json();
             if (data.status === 'success') {
-                // Sort submissions by createdAt in descending order (most recent first)
-                const sortedSubmissions = data.data.sort((a, b) => 
-                    new Date(b.createdAt) - new Date(a.createdAt)
-                );
+                const sortedSubmissions = data.data
+                    .filter(submission => !submission.isDeleted)
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setSubmissions(sortedSubmissions);
             }
         } catch (error) {
@@ -209,6 +209,7 @@ const CapstoneManagement = () => {
             return;
         }
 
+        setIsDeleting(true);
         try {
             const response = await axios.put(
                 `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`
@@ -220,7 +221,7 @@ const CapstoneManagement = () => {
                     'The research paper has been moved to the trash archive.',
                     <FaTrash className="text-danger" size={48} />
                 );
-                fetchSubmissions(); // Refresh the list
+                fetchSubmissions();
                 setShowDeleteModal(false);
                 setSelectedSubmission(null);
                 setDeleteConfirmationText('');
@@ -228,6 +229,8 @@ const CapstoneManagement = () => {
         } catch (error) {
             console.error('Error moving to trash:', error);
             setError(error.response?.data?.message || 'Failed to move to trash. Please try again.');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -638,9 +641,22 @@ const CapstoneManagement = () => {
                     <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={handleDelete}>
-                        <FaTrash className="me-2" />
-                        Confirm Delete
+                    <Button 
+                        variant="danger" 
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                    >
+                        {isDeleting ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Moving to Trash...
+                            </>
+                        ) : (
+                            <>
+                                <FaTrash className="me-1" />
+                                Move to Trash
+                            </>
+                        )}
                     </Button>
                 </div>
             </div>
@@ -782,7 +798,7 @@ const CapstoneManagement = () => {
                                                                     title="Delete Research Paper"
                                                                 >
                                                                     <FaTrash className="me-1" size={14} />
-                                                                    Delete
+                                                                    Move to Trash
                                                                 </Button>
                                                             </div>
                                                         </td>
