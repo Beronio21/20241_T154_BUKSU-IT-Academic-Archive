@@ -4,7 +4,8 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Teacher = require('../models/Teacher');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+
 
 // Google OAuth login
 router.post('/google', async (req, res) => {
