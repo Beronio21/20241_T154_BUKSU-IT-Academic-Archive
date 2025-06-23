@@ -273,15 +273,16 @@ const StudentDashboard = () => {
                         style={{
                           background: '#ffffff',
                           borderRadius: '12px',
-                          boxShadow: '0 3px 10px rgba(0, 0, 0, 0.08)',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+                          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                           cursor: 'pointer',
                           overflow: 'hidden',
                           display: 'flex',
                           flexDirection: 'column',
+                          border: '1px solid rgba(0, 0, 0, 0.05)',
                           '&:hover': {
                             transform: 'translateY(-5px)',
-                            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.12)'
+                            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)'
                           }
                         }}
                       >
@@ -289,17 +290,16 @@ const StudentDashboard = () => {
                           {/* Title Container */}
                           <div style={{
                             minHeight: '80px',
-                            backgroundColor: '#e8f5e9',
+                            backgroundColor: '#f8f9fa',
                             borderRadius: '8px',
-                            borderLeft: '4px solid #2e7d32',
                             padding: '12px 15px',
                             marginBottom: '15px',
-                            transition: 'all 0.3s ease',
+                            borderLeft: '4px solid #4a6bff',
                           }}>
                             <h3 style={{
                               fontSize: '1.1rem',
                               margin: '0',
-                              color: '#1a237e',
+                              color: '#2c3e50',
                               fontWeight: '600',
                               display: '-webkit-box',
                               WebkitLineClamp: '3',
@@ -307,8 +307,6 @@ const StudentDashboard = () => {
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                               lineHeight: '1.4',
-                              wordWrap: 'break-word',
-                              wordBreak: 'break-word'
                             }}>{capstone.title}</h3>
                           </div>
 
@@ -337,8 +335,8 @@ const StudentDashboard = () => {
                             }}>
                               {capstone.keywords.map((keyword, index) => (
                                 <span key={index} style={{
-                                  backgroundColor: '#f0f4ff',
-                                  color: '#3949ab',
+                                  backgroundColor: '#e3f2fd',
+                                  color: '#1565c0',
                                   padding: '4px 10px',
                                   borderRadius: '15px',
                                   fontSize: '0.85rem',
@@ -357,7 +355,7 @@ const StudentDashboard = () => {
                             alignItems: 'center',
                             marginTop: 'auto',
                             paddingTop: '15px',
-                            borderTop: '1px solid #eee'
+                            borderTop: '1px solid rgba(0, 0, 0, 0.05)'
                           }}>
                             <span style={{
                               fontSize: '0.9rem',
@@ -370,8 +368,8 @@ const StudentDashboard = () => {
                               })}
                             </span>
                             <span style={{
-                              backgroundColor: '#e3f2fd',
-                              color: '#1565c0',
+                              backgroundColor: '#e8f5e9',
+                              color: '#2e7d32',
                               padding: '5px 12px',
                               borderRadius: '15px',
                               fontSize: '0.9rem',
@@ -504,9 +502,8 @@ const StudentDashboard = () => {
 
   return (
     <div className="d-flex flex-column" style={{ 
-      height: "100vh",
-      backgroundColor: "#ffffff",
-      overflow: "hidden"
+      minHeight: "100vh",
+      backgroundColor: "#ffffff"
     }}>
       {/* Topbar */}
       <Topbar userInfo={userInfo} />
@@ -518,8 +515,7 @@ const StudentDashboard = () => {
       <div className="flex-grow-1 p-4" style={{ 
         marginLeft: "250px", 
         marginTop: "60px",
-        backgroundColor: "#ffffff",
-        overflow: "auto"
+        backgroundColor: "#ffffff"
       }}>
         <Routes>
           <Route path="/dashboard" element={renderContent()} />

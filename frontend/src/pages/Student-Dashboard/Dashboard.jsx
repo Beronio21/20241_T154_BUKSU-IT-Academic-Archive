@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
     const [statistics, setStatistics] = useState(null);
@@ -34,6 +47,48 @@ const Dashboard = () => {
         return <div className="error">No statistics available</div>;
     }
 
+    // Prepare data for the bar chart (Approvals by Year)
+    const yearlyApprovalsData = {
+        labels: Object.keys(statistics.yearlyApprovals).sort((a, b) => b - a),
+        datasets: [
+            {
+                label: 'Approved Capstones',
+                data: Object.keys(statistics.yearlyApprovals)
+                    .sort((a, b) => b - a)
+                    .map(year => statistics.yearlyApprovals[year]),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    // Prepare data for the pie chart (Capstones by Category)
+    const categoryCountsData = {
+        labels: Object.keys(statistics.categoryCounts),
+        datasets: [
+            {
+                label: 'Submissions by Category',
+                data: Object.values(statistics.categoryCounts),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
     return (
         <div className="statistics-container">
             <div className="statistics-header">
@@ -45,14 +100,6 @@ const Dashboard = () => {
                     <h3>Total Capstones</h3>
                     <div className="stat-number">{statistics.totalCapstones}</div>
                     <div className="stat-label">Total submissions</div>
-                </div>
-
-                <div className="stat-card">
-                    <h3>Approved Capstones</h3>
-                    <div className="stat-number">
-                        {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
-                    </div>
-                    <div className="stat-label">Total approved submissions</div>
                 </div>
 
                 <div className="stat-card">
@@ -75,32 +122,42 @@ const Dashboard = () => {
             <div className="chart-container">
                 <h3>Approvals by Year</h3>
                 <div className="chart">
-                    <ul className="category-list">
-                        {Object.entries(statistics.yearlyApprovals)
-                            .sort(([a], [b]) => b - a)
-                            .map(([year, count]) => (
-                                <li key={year} className="category-item">
-                                    <span className="category-name">{year}</span>
-                                    <span className="category-count">{count} approved</span>
-                                </li>
-                            ))}
-                    </ul>
+                    <Bar 
+                        data={yearlyApprovalsData} 
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Approved Capstones by Year',
+                                },
+                            },
+                        }} 
+                    />
                 </div>
             </div>
 
             <div className="chart-container">
                 <h3>Capstones by Category</h3>
                 <div className="chart">
-                    <ul className="category-list">
-                        {Object.entries(statistics.categoryCounts)
-                            .sort(([, a], [, b]) => b - a)
-                            .map(([category, count]) => (
-                                <li key={category} className="category-item">
-                                    <span className="category-name">{category}</span>
-                                    <span className="category-count">{count} submissions</span>
-                                </li>
-                            ))}
-                    </ul>
+                    <Pie 
+                        data={categoryCountsData} 
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Submissions by Category',
+                                },
+                            },
+                        }} 
+                    />
                 </div>
             </div>
         </div>
