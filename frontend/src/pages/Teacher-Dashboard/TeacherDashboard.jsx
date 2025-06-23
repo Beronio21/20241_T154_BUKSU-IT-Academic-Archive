@@ -15,20 +15,6 @@ import TeacherTopbar from '../../Topbar/Teacher-Topbar/TeacherTopbar';
 import { Modal } from 'react-bootstrap';
 import axios from 'axios';
 import Dashboard from '../Student-Dashboard/Dashboard';
-import { Bar, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
-import './TeacherDashboard.css';
-
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const TeacherDashboard = () => {
 
@@ -49,7 +35,6 @@ const TeacherDashboard = () => {
     const [titleSearch, setTitleSearch] = useState('');
     const [dateSearch, setDateSearch] = useState('');
     const [categorySearch, setCategorySearch] = useState('');
-    const [statistics, setStatistics] = useState(null);
     
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
 
@@ -136,79 +121,6 @@ const TeacherDashboard = () => {
         return matchesTitle && matchesDate && matchesCategory;
     });
 
-    useEffect(() => {
-        const fetchStatistics = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/thesis/teacher-statistics');
-                setStatistics(response.data.data);
-                setLoading(false);
-            } catch (err) {
-                setError('Failed to load statistics. Please try again later.');
-                setLoading(false);
-            }
-        };
-
-        fetchStatistics();
-    }, []);
-
-    if (loading) {
-        return <div className="loading">Loading statistics...</div>;
-    }
-
-    if (error) {
-        return <div className="error">{error}</div>;
-    }
-
-    if (!statistics) {
-        return <div className="error">No statistics available</div>;
-    }
-
-    // Prepare data for the bar chart (Submissions by Status)
-    const submissionsByStatusData = {
-        labels: Object.keys(statistics.submissionsByStatus),
-        datasets: [
-            {
-                label: 'Submissions by Status',
-                data: Object.values(statistics.submissionsByStatus),
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)', // Pending
-                    'rgba(54, 162, 235, 0.6)', // Approved
-                    'rgba(255, 206, 86, 0.6)', // Rejected
-                    'rgba(75, 192, 192, 0.6)', // Revision
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                ],
-                borderWidth: 1,
-            },
-        ],
-    };
-
-    // Prepare data for the pie chart (Submissions by Student)
-    const submissionsByStudentData = {
-        labels: Object.keys(statistics.submissionsByStudent),
-        datasets: [
-            {
-                label: 'Submissions by Student',
-                data: Object.values(statistics.submissionsByStudent),
-                backgroundColor: [
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(201, 203, 207, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(201, 203, 207, 1)',
-                ],
-                borderWidth: 1,
-            },
-        ],
-    };
-
     const renderContent = () => {
         switch (activeSection) {
             case 'profile':
@@ -231,7 +143,7 @@ const TeacherDashboard = () => {
                 return <StudentList />;
             case 'dashboard':
             default:
-                return <Dashboard />;
+                return <Dashboard role="teacher" />;
         }
     };
 

@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Bar, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
+import { Bar, Pie } from 'react-chartjs-2';
+import { Chart, BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend } from 'chart.js';
+import PropTypes from 'prop-types';
 
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
+Chart.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
-const Dashboard = () => {
+const Dashboard = ({ role = "student" }) => {
     const [statistics, setStatistics] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,46 +39,15 @@ const Dashboard = () => {
         return <div className="error">No statistics available</div>;
     }
 
-    // Prepare data for the bar chart (Approvals by Year)
-    const yearlyApprovalsData = {
-        labels: Object.keys(statistics.yearlyApprovals).sort((a, b) => b - a),
-        datasets: [
-            {
-                label: 'Approved Capstones',
-                data: Object.keys(statistics.yearlyApprovals)
-                    .sort((a, b) => b - a)
-                    .map(year => statistics.yearlyApprovals[year]),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-            },
-        ],
-    };
-
-    // Prepare data for the pie chart (Capstones by Category)
-    const categoryCountsData = {
-        labels: Object.keys(statistics.categoryCounts),
-        datasets: [
-            {
-                label: 'Submissions by Category',
-                data: Object.values(statistics.categoryCounts),
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                ],
-                borderWidth: 1,
-            },
-        ],
+    // Responsive container style
+    const chartBoxStyle = {
+        flex: '1 1 350px',
+        minWidth: '320px',
+        background: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        padding: '24px',
+        margin: '10px 0'
     };
 
     return (
@@ -101,6 +62,16 @@ const Dashboard = () => {
                     <div className="stat-number">{statistics.totalCapstones}</div>
                     <div className="stat-label">Total submissions</div>
                 </div>
+
+                {role === "teacher" && (
+                    <div className="stat-card">
+                        <h3>Approved Capstones</h3>
+                        <div className="stat-number">
+                            {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
+                        </div>
+                        <div className="stat-label">Total approved submissions</div>
+                    </div>
+                )}
 
                 <div className="stat-card">
                     <h3>Categories</h3>
@@ -119,49 +90,96 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div className="chart-container">
-                <h3>Approvals by Year</h3>
-                <div className="chart">
-                    <Bar 
-                        data={yearlyApprovalsData} 
+            {/* Graphs Section */}
+            <div className="chart-dashboard" style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '40px',
+                marginTop: '40px',
+                justifyContent: 'center'
+            }}>
+                {role === "teacher" && (
+                    <div style={chartBoxStyle}>
+                        <h4 style={{ marginBottom: '20px' }}>Approvals by Year</h4>
+                        <Bar
+                            data={{
+                                labels: Object.keys(statistics.yearlyApprovals).sort(),
+                                datasets: [
+                                    {
+                                        label: 'Approved Capstones',
+                                        data: Object.keys(statistics.yearlyApprovals).sort().map(year => statistics.yearlyApprovals[year]),
+                                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                        borderRadius: 8,
+                                    }
+                                ]
+                            }}
+                            options={{
+                                responsive: true,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: { enabled: true }
+                                },
+                                scales: {
+                                    x: { title: { display: true, text: 'Year' } },
+                                    y: { title: { display: true, text: 'Approvals' }, beginAtZero: true }
+                                }
+                            }}
+                        />
+                    </div>
+                )}
+
+                {/* Pie Chart: Capstones by Category (shown for both roles) */}
+                <div style={chartBoxStyle}>
+                    <h4 style={{ marginBottom: '20px' }}>Capstones by Category</h4>
+                    <Pie
+                        data={{
+                            labels: Object.keys(statistics.categoryCounts),
+                            datasets: [
+                                {
+                                    label: 'Capstones',
+                                    data: Object.values(statistics.categoryCounts),
+                                    backgroundColor: [
+                                        '#4a6bff', '#34c759', '#ff9500', '#ff2d55', '#5ac8fa', '#af52de', '#ffd60a'
+                                    ],
+                                    borderWidth: 1,
+                                }
+                            ]
+                        }}
                         options={{
                             responsive: true,
                             plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Approved Capstones by Year',
-                                },
-                            },
-                        }} 
+                                legend: { position: 'bottom' },
+                                tooltip: { enabled: true }
+                            }
+                        }}
                     />
                 </div>
             </div>
 
-            <div className="chart-container">
-                <h3>Capstones by Category</h3>
-                <div className="chart">
-                    <Pie 
-                        data={categoryCountsData} 
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Submissions by Category',
-                                },
-                            },
-                        }} 
-                    />
+            {/* Only for teacher: Approvals by Year list */}
+            {role === "teacher" && (
+                <div className="chart-container">
+                    <h3>Approvals by Year</h3>
+                    <div className="chart">
+                        <ul className="category-list">
+                            {Object.entries(statistics.yearlyApprovals)
+                                .sort(([a], [b]) => b - a)
+                                .map(([year, count]) => (
+                                    <li key={year} className="category-item">
+                                        <span className="category-name">{year}</span>
+                                        <span className="category-count">{count} approved</span>
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
+};
+
+Dashboard.propTypes = {
+    role: PropTypes.oneOf(['student', 'teacher'])
 };
 
 export default Dashboard; 

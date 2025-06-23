@@ -337,4 +337,19 @@
         padding: 0.4rem 0.8rem;
         min-width: 90px;
     }
+}
+
+@media (max-width: 900px) {
+  .chart-dashboard {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .statistics-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (max-width: 600px) {
+  .statistics-grid {
+    grid-template-columns: 1fr !important;
+  }
 } 

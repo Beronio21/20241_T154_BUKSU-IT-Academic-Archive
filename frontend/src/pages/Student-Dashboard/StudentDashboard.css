@@ -222,3 +222,59 @@ body {
     max-height: 95vh;
   }
 }
+
+.statistics-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 24px;
+    text-align: center;
+}
+
+.chart-dashboard {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    overflow-x: auto; /* Allow chart area to scroll if needed, but not the whole page */
+}
+
+@media (max-width: 900px) {
+    .statistics-container {
+        padding: 12px 2vw;
+    }
+    .chart-dashboard {
+        flex-direction: column;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .statistics-container {
+        padding: 8px;
+    }
+    .statistics-grid {
+        gap: 12px;
+    }
+    .stat-card {
+        padding: 12px;
+    }
+    .chart-dashboard {
+        flex-direction: column;
+        gap: 20px;
+    }
+}

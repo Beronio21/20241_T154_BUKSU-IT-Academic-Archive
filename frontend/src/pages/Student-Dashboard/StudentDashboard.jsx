@@ -161,7 +161,7 @@ const StudentDashboard = () => {
       case "docs":
         return <Docs />;
       case "statistics":
-        return <Dashboard />;
+        return <Dashboard role="student" />;
       case "dashboard":
       default:
         return (
@@ -509,13 +509,15 @@ const StudentDashboard = () => {
       <Topbar userInfo={userInfo} />
 
       {/* Navbar */}
-      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
+      <StudentNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} userInfo={userInfo} />
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4" style={{ 
-        marginLeft: "250px", 
+        marginLeft: "220px",
         marginTop: "60px",
-        backgroundColor: "#ffffff"
+        backgroundColor: "#ffffff",
+        minHeight: "calc(100vh - 60px)",
+        overflow: "auto"
       }}>
         <Routes>
           <Route path="/dashboard" element={renderContent()} />
@@ -525,7 +527,7 @@ const StudentDashboard = () => {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/send-gmail" element={<SendGmail />} />
           <Route path="/schedule" element={<ScheduleTable />} />
-          <Route path="/statistics" element={<Dashboard />} />
+          <Route path="/statistics" element={<Dashboard role="student" />} />
           <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
         </Routes>
       </div>
