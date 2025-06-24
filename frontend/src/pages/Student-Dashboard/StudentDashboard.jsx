@@ -449,7 +449,7 @@ const StudentDashboard = () => {
                 }}
               >
                 <div className="custom-modal-header">
-                  <h3>Thesis Details</h3>
+                  <h3>Capstone Details</h3>
                   <button onClick={() => setShowDetailsModal(false)} className="close-button">
                     &times;
                   </button>
