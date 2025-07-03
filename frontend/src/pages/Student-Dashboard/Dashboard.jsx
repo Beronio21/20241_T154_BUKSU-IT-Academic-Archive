@@ -69,11 +69,25 @@ const Dashboard = () => {
     };
 
     // Modern color palettes
-    const lineColor = 'rgba(26, 117, 255, 0.95)';
-    const linePointColor = '#1565c0';
-    const lineBgGradient = 'rgba(26, 117, 255, 0.10)';
+    const lineColor = 'rgba(52, 152, 219, 0.95)'; // Strong blue
+    const linePointColor = '#e67e22'; // Orange for points
+    const lineBgGradient = 'rgba(52, 152, 219, 0.15)'; // Lighter blue for area
     const doughnutColors = [
-        '#1a75ff', '#4d94ff', '#00d4ff', '#00b8d4', '#00e676', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#fd7e14'
+        '#3498db', // Blue
+        '#e67e22', // Orange
+        '#2ecc71', // Green
+        '#9b59b6', // Purple
+        '#f1c40f', // Yellow
+        '#e74c3c', // Red
+        '#1abc9c', // Teal
+        '#34495e', // Dark blue
+        '#fd79a8', // Pink
+        '#00b894', // Emerald
+        '#636e72', // Gray
+        '#fdcb6e', // Light yellow
+        '#00cec9', // Cyan
+        '#6c5ce7', // Indigo
+        '#d35400', // Pumpkin
     ];
 
     if (loading) {

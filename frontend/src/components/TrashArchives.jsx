@@ -259,13 +259,42 @@ const TrashArchives = () => {
 
             <Modal show={showRecoveryModal} onHide={() => setShowRecoveryModal(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirm Recovery</Modal.Title>
+                    <Modal.Title>Capstone Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to recover this submission?
-                    <div className="mt-3">
-                        <strong>Title:</strong> {selectedSubmission?.title}
-                    </div>
+                    {selectedSubmission && (
+                        <div style={{ background: '#f8f9fa', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                            <h4 style={{ color: '#2d3436', fontWeight: 700, marginBottom: 10 }}>{selectedSubmission.title}</h4>
+                            <div style={{ marginBottom: 12, color: '#636e72', fontSize: 15 }}>
+                                <span style={{ fontWeight: 600 }}>Category:</span> <Badge bg="info">{selectedSubmission.category}</Badge>
+                            </div>
+                            <hr style={{ margin: '12px 0' }} />
+                            <div style={{ marginBottom: 10 }}>
+                                <span style={{ fontWeight: 600, color: '#2d3436' }}>Abstract:</span>
+                                <div style={{ color: '#636e72', fontSize: 15, marginTop: 4 }}>{selectedSubmission.abstract || 'No abstract provided.'}</div>
+                            </div>
+                            <div style={{ marginBottom: 10 }}>
+                                <span style={{ fontWeight: 600, color: '#2d3436' }}>Keywords:</span>
+                                <div style={{ color: '#636e72', fontSize: 15, marginTop: 4 }}>
+                                    {Array.isArray(selectedSubmission.keywords) && selectedSubmission.keywords.length > 0
+                                        ? selectedSubmission.keywords.map((kw, i) => (
+                                            <Badge key={i} bg="secondary" style={{ marginRight: 6, marginBottom: 2 }}>{kw}</Badge>
+                                        ))
+                                        : 'No keywords.'}
+                                </div>
+                            </div>
+                            <div style={{ marginBottom: 10 }}>
+                                <span style={{ fontWeight: 600, color: '#2d3436' }}>Group Members:</span>
+                                <div style={{ color: '#636e72', fontSize: 15, marginTop: 4 }}>
+                                    {Array.isArray(selectedSubmission.members) && selectedSubmission.members.length > 0
+                                        ? selectedSubmission.members.map((m, i) => (
+                                            <span key={i} style={{ display: 'inline-block', marginRight: 8 }}>{m}</span>
+                                        ))
+                                        : 'No members listed.'}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowRecoveryModal(false)}>
