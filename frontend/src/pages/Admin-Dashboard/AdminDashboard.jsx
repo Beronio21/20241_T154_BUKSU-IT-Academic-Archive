@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalTeachers: 0,
+    totalAdmins: 0,
     activeTheses: 0,
   });
   const [recentAccounts, setRecentAccounts] = useState([]);
@@ -60,28 +61,30 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       };
 
-      // Fetch students count
-      const studentsRes = await axios.get('http://localhost:8080/api/students', config);
-      const teachersRes = await axios.get('http://localhost:8080/api/teachers', config);
-      const thesesRes = await axios.get('http://localhost:8080/api/thesis', config);
+      // Fetch all users
+      const usersRes = await axios.get('http://localhost:8080/api/users', config);
+      const adminsRes = await axios.get('http://localhost:8080/api/admins', config);
+      // Fetch theses (use correct endpoint)
+      const thesesRes = await axios.get('http://localhost:8080/api/thesis/submissions', config);
+      const users = Array.isArray(usersRes.data) ? usersRes.data : [];
+      const admins = Array.isArray(adminsRes.data) ? adminsRes.data : [];
+      const theses = Array.isArray(thesesRes.data.data) ? thesesRes.data.data : [];
+      const activeTheses = theses.filter(t => !t.isDeleted);
 
       setStats({
-        totalStudents: Array.isArray(studentsRes.data) ? studentsRes.data.length : 0,
-        totalTeachers: Array.isArray(teachersRes.data) ? teachersRes.data.length : 0,
-        activeTheses: Array.isArray(thesesRes.data) ? thesesRes.data.length : 0,
+        totalStudents: users.filter(u => u.role === 'student').length,
+        totalTeachers: users.filter(u => u.role === 'teacher').length,
+        totalAdmins: admins.length,
+        activeTheses: activeTheses.length,
       });
 
-      // Get recent accounts (last 5 from both students and teachers)
-      const allAccounts = [
-        ...(Array.isArray(studentsRes.data) ? studentsRes.data.map(s => ({ ...s, type: 'student' })) : []),
-        ...(Array.isArray(teachersRes.data) ? teachersRes.data.map(t => ({ ...t, type: 'teacher' })) : [])
-      ];
-
-      // Sort by creation date and take last 5
-      const sortedAccounts = allAccounts.sort((a, b) => 
-        new Date(b.createdAt) - new Date(a.createdAt)
-      ).slice(0, 5);
-
+      // Recent accounts: latest 5 users (students, teachers, admins)
+      const allAccounts = users.filter(u => ['student', 'teacher', 'admin'].includes(u.role));
+      const sortedAccounts = allAccounts
+        .filter(acc => acc.createdAt)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 5)
+        .map(acc => ({ ...acc, type: acc.role }));
       setRecentAccounts(sortedAccounts);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -130,7 +133,7 @@ const AdminDashboard = () => {
             <header className="d-flex align-items-center justify-content-between mb-4">
               <div>
                 <h1 className="h3">Welcome, {userInfo?.name}</h1>
-                <p className="text-muted">Administrator</p>
+                <p className="text-muted">{userInfo?.role ? userInfo.role.charAt(0).toUpperCase() + userInfo.role.slice(1) : 'Administrator'}</p>
               </div>
               <img
                 className="rounded-circle"
@@ -189,11 +192,11 @@ const AdminDashboard = () => {
                               <td>{account.name}</td>
                               <td>{account.email}</td>
                               <td>
-                                <span className={`badge ${account.type === 'student' ? 'bg-info' : 'bg-success'}`}>
-                                  {account.type}
+                                <span className={`badge ${account.type === 'student' ? 'bg-info' : account.type === 'teacher' ? 'bg-success' : 'bg-primary'}`}>
+                                  {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
                                 </span>
                               </td>
-                              <td>{new Date(account.createdAt).toLocaleDateString()}</td>
+                              <td>{account.createdAt ? new Date(account.createdAt).toLocaleDateString() : ''}</td>
                             </tr>
                           ))}
                         </tbody>

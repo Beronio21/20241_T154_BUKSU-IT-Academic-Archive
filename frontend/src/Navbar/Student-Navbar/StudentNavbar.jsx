@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
-const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
+const StudentNavbar = ({ activeSection, handleSectionChange, userInfo: userInfoProp }) => {
     const navigate = useNavigate();
+    const [userInfo, setUserInfo] = useState(userInfoProp || null);
+
+    useEffect(() => {
+        if (!userInfoProp) {
+            const data = localStorage.getItem('user-info');
+            if (data) {
+                setUserInfo(JSON.parse(data));
+            }
+        }
+    }, [userInfoProp]);
 
     // Style related functions
     const getNavButtonStyle = (isActive) => ({
@@ -108,18 +118,6 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
                     </ul>
                 </div>
                       
-                {/* User Info Section */}
-                <div className="p-3 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '15px' }}> {/* Reduced padding */}
-                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
-                        {userInfo?.name || 'Student'}
-                    </p>
-                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
-                        {userInfo?.email || 'Email not available'}
-                    </p>
-                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
-                        {userInfo?.role || 'User Type not available'}
-                    </p>
-                </div>
             </div>
         </div>
     );

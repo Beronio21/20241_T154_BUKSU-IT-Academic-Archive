@@ -118,4 +118,24 @@ router.post('/users/:userId/unlock', auth, async (req, res) => {
     }
 });
 
+// Get all users
+router.get('/users', auth, async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Get all admins
+router.get('/admins', auth, async (req, res) => {
+    try {
+        const admins = await User.find({ role: 'admin' });
+        res.json(admins);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router; 

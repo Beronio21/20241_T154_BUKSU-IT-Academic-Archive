@@ -53,9 +53,25 @@
 .close-button {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2.2rem;
+  font-weight: bold;
   cursor: pointer;
-  color: white;
+  color: #fff;
+  padding: 0 18px;
+  line-height: 1;
+  transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+.close-button:hover, .close-button:focus {
+  color: #fff;
+  background: #dc3545;
+  box-shadow: 0 2px 8px rgba(220,53,69,0.15);
+  outline: none;
 }
 
 .custom-modal-body {

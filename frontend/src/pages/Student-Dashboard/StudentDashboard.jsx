@@ -181,6 +181,17 @@ const StudentDashboard = () => {
                   padding: '25px',
                   boxShadow: '0 2px 15px rgba(0, 0, 0, 0.05)'
                 }}>
+                  {/* Submit Capstone Button */}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                    <button
+                      className="btn btn-primary"
+                      style={{ fontWeight: 600, fontSize: '1rem', padding: '10px 24px', borderRadius: '8px' }}
+                      onClick={() => navigate('/student-dashboard/submit-thesis')}
+                    >
+                      <i className="fas fa-upload" style={{ marginRight: '8px' }}></i>
+                      Submit Capstone
+                    </button>
+                  </div>
                   <h2 style={{ 
                     fontSize: '1.75rem', 
                     color: '#2c3e50',

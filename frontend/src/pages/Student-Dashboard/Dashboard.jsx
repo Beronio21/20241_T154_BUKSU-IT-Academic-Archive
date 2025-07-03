@@ -205,32 +205,40 @@ const Dashboard = () => {
             <div className="statistics-header">
                 <h3>Summary</h3>
             </div>
-            <div className="statistics-grid" ref={statisticsGridRef} style={{ flexDirection: 'row', gap: '1.5rem', marginBottom: 0 }}>
-                <div className="stat-card">
-                    <h3>Total Capstones</h3>
-                    <div className="stat-number">{statistics.totalCapstones}</div>
-                    <div className="stat-label">Total submissions</div>
-                </div>
-                <div className="stat-card">
-                    <h3>Approved Capstones</h3>
-                    <div className="stat-number">
-                        {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
+            <div className="statistics-grid-wrapper" style={{ position: 'relative' }}>
+                {/* Single right scroll arrow at top-right */}
+                {canScrollRight && (
+                    <div className="scroll-arrow right" style={{ top: 0, right: 0, left: 'unset', transform: 'translateY(0)', position: 'absolute' }} onClick={() => scrollGrid('right')}>
+                        &#8594;
                     </div>
-                    <div className="stat-label">Total approved submissions</div>
-                </div>
-                <div className="stat-card">
-                    <h3>Categories</h3>
-                    <div className="stat-number">{Object.keys(statistics.categoryCounts).length}</div>
-                    <div className="stat-label">Different categories</div>
-                </div>
-                <div className="stat-card">
-                    <h3>Latest Year</h3>
-                    <div className="stat-number">
-                        {Object.keys(statistics.yearlyApprovals).length > 0 
-                            ? Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))
-                            : 'No Data'}
+                )}
+                <div className="statistics-grid" ref={statisticsGridRef} style={{ flexDirection: 'row', gap: '1.5rem', marginBottom: 0 }}>
+                    <div className="stat-card">
+                        <h3>Total Capstones</h3>
+                        <div className="stat-number">{statistics.totalCapstones}</div>
+                        <div className="stat-label">Total submissions</div>
                     </div>
-                    <div className="stat-label">Most recent submissions</div>
+                    <div className="stat-card">
+                        <h3>Approved Capstones</h3>
+                        <div className="stat-number">
+                            {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
+                        </div>
+                        <div className="stat-label">Total approved submissions</div>
+                    </div>
+                    <div className="stat-card">
+                        <h3>Categories</h3>
+                        <div className="stat-number">{Object.keys(statistics.categoryCounts).length}</div>
+                        <div className="stat-label">Different categories</div>
+                    </div>
+                    <div className="stat-card">
+                        <h3>Latest Year</h3>
+                        <div className="stat-number">
+                            {Object.keys(statistics.yearlyApprovals).length > 0 
+                                ? Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))
+                                : 'No Data'}
+                        </div>
+                        <div className="stat-label">Most recent submissions</div>
+                    </div>
                 </div>
             </div>
         </div>

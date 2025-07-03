@@ -718,29 +718,52 @@ const CapstoneManagement = () => {
                             display: 'flex',
                             flexDirection: 'column'
                         }}>
-                            {loading ? (
-                                <div className="loading">Loading submissions...</div>
-                            ) : (
-                                <div style={{ flex: 1, overflow: 'hidden' }}>
-                                    <div className="table-responsive" style={{ 
-                                        maxHeight: 'calc(100vh - 250px)', 
-                                        minHeight: 'calc(100vh - 250px)',
-                                        minWidth: '1100px',
-                                        overflow: 'auto'
-                                    }}>
-                                        <Table striped bordered hover className="mt-3 mb-0">
-                                            <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
-                                                <tr>
-                                                    <th style={{ width: '25%', minWidth: '200px' }}>Title</th>
-                                                    <th style={{ width: '25%', minWidth: '200px' }}>Abstract</th>
-                                                    <th style={{ width: '20%', minWidth: '200px' }}>Members</th>
-                                                    <th style={{ width: '15%', minWidth: '150px' }}>Email</th>
-                                                    <th style={{ width: '8%', minWidth: '100px' }}>Status</th>
-                                                    <th style={{ width: '20%', minWidth: '300px' }}>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {currentSubmissions.map((submission) => (
+                            {/* Filter Bar: Always visible, fixed spacing */}
+                            <div className="d-flex align-items-center mb-3" style={{ minHeight: '48px' }}>
+                                <InputGroup style={{ width: '300px' }}>
+                                    <InputGroup.Text>
+                                        <FaSearch />
+                                    </InputGroup.Text>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Search by title or members..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </InputGroup>
+                                <Button 
+                                    variant="light" 
+                                    className="ms-3"
+                                    onClick={() => {
+                                        resetForm();
+                                        setShowEditModal(true);
+                                    }}
+                                >
+                                    Add New Research Paper
+                                </Button>
+                            </div>
+                            {/* Table and results */}
+                            <div style={{ flex: 1, overflow: 'hidden', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+                                <div className="table-responsive" style={{ 
+                                    maxHeight: 'calc(100vh - 250px)', 
+                                    minHeight: 'calc(100vh - 250px)',
+                                    minWidth: '1100px',
+                                    overflow: 'auto'
+                                }}>
+                                    <Table striped bordered hover className="mt-3 mb-0">
+                                        <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
+                                            <tr>
+                                                <th style={{ width: '25%', minWidth: '200px' }}>Title</th>
+                                                <th style={{ width: '25%', minWidth: '200px' }}>Abstract</th>
+                                                <th style={{ width: '20%', minWidth: '200px' }}>Members</th>
+                                                <th style={{ width: '15%', minWidth: '150px' }}>Email</th>
+                                                <th style={{ width: '8%', minWidth: '100px' }}>Status</th>
+                                                <th style={{ width: '20%', minWidth: '300px' }}>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentSubmissions.length > 0 ? (
+                                                currentSubmissions.map((submission) => (
                                                     <tr key={submission._id}>
                                                         <td>{submission.title}</td>
                                                         <td>{submission.abstract}</td>
@@ -803,15 +826,21 @@ const CapstoneManagement = () => {
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </Table>
-                                    </div>
-                                    <div className="mt-2" style={{ minHeight: '40px' }}>
-                                        {renderPagination()}
-                                    </div>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="6" style={{ textAlign: 'center', color: '#888', padding: '60px 0', fontSize: '1.1em', background: '#fafbfc' }}>
+                                                        No research papers found.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </Table>
                                 </div>
-                            )}
+                                <div className="mt-2" style={{ minHeight: '40px' }}>
+                                    {renderPagination()}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
