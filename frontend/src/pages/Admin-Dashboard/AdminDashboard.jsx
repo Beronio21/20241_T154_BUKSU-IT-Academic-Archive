@@ -9,9 +9,19 @@ import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import AdminRegister from '../../Auth/AdminRegister';
 import ReviewSubmission from '../../components/ReviewSubmission';
 import CapstoneManagement from '../../components/CapstoneManagement';
-import TrashArchives from '../../components/TrashArchives';
-import { Table } from 'react-bootstrap';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Bar, Pie } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -22,6 +32,11 @@ const AdminDashboard = () => {
     activeTheses: 0,
   });
   const [recentAccounts, setRecentAccounts] = useState([]);
+  const [capstoneStats, setCapstoneStats] = useState({
+    totalCapstones: 0,
+    yearlyApprovals: {},
+    categoryCounts: {}
+  });
   const navigate = useNavigate();
 
   // Load user info and stats on component mount
@@ -31,6 +46,7 @@ const AdminDashboard = () => {
       setUserInfo(JSON.parse(storedUserInfo));
     }
     fetchStats();
+    fetchCapstoneStats();
 
     // Prevent navigation and prompt user on page unload or back navigation
     const preventNavigation = (e) => {
@@ -40,6 +56,10 @@ const AdminDashboard = () => {
 
     const handlePopState = () => {
       window.history.pushState(null, null, window.location.pathname);
+      // Removed logout confirmation
+      // if (window.confirm('Are you sure you want to leave this page?')) {
+      //   handleLogout();
+      // }
     };
 
     window.history.pushState(null, null, window.location.pathname);
@@ -52,39 +72,44 @@ const AdminDashboard = () => {
     };
   }, []);
 
-  // Fetch dashboard stats
+  // Fetch statistics from the backend
   const fetchStats = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('user-info'));
       const config = {
-        headers: { Authorization: `Bearer ${userInfo.token}` }
+        headers: {
+          'Authorization': `Bearer ${userInfo?.token}`,
+          'Content-Type': 'application/json',
+        },
       };
 
-      // Fetch students count
-      const studentsRes = await axios.get('http://localhost:8080/api/students', config);
-      const teachersRes = await axios.get('http://localhost:8080/api/teachers', config);
-      const thesesRes = await axios.get('http://localhost:8080/api/thesis', config);
+      const studentsResponse = await axios.get('http://localhost:8080/api/students', config);
+      const teachersResponse = await axios.get('http://localhost:8080/api/teachers', config);
 
+      // Combine student and teacher data, and sort by creation date
+      const allUsers = [...studentsResponse.data, ...teachersResponse.data]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 5);
+
+      setRecentAccounts(allUsers);
       setStats({
-        totalStudents: Array.isArray(studentsRes.data) ? studentsRes.data.length : 0,
-        totalTeachers: Array.isArray(teachersRes.data) ? teachersRes.data.length : 0,
-        activeTheses: Array.isArray(thesesRes.data) ? thesesRes.data.length : 0,
+        totalStudents: studentsResponse.data.length,
+        totalTeachers: teachersResponse.data.length,
+        activeTheses: 0, // You can update this if you have active theses data
       });
-
-      // Get recent accounts (last 5 from both students and teachers)
-      const allAccounts = [
-        ...(Array.isArray(studentsRes.data) ? studentsRes.data.map(s => ({ ...s, type: 'student' })) : []),
-        ...(Array.isArray(teachersRes.data) ? teachersRes.data.map(t => ({ ...t, type: 'teacher' })) : [])
-      ];
-
-      // Sort by creation date and take last 5
-      const sortedAccounts = allAccounts.sort((a, b) => 
-        new Date(b.createdAt) - new Date(a.createdAt)
-      ).slice(0, 5);
-
-      setRecentAccounts(sortedAccounts);
     } catch (error) {
       console.error('Error fetching stats:', error);
+    }
+  };
+
+  const fetchCapstoneStats = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/thesis/statistics');
+      if (response.data && response.data.status === 'success') {
+        setCapstoneStats(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching capstone stats:', error);
     }
   };
 
@@ -94,7 +119,7 @@ const AdminDashboard = () => {
     localStorage.removeItem("user-info");
     // Redirect to login page
     navigate("/login");
-  };
+};
 
   // Change active section
   const handleSectionChange = (section) => {
@@ -117,16 +142,38 @@ const AdminDashboard = () => {
         return <CapstoneManagement />;
       case 'admin-register':
         return <AdminRegister />;
-      case 'trash-archives':
-        return (
-          <div className="container-fluid" style={{ minWidth: '1200px', padding: '15px' }}>
-            <TrashArchives />
-          </div>
-        );
       case 'dashboard':
       default:
+        // Prepare data for charts
+        const barData = {
+          labels: Object.keys(capstoneStats.yearlyApprovals),
+          datasets: [
+            {
+              label: 'Approved Capstones',
+              data: Object.values(capstoneStats.yearlyApprovals),
+              backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            },
+          ],
+        };
+        const pieData = {
+          labels: Object.keys(capstoneStats.categoryCounts),
+          datasets: [
+            {
+              label: 'Category Distribution',
+              data: Object.values(capstoneStats.categoryCounts),
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)'
+              ],
+            },
+          ],
+        };
         return (
-          <div className="dashboard-content p-4">
+          <>
+            <AdminTopbar userInfo={userInfo} />
             <header className="d-flex align-items-center justify-content-between mb-4">
               <div>
                 <h1 className="h3">Welcome, {userInfo?.name}</h1>
@@ -140,70 +187,96 @@ const AdminDashboard = () => {
               />
             </header>
 
-            {/* Dashboard content */}
-            <div className="row g-4">
-              {/* Stats Cards */}
+            <div className="row g-3">
               <div className="col-md-4">
-                <div className="card shadow-sm">
+                <div className="card text-center">
                   <div className="card-body">
                     <h5 className="card-title">Total Students</h5>
-                    <h2 className="mb-0">{stats.totalStudents}</h2>
+                    <p className="display-6 fw-bold text-primary">{stats.totalStudents}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
-                <div className="card shadow-sm">
+                <div className="card text-center">
                   <div className="card-body">
                     <h5 className="card-title">Total Teachers</h5>
-                    <h2 className="mb-0">{stats.totalTeachers}</h2>
+                    <p className="display-6 fw-bold text-primary">{stats.totalTeachers}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
-                <div className="card shadow-sm">
+                <div className="card text-center">
                   <div className="card-body">
-                    <h5 className="card-title">Active Theses</h5>
-                    <h2 className="mb-0">{stats.activeTheses}</h2>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Accounts Table */}
-              <div className="col-12">
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <h5 className="card-title mb-4">Recent Accounts</h5>
-                    <div className="table-responsive">
-                      <Table hover className="align-middle">
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Type</th>
-                            <th>Date Created</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {recentAccounts.map((account, index) => (
-                            <tr key={index}>
-                              <td>{account.name}</td>
-                              <td>{account.email}</td>
-                              <td>
-                                <span className={`badge ${account.type === 'student' ? 'bg-info' : 'bg-success'}`}>
-                                  {account.type}
-                                </span>
-                              </td>
-                              <td>{new Date(account.createdAt).toLocaleDateString()}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
+                    <h5 className="card-title">Total Capstones</h5>
+                    <p className="display-6 fw-bold text-primary">{capstoneStats.totalCapstones}</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+
+            <div className="row mt-4">
+              <div className="col-md-6">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Yearly Approved Capstones</h5>
+                    <Bar data={barData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Capstone Category Distribution</h5>
+                    <Pie data={pieData} options={{ responsive: true }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <section className="mt-4">
+              <h2 className="h4">Recently Created Accounts</h2>
+              <div className="table-responsive">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>ID</th>
+                      <th>Email</th>
+                      <th>Created Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentAccounts.map((account) => (
+                      <tr key={account._id}>
+                        <td>{account.name}</td>
+                        <td>
+                          <span
+                            className={`badge bg-${
+                              account.role === 'student' ? 'primary' : 'secondary'
+                            }`}
+                          >
+                            {account.role}
+                          </span>
+                        </td>
+                        <td>{account.student_id || account.teacher_id}</td>
+                        <td>{account.email}</td>
+                        <td>
+                          {new Date(account.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
         );
     }
   };
@@ -211,11 +284,8 @@ const AdminDashboard = () => {
   return (
     <div className="d-flex">
       <AdminNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
-      <div className="flex-grow-1" style={{ marginLeft: '250px' }}>
-        <AdminTopbar userInfo={userInfo} />
-        <div style={{ paddingTop: '60px' }}>
-          {renderContent()}
-        </div>
+      <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
+        {renderContent()}
       </div>
     </div>
   );
