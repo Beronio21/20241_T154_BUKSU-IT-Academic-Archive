@@ -52,6 +52,9 @@ const CapstoneManagement2 = () => {
     const [deletedSubmissions, setDeletedSubmissions] = useState([]);
     const [userEmail, setUserEmail] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showArchiveModal, setShowArchiveModal] = useState(false);
+    const [isArchiving, setIsArchiving] = useState(false);
+    const [showArchiveToast, setShowArchiveToast] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -214,40 +217,32 @@ const CapstoneManagement2 = () => {
         setShowEditModal(true);
     };
 
-    const handleDelete = async () => {
-        if (deleteConfirmationText !== 'DELETE') {
-            setError('Please type "DELETE" to confirm deletion.');
-            return;
-        }
-
-        setIsDeleting(true);
+    const handleArchive = async () => {
+        setIsArchiving(true);
         try {
             const response = await axios.put(
                 `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`
             );
 
             if (response.data.status === 'success') {
-                showSuccess(
-                    'Research Moved to Trash',
-                    'The research paper has been moved to the trash archive.',
-                    <FaTrash className="text-danger" size={48} />
-                );
-                fetchSubmissions();
-                setShowDeleteModal(false);
+                setShowArchiveToast(true);
+                setTimeout(() => setShowArchiveToast(false), 3000);
+                setSubmissions(prev => prev.filter(sub => sub._id !== selectedSubmission._id));
+                setShowArchiveModal(false);
                 setSelectedSubmission(null);
                 setDeleteConfirmationText('');
             }
         } catch (error) {
-            console.error('Error moving to trash:', error);
-            setError(error.response?.data?.message || 'Failed to move to trash. Please try again.');
+            console.error('Error archiving:', error);
+            setError(error.response?.data?.message || 'Failed to archive. Please try again.');
         } finally {
-            setIsDeleting(false);
+            setIsArchiving(false);
         }
     };
 
-    const confirmDelete = (submission) => {
+    const confirmArchive = (submission) => {
         setSelectedSubmission(submission);
-        setShowDeleteModal(true);
+        setShowArchiveModal(true);
     };
 
     const resetForm = () => {
@@ -623,55 +618,48 @@ const CapstoneManagement2 = () => {
         </Modal>
     );
 
-    // Update the delete modal to include confirmation text input
-    const renderDeleteModal = () => (
-        <div className={`custom-modal ${showDeleteModal ? 'show' : ''}`} onClick={() => setShowDeleteModal(false)}>
-            <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
-                <div className="custom-modal-header bg-danger text-white">
-                    <h3>
-                        <FaExclamationTriangle className="me-2" />
-                        Confirm Deletion
-                    </h3>
-                    <button onClick={() => setShowDeleteModal(false)} className="close-button">
-                        &times;
-                    </button>
-                </div>
-                <div className="custom-modal-body">
-                    <Alert variant="warning">
-                        <FaExclamationTriangle className="me-2" />
-                        Type "DELETE" to confirm deletion.
-                    </Alert>
-                    <Form.Control
-                        type="text"
-                        placeholder="Type DELETE to confirm"
-                        value={deleteConfirmationText}
-                        onChange={(e) => setDeleteConfirmationText(e.target.value)}
-                    />
-                </div>
-                <div className="custom-modal-footer">
-                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+    // Replace delete modal with archive modal
+    const renderArchiveModal = () => (
+        <Modal
+            show={showArchiveModal}
+            onHide={() => setShowArchiveModal(false)}
+            centered
+            aria-labelledby="archive-modal-title"
+            backdropClassName="custom-modal-backdrop"
+            dialogClassName="custom-archive-modal-dialog"
+        >
+            <div style={{ position: 'relative' }}>
+                <Modal.Header
+                    closeButton={false}
+                    style={{ borderBottom: 'none', borderTopLeftRadius: 16, borderTopRightRadius: 16, background: '#2563eb', color: '#fff', padding: '1.5rem 2rem' }}
+                >
+                    <Modal.Title id="archive-modal-title" style={{ fontWeight: 700, fontSize: '1.5rem', letterSpacing: 0.5 }}>
+                        Archive Research Paper
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ padding: '2rem', fontSize: '1.1rem', borderRadius: 16, background: 'transparent', color: '#334155', fontWeight: 500 }}>
+                    Are you sure you want to archive this research paper? It will be moved to the Archived Capstones section and can be restored later if needed.
+                </Modal.Body>
+                <Modal.Footer style={{ borderTop: 'none', padding: '1.5rem 2rem', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, background: '#f8fafc' }}>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowArchiveModal(false)}
+                        style={{ minWidth: 110, fontWeight: 600, borderRadius: 8, marginRight: 8 }}
+                    >
                         Cancel
                     </Button>
-                    <Button 
-                        variant="danger" 
-                        onClick={handleDelete}
-                        disabled={isDeleting}
+                    <Button
+                        variant="primary"
+                        onClick={handleArchive}
+                        disabled={isArchiving}
+                        style={{ minWidth: 110, fontWeight: 600, borderRadius: 8, boxShadow: '0 2px 8px rgba(37,99,235,0.15)', background: '#2563eb', border: 'none' }}
+                        aria-label="Confirm archive"
                     >
-                        {isDeleting ? (
-                            <>
-                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                Moving to Trash...
-                            </>
-                        ) : (
-                            <>
-                                <FaTrash className="me-1" />
-                                Move to Trash
-                            </>
-                        )}
+                        {isArchiving ? 'Archiving...' : 'Confirm'}
                     </Button>
-                </div>
+                </Modal.Footer>
             </div>
-        </div>
+        </Modal>
     );
 
     // Add a button to open the recovery modal
@@ -684,7 +672,7 @@ const CapstoneManagement2 = () => {
             }}
         >
             <FaTrash className="me-2" />
-            Trash Archives
+            Archived Capstones
         </Button>
     );
 
@@ -802,21 +790,21 @@ const CapstoneManagement2 = () => {
                                                                             Review
                                                                         </Button>
                                                                         <Button
-                                                                            variant="outline-danger"
+                                                                            variant="outline-warning"
                                                                             size="sm"
                                                                             className="d-inline-flex align-items-center justify-content-center"
-                                                                            onClick={() => confirmDelete(submission)}
+                                                                            onClick={() => confirmArchive(submission)}
                                                                             style={{
                                                                                 minWidth: '90px',
                                                                                 padding: '6px 12px',
                                                                                 borderRadius: '4px',
                                                                                 fontSize: '0.85rem',
-                                                                                border: '1px solid #dc3545'
+                                                                                border: '1px solid #ffc107'
                                                                             }}
-                                                                            title="Delete Research Paper"
+                                                                            title="Archive Research Paper"
                                                                         >
                                                                             <FaTrash className="me-1" size={14} />
-                                                                            Move to Trash
+                                                                            Archive
                                                                         </Button>
                                                                     </div>
                                                                 </td>
@@ -835,7 +823,7 @@ const CapstoneManagement2 = () => {
                         </div>
                     </div>
 
-                    {renderDeleteModal()}
+                    {renderArchiveModal()}
                     {renderRecoveryModal()}
 
                     {/* Edit/Add Modal */}
@@ -1289,46 +1277,6 @@ const CapstoneManagement2 = () => {
                                                 </div>
 
                                                 {/* Reviewer Information with Enhanced Error Handling */}
-                                                <div className="mb-4">
-                                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                                        REVIEWER INFORMATION
-                                                    </h6>
-                                                    <div className="reviewer-info bg-light rounded-3 p-4">
-                                                        <div className="row g-3">
-                                                            <div className="col-md-6">
-                                                                <div className={`form-group ${reviewErrors.reviewedBy ? 'has-error' : ''}`}>
-                                                                    <label className="form-label required">Reviewer Name</label>
-                                                                    <input
-                                                                        type="text"
-                                                                        className={`form-control ${reviewErrors.reviewedBy ? 'border-danger' : ''}`}
-                                                                        placeholder="Enter reviewer's name"
-                                                                        value={reviewData.reviewedBy}
-                                                                        onChange={(e) => handleReviewInputChange('reviewedBy', e.target.value)}
-                                                                        style={{ 
-                                                                            borderWidth: reviewErrors.reviewedBy ? '2px' : '1px'
-                                                                        }}
-                                                                    />
-                                                                    {reviewErrors.reviewedBy && (
-                                                                        <div className="text-danger mt-2 d-flex align-items-center">
-                                                                            <FaExclamationTriangle className="me-2" size={14} />
-                                                                            <small>{reviewErrors.reviewedBy}</small>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <label className="form-label required">Review Date</label>
-                                                                <input
-                                                                    type="date"
-                                                                    className="form-control"
-                                                                    value={reviewData.reviewDate.toISOString().split('T')[0]}
-                                                                    onChange={(e) => handleReviewInputChange('reviewDate', new Date(e.target.value))}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </form>
                                         </div>
                                     </div>
@@ -1491,6 +1439,58 @@ const CapstoneManagement2 = () => {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+
+                    {/* Toast Notification */}
+                    {showArchiveToast && (
+                        <div
+                            style={{
+                                position: 'fixed',
+                                top: 24,
+                                right: 24,
+                                background: '#fff',
+                                color: '#334155',
+                                padding: '1rem 1.5rem 0.75rem 1.25rem',
+                                borderRadius: 10,
+                                boxShadow: '0 4px 24px rgba(30,41,59,0.10)',
+                                zIndex: 3000,
+                                minWidth: 240,
+                                maxWidth: '90vw',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                gap: 4,
+                                fontFamily: 'inherit',
+                            }}
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <div style={{ display: 'flex', width: '100%', alignItems: 'center', marginBottom: 2 }}>
+                                <span style={{ fontWeight: 700, color: '#22c55e', fontSize: '1rem', flex: 1 }}>
+                                    Research archived
+                                </span>
+                                <button
+                                    onClick={() => setShowArchiveToast(false)}
+                                    aria-label="Close"
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#64748b',
+                                        fontSize: 18,
+                                        marginLeft: 8,
+                                        cursor: 'pointer',
+                                        lineHeight: 1,
+                                    }}
+                                    tabIndex={0}
+                                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setShowArchiveToast(false); }}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                            <div style={{ fontSize: '0.95rem', color: '#64748b', fontWeight: 500, marginTop: 2 }}>
+                                You can find it in Archived Capstones.
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

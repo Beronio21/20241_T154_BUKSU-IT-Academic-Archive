@@ -95,3 +95,123 @@
     max-height: 90vh;
   }
 }
+
+/* Capstone Management Table Modern Styles */
+.capstone-table-wrapper {
+  width: 100%;
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+  margin-bottom: 0;
+}
+
+.capstone-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.capstone-table {
+  width: 100%;
+  min-width: 1100px;
+  background: #fff;
+  border-radius: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.capstone-table-header th {
+  background: linear-gradient(90deg, #2c3e50 0%, #3498db 100%);
+  color: #fff;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e6ed;
+  padding: 16px 12px;
+  text-align: left;
+  vertical-align: middle;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.capstone-table td, .capstone-table th {
+  padding: 14px 12px;
+  vertical-align: middle;
+  border: none;
+}
+
+.capstone-row-even {
+  background: #f8fafc;
+}
+
+.capstone-row-odd {
+  background: #fff;
+}
+
+.capstone-table tr:hover {
+  background: #e3f2fd !important;
+  transition: background 0.2s;
+}
+
+.capstone-action-btn {
+  min-width: 90px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: none;
+}
+
+.capstone-action-btn:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+.capstone-action-btn--sm {
+  min-width: 70px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+@media (max-width: 1200px) {
+  .capstone-table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 900px) {
+  .capstone-table {
+    min-width: 700px;
+  }
+}
+
+@media (max-width: 768px) {
+  .capstone-table-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(44,62,80,0.07);
+  }
+  .capstone-table {
+    min-width: 600px;
+    font-size: 0.97rem;
+  }
+  .capstone-table-header th {
+    padding: 12px 8px;
+    font-size: 0.98rem;
+  }
+  .capstone-table td, .capstone-table th {
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .capstone-table {
+    min-width: 480px;
+    font-size: 0.93rem;
+  }
+}

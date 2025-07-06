@@ -9,7 +9,7 @@ import AdminNavbar from '../../Navbar/Admin-Navbar/AdminNavbar';
 import AdminRegister from '../../Auth/AdminRegister';
 import ReviewSubmission from '../../components/ReviewSubmission';
 import CapstoneManagement from '../../components/CapstoneManagement';
-import TrashArchives from '../../components/TrashArchives';
+import ArchivedCapstones from '../../components/ArchivedCapstones';
 import { Table } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -120,10 +120,10 @@ const AdminDashboard = () => {
         return <CapstoneManagement />;
       case 'admin-register':
         return <AdminRegister />;
-      case 'trash-archives':
+      case 'archived-capstones':
         return (
           <div className="container-fluid" style={{ minWidth: '1200px', padding: '15px' }}>
-            <TrashArchives />
+            <ArchivedCapstones />
           </div>
         );
       case 'dashboard':

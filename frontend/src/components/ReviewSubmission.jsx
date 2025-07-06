@@ -24,6 +24,7 @@ const ViewSubmission = () => {
     const [categories] = useState(['IoT', 'AI', 'ML', 'Sound', 'Camera']);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
+    const [showFullAbstract, setShowFullAbstract] = useState(false);
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -420,57 +421,100 @@ const ViewSubmission = () => {
             {/* View Submission Modal */}
             {selectedSubmission && (
                 <div className={`custom-modal ${selectedSubmission ? 'show' : ''}`} onClick={() => setSelectedSubmission(null)}>
-                    <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="custom-modal-header">
-                            <h3>Submission Details</h3>
-                            <button onClick={() => setSelectedSubmission(null)} className="close-button">
+                    <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 820, width: '95%' }}>
+                        <div className="custom-modal-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                            <h3 className="mb-0 fw-semibold" style={{ letterSpacing: '0.5px' }}>Submission Details</h3>
+                            <button onClick={() => setSelectedSubmission(null)} className="close-button" aria-label="Close submission details modal">
                                 &times;
                             </button>
                         </div>
-                        <div className="custom-modal-body">
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Title</h6>
-                                        <p className="mb-0">{selectedSubmission.title}</p>
-                                    </div>
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Abstract</h6>
-                                        <p className="mb-0">{selectedSubmission.abstract}</p>
-                                    </div>
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Category</h6>
-                                        <p className="mb-0">{selectedSubmission.category}</p>
+                        <div className="custom-modal-body p-0">
+                            {/* Submission Details Section */}
+                            <section className="w-100" aria-label="Submission Details">
+                                <div className="bg-white shadow-sm rounded-4 p-4 mb-3" style={{ maxWidth: 820, margin: '0 auto' }}>
+                                    <div className="row g-3">
+                                        <div className="col-md-12 mb-2">
+                                            <label className="fw-bold text-secondary" htmlFor="submission-title">Title</label>
+                                            <div id="submission-title" className="fs-5 text-dark fw-semibold" style={{ wordBreak: 'break-word' }}>{selectedSubmission.title}</div>
+                                        </div>
+                                        <div className="col-md-12 mb-2">
+                                            <label className="fw-bold text-secondary" htmlFor="submission-abstract">Abstract</label>
+                                            <div id="submission-abstract" className="text-dark" style={{ wordBreak: 'break-word', position: 'relative' }}>
+                                                {showFullAbstract ? selectedSubmission.abstract :
+                                                    selectedSubmission.abstract.length > 220
+                                                        ? <>
+                                                            {selectedSubmission.abstract.slice(0, 220)}...{' '}
+                                                            <button type="button" className="btn btn-link p-0 align-baseline" style={{ fontSize: '1rem' }} onClick={() => setShowFullAbstract(true)} aria-label="Read full abstract">Read more</button>
+                                                        </>
+                                                        : selectedSubmission.abstract
+                                                }
+                                                {showFullAbstract && selectedSubmission.abstract.length > 220 && (
+                                                    <button type="button" className="btn btn-link p-0 align-baseline ms-2" style={{ fontSize: '1rem' }} onClick={() => setShowFullAbstract(false)} aria-label="Show less">Show less</button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-2">
+                                            <label className="fw-bold text-secondary">Category</label>
+                                            <div className="text-dark">{selectedSubmission.category}</div>
+                                        </div>
+                                        <div className="col-md-6 mb-2">
+                                            <label className="fw-bold text-secondary">Teacher's Email</label>
+                                            <div>
+                                                <a href={`mailto:${selectedSubmission.email}`} className="text-primary text-decoration-underline" style={{ wordBreak: 'break-all' }}>{selectedSubmission.email}</a>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-2">
+                                            <label className="fw-bold text-secondary">Members</label>
+                                            <ul className="mb-0 ps-3" style={{ listStyle: 'disc', color: '#333', fontSize: '1rem' }}>
+                                                {selectedSubmission.members && selectedSubmission.members.map((member, idx) => (
+                                                    <li key={idx}>{member}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="col-md-6 mb-2">
+                                            <label className="fw-bold text-secondary">Keywords</label>
+                                            <div className="d-flex flex-wrap gap-2">
+                                                {selectedSubmission.keywords && selectedSubmission.keywords.map((kw, idx) => (
+                                                    <span key={idx} className="badge bg-info text-dark fw-normal" style={{ fontSize: '0.95rem', background: '#e3f2fd' }}>{kw}</span>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Members</h6>
-                                        <p className="mb-0">{Array.isArray(selectedSubmission.members) ? selectedSubmission.members.join(', ') : 'No members'}</p>
+                            </section>
+                            {/* Submitted Document Section - No Inline Preview */}
+                            {selectedSubmission.docsLink && (
+                                <section className="mb-4 w-100" aria-label="Submitted Document">
+                                    <div className="d-flex flex-column align-items-center justify-content-center w-100">
+                                        <div className="d-flex w-100 justify-content-between align-items-center mb-2 px-4">
+                                            <h5 className="mb-0 fw-semibold" style={{ letterSpacing: '0.5px' }}>Submitted Document</h5>
+                                            <div className="d-flex gap-2">
+                                                <a
+                                                    href={selectedSubmission.docsLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn btn-primary px-4 py-2 fw-bold shadow-sm"
+                                                    style={{ borderRadius: 6, fontSize: '1rem' }}
+                                                    aria-label="View file in new tab"
+                                                >
+                                                    View File in New Tab
+                                                </a>
+                                                <a
+                                                    href={selectedSubmission.docsLink}
+                                                    download
+                                                    className="btn btn-outline-primary px-4 py-2 fw-bold shadow-sm"
+                                                    style={{ borderRadius: 6, fontSize: '1rem' }}
+                                                    aria-label="Download file"
+                                                >
+                                                    Download File
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Keywords</h6>
-                                        <p className="mb-0">{selectedSubmission.keywords.join(', ')}</p>
-                                    </div>
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Student Email</h6>
-                                        <p className="mb-0">{selectedSubmission.email}</p>
-                                    </div>
-                                    <div className="mb-3">
-                                        <h6 className="text-muted">Document Link</h6>
-                                        <a 
-                                            href={selectedSubmission.docsLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="btn btn-link p-0"
-                                        >
-                                            View Document
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                                </section>
+                            )}
                         </div>
-                        <div className="custom-modal-footer">
+                        <div className="custom-modal-footer d-flex justify-content-end">
                             <button 
                                 className="btn btn-secondary"
                                 onClick={() => setSelectedSubmission(null)}

@@ -18,11 +18,11 @@ import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
 
 // Other Components
 import NotFound from './NotFound';
-import TrashArchives from './components/TrashArchives';
 import CapstoneManagement2 from './components/CapstoneManagement2';
 import UserManagement2 from './UserManagement/UserManagement2';
 import StudentRecords2 from './Records/StudentRecords2';
 import TeacherRecords2 from './Records/TeacherRecords2';
+import ArchivedCapstones from './components/ArchivedCapstones';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -97,10 +97,10 @@ function App() {
               } 
             />
             <Route 
-              path="/admin-dashboard/trash-archives" 
+              path="/admin-dashboard/archived-capstones" 
               element={
                 <ProtectedRoute 
-                  element={<TrashArchives />} 
+                  element={<ArchivedCapstones />} 
                   allowedRole="admin"
                 />
               } 
