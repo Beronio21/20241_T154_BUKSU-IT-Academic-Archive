@@ -267,14 +267,6 @@ router.put('/delete/:thesisId', async (req, res) => {
             });
         }
 
-        // Only allow archiving if status is 'approved'
-        if (thesis.status !== 'approved') {
-            return res.status(400).json({
-                status: 'error',
-                message: 'Only approved capstones can be archived.'
-            });
-        }
-
         thesis.isDeleted = true;
         thesis.deletedAt = new Date();
         await thesis.save();

@@ -225,14 +225,12 @@ const CapstoneManagement2 = () => {
             const response = await axios.put(
                 `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`
             );
-
             if (response.data.status === 'success') {
-                setShowArchiveToast(true);
-                setTimeout(() => setShowArchiveToast(false), 3000);
                 setSubmissions(prev => prev.filter(sub => sub._id !== selectedSubmission._id));
                 setShowArchiveModal(false);
                 setSelectedSubmission(null);
-                setDeleteConfirmationText('');
+                setShowArchiveToast(true);
+                setTimeout(() => setShowArchiveToast(false), 3000);
             }
         } catch (error) {
             console.error('Error archiving:', error);
@@ -245,6 +243,7 @@ const CapstoneManagement2 = () => {
     const confirmArchive = (submission) => {
         setSelectedSubmission(submission);
         setShowArchiveModal(true);
+        setError(null);
     };
 
     const resetForm = () => {
@@ -642,7 +641,7 @@ const CapstoneManagement2 = () => {
         </Modal>
     );
 
-    // Replace delete modal with archive modal
+    // Archive modal (simple confirm/cancel, no text input, no status restriction)
     const renderArchiveModal = () => (
         <Modal
             show={showArchiveModal}
@@ -663,6 +662,12 @@ const CapstoneManagement2 = () => {
                 </Modal.Header>
                 <Modal.Body style={{ padding: '2rem', fontSize: '1.1rem', borderRadius: 16, background: 'transparent', color: '#334155', fontWeight: 500 }}>
                     Are you sure you want to archive this research paper? It will be moved to the Archived Capstones section and can be restored later if needed.
+                    {error && (
+                        <Alert variant="danger" className="mt-3">
+                            <FaExclamationTriangle className="me-2" />
+                            {error}
+                        </Alert>
+                    )}
                 </Modal.Body>
                 <Modal.Footer style={{ borderTop: 'none', padding: '1.5rem 2rem', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, background: '#f8fafc' }}>
                     <Button
