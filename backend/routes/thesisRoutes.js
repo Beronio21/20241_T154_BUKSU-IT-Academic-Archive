@@ -258,15 +258,7 @@ router.put('/delete/:thesisId', async (req, res) => {
         const { thesisId } = req.params;
         console.log(`Moving thesis ${thesisId} to trash...`);
 
-        const thesis = await Thesis.findByIdAndUpdate(
-            thesisId,
-            { 
-                isDeleted: true, 
-                deletedAt: new Date() 
-            },
-            { new: true }
-        );
-
+        const thesis = await Thesis.findById(thesisId);
         if (!thesis) {
             console.error(`Thesis ${thesisId} not found.`);
             return res.status(404).json({
@@ -274,6 +266,18 @@ router.put('/delete/:thesisId', async (req, res) => {
                 message: 'Thesis not found'
             });
         }
+
+        // Only allow archiving if status is 'approved'
+        if (thesis.status !== 'approved') {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Only approved capstones can be archived.'
+            });
+        }
+
+        thesis.isDeleted = true;
+        thesis.deletedAt = new Date();
+        await thesis.save();
 
         console.log(`Thesis ${thesisId} moved to trash successfully.`);
         res.json({
