@@ -60,13 +60,13 @@ const validateThesis = (req, res, next) => {
 
 // Validation middleware for review submission
 const validateReview = (req, res, next) => {
-    const { status, reviewComments, reviewedBy } = req.body;
+    const { status } = req.body;
 
-    // Check for required fields
-    if (!status || !reviewComments?.trim() || !reviewedBy?.trim()) {
+    // Only validate status (comments and reviewer are now optional)
+    if (!status) {
         return res.status(400).json({
             status: 'error',
-            message: 'Status, review comments, and reviewer name are required'
+            message: 'Status is required'
         });
     }
 
@@ -76,14 +76,6 @@ const validateReview = (req, res, next) => {
         return res.status(400).json({
             status: 'error',
             message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
-        });
-    }
-
-    // Validate review comments length
-    if (reviewComments.trim().length < 10) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Review comments must be at least 10 characters long'
         });
     }
 

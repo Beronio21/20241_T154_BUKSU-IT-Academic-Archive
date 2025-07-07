@@ -490,38 +490,21 @@ const CapstoneManagement2 = () => {
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
         setError(null);
-        
-        // Validate all fields
-        const commentsError = validateComments(reviewData.comments);
-        const reviewerError = validateReviewerName(reviewData.reviewedBy);
 
-        setReviewErrors({
-            comments: commentsError,
-            reviewedBy: reviewerError
-        });
-
-        if (commentsError || reviewerError || !reviewData.status) {
-            setError('Please correct all errors before submitting.');
+        // Remove validation for comments and reviewedBy
+        if (!reviewData.status) {
+            setError('Please select a status before submitting.');
             return;
         }
 
         try {
             setLoading(true);
-            const submissionData = {
-                title: formData.title,
-                abstract: formData.abstract,
-                keywords: formData.keywords.filter(k => k.trim()),
-                members: formData.members.filter(m => m.trim()),
-                docsLink: formData.docsLink,
-                email: formData.email || userEmail,
-                category: formData.category
-            };
             const response = await axios.put(
                 `http://localhost:8080/api/thesis/submissions/${selectedSubmission._id}/status`,
                 {
                     status: reviewData.status,
-                    reviewComments: reviewData.comments,
-                    reviewedBy: reviewData.reviewedBy,
+                    reviewComments: reviewData.comments || '', // Optional
+                    reviewedBy: reviewData.reviewedBy || '',   // Optional
                     reviewDate: reviewData.reviewDate.toISOString()
                 }
             );
@@ -545,10 +528,6 @@ const CapstoneManagement2 = () => {
                     comments: '',
                     reviewedBy: '',
                     reviewDate: new Date()
-                });
-                setReviewErrors({
-                    comments: '',
-                    reviewedBy: ''
                 });
             } else {
                 setError('Failed to update review. Please try again.');
@@ -1087,7 +1066,6 @@ const CapstoneManagement2 = () => {
                     {/* Review Modal */}
                     <div className={`custom-modal ${showReviewModal ? 'show' : ''}`} onClick={() => {
                         setShowReviewModal(false);
-                        setReviewErrors({ comments: '', reviewedBy: '' });
                         setError(null);
                     }}>
                         <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ width: '90%', maxWidth: '1000px' }}>
@@ -1098,7 +1076,6 @@ const CapstoneManagement2 = () => {
                                 </h3>
                                 <button onClick={() => {
                                     setShowReviewModal(false);
-                                    setReviewErrors({ comments: '', reviewedBy: '' });
                                     setError(null);
                                 }} className="close-button">
                                     &times;
@@ -1120,246 +1097,121 @@ const CapstoneManagement2 = () => {
                                         {/* Review Form */}
                                         <div className="p-4">
                                             <form onSubmit={handleReviewSubmit}>
-                                                {/* Status Section */}
+                                                {/* Status Section (required) */}
                                                 <div className="mb-4">
                                                     <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
                                                         REVIEW STATUS
                                                     </h6>
                                                     <div className="status-options">
-                                                        <div className="row g-3">
-                                                            {[
-                                                                {
-                                                                    value: 'approved',
-                                                                    label: 'Approved',
-                                                                    icon: <FaCheckCircle size={20} />,
-                                                                    color: '#198754',
-                                                                    bgColor: '#19875420',
-                                                                    description: 'Research paper meets all requirements and standards'
-                                                                },
-                                                                {
-                                                                    value: 'rejected',
-                                                                    label: 'Rejected',
-                                                                    icon: <FaTimes size={20} />,
-                                                                    color: '#dc3545',
-                                                                    bgColor: '#dc354520',
-                                                                    description: 'Research paper does not meet the required standards'
-                                                                },
-                                                                {
-                                                                    value: 'revision',
-                                                                    label: 'Needs Revision',
-                                                                    icon: <FaExclamationCircle size={20} />,
-                                                                    color: '#ffc107',
-                                                                    bgColor: '#ffc10720',
-                                                                    description: 'Research paper needs modifications before approval'
-                                                                },
-                                                                {
-                                                                    value: 'pending',
-                                                                    label: 'Under Review',
-                                                                    icon: <FaClock size={20} />,
-                                                                    color: '#0dcaf0',
-                                                                    bgColor: '#0dcaf020',
-                                                                    description: 'Research paper is currently under review process'
-                                                                }
-                                                            ].map((status) => (
-                                                                <div key={status.value} className="col-md-6">
-                                                                    <div 
-                                                                        className={`status-card rounded-3 p-3 cursor-pointer ${
-                                                                            reviewData.status === status.value ? 'selected' : ''
-                                                                        }`}
-                                                                        onClick={() => setReviewData(prev => ({ ...prev, status: status.value }))}
-                                                                        style={{
-                                                                            border: `2px solid ${reviewData.status === status.value ? status.color : '#dee2e6'}`,
-                                                                            backgroundColor: reviewData.status === status.value ? status.bgColor : 'white',
-                                                                            cursor: 'pointer',
-                                                                            transition: 'all 0.2s ease'
-                                                                        }}
-                                                                    >
-                                                                        <div className="d-flex align-items-center mb-2">
-                                                                            <div 
-                                                                                className="status-icon rounded-circle p-2 me-3"
+                                                        {[
+                                                            {
+                                                                value: 'approved',
+                                                                label: 'Approved',
+                                                                icon: <FaCheckCircle size={20} />,
+                                                                color: '#198754',
+                                                                bgColor: '#19875420',
+                                                                description: 'Research paper meets all requirements and standards'
+                                                            },
+                                                            {
+                                                                value: 'rejected',
+                                                                label: 'Rejected',
+                                                                icon: <FaTimes size={20} />,
+                                                                color: '#dc3545',
+                                                                bgColor: '#dc354520',
+                                                                description: 'Research paper does not meet the required standards'
+                                                            },
+                                                            {
+                                                                value: 'revision',
+                                                                label: 'Needs Revision',
+                                                                icon: <FaExclamationCircle size={20} />,
+                                                                color: '#ffc107',
+                                                                bgColor: '#ffc10720',
+                                                                description: 'Research paper needs modifications before approval'
+                                                            },
+                                                            {
+                                                                value: 'pending',
+                                                                label: 'Under Review',
+                                                                icon: <FaClock size={20} />,
+                                                                color: '#0dcaf0',
+                                                                bgColor: '#0dcaf020',
+                                                                description: 'Research paper is currently under review process'
+                                                            }
+                                                        ].map((status) => (
+                                                            <div key={status.value} className="col-md-6">
+                                                                <div 
+                                                                    className={`status-card rounded-3 p-3 cursor-pointer ${
+                                                                        reviewData.status === status.value ? 'selected' : ''
+                                                                    }`}
+                                                                    onClick={() => setReviewData(prev => ({ ...prev, status: status.value }))}
+                                                                    style={{
+                                                                        border: `2px solid ${reviewData.status === status.value ? status.color : '#dee2e6'}`,
+                                                                        backgroundColor: reviewData.status === status.value ? status.bgColor : 'white',
+                                                                        cursor: 'pointer',
+                                                                        transition: 'all 0.2s ease'
+                                                                    }}
+                                                                >
+                                                                    <div className="d-flex align-items-center mb-2">
+                                                                        <div 
+                                                                            className="status-icon rounded-circle p-2 me-3"
+                                                                            style={{ 
+                                                                                backgroundColor: status.bgColor,
+                                                                                color: status.color
+                                                                            }}
+                                                                        >
+                                                                            {status.icon}
+                                                                        </div>
+                                                                        <div>
+                                                                            <h6 
+                                                                                className="mb-1"
                                                                                 style={{ 
-                                                                                    backgroundColor: status.bgColor,
-                                                                                    color: status.color
+                                                                                    color: reviewData.status === status.value ? status.color : '#2c3e50'
                                                                                 }}
                                                                             >
-                                                                                {status.icon}
-                                                                            </div>
-                                                                            <div>
-                                                                                <h6 
-                                                                                    className="mb-1"
-                                                                                    style={{ 
-                                                                                        color: reviewData.status === status.value ? status.color : '#2c3e50'
-                                                                                    }}
-                                                                                >
-                                                                                    {status.label}
-                                                                                </h6>
-                                                                                <small className="text-muted">
-                                                                                    {status.description}
-                                                                                </small>
-                                                                            </div>
+                                                                                {status.label}
+                                                                            </h6>
+                                                                            <small className="text-muted">
+                                                                                {status.description}
+                                                                            </small>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            ))}
-                                                        </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
 
-                                                {/* Review Summary Section */}
-                                                <div className="mb-4">
-                                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                                        REVIEW SUMMARY
-                                                    </h6>
-                                                    <div className="review-summary bg-light rounded-3 p-4">
-                                                        <div className="row g-3">
-                                                            <div className="col-md-6">
-                                                                <div className="summary-item">
-                                                                    <label className="text-muted mb-1">Current Status</label>
-                                                                    <div className="d-flex align-items-center">
-                                                                        <Badge 
-                                                                            bg={
-                                                                                reviewData.status === 'approved' ? 'success' :
-                                                                                reviewData.status === 'rejected' ? 'danger' :
-                                                                                reviewData.status === 'revision' ? 'warning' :
-                                                                                'info'
-                                                                            }
-                                                                            className="px-3 py-2"
-                                                                            style={{ fontSize: '0.9rem' }}
-                                                                        >
-                                                                            {reviewData.status.toUpperCase() || 'PENDING'}
-                                                                        </Badge>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="summary-item">
-                                                                    <label className="text-muted mb-1">Last Updated</label>
-                                                                    <div style={{ fontSize: '0.9rem' }}>
-                                                                        {reviewData.reviewDate.toLocaleDateString('en-US', {
-                                                                            year: 'numeric',
-                                                                            month: 'long',
-                                                                            day: 'numeric'
-                                                                        })}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                {error && (
+                                                    <Alert variant="danger" className="mt-4">
+                                                        <FaExclamationTriangle className="me-2" />
+                                                        {error}
+                                                    </Alert>
+                                                )}
 
-                                                {/* Comments Section with Enhanced Error Handling */}
-                                                <div className="mb-4">
-                                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                                        REVIEW COMMENTS
-                                                    </h6>
-                                                    <div className="comments-section bg-light rounded-3 p-4">
-                                                        <div className={`form-group ${reviewErrors.comments ? 'has-error' : ''}`}>
-                                                            <textarea
-                                                                className={`form-control border ${reviewErrors.comments ? 'border-danger' : 'border-0'} bg-white`}
-                                                                rows="6"
-                                                                placeholder="Provide detailed feedback and suggestions for improvement..."
-                                                                value={reviewData.comments}
-                                                                onChange={(e) => handleReviewInputChange('comments', e.target.value)}
-                                                                style={{ 
-                                                                    resize: 'none',
-                                                                    borderWidth: reviewErrors.comments ? '2px' : '1px'
-                                                                }}
-                                                            />
-                                                            {reviewErrors.comments && (
-                                                                <div className="text-danger mt-2 d-flex align-items-center">
-                                                                    <FaExclamationTriangle className="me-2" size={14} />
-                                                                    <small>{reviewErrors.comments}</small>
-                                                                </div>
-                                                            )}
-                                                            <div className="mt-3 d-flex justify-content-between align-items-center">
-                                                                <small className="text-muted">
-                                                                    <FaInfoCircle className="me-2" />
-                                                                    Please provide constructive feedback
-                                                                </small>
-                                                                <small className={`${
-                                                                    reviewData.comments.length > 900 ? 'text-warning' :
-                                                                    reviewData.comments.length > 800 ? 'text-info' :
-                                                                    'text-muted'
-                                                                }`}>
-                                                                    {reviewData.comments.length}/1000 characters
-                                                                </small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Reviewer Information with Enhanced Error Handling */}
-                                                <div className="mb-4">
-                                                    <h6 className="text-primary mb-3" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                                        REVIEWER INFORMATION
-                                                    </h6>
-                                                    <div className="reviewer-info bg-light rounded-3 p-4">
-                                                        <div className="row g-3">
-                                                            <div className="col-md-6">
-                                                                <div className={`form-group ${reviewErrors.reviewedBy ? 'has-error' : ''}`}>
-                                                                    <label className="form-label required">Reviewer Name</label>
-                                                                    <input
-                                                                        type="text"
-                                                                        className={`form-control ${reviewErrors.reviewedBy ? 'border-danger' : ''}`}
-                                                                        placeholder="Enter reviewer's name"
-                                                                        value={reviewData.reviewedBy}
-                                                                        onChange={(e) => handleReviewInputChange('reviewedBy', e.target.value)}
-                                                                        style={{ 
-                                                                            borderWidth: reviewErrors.reviewedBy ? '2px' : '1px'
-                                                                        }}
-                                                                    />
-                                                                    {reviewErrors.reviewedBy && (
-                                                                        <div className="text-danger mt-2 d-flex align-items-center">
-                                                                            <FaExclamationTriangle className="me-2" size={14} />
-                                                                            <small>{reviewErrors.reviewedBy}</small>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <label className="form-label required">Review Date</label>
-                                                                <input
-                                                                    type="date"
-                                                                    className="form-control"
-                                                                    value={reviewData.reviewDate.toISOString().split('T')[0]}
-                                                                    onChange={(e) => handleReviewInputChange('reviewDate', new Date(e.target.value))}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div className="d-flex justify-content-end mt-4">
+                                                    <Button variant="secondary" onClick={() => {
+                                                        setShowReviewModal(false);
+                                                        setError(null);
+                                                    }}>
+                                                        Cancel
+                                                    </Button>
+                                                    <Button variant="primary" onClick={handleReviewSubmit} disabled={loading}>
+                                                        {loading ? (
+                                                            <>
+                                                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                                Submitting...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <FaSave className="me-2" />
+                                                                Submit Review
+                                                            </>
+                                                        )}
+                                                    </Button>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 )}
-                            </div>
-                            <div className="custom-modal-footer">
-                                <Button variant="secondary" onClick={() => {
-                                    setShowReviewModal(false);
-                                    setError(null);
-                                    setReviewData({
-                                        status: '',
-                                        comments: '',
-                                        reviewedBy: '',
-                                        reviewDate: new Date()
-                                    });
-                                }}>
-                                    Cancel
-                                </Button>
-                                <Button variant="primary" onClick={handleReviewSubmit} disabled={loading}>
-                                    {loading ? (
-                                        <>
-                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                            Submitting...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FaSave className="me-2" />
-                                            Submit Review
-                                        </>
-                                    )}
-                                </Button>
                             </div>
                         </div>
                     </div>
