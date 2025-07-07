@@ -55,6 +55,8 @@ const CapstoneManagement2 = () => {
     const [showArchiveModal, setShowArchiveModal] = useState(false);
     const [isArchiving, setIsArchiving] = useState(false);
     const [showArchiveToast, setShowArchiveToast] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [detailsSubmission, setDetailsSubmission] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -381,54 +383,76 @@ const CapstoneManagement2 = () => {
 
     const renderStatusBadge = (status, reviewedBy = null) => {
         let badgeProps = {
-            bg: 'info',
+            bg: '#facc15', // yellow for Under Review
+            text: 'UNDER REVIEW',
+            color: '#b45309',
             icon: <FaClock className="me-1" size={12} />,
-            text: 'PENDING'
+            fontSize: '0.75rem' // smaller for Under Review
         };
-
         switch(status?.toLowerCase()) {
             case 'approved':
                 badgeProps = {
-                    bg: 'success',
+                    bg: '#22c55e', // green
+                    text: 'APPROVED',
+                    color: '#065f46',
                     icon: <FaCheckCircle className="me-1" size={12} />,
-                    text: 'APPROVED'
+                    fontSize: '0.85rem'
                 };
                 break;
             case 'rejected':
                 badgeProps = {
-                    bg: 'danger',
+                    bg: '#ef4444', // red
+                    text: 'REJECTED',
+                    color: '#991b1b',
                     icon: <FaTimes className="me-1" size={12} />,
-                    text: 'REJECTED'
+                    fontSize: '0.85rem'
                 };
                 break;
             case 'revision':
                 badgeProps = {
-                    bg: 'warning',
+                    bg: '#fb923c', // orange
+                    text: 'NEEDS REVISION',
+                    color: '#b45309',
                     icon: <FaExclamationCircle className="me-1" size={12} />,
-                    text: 'NEEDS REVISION'
+                    fontSize: '0.85rem'
                 };
                 break;
             case 'pending':
                 badgeProps = {
-                    bg: 'info',
+                    bg: '#facc15', // yellow
+                    text: 'UNDER REVIEW',
+                    color: '#b45309',
                     icon: <FaClock className="me-1" size={12} />,
-                    text: 'UNDER REVIEW'
+                    fontSize: '0.75rem'
                 };
                 break;
         }
-
         return (
-            <div style={statusStyles.statusContainer}>
-                <Badge 
-                    bg={badgeProps.bg}
-                    style={statusStyles.badge}
-                    className="d-flex align-items-center justify-content-center"
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <span
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: badgeProps.bg,
+                        color: badgeProps.color,
+                        borderRadius: '1.5rem',
+                        boxShadow: '0 2px 8px rgba(30,41,59,0.10)',
+                        fontWeight: 700,
+                        fontSize: badgeProps.fontSize,
+                        padding: '0.28em 1.1em',
+                        minWidth: 90,
+                        letterSpacing: 0.5,
+                        textTransform: 'uppercase',
+                        border: 'none',
+                        margin: 0
+                    }}
                 >
                     {badgeProps.icon}
                     {badgeProps.text}
-                </Badge>
+                </span>
                 {reviewedBy && (
-                    <div style={statusStyles.reviewerText}>
+                    <div style={{ fontSize: '0.75rem', color: '#6c757d', textAlign: 'center', whiteSpace: 'nowrap' }}>
                         by {reviewedBy}
                     </div>
                 )}
@@ -728,82 +752,75 @@ const CapstoneManagement2 = () => {
                                         <div className="loading">Loading submissions...</div>
                                     ) : (
                                         <div style={{ flex: 1, overflow: 'hidden' }}>
-                                            <div className="table-responsive" style={{ 
-                                                maxHeight: 'calc(100vh - 250px)', 
-                                                minHeight: 'calc(100vh - 250px)',
-                                                minWidth: '1100px',
-                                                overflow: 'auto'
+                                            <div className="table-responsive capstone-table-responsive" style={{
+                                                maxWidth: '100%',
+                                                minWidth: 0,
+                                                overflowX: 'auto',
+                                                margin: '0 auto',
                                             }}>
-                                                <Table striped bordered hover className="mt-3 mb-0">
-                                                    <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
+                                                <Table striped bordered hover className="mt-3 mb-0 capstone-table text-sm" style={{ minWidth: 900, width: '100%' }}>
+                                                    <thead className="table-dark position-sticky top-0 text-sm" style={{ zIndex: 1 }}>
                                                         <tr>
-                                                            <th style={{ width: '25%', minWidth: '200px' }}>Title</th>
-                                                            <th style={{ width: '25%', minWidth: '200px' }}>Abstract</th>
-                                                            <th style={{ width: '20%', minWidth: '200px' }}>Members</th>
-                                                            <th style={{ width: '15%', minWidth: '150px' }}>Email</th>
-                                                            <th style={{ width: '8%', minWidth: '100px' }}>Status</th>
-                                                            <th style={{ width: '20%', minWidth: '300px' }}>Actions</th>
+                                                            <th style={{ width: '18%', minWidth: 160, textAlign: 'left', whiteSpace: 'normal', wordBreak: 'break-word', padding: '8px 12px', fontSize: '0.97em' }}>Title</th>
+                                                            <th style={{ width: '14%', minWidth: 110, textAlign: 'left', padding: '8px 12px', fontSize: '0.97em' }}>Members</th>
+                                                            <th style={{ width: '10%', minWidth: 90, textAlign: 'left', padding: '8px 12px', fontSize: '0.97em' }}>Category</th>
+                                                            <th style={{ width: '12%', minWidth: 120, maxWidth: 160, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px', fontSize: '0.97em' }}>Email</th>
+                                                            <th style={{ width: '10%', minWidth: 120, maxWidth: 140, textAlign: 'center', whiteSpace: 'nowrap', padding: '8px 12px', fontSize: '0.97em' }}>Status</th>
+                                                            <th style={{ width: '13%', minWidth: 120, maxWidth: 150, textAlign: 'center', whiteSpace: 'nowrap', padding: '8px 12px', fontSize: '0.97em' }}>Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {currentSubmissions.map((submission) => (
-                                                            <tr key={submission._id}>
-                                                                <td>{submission.title}</td>
-                                                                <td>{submission.abstract}</td>
-                                                                <td>{submission.members.join(', ')}</td>
-                                                                <td>{submission.email}</td>
-                                                                <td>{renderStatusBadge(submission.status)}</td>
-                                                                <td>
-                                                                    <div className="d-flex align-items-center justify-content-start gap-2">
+                                                        {currentSubmissions.map((submission, idx) => (
+                                                            <tr key={submission._id} className={idx % 2 === 0 ? 'capstone-row-even' : 'capstone-row-odd'} style={{ fontSize: '0.97em' }}>
+                                                                <td style={{ verticalAlign: 'middle', whiteSpace: 'normal', wordBreak: 'break-word', maxWidth: 220, textAlign: 'left', fontWeight: 500, color: '#222', padding: '8px 12px' }}>{submission.title}</td>
+                                                                <td style={{ verticalAlign: 'middle', maxWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>{submission.members.join(', ')}</td>
+                                                                <td style={{ verticalAlign: 'middle', maxWidth: 90, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>
+                                                                    <span style={{
+                                                                        display: 'inline-block',
+                                                                        background: '#e0e7ff',
+                                                                        color: '#3730a3',
+                                                                        borderRadius: '999px',
+                                                                        fontWeight: 600,
+                                                                        fontSize: '0.85em',
+                                                                        padding: '0.18em 0.9em',
+                                                                        letterSpacing: 0.5,
+                                                                        textTransform: 'uppercase',
+                                                                        border: 'none',
+                                                                        margin: 0
+                                                                    }}>{submission.category || 'N/A'}</span>
+                                                                </td>
+                                                                <td style={{ verticalAlign: 'middle', maxWidth: 140, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>{submission.email}</td>
+                                                                <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 140, minWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>{renderStatusBadge(submission.status)}</td>
+                                                                <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>
+                                                                    <div className="d-flex align-items-center justify-content-center gap-1 flex-wrap">
+                                                                        <Button
+                                                                            variant="outline-primary"
+                                                                            size="sm"
+                                                                            className="px-2 py-1 text-sm fw-semibold"
+                                                                            onClick={() => { setDetailsSubmission(submission); setShowDetailsModal(true); }}
+                                                                            style={{ minWidth: 60 }}
+                                                                            aria-label="View capstone details"
+                                                                        >
+                                                                            View
+                                                                        </Button>
                                                                         <Button
                                                                             variant="outline-info"
                                                                             size="sm"
-                                                                            className="d-inline-flex align-items-center justify-content-center"
-                                                                            onClick={() => handleEdit(submission)}
-                                                                            style={{
-                                                                                minWidth: '90px',
-                                                                                padding: '6px 12px',
-                                                                                borderRadius: '4px',
-                                                                                fontSize: '0.85rem',
-                                                                                border: '1px solid #0dcaf0'
-                                                                            }}
-                                                                            title="Edit Research Paper"
-                                                                        >
-                                                                            <FaEdit className="me-1" size={14} />
-                                                                            Edit
-                                                                        </Button>
-                                                                        <Button
-                                                                            variant="outline-warning"
-                                                                            size="sm"
-                                                                            className="d-inline-flex align-items-center justify-content-center"
+                                                                            className="px-2 py-1 text-sm fw-semibold"
                                                                             onClick={() => handleReview(submission)}
-                                                                            style={{
-                                                                                minWidth: '90px',
-                                                                                padding: '6px 12px',
-                                                                                borderRadius: '4px',
-                                                                                fontSize: '0.85rem',
-                                                                                border: '1px solid #ffc107'
-                                                                            }}
+                                                                            style={{ minWidth: 60 }}
                                                                             title="Review Research Paper"
                                                                         >
-                                                                            <FaCheckCircle className="me-1" size={14} />
                                                                             Review
                                                                         </Button>
                                                                         <Button
                                                                             variant="outline-warning"
                                                                             size="sm"
-                                                                            className="d-inline-flex align-items-center justify-content-center"
+                                                                            className="px-2 py-1 text-sm fw-semibold"
                                                                             onClick={() => confirmArchive(submission)}
-                                                                            style={{
-                                                                                minWidth: '90px',
-                                                                                padding: '6px 12px',
-                                                                                borderRadius: '4px',
-                                                                                fontSize: '0.85rem',
-                                                                                border: '1px solid #ffc107'
-                                                                            }}
+                                                                            style={{ minWidth: 60 }}
                                                                             title="Archive Research Paper"
                                                                         >
-                                                                            <FaTrash className="me-1" size={14} />
                                                                             Archive
                                                                         </Button>
                                                                     </div>
@@ -1488,6 +1505,63 @@ const CapstoneManagement2 = () => {
                             </div>
                             <div style={{ fontSize: '0.95rem', color: '#64748b', fontWeight: 500, marginTop: 2 }}>
                                 You can find it in Archived Capstones.
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Details Modal */}
+                    {showDetailsModal && (
+                        <div className={`custom-modal show`} onClick={() => setShowDetailsModal(false)}>
+                            <div className="custom-modal-content" onClick={e => e.stopPropagation()} style={{ width: '90%', maxWidth: '1000px' }}>
+                                <div className="custom-modal-header bg-gradient-primary text-white">
+                                    <h3>
+                                        <FaFileAlt className="me-2" />
+                                        Capstone Details
+                                    </h3>
+                                    <button onClick={() => setShowDetailsModal(false)} className="close-button">&times;</button>
+                                </div>
+                                <div className="custom-modal-body">
+                                    {detailsSubmission && (
+                                        <div className="review-content">
+                                            {/* Title Section */}
+                                            <div className="p-4 bg-light border-bottom">
+                                                <h6 className="text-primary mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                                    RESEARCH PAPER DETAILS
+                                                </h6>
+                                                <h4 className="mb-0 fw-bold" style={{ color: '#2c3e50', lineHeight: '1.4' }}>
+                                                    {detailsSubmission.title}
+                                                </h4>
+                                            </div>
+                                            {/* Details Grid */}
+                                            <div className="p-4">
+                                                <div className="row g-4">
+                                                    <div className="col-md-6">
+                                                        <div className="mb-2"><strong>Category:</strong> <span style={{ display: 'inline-block', background: '#e0e7ff', color: '#3730a3', borderRadius: '999px', fontWeight: 600, fontSize: '0.85em', padding: '0.18em 0.9em', letterSpacing: 0.5, textTransform: 'uppercase', border: 'none', margin: 0 }}>{detailsSubmission.category || 'N/A'}</span></div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="mb-2"><strong>Email:</strong> {detailsSubmission.email}</div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="mb-2"><strong>Submission Date:</strong> {detailsSubmission.createdAt ? new Date(detailsSubmission.createdAt).toLocaleString() : 'N/A'}</div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="mb-2"><strong>Document:</strong> {detailsSubmission.docsLink ? (<a href={detailsSubmission.docsLink} target="_blank" rel="noopener noreferrer">View Document</a>) : 'No file attached.'}</div>
+                                                    </div>
+                                                    <div className="col-md-12">
+                                                        <div className="mb-2"><strong>Members:</strong> {Array.isArray(detailsSubmission.members) && detailsSubmission.members.length > 0 ? detailsSubmission.members.map((m, i) => (<span key={i} style={{ display: 'inline-block', marginRight: 8, color: '#475569', fontSize: 15, wordBreak: 'break-word' }}>{m}</span>)) : <span style={{ color: '#64748b' }}>No members listed.</span>}</div>
+                                                    </div>
+                                                    <div className="col-md-12">
+                                                        <div className="mb-2"><strong>Keywords:</strong> {Array.isArray(detailsSubmission.keywords) && detailsSubmission.keywords.length > 0 ? detailsSubmission.keywords.map((kw, i) => (<span key={i} style={{ display: 'inline-block', marginRight: 6, marginBottom: 2, background: '#e2e8f0', color: '#334155', borderRadius: 8, fontWeight: 500, fontSize: 13, padding: '0.18em 0.9em' }}>{kw}</span>)) : <span style={{ color: '#64748b' }}>No keywords.</span>}</div>
+                                                    </div>
+                                                    <div className="col-md-12">
+                                                        <div className="mb-2"><strong>Abstract:</strong></div>
+                                                        <div style={{ color: '#475569', fontSize: 15, whiteSpace: 'pre-line', marginTop: 2, wordBreak: 'break-word', background: '#f8fafc', borderRadius: 6, padding: '12px 16px', lineHeight: 1.7 }}>{detailsSubmission.abstract || 'No abstract provided.'}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     )}

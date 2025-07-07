@@ -132,7 +132,7 @@ router.get('/submissions', asyncHandler(async (req, res) => {
     const submissions = await Thesis.find()
         .sort({ createdAt: -1 })
         .lean()
-        .select('title abstract keywords members email status createdAt docsLink objective reviewComments reviewedBy reviewDate isDeleted');
+        .select('title abstract keywords members email status createdAt docsLink objective reviewComments reviewedBy reviewDate isDeleted category');
 
     console.log(`Found ${submissions.length} submissions.`);
     res.json({

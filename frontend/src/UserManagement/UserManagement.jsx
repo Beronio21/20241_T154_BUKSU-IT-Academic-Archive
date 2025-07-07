@@ -4,6 +4,7 @@ import { Modal, Button, Table, Form, InputGroup, Pagination, Badge, Alert } from
 import { FaSearch, FaEye, FaEdit, FaTrash, FaUserPlus, FaExclamationTriangle } from 'react-icons/fa';
 import SuccessModal from '../components/SuccessModal';
 
+
 const UserManagement = () => {
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);

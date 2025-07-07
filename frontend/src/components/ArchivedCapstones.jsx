@@ -6,17 +6,21 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
 import '../Styles/CapstoneManagement.css';
 
+const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera'];
+
 const ArchivedCapstones = () => {
     const [deletedSubmissions, setDeletedSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showRecoveryModal, setShowRecoveryModal] = useState(false);
     const [selectedSubmission, setSelectedSubmission] = useState(null);
-    const [successMessage, setSuccessMessage] = useState('');
+    const [showRestoreSuccess, setShowRestoreSuccess] = useState(false);
+    const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
     const [deletePermanentModal, setDeletePermanentModal] = useState(false);
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
     const [selectedPermanentDeleteId, setSelectedPermanentDeleteId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -81,7 +85,8 @@ const ArchivedCapstones = () => {
         try {
             const response = await axios.put(`http://localhost:8080/api/thesis/recover/${submissionId}`);
             if (response.data.status === 'success') {
-                setSuccessMessage('Submission recovered successfully!');
+                setShowRestoreSuccess(true);
+                setTimeout(() => setShowRestoreSuccess(false), 2500);
                 fetchDeletedSubmissions();
                 setShowRecoveryModal(false);
             }
@@ -107,15 +112,14 @@ const ArchivedCapstones = () => {
             setError('Please type "DELETE" to confirm permanent deletion.');
             return;
         }
-
         try {
             const response = await axios.delete(
                 `http://localhost:8080/api/thesis/permanent-delete/${submissionId}`
             );
-
             if (response.data.status === 'success') {
-                setSuccessMessage('Submission permanently deleted!');
-                fetchDeletedSubmissions(); // Refresh the list
+                setShowDeleteSuccess(true);
+                setTimeout(() => setShowDeleteSuccess(false), 2500);
+                fetchDeletedSubmissions();
                 setDeletePermanentModal(false);
             }
         } catch (error) {
@@ -190,6 +194,12 @@ const ArchivedCapstones = () => {
         </Modal>
     );
 
+    const filteredSubmissions = deletedSubmissions.filter(sub => {
+        const matchesTitle = sub.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = categoryFilter ? sub.category === categoryFilter : true;
+        return matchesTitle && matchesCategory;
+    });
+
     return (
         <div className="d-flex">
             <AdminNavbar 
@@ -224,6 +234,16 @@ const ArchivedCapstones = () => {
                                                 onChange={(e) => setSearchTerm(e.target.value)}
                                             />
                                         </InputGroup>
+                                        <Form.Select
+                                            style={{ width: 180, marginLeft: 16, fontSize: 15 }}
+                                            value={categoryFilter}
+                                            onChange={e => setCategoryFilter(e.target.value)}
+                                        >
+                                            <option value="">All Categories</option>
+                                            {categories.map(cat => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </Form.Select>
                                     </div>
                                 </div>
                                 <div className="card-body p-3" style={{ 
@@ -235,12 +255,6 @@ const ArchivedCapstones = () => {
                                         <Alert variant="danger" className="mb-4">
                                             <FaExclamationTriangle className="me-2" />
                                             {error}
-                                        </Alert>
-                                    )}
-
-                                    {successMessage && (
-                                        <Alert variant="success" className="mb-4" onClose={() => setSuccessMessage('')} dismissible>
-                                            {successMessage}
                                         </Alert>
                                     )}
 
@@ -268,17 +282,29 @@ const ArchivedCapstones = () => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {deletedSubmissions.length === 0 ? (
+                                                        {filteredSubmissions.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="4" className="text-center py-4">
                                                                     No archived submissions found.
                                                                 </td>
                                                             </tr>
                                                         ) : (
-                                                            deletedSubmissions.map((submission) => (
+                                                            filteredSubmissions.map((submission) => (
                                                                 <tr key={submission._id}>
                                                                     <td>{submission.title}</td>
-                                                                    <td><Badge bg="info">{submission.category}</Badge></td>
+                                                                    <td><span style={{
+                                                                        display: 'inline-block',
+                                                                        background: '#e0e7ff',
+                                                                        color: '#3730a3',
+                                                                        borderRadius: '999px',
+                                                                        fontWeight: 600,
+                                                                        fontSize: '0.85em',
+                                                                        padding: '0.18em 0.9em',
+                                                                        letterSpacing: 0.5,
+                                                                        textTransform: 'uppercase',
+                                                                        border: 'none',
+                                                                        margin: 0
+                                                                    }}>{submission.category}</span></td>
                                                                     <td>
                                                                         {new Date(submission.deletedAt).toLocaleDateString('en-US', {
                                                                             year: 'numeric',
@@ -325,121 +351,145 @@ const ArchivedCapstones = () => {
                 </div>
             </div>
 
-            <Modal show={showRecoveryModal} onHide={() => setShowRecoveryModal(false)} centered size="md" backdropClassName="custom-modal-backdrop" dialogClassName="custom-archive-modal-dialog">
-                <div style={{
-                    position: 'relative',
-                    background: '#fff',
-                    borderRadius: 16,
-                    boxShadow: '0 8px 32px rgba(30,41,59,0.18)',
-                    maxWidth: 600,
-                    width: '100%',
-                    margin: 'auto',
-                    padding: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflowX: 'hidden',
-                }}>
-                    <Modal.Header style={{ borderBottom: 'none', padding: '1.5rem 2rem 0.5rem 2rem', background: 'transparent', color: '#2563eb', borderTopLeftRadius: 16, borderTopRightRadius: 16 }}>
-                        <Modal.Title style={{ fontWeight: 700, fontSize: '1.3rem', letterSpacing: 0.5, color: '#2563eb' }}>
-                            Archived capstone details
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body style={{ padding: '2rem', maxHeight: '70vh', overflowY: 'auto', background: 'transparent', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
-                        {selectedSubmission && (
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr',
-                                gap: '1.5rem 2rem',
-                                width: '100%',
-                            }}
-                            className="archived-modal-grid-responsive"
-                            >
-                                {/* Title */}
-                                <div style={{ gridColumn: '1 / span 1', wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Title</div>
-                                    <div style={{ color: '#1e293b', fontSize: 16, fontWeight: 500, marginTop: 2, wordBreak: 'break-word' }}>{selectedSubmission.title}</div>
-                                </div>
-                                {/* Category */}
-                                <div style={{ gridColumn: '1 / span 1', wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Category</div>
-                                    <Badge bg="info" style={{ fontSize: 14, marginTop: 2 }}>{selectedSubmission.category}</Badge>
-                                </div>
-                                {/* Student Email */}
-                                <div style={{ gridColumn: '1 / span 1', wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Student email</div>
-                                    <div style={{ color: '#475569', fontSize: 15, marginTop: 2, wordBreak: 'break-word' }}>{selectedSubmission.email}</div>
-                                </div>
-                                {/* Submission Date */}
-                                <div style={{ gridColumn: '1 / span 1', wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Submission date</div>
-                                    <div style={{ color: '#475569', fontSize: 15, marginTop: 2, wordBreak: 'break-word' }}>
-                                        {selectedSubmission.createdAt ? new Date(selectedSubmission.createdAt).toLocaleString('en-US', {
-                                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                        }) : 'N/A'}
+            {showRecoveryModal && (
+                <div className={`custom-modal show`} onClick={() => setShowRecoveryModal(false)}>
+                    <div className="custom-modal-content" onClick={e => e.stopPropagation()} style={{ width: '90%', maxWidth: '1000px' }}>
+                        <div className="custom-modal-header bg-gradient-primary text-white">
+                            <h3>
+                                <FaUndo className="me-2" />
+                                Restore Capstone Details
+                            </h3>
+                            <button onClick={() => setShowRecoveryModal(false)} className="close-button">&times;</button>
+                        </div>
+                        <div className="custom-modal-body">
+                            {selectedSubmission && (
+                                <div className="review-content">
+                                    {/* Title Section */}
+                                    <div className="p-4 bg-light border-bottom">
+                                        <h6 className="text-primary mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
+                                            ARCHIVED CAPSTONE DETAILS
+                                        </h6>
+                                        <h4 className="mb-0 fw-bold" style={{ color: '#2c3e50', lineHeight: '1.4' }}>
+                                            {selectedSubmission.title}
+                                        </h4>
+                                    </div>
+                                    {/* Details Grid */}
+                                    <div className="p-4">
+                                        <div className="row g-4">
+                                            <div className="col-md-6">
+                                                <div className="mb-2"><strong>Category:</strong> <span style={{ display: 'inline-block', background: '#e0e7ff', color: '#3730a3', borderRadius: '999px', fontWeight: 600, fontSize: '0.85em', padding: '0.18em 0.9em', letterSpacing: 0.5, textTransform: 'uppercase', border: 'none', margin: 0 }}>{selectedSubmission.category || 'N/A'}</span></div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="mb-2"><strong>Student Email:</strong> {selectedSubmission.email}</div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="mb-2"><strong>Submission Date:</strong> {selectedSubmission.createdAt ? new Date(selectedSubmission.createdAt).toLocaleString() : 'N/A'}</div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="mb-2"><strong>Attached File:</strong> {selectedSubmission.docsLink ? (<a href={selectedSubmission.docsLink} target="_blank" rel="noopener noreferrer">View Document</a>) : 'No file attached.'}</div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <div className="mb-2"><strong>Group Members:</strong> {Array.isArray(selectedSubmission.members) && selectedSubmission.members.length > 0 ? selectedSubmission.members.map((m, i) => (<span key={i} style={{ display: 'inline-block', marginRight: 8, color: '#475569', fontSize: 15, wordBreak: 'break-word' }}>{m}</span>)) : <span style={{ color: '#64748b' }}>No members listed.</span>}</div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <div className="mb-2"><strong>Keywords:</strong> {Array.isArray(selectedSubmission.keywords) && selectedSubmission.keywords.length > 0 ? selectedSubmission.keywords.map((kw, i) => (<span key={i} style={{ display: 'inline-block', marginRight: 6, marginBottom: 2, background: '#e2e8f0', color: '#334155', borderRadius: 8, fontWeight: 500, fontSize: 13, padding: '0.18em 0.9em' }}>{kw}</span>)) : <span style={{ color: '#64748b' }}>No keywords.</span>}</div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <div className="mb-2"><strong>Abstract:</strong></div>
+                                                <div style={{ color: '#475569', fontSize: 15, whiteSpace: 'pre-line', marginTop: 2, wordBreak: 'break-word', background: '#f8fafc', borderRadius: 6, padding: '12px 16px', lineHeight: 1.7 }}>{selectedSubmission.abstract || 'No abstract provided.'}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Action Buttons */}
+                                    <div className="d-flex justify-content-end gap-3 p-3" style={{ background: '#f8fafc', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
+                                        <Button
+                                            variant="primary"
+                                            className="capstone-action-btn capstone-action-btn--sm"
+                                            onClick={() => handleRecover(selectedSubmission?._id)}
+                                            style={{ minWidth: 120, fontWeight: 600, borderRadius: 8, boxShadow: '0 2px 8px rgba(37,99,235,0.15)', background: '#2563eb', border: 'none' }}
+                                        >
+                                            <FaUndo className="me-1" size={14} />
+                                            Restore
+                                        </Button>
+                                        <Button
+                                            variant="outline-secondary"
+                                            className="capstone-action-btn capstone-action-btn--sm"
+                                            onClick={() => setShowRecoveryModal(false)}
+                                            style={{ minWidth: 120, fontWeight: 600, borderRadius: 8 }}
+                                        >
+                                            Cancel
+                                        </Button>
                                     </div>
                                 </div>
-                                {/* Abstract (full width) */}
-                                <div style={{ gridColumn: '1 / span 1', borderTop: '1px solid #e5e7eb', paddingTop: 12, wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Abstract</div>
-                                    <div style={{ color: '#475569', fontSize: 15, whiteSpace: 'pre-line', marginTop: 2, wordBreak: 'break-word' }}>{selectedSubmission.abstract || 'No abstract provided.'}</div>
-                                </div>
-                                {/* Keywords */}
-                                <div style={{ gridColumn: '1 / span 1', borderTop: '1px solid #e5e7eb', paddingTop: 12, wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Keywords</div>
-                                    <div style={{ marginTop: 2, wordBreak: 'break-word' }}>
-                                        {Array.isArray(selectedSubmission.keywords) && selectedSubmission.keywords.length > 0
-                                            ? selectedSubmission.keywords.map((kw, i) => (
-                                                <Badge key={i} bg="secondary" style={{ marginRight: 6, marginBottom: 2, fontSize: 13 }}>{kw}</Badge>
-                                            ))
-                                            : <span style={{ color: '#64748b' }}>No keywords.</span>}
-                                    </div>
-                                </div>
-                                {/* Group Members */}
-                                <div style={{ gridColumn: '1 / span 1', borderTop: '1px solid #e5e7eb', paddingTop: 12, wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Group members</div>
-                                    <div style={{ marginTop: 2, wordBreak: 'break-word' }}>
-                                        {Array.isArray(selectedSubmission.members) && selectedSubmission.members.length > 0
-                                            ? selectedSubmission.members.map((m, i) => (
-                                                <span key={i} style={{ display: 'inline-block', marginRight: 8, color: '#475569', fontSize: 15, wordBreak: 'break-word' }}>{m}</span>
-                                            ))
-                                            : <span style={{ color: '#64748b' }}>No members listed.</span>}
-                                    </div>
-                                </div>
-                                {/* Attached File (full width) */}
-                                <div style={{ gridColumn: '1 / span 1', borderTop: '1px solid #e5e7eb', paddingTop: 12, wordBreak: 'break-word' }}>
-                                    <div style={{ fontWeight: 600, color: '#334155', fontSize: 15 }}>Attached file</div>
-                                    {selectedSubmission.docsLink ? (
-                                        <a href={selectedSubmission.docsLink} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontWeight: 600, textDecoration: 'underline', fontSize: 15, wordBreak: 'break-word' }}>
-                                            View document
-                                        </a>
-                                    ) : (
-                                        <span style={{ color: '#64748b' }}>No file attached.</span>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </Modal.Body>
-                    <Modal.Footer style={{ borderTop: 'none', padding: '1.5rem 2rem', background: '#f8fafc', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-                        <Button
-                            variant="primary"
-                            className="capstone-action-btn capstone-action-btn--sm"
-                            onClick={() => handleRecover(selectedSubmission?._id)}
-                        >
-                            <FaUndo className="me-1" size={14} />
-                            Restore
-                        </Button>
-                        <Button
-                            variant="outline-secondary"
-                            className="capstone-action-btn capstone-action-btn--sm"
-                            onClick={() => setShowRecoveryModal(false)}
-                        >
-                            Cancel
-                        </Button>
-                    </Modal.Footer>
+                            )}
+                        </div>
+                    </div>
                 </div>
-            </Modal>
+            )}
 
             {renderDeletePermanentModal()}
+
+            {/* Success Pop-up Modals */}
+            {showRestoreSuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    zIndex: 3000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(0,0,0,0.08)'
+                }}>
+                    <div style={{
+                        background: '#e6f9ed',
+                        border: '1.5px solid #22c55e',
+                        borderRadius: 14,
+                        boxShadow: '0 4px 24px rgba(34,197,94,0.10)',
+                        padding: '2rem 2.5rem',
+                        minWidth: 320,
+                        maxWidth: '90vw',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 12
+                    }}>
+                        <span style={{ fontSize: 38, color: '#22c55e', marginBottom: 8 }}>✔️</span>
+                        <div style={{ fontWeight: 700, fontSize: 18, color: '#15803d', marginBottom: 4 }}>Capstone successfully restored and moved back to active records.</div>
+                        <button onClick={() => setShowRestoreSuccess(false)} style={{ marginTop: 8, background: '#22c55e', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Close</button>
+                    </div>
+                </div>
+            )}
+            {showDeleteSuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    zIndex: 3000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(0,0,0,0.08)'
+                }}>
+                    <div style={{
+                        background: '#fbeaea',
+                        border: '1.5px solid #ef4444',
+                        borderRadius: 14,
+                        boxShadow: '0 4px 24px rgba(239,68,68,0.10)',
+                        padding: '2rem 2.5rem',
+                        minWidth: 320,
+                        maxWidth: '90vw',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 12
+                    }}>
+                        <span style={{ fontSize: 38, color: '#ef4444', marginBottom: 8 }}>🗑️</span>
+                        <div style={{ fontWeight: 700, fontSize: 18, color: '#b91c1c', marginBottom: 4 }}>Capstone has been permanently deleted and cannot be recovered.</div>
+                        <button onClick={() => setShowDeleteSuccess(false)} style={{ marginTop: 8, background: '#ef4444', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
