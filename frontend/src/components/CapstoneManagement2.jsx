@@ -491,7 +491,6 @@ const CapstoneManagement2 = () => {
         e.preventDefault();
         setError(null);
 
-        // Remove validation for comments and reviewedBy
         if (!reviewData.status) {
             setError('Please select a status before submitting.');
             return;
@@ -503,8 +502,8 @@ const CapstoneManagement2 = () => {
                 `http://localhost:8080/api/thesis/submissions/${selectedSubmission._id}/status`,
                 {
                     status: reviewData.status,
-                    reviewComments: reviewData.comments || '', // Optional
-                    reviewedBy: reviewData.reviewedBy || '',   // Optional
+                    reviewComments: reviewData.comments || '',  // Optional
+                    reviewedBy: reviewData.reviewedBy || '',    // Optional
                     reviewDate: reviewData.reviewDate.toISOString()
                 }
             );

@@ -105,13 +105,12 @@ thesisSchema.index({ adviserEmail: 1, status: 1 });
 thesisSchema.path('feedback').validate(function(value) {
     if (value.length > 0) {
         return value.every(feedback => 
-            feedback.comment && 
-            feedback.comment.trim().length > 0 && 
-            feedback.reviewedBy && 
-            feedback.reviewedBy.trim().length > 0
+            feedback.status && 
+            (!feedback.comment || feedback.comment.trim().length > 0) && 
+            (!feedback.reviewedBy || feedback.reviewedBy.trim().length > 0)
         );
     }
     return true;
-}, 'Each feedback entry must have a non-empty comment and reviewer');
+}, 'Each feedback entry must have a status, and optional comment/reviewer');
 
 module.exports = mongoose.model('Thesis', thesisSchema); 

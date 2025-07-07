@@ -444,35 +444,29 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
         });
     }
 
-    // Check if the status is being changed to the same value
-    if (thesis.status === status && thesis.reviewComments === reviewComments) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'No changes detected in the review'
-        });
-    }
-
     // Update thesis with review information
     const now = new Date();
     const reviewUpdate = {
         status,
-        reviewComments,
-        reviewedBy,
+        reviewComments: reviewComments || '',  // Default to empty string if not provided
+        reviewedBy: reviewedBy || '',         // Default to empty string if not provided
         reviewDate: now
     };
 
-    // Add to feedback history
-    thesis.feedback.push({
-        comment: reviewComments,
-        status: status,
-        reviewedBy: reviewedBy,
-        reviewDate: now
-    });
+    // Add to feedback history (skip if no comment/reviewer)
+    if (reviewComments || reviewedBy) {
+        thesis.feedback.push({
+            comment: reviewComments || '',
+            status: status,
+            reviewedBy: reviewedBy || '',
+            reviewDate: now
+        });
+    }
 
     // Update current review status
     thesis.status = status;
-    thesis.reviewComments = reviewComments;
-    thesis.reviewedBy = reviewedBy;
+    thesis.reviewComments = reviewUpdate.reviewComments;
+    thesis.reviewedBy = reviewUpdate.reviewedBy;
     thesis.reviewDate = now;
 
     // Save changes
