@@ -60,33 +60,15 @@ const validateThesis = (req, res, next) => {
 
 // Validation middleware for review submission
 const validateReview = (req, res, next) => {
-    const { status, reviewComments, reviewedBy } = req.body;
-
-    // Check for required fields
-    if (!status || !reviewComments?.trim() || !reviewedBy?.trim()) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Status, review comments, and reviewer name are required'
-        });
-    }
-
-    // Validate status value
+    const { status } = req.body;
+    // Only status is required
     const validStatuses = ['pending', 'approved', 'rejected', 'revision'];
-    if (!validStatuses.includes(status)) {
+    if (!status || !validStatuses.includes(status)) {
         return res.status(400).json({
             status: 'error',
             message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
         });
     }
-
-    // Validate review comments length
-    if (reviewComments.trim().length < 10) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Review comments must be at least 10 characters long'
-        });
-    }
-
     next();
 };
 
@@ -437,55 +419,71 @@ router.get('/statistics', async (req, res) => {
 // Update thesis review status
 router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { status, reviewComments, reviewedBy } = req.body;
+    const { status } = req.body;
 
-    // Find thesis and ensure it exists
-    const thesis = await Thesis.findById(id);
-    if (!thesis) {
-        return res.status(404).json({
+    // Validate status input
+    const validStatuses = ['pending', 'approved', 'rejected', 'revision'];
+    if (!status || !validStatuses.includes(status)) {
+        return res.status(400).json({
             status: 'error',
-            message: 'Thesis not found'
+            message: 'Invalid status provided. Must be one of: approved, rejected, revision, pending.'
         });
     }
 
-    // Check if the status is being changed to the same value
-    if (thesis.status === status && thesis.reviewComments === reviewComments) {
-        return res.status(400).json({
+    // Find thesis and ensure it exists
+    let thesis;
+    try {
+        thesis = await Thesis.findById(id);
+    } catch (err) {
+        return res.status(500).json({
             status: 'error',
-            message: 'No changes detected in the review'
+            message: 'Database error while finding thesis.'
         });
+    }
+    if (!thesis) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'Thesis not found.'
+        });
+    }
+
+    // Special handling for 'pending' (Under Review) status
+    if (status === 'pending') {
+        if (
+            thesis.status === 'pending'
+        ) {
+            return res.status(409).json({
+                status: 'error',
+                message: 'Capstone is already under review. No changes detected.'
+            });
+        }
+        // Allow update if comments or reviewer are different
+    } else {
+        // For other statuses, block if no changes
+        if (thesis.status === status) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'No changes detected in the review.'
+            });
+        }
     }
 
     // Update thesis with review information
     const now = new Date();
-    const reviewUpdate = {
-        status,
-        reviewComments,
-        reviewedBy,
-        reviewDate: now
-    };
-
-    // Add to feedback history
-    thesis.feedback.push({
-        comment: reviewComments,
-        status: status,
-        reviewedBy: reviewedBy,
-        reviewDate: now
-    });
-
-    // Update current review status
     thesis.status = status;
-    thesis.reviewComments = reviewComments;
-    thesis.reviewedBy = reviewedBy;
-    thesis.reviewDate = now;
 
-    // Save changes
-    await thesis.save();
+    try {
+        await thesis.save();
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Database error while saving review.'
+        });
+    }
 
     // Prepare notification message based on status
     let notificationMessage = `Your thesis "${thesis.title}" has been reviewed.`;
     let notificationTitle = 'Thesis Review Update';
-
     switch (status) {
         case 'approved':
             notificationMessage += ' Congratulations! Your thesis has been APPROVED.';
@@ -503,29 +501,29 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
             notificationMessage += ` Status: ${status.toUpperCase()}`;
     }
 
-    notificationMessage += `\n\nReviewer Comments: ${reviewComments}`;
-
-    // Create notifications in parallel
-    await Promise.all([
-        // Notification for student
-        new Notification({
-            recipientEmail: thesis.email,
-            title: notificationTitle,
-            message: notificationMessage,
-            type: 'status_update',
-            thesisId: thesis._id,
-            priority: status === 'revision' ? 'high' : 'normal'
-        }).save(),
-        // Notification for adviser
-        new Notification({
-            recipientEmail: thesis.adviserEmail,
-            title: notificationTitle,
-            message: notificationMessage,
-            type: 'status_update',
-            thesisId: thesis._id,
-            priority: status === 'revision' ? 'high' : 'normal'
-        }).save()
-    ]);
+    try {
+        await Promise.all([
+            new Notification({
+                recipientEmail: thesis.email,
+                title: notificationTitle,
+                message: notificationMessage,
+                type: 'status_update',
+                thesisId: thesis._id,
+                priority: status === 'revision' ? 'high' : 'normal'
+            }).save(),
+            new Notification({
+                recipientEmail: thesis.adviserEmail,
+                title: notificationTitle,
+                message: notificationMessage,
+                type: 'status_update',
+                thesisId: thesis._id,
+                priority: status === 'revision' ? 'high' : 'normal'
+            }).save()
+        ]);
+    } catch (err) {
+        // Notifications are not critical, so log but do not fail the review update
+        console.error('Notification error:', err);
+    }
 
     res.json({
         status: 'success',
@@ -535,9 +533,6 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
                 _id: thesis._id,
                 title: thesis.title,
                 status: thesis.status,
-                reviewComments: thesis.reviewComments,
-                reviewedBy: thesis.reviewedBy,
-                reviewDate: thesis.reviewDate,
                 lastFeedback: thesis.feedback[thesis.feedback.length - 1]
             }
         }
@@ -573,12 +568,6 @@ router.get('/submissions/:id/reviews', asyncHandler(async (req, res) => {
         status: 'success',
         data: {
             currentStatus: thesis.status,
-            currentReview: {
-                comments: thesis.reviewComments,
-                reviewedBy: thesis.reviewedBy,
-                reviewDate: thesis.reviewDate,
-                status: thesis.status
-            },
             feedback: {
                 items: paginatedFeedback,
                 pagination: {

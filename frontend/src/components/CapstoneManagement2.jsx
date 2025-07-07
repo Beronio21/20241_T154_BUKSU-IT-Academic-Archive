@@ -38,10 +38,7 @@ const CapstoneManagement2 = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [successIcon, setSuccessIcon] = useState(null);
     const [successTitle, setSuccessTitle] = useState('');
-    const [reviewErrors, setReviewErrors] = useState({
-        comments: '',
-        reviewedBy: ''
-    });
+    const [reviewErrors, setReviewErrors] = useState({});
     const [showRevisionHistoryModal, setShowRevisionHistoryModal] = useState(false);
     const [revisionHistory, setRevisionHistory] = useState([]);
     const [revisionHistoryLoading, setRevisionHistoryLoading] = useState(false);
@@ -459,81 +456,23 @@ const CapstoneManagement2 = () => {
         );
     };
 
-    const validateReviewerName = (name) => {
-        if (!name.trim()) {
-            return 'Reviewer name is required';
-        }
-        if (name.trim().length < 3) {
-            return 'Reviewer name must be at least 3 characters long';
-        }
-        if (!/^[a-zA-Z\s.]+$/.test(name)) {
-            return 'Reviewer name should only contain letters, spaces, and dots';
-        }
-        return '';
-    };
-
-    const validateComments = (comments) => {
-        if (!comments.trim()) {
-            return 'Review comments are required';
-        }
-        if (comments.trim().length < 2) {
-            return 'Review comments must be at least 10 characters long';
-        }
-        if (comments.length > 1000) {
-            return 'Review comments cannot exceed 1000 characters';
-        }
-        return '';
-    };
-
     const handleReviewInputChange = (field, value) => {
         setReviewData(prev => ({
             ...prev,
             [field]: value
         }));
-
-        // Real-time validation
-        if (field === 'reviewedBy') {
-            setReviewErrors(prev => ({
-                ...prev,
-                reviewedBy: validateReviewerName(value)
-            }));
-        } else if (field === 'comments') {
-            setReviewErrors(prev => ({
-                ...prev,
-                comments: validateComments(value)
-            }));
-        }
     };
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
         setError(null);
-        
-        // Validate all fields
-        const commentsError = validateComments(reviewData.comments);
-        const reviewerError = validateReviewerName(reviewData.reviewedBy);
-
-        setReviewErrors({
-            comments: commentsError,
-            reviewedBy: reviewerError
-        });
-
-        if (commentsError || reviewerError || !reviewData.status) {
-            setError('Please correct all errors before submitting.');
+        // Only require status
+        if (!reviewData.status) {
+            setError('Please select a review status.');
             return;
         }
-
         try {
             setLoading(true);
-            const submissionData = {
-                title: formData.title,
-                abstract: formData.abstract,
-                keywords: formData.keywords.filter(k => k.trim()),
-                members: formData.members.filter(m => m.trim()),
-                docsLink: formData.docsLink,
-                email: formData.email || userEmail,
-                category: formData.category
-            };
             const response = await axios.put(
                 `http://localhost:8080/api/thesis/submissions/${selectedSubmission._id}/status`,
                 {
@@ -543,7 +482,6 @@ const CapstoneManagement2 = () => {
                     reviewDate: reviewData.reviewDate.toISOString()
                 }
             );
-
             if (response.data.status === 'success') {
                 showSuccess(
                     'Review Submitted',
@@ -554,7 +492,6 @@ const CapstoneManagement2 = () => {
                         <FaTimes className="text-danger" size={48} /> :
                         <FaExclamationCircle className="text-warning" size={48} />
                 );
-                
                 await fetchSubmissions();
                 setShowReviewModal(false);
                 setSelectedSubmission(null);
@@ -564,10 +501,7 @@ const CapstoneManagement2 = () => {
                     reviewedBy: '',
                     reviewDate: new Date()
                 });
-                setReviewErrors({
-                    comments: '',
-                    reviewedBy: ''
-                });
+                setReviewErrors({});
             } else {
                 setError('Failed to update review. Please try again.');
             }
@@ -1096,14 +1030,14 @@ const CapstoneManagement2 = () => {
 
                     {/* Review Modal */}
                     {showReviewModal && (
-                        <div className={`custom-modal show`} onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({ comments: '', reviewedBy: '' }); setError(null); } }}>
+                        <div className={`custom-modal show`} onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }}>
                             <div className="custom-modal-content" onClick={e => e.stopPropagation()} style={{ width: '90%', maxWidth: '1000px' }}>
                                 <div className="custom-modal-header bg-gradient-primary text-white">
                                     <h3>
                                         <FaClipboardCheck className="me-2" />
                                         Review Capstone Project
                                     </h3>
-                                    <button onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({ comments: '', reviewedBy: '' }); setError(null); } }} className="close-button" disabled={loading}>&times;</button>
+                                    <button onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }} className="close-button" disabled={loading}>&times;</button>
                                 </div>
                                 <div className="custom-modal-body">
                                     {selectedSubmission && (
@@ -1176,7 +1110,6 @@ const CapstoneManagement2 = () => {
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        {(!reviewData.status && error) && <div className="text-danger mt-2">Please select a review status.</div>}
                                                     </div>
                                                     {/* Comments Section */}
                                                     <div className="mb-4">
@@ -1191,17 +1124,13 @@ const CapstoneManagement2 = () => {
                                                             style={{ resize: 'none' }}
                                                             disabled={loading}
                                                         />
-                                                        {reviewErrors.comments && <div className="invalid-feedback d-block">{reviewErrors.comments}</div>}
-                                                        {reviewData.comments && reviewData.comments.length > 0 && reviewData.comments.length < 10 && (
-                                                            <div className="text-danger mt-2">Review comment must be at least 10 characters long.</div>
-                                                        )}
                                                     </div>
                                                     {/* Action Buttons */}
                                                     <div className="d-flex justify-content-end gap-3">
                                                         <Button
                                                             variant="primary"
                                                             type="submit"
-                                                            disabled={loading || !reviewData.status || !reviewData.comments || reviewData.comments.length < 10}
+                                                            disabled={loading || !reviewData.status}
                                                             style={{ minWidth: 140, fontWeight: 600, borderRadius: 8, boxShadow: '0 2px 8px rgba(37,99,235,0.15)', background: '#2563eb', border: 'none' }}
                                                         >
                                                             {loading ? 'Submitting...' : 'Submit Review'}
@@ -1209,14 +1138,13 @@ const CapstoneManagement2 = () => {
                                                         <Button
                                                             variant="outline-secondary"
                                                             type="button"
-                                                            onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({ comments: '', reviewedBy: '' }); setError(null); } }}
+                                                            onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }}
                                                             disabled={loading}
                                                             style={{ minWidth: 120, fontWeight: 600, borderRadius: 8 }}
                                                         >
                                                             Cancel
                                                         </Button>
                                                     </div>
-                                                    {error && <div className="text-danger mt-3">{error}</div>}
                                                 </form>
                                             </div>
                                         </div>
