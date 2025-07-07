@@ -226,11 +226,11 @@ const CapstoneManagement2 = () => {
                 `http://localhost:8080/api/thesis/delete/${selectedSubmission._id}`
             );
             if (response.data.status === 'success') {
+                setShowArchiveToast(true);
+                setTimeout(() => setShowArchiveToast(false), 3000);
                 setSubmissions(prev => prev.filter(sub => sub._id !== selectedSubmission._id));
                 setShowArchiveModal(false);
                 setSelectedSubmission(null);
-                setShowArchiveToast(true);
-                setTimeout(() => setShowArchiveToast(false), 3000);
             }
         } catch (error) {
             console.error('Error archiving:', error);
@@ -641,7 +641,7 @@ const CapstoneManagement2 = () => {
         </Modal>
     );
 
-    // Archive modal (simple confirm/cancel, no text input, no status restriction)
+    // Archive modal (no confirmation text input, just a simple confirm/cancel)
     const renderArchiveModal = () => (
         <Modal
             show={showArchiveModal}
