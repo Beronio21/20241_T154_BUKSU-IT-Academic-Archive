@@ -450,7 +450,11 @@ const StudentDashboard = () => {
               >
                 <div className="custom-modal-header">
                   <h3>Capstone Details</h3>
-                  <button onClick={() => setShowDetailsModal(false)} className="close-button">
+                  <button 
+                    onClick={() => setShowDetailsModal(false)} 
+                    className="close-button modal-close-btn"
+                    aria-label="Close details modal"
+                  >
                     &times;
                   </button>
                 </div>
