@@ -271,114 +271,177 @@ const StudentDashboard = () => {
                         key={capstone._id} 
                         onClick={() => handleViewDetails(capstone)}
                         style={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          boxShadow: '0 3px 10px rgba(0, 0, 0, 0.08)',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          background: '#fff',
+                          borderRadius: '16px',
+                          boxShadow: '0 6px 24px rgba(30,41,59,0.12)',
+                          transition: 'box-shadow 0.18s, transform 0.18s',
                           cursor: 'pointer',
                           overflow: 'hidden',
+                          minHeight: 320,
+                          width: '100%',
                           display: 'flex',
                           flexDirection: 'column',
-                          '&:hover': {
-                            transform: 'translateY(-5px)',
-                            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.12)'
-                          }
+                          justifyContent: 'space-between',
+                          padding: '28px 26px 0 26px',
+                          position: 'relative',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.boxShadow = '0 14px 36px rgba(30,41,59,0.16)';
+                          e.currentTarget.style.transform = 'translateY(-3px) scale(1.012)';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(30,41,59,0.12)';
+                          e.currentTarget.style.transform = 'none';
                         }}
                       >
-                        <div style={{ padding: '20px' }}>
-                          {/* Title Container */}
+                        {/* Title */}
+                        <div style={{ marginBottom: 12 }}>
+                          <span style={{ fontWeight: 700, fontSize: 15, color: '#2563eb', letterSpacing: 0.1, display: 'block', marginBottom: 2 }}>Title:</span>
+                          <div style={{ fontWeight: 800, fontSize: 20, color: '#1e293b', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.25 }}>{capstone.title}</div>
+                        </div>
+                        {/* Abstract */}
+                        <div style={{ marginBottom: 14, position: 'relative' }}>
+                          <span style={{ fontWeight: 700, fontSize: 15, color: '#2563eb', letterSpacing: 0.1, display: 'block', marginBottom: 2 }}>Abstract:</span>
                           <div style={{
-                            minHeight: '80px',
-                            backgroundColor: '#e8f5e9',
-                            borderRadius: '8px',
-                            borderLeft: '4px solid #2e7d32',
-                            padding: '12px 15px',
-                            marginBottom: '15px',
-                            transition: 'all 0.3s ease',
-                          }}>
-                            <h3 style={{
-                              fontSize: '1.1rem',
-                              margin: '0',
-                              color: '#1a237e',
-                              fontWeight: '600',
-                              display: '-webkit-box',
-                              WebkitLineClamp: '3',
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              lineHeight: '1.4',
-                              wordWrap: 'break-word',
-                              wordBreak: 'break-word'
-                            }}>{capstone.title}</h3>
+                            color: '#334155',
+                            fontSize: 15,
+                            background: '#f3f4f6',
+                            borderRadius: 10,
+                            padding: '12px 16px',
+                            minHeight: 40,
+                            lineHeight: 1.7,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            position: 'relative',
+                          }} title={capstone.abstract}>
+                            {capstone.abstract}
+                            {/* Read more icon (tooltip on hover) */}
+                            {capstone.abstract && capstone.abstract.length > 120 && (
+                              <span style={{ position: 'absolute', right: 12, top: 12, color: '#64748b', cursor: 'pointer' }} title="Read full abstract">
+                                <i className="fas fa-ellipsis-h"></i>
+                              </span>
+                            )}
                           </div>
-
-                          {/* Abstract */}
-                          <div style={{ marginBottom: '20px' }}>
-                            <p style={{
-                              fontSize: '0.95rem',
-                              color: '#555',
-                              display: '-webkit-box',
-                              WebkitLineClamp: '3',
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                              lineHeight: '1.5',
-                              margin: '0'
-                            }}>
-                              {capstone.abstract}
-                            </p>
+                        </div>
+                        {/* Keywords */}
+                        <div style={{ marginBottom: 14 }}>
+                          <span style={{ fontWeight: 700, fontSize: 15, color: '#2563eb', letterSpacing: 0.1, display: 'block', marginBottom: 2 }}>Keywords:</span>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginTop: 2, alignItems: 'center' }}>
+                            {(capstone.keywords.slice(0, 3)).map((keyword, index) => (
+                              <span key={index} style={{
+                                backgroundColor: '#e0e7ff',
+                                color: '#3730a3',
+                                padding: '4px 12px',
+                                borderRadius: 12,
+                                fontSize: 13,
+                                fontWeight: 600,
+                                letterSpacing: 0.1,
+                                marginBottom: 2,
+                                whiteSpace: 'nowrap',
+                              }}>{keyword}</span>
+                            ))}
+                            {capstone.keywords.length > 3 && (
+                              <span
+                                style={{
+                                  backgroundColor: '#e0e7ff',
+                                  color: '#64748b',
+                                  padding: '4px 12px',
+                                  borderRadius: 12,
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  letterSpacing: 0.1,
+                                  marginBottom: 2,
+                                  cursor: 'pointer',
+                                  whiteSpace: 'nowrap',
+                                  position: 'relative',
+                                }}
+                                title={capstone.keywords.join(', ')}
+                              >
+                                + {capstone.keywords.length - 3} more
+                              </span>
+                            )}
                           </div>
-
-                          {/* Keywords */}
-                          <div style={{ marginBottom: '20px' }}>
-                            <div style={{ 
-                              display: 'flex', 
-                              flexWrap: 'wrap', 
-                              gap: '8px' 
-                            }}>
-                              {capstone.keywords.map((keyword, index) => (
-                                <span key={index} style={{
-                                  backgroundColor: '#f0f4ff',
-                                  color: '#3949ab',
-                                  padding: '4px 10px',
-                                  borderRadius: '15px',
-                                  fontSize: '0.85rem',
-                                  fontWeight: '500'
-                                }}>
-                                  {keyword}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Footer */}
+                        </div>
+                        {/* Footer: Category & Submission Date */}
+                        <div style={{ flexGrow: 1 }} />
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'flex-end',
+                          minHeight: 90,
+                          marginTop: 16,
+                        }}>
                           <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            marginTop: 'auto',
-                            paddingTop: '15px',
-                            borderTop: '1px solid #eee'
+                            borderTop: '1.5px solid #e5e7eb',
+                            padding: '14px 0 0 0',
+                            background: '#f8fafc',
                           }}>
-                            <span style={{
-                              fontSize: '0.9rem',
-                              color: '#666'
-                            }}>
-                              {new Date(capstone.createdAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric'
-                              })}
-                            </span>
-                            <span style={{
-                              backgroundColor: '#e3f2fd',
-                              color: '#1565c0',
-                              padding: '5px 12px',
-                              borderRadius: '15px',
-                              fontSize: '0.9rem',
-                              fontWeight: '500'
-                            }}>
-                              {capstone.category}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                              <span style={{ fontWeight: 600, fontSize: 13, color: '#64748b', marginRight: 2 }}>Category:</span>
+                              <span style={{ background: '#e3f2fd', color: '#1565c0', borderRadius: 10, fontWeight: 700, fontSize: 13, padding: '4px 12px', letterSpacing: 0.2 }}>{capstone.category}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <span style={{ fontWeight: 600, fontSize: 13, color: '#64748b', marginRight: 2 }}>Submitted on:</span>
+                              <span style={{ color: '#334155', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                {new Date(capstone.createdAt).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric'
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                            marginTop: 10,
+                            paddingBottom: 6,
+                          }}>
+                            <button
+                              onClick={e => { e.stopPropagation(); handleViewDetails(capstone); }}
+                              style={{
+                                background: '#f8fafc',
+                                color: '#2563eb',
+                                border: '1px solid #cbd5e1',
+                                borderRadius: 8,
+                                fontWeight: 500,
+                                fontSize: 14,
+                                padding: '5px 14px',
+                                cursor: 'pointer',
+                                transition: 'background 0.18s, border-color 0.18s, color 0.18s',
+                                letterSpacing: 0.1,
+                                outline: 'none',
+                                display: 'inline-block',
+                                minWidth: 0,
+                                minHeight: 0,
+                                boxShadow: 'none',
+                              }}
+                              onMouseEnter={e => {
+                                e.currentTarget.style.background = '#e0e7ff';
+                                e.currentTarget.style.borderColor = '#2563eb';
+                                e.currentTarget.style.color = '#174ea6';
+                              }}
+                              onMouseLeave={e => {
+                                e.currentTarget.style.background = '#f8fafc';
+                                e.currentTarget.style.borderColor = '#cbd5e1';
+                                e.currentTarget.style.color = '#2563eb';
+                              }}
+                              onMouseDown={e => {
+                                e.currentTarget.style.transform = 'scale(0.97)';
+                              }}
+                              onMouseUp={e => {
+                                e.currentTarget.style.transform = 'none';
+                              }}
+                            >
+                              View Details
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -440,9 +503,9 @@ const StudentDashboard = () => {
 
             <div className={`custom-modal ${showDetailsModal ? 'show' : ''}`} onClick={() => setShowDetailsModal(false)}>
               <div 
-                className="custom-modal-content"
+                className="custom-modal-content" 
                 onClick={e => e.stopPropagation()}
-                style={{
+                style={{ 
                   width: '95%',
                   maxWidth: 1000,
                   minWidth: 320,
@@ -517,7 +580,7 @@ const StudentDashboard = () => {
                             <span key={i} style={{ display: 'inline-block', background: '#e0f2fe', color: '#0369a1', borderRadius: 16, fontWeight: 600, fontSize: 14, padding: '6px 16px', marginBottom: 2 }}>{member}</span>
                           )) : <span style={{ color: '#64748b' }}>None</span>}
                         </div>
-                      </div>
+                            </div>
                       {/* Keywords */}
                       <div style={{ marginBottom: 0 }}>
                         <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Keywords</div>
