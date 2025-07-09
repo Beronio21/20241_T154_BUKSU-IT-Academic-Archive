@@ -85,9 +85,55 @@
 .close-button {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     cursor: pointer;
     color: white;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s, transform 0.18s, color 0.18s;
+    outline: none;
+    position: relative;
+}
+.close-button:focus {
+    outline: 2px solid #888;
+    outline-offset: 2px;
+    background: rgba(30,41,59,0.10);
+}
+.close-button:hover, .close-button:active {
+    background: rgba(30,41,59,0.10);
+    color: white;
+    transform: scale(1.08);
+}
+
+.btn-view-file {
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+    text-decoration: none;
+    outline: none;
+    display: inline-block;
+}
+.btn-view-file:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+    background: #174ea6;
+}
+.btn-view-file:hover, .btn-view-file:active {
+    background: #174ea6;
+    color: #fff;
+    text-decoration: none;
+    transform: scale(1.04);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.13);
 }
 
 .custom-modal-body {
@@ -102,4 +148,92 @@
     display: flex;
     justify-content: flex-end;
     background-color: #f8f9fa;
+}
+
+.search-filter {
+  background: #fff;
+  padding: 16px 18px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.filter-row > div {
+  min-width: 120px;
+  max-width: 180px;
+  flex: 0 1 180px;
+  display: flex;
+  align-items: center;
+}
+.filter-row > div:first-child {
+  flex: 1 1 60%;
+  min-width: 200px;
+  max-width: 60%;
+}
+.filter-row input[type="text"] {
+  width: 100%;
+  height: 36px;
+  padding: 0 14px 0 38px;
+  border-radius: 8px;
+  border: 1.2px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+  font-size: 1rem;
+  color: #334155;
+  background: #f8fafc;
+  outline: none;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+.filter-row input[type="text"]:focus, .filter-row input[type="text"]:hover {
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+}
+.filter-row .react-select__control {
+  min-height: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  border-color: #e5e7eb !important;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.04) !important;
+  background: #f8fafc !important;
+  font-size: 1rem !important;
+  padding-left: 2px !important;
+  outline: none !important;
+  transition: border 0.18s !important;
+}
+.filter-row .react-select__control--is-focused, .filter-row .react-select__control:hover {
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10) !important;
+}
+.filter-row .react-select__value-container {
+  height: 36px !important;
+  padding: 0 8px !important;
+}
+.filter-row .react-select__input {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.filter-row .react-select__indicators {
+  height: 36px !important;
+}
+.filter-row .react-select__placeholder {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+.filter-row .react-select__dropdown-indicator {
+  color: #64748b !important;
+  padding-right: 6px !important;
+}
+@media (max-width: 900px) {
+  .filter-row { flex-direction: column !important; gap: 10px !important; align-items: stretch !important; }
+  .filter-row > div { max-width: 100% !important; min-width: 0 !important; flex: 1 1 100% !important; }
 } 

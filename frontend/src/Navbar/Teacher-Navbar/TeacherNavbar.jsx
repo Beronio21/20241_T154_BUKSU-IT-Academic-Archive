@@ -96,19 +96,7 @@ const TeacherNavbar = ({ activeSection, handleSectionChange, userInfo }) => {
                         {additionalNavItems.map(renderNavItem)}
                     </ul>
                 </div>
-
-                {/* User Info Section */}
-                <div className="p-4 mt-auto text-center border-top" style={{ marginTop: 'auto', paddingTop: '20px' }}>
-                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
-                        {userInfo?.name || 'Teacher'}
-                    </p>
-                    <p className="mb-0" style={{ fontSize: '14px', color: '#333' }}>
-                        {userInfo?.email || 'Email not available'}
-                    </p>
-                    <p className="mb-0" style={{ fontSize: '15px', color: '#333' }}>
-                        {userInfo?.role || 'User Type not available'}
-                    </p>
-                </div>
+               
             </div>
         </div>
     );

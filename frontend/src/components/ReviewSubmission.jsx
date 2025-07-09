@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge } from 'react-bootstrap';
 import { FaSearch, FaFileAlt, FaComment, FaCalendarAlt, FaFilter } from 'react-icons/fa';
+import Select from 'react-select';
+import { FaChevronDown, FaRegCalendarAlt } from 'react-icons/fa';
 import '../Styles/ReviewSubmission.css';
 
 const ViewSubmission = () => {
@@ -16,15 +18,23 @@ const ViewSubmission = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [feedbackForm, setFeedbackForm] = useState({ thesisId: '', comment: '', status: '' });
     const [showModal, setShowModal] = useState(false);
-    const [titleSearch, setTitleSearch] = useState('');
-    const [dateSearch, setDateSearch] = useState('');
     const [categorySearch, setCategorySearch] = useState('');
-    const [memberSearch, setMemberSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [categories] = useState(['IoT', 'AI', 'ML', 'Sound', 'Camera']);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [showFullAbstract, setShowFullAbstract] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedYear, setSelectedYear] = useState(null);
+    const currentYear = new Date().getFullYear();
+    const yearOptions = Array.from({ length: 10 }, (_, i) => {
+      const year = currentYear - i;
+      return { value: year, label: year.toString() };
+    });
+    const categoryOptions = [
+      { value: '', label: 'All Categories' },
+      ...categories.map(cat => ({ value: cat, label: cat }))
+    ];
 
     useEffect(() => {
         const data = localStorage.getItem('user-info');
@@ -122,15 +132,13 @@ const ViewSubmission = () => {
     };
 
     const filteredSubmissions = submissions.filter(submission => {
-        const matchesTitle = submission.title.toLowerCase().includes(titleSearch.toLowerCase());
-        const matchesDate = dateSearch ? new Date(submission.createdAt).toLocaleDateString() === new Date(dateSearch).toLocaleDateString() : true;
+        const matchesSearch =
+            submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (Array.isArray(submission.members) && submission.members.some(member => member.toLowerCase().includes(searchTerm.toLowerCase())));
+        const matchesYear = selectedYear ? new Date(submission.createdAt).getFullYear() === selectedYear.value : true;
         const matchesCategory = categorySearch ? submission.category === categorySearch : true;
-        const matchesMember = memberSearch ? submission.members.some(member => 
-            member.toLowerCase().includes(memberSearch.toLowerCase())
-        ) : true;
         const matchesStatus = statusFilter ? submission.status === statusFilter : true;
-
-        return matchesTitle && matchesDate && matchesCategory && matchesMember && matchesStatus;
+        return matchesSearch && matchesYear && matchesCategory && matchesStatus;
     });
 
     // Pagination logic
@@ -227,78 +235,178 @@ const ViewSubmission = () => {
                             display: 'flex',
                             flexDirection: 'column'
                         }}>
-                            <div className="row mb-3">
-                                <div className="col-md-3">
-                                    <InputGroup>
-                                        <InputGroup.Text>
-                                            <FaSearch />
-                                        </InputGroup.Text>
-                                        <Form.Control
+                            {/* Filter Section - Unified Search, Modern, Responsive, with Status Dropdown */}
+                            <div className="search-filter" style={{
+                                background: '#fff',
+                                padding: '16px 18px',
+                                borderRadius: '12px',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                                marginBottom: 0,
+                                width: '100%',
+                                maxWidth: 1200,
+                                marginLeft: 'auto',
+                                marginRight: 'auto',
+                                zIndex: 2,
+                            }}>
+                                <div
+                                    className="filter-row"
+                                    style={{
+                                        display: 'flex',
+                                        flexWrap: 'nowrap',
+                                        gap: 16,
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        width: '100%',
+                                    }}
+                                >
+                                    {/* Unified Search Bar */}
+                                    <div style={{ flex: 2, minWidth: 0, maxWidth: '50%', position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                        <FaSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#64748b', fontSize: 18, pointerEvents: 'none' }} />
+                                        <input
                                             type="text"
-                                            placeholder="Search by title..."
-                                            value={titleSearch}
-                                            onChange={(e) => setTitleSearch(e.target.value)}
+                                            placeholder="Search by Title or Member Name"
+                                            value={searchTerm}
+                                            onChange={e => setSearchTerm(e.target.value)}
+                                            className="filter-input"
+                                            style={{
+                                                paddingLeft: 40,
+                                                width: '100%',
+                                                height: 40,
+                                                borderRadius: 10,
+                                                border: '1.2px solid #e5e7eb',
+                                                boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
+                                                fontSize: '1rem',
+                                                color: '#334155',
+                                                background: '#f8fafc',
+                                                outline: 'none',
+                                                transition: 'border 0.18s, box-shadow 0.18s',
+                                            }}
+                                            aria-label="Search by Title or Member Name"
                                         />
-                                    </InputGroup>
-                                </div>
-                                <div className="col-md-3">
-                                    <InputGroup>
-                                        <InputGroup.Text>
-                                            <FaSearch />
-                                        </InputGroup.Text>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Search by member name..."
-                                            value={memberSearch}
-                                            onChange={(e) => setMemberSearch(e.target.value)}
+                                    </div>
+                                    {/* Select Year */}
+                                    <div style={{ flex: 1, minWidth: 0, maxWidth: '25%', zIndex: 3 }}>
+                                        <Select
+                                            options={yearOptions}
+                                            value={selectedYear}
+                                            onChange={setSelectedYear}
+                                            placeholder={<span style={{ color: '#64748b' }}><FaRegCalendarAlt style={{ marginRight: 6, marginBottom: -2 }} />Select Year</span>}
+                                            isClearable
+                                            classNamePrefix="filter-select"
+                                            menuPortalTarget={document.body}
+                                            styles={{
+                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                            }}
                                         />
-                                    </InputGroup>
-                                </div>
-                                <div className="col-md-2">
-                                    <InputGroup>
-                                        <InputGroup.Text>
-                                            <FaCalendarAlt />
-                                        </InputGroup.Text>
-                                        <Form.Control
-                                            type="date"
-                                            value={dateSearch}
-                                            onChange={(e) => setDateSearch(e.target.value)}
+                                    </div>
+                                    {/* Category Dropdown */}
+                                    <div style={{ flex: 1, minWidth: 0, maxWidth: '25%', zIndex: 3 }}>
+                                        <Select
+                                            options={categoryOptions}
+                                            value={categoryOptions.find(opt => opt.value === categorySearch) || categoryOptions[0]}
+                                            onChange={opt => setCategorySearch(opt.value)}
+                                            placeholder={<span style={{ color: '#64748b' }}><FaChevronDown style={{ marginRight: 6, marginBottom: -2 }} />All Categories</span>}
+                                            isSearchable={false}
+                                            classNamePrefix="filter-select"
+                                            menuPortalTarget={document.body}
+                                            styles={{
+                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                            }}
                                         />
-                                    </InputGroup>
+                                    </div>
+                                    {/* Status Dropdown */}
+                                    <div style={{ flex: 1, minWidth: 0, maxWidth: '25%', zIndex: 3 }}>
+                                        <Select
+                                            options={[
+                                                { value: '', label: 'All Status' },
+                                                { value: 'pending', label: 'Pending' },
+                                                { value: 'approved', label: 'Approved' },
+                                                { value: 'rejected', label: 'Rejected' },
+                                                { value: 'revision', label: 'Revision' },
+                                            ]}
+                                            value={(() => {
+                                                const opts = [
+                                                    { value: '', label: 'All Status' },
+                                                    { value: 'pending', label: 'Pending' },
+                                                    { value: 'approved', label: 'Approved' },
+                                                    { value: 'rejected', label: 'Rejected' },
+                                                    { value: 'revision', label: 'Revision' },
+                                                ];
+                                                return opts.find(opt => opt.value === statusFilter) || opts[0];
+                                            })()}
+                                            onChange={opt => setStatusFilter(opt.value)}
+                                            placeholder={<span style={{ color: '#64748b' }}><FaChevronDown style={{ marginRight: 6, marginBottom: -2 }} />All Status</span>}
+                                            isSearchable={false}
+                                            classNamePrefix="filter-select"
+                                            menuPortalTarget={document.body}
+                                            styles={{
+                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="col-md-2">
-                                    <InputGroup>
-                                        <InputGroup.Text>
-                                            <FaFilter />
-                                        </InputGroup.Text>
-                                        <Form.Select
-                                            value={categorySearch}
-                                            onChange={(e) => setCategorySearch(e.target.value)}
-                                        >
-                                            <option value="">All Categories</option>
-                                            {categories.map((cat) => (
-                                                <option key={cat} value={cat}>{cat}</option>
-                                            ))}
-                                        </Form.Select>
-                                    </InputGroup>
-                                </div>
-                                <div className="col-md-2">
-                                    <InputGroup>
-                                        <InputGroup.Text>
-                                            <FaFilter />
-                                        </InputGroup.Text>
-                                        <Form.Select
-                                            value={statusFilter}
-                                            onChange={(e) => setStatusFilter(e.target.value)}
-                                        >
-                                            <option value="">All Status</option>
-                                            <option value="pending">Pending</option>
-                                            <option value="approved">Approved</option>
-                                            <option value="rejected">Rejected</option>
-                                            <option value="revision">Revision</option>
-                                        </Form.Select>
-                                    </InputGroup>
-                                </div>
+                                {/* Responsive: stack on small screens */}
+                                <style>{`
+                                    .filter-input {
+                                        width: 100%;
+                                        height: 40px;
+                                        padding: 0 14px 0 40px;
+                                        border-radius: 10px;
+                                        border: 1.2px solid #e5e7eb;
+                                        box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+                                        font-size: 1rem;
+                                        color: #334155;
+                                        background: #f8fafc;
+                                        outline: none;
+                                        transition: border 0.18s, box-shadow 0.18s;
+                                    }
+                                    .filter-input:focus, .filter-input:hover {
+                                        border-color: #2563eb;
+                                        box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+                                    }
+                                    .filter-select__control {
+                                        min-height: 40px !important;
+                                        height: 40px !important;
+                                        border-radius: 10px !important;
+                                        border-color: #e5e7eb !important;
+                                        box-shadow: 0 1px 4px rgba(30,41,59,0.04) !important;
+                                        background: #f8fafc !important;
+                                        font-size: 1rem !important;
+                                        outline: none !important;
+                                        transition: border 0.18s !important;
+                                    }
+                                    .filter-select__control--is-focused, .filter-select__control:hover {
+                                        border-color: #2563eb !important;
+                                        box-shadow: 0 2px 8px rgba(37,99,235,0.10) !important;
+                                    }
+                                    .filter-select__value-container {
+                                        height: 40px !important;
+                                        padding: 0 8px !important;
+                                    }
+                                    .filter-select__input {
+                                        margin: 0 !important;
+                                        padding: 0 !important;
+                                    }
+                                    .filter-select__indicators {
+                                        height: 40px !important;
+                                    }
+                                    .filter-select__placeholder {
+                                        color: #64748b !important;
+                                        font-weight: 500 !important;
+                                    }
+                                    .filter-select__dropdown-indicator {
+                                        color: #64748b !important;
+                                        padding-right: 6px !important;
+                                    }
+                                    @media (max-width: 900px) {
+                                        .filter-row { flex-wrap: wrap !important; flex-direction: row !important; gap: 10px !important; }
+                                        .filter-row > div { flex: 1 1 48% !important; max-width: 48% !important; min-width: 0 !important; }
+                                    }
+                                    @media (max-width: 600px) {
+                                        .filter-row { flex-direction: column !important; gap: 10px !important; align-items: stretch !important; }
+                                        .filter-row > div { max-width: 100% !important; min-width: 0 !important; flex: 1 1 100% !important; }
+                                    }
+                                `}</style>
                             </div>
 
                             {loading ? (
@@ -424,8 +532,8 @@ const ViewSubmission = () => {
                     <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 820, width: '95%' }}>
                         <div className="custom-modal-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
                             <h3 className="mb-0 fw-semibold" style={{ letterSpacing: '0.5px' }}>Submission Details</h3>
-                            <button onClick={() => setSelectedSubmission(null)} className="close-button" aria-label="Close submission details modal">
-                                &times;
+                            <button onClick={() => setSelectedSubmission(null)} className="close-button" aria-label="Close submission details modal" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelectedSubmission(null); }}>
+                                <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div className="custom-modal-body p-0">
@@ -493,20 +601,11 @@ const ViewSubmission = () => {
                                                     href={selectedSubmission.docsLink}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="btn btn-primary px-4 py-2 fw-bold shadow-sm"
+                                                    className="btn btn-view-file px-4 py-2 fw-bold shadow-sm"
                                                     style={{ borderRadius: 6, fontSize: '1rem' }}
                                                     aria-label="View file in new tab"
                                                 >
-                                                    View File in New Tab
-                                                </a>
-                                                <a
-                                                    href={selectedSubmission.docsLink}
-                                                    download
-                                                    className="btn btn-outline-primary px-4 py-2 fw-bold shadow-sm"
-                                                    style={{ borderRadius: 6, fontSize: '1rem' }}
-                                                    aria-label="Download file"
-                                                >
-                                                    Download File
+                                                    View File
                                                 </a>
                                             </div>
                                         </div>
