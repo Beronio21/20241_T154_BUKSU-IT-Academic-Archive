@@ -404,105 +404,148 @@ const SubmitThesis = () => {
             </div>
 
             {/* Confirmation Modal */}
-            <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered size="md">
-                <Modal.Header className="bg-primary text-white text-center">
-                    <Modal.Title className="w-100">
-                        <div className="text-center">
-                            <i className="fas fa-paper-plane confirmation-header-icon"></i>
-                            <div className="mt-2">Confirm Your Submission</div>
+            {showConfirmModal && (
+                <div className={`custom-modal show`} onClick={() => setShowConfirmModal(false)}>
+                    <div
+                        className="custom-modal-content"
+                        onClick={e => e.stopPropagation()}
+                        style={{
+                            width: '95%',
+                            maxWidth: 600,
+                            boxShadow: '0 4px 24px rgba(30,41,59,0.10)',
+                            borderRadius: 16,
+                            padding: 0,
+                            background: '#fff',
+                            margin: '0 auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <div
+                            className="custom-modal-header bg-gradient-primary text-white"
+                            style={{
+                                borderTopLeftRadius: 16,
+                                borderTopRightRadius: 16,
+                                padding: '1.25rem 2rem 1rem 2rem',
+                                borderBottom: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <h3 style={{ fontWeight: 700, fontSize: '1.35rem', letterSpacing: 0.5, margin: 0, flex: 1, textAlign: 'center' }}>
+                                Confirm Your Submission
+                            </h3>
                         </div>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="px-4 py-4">
-                    <div className="confirmation-content text-center">
-                        <div className="confirmation-icon-wrapper mb-3">
-                            <i className="fas fa-file-alt confirmation-icon"></i>
-                        </div>
-                        <h4 className="confirmation-title">Ready to Submit</h4>
-                        <p className="text-muted mb-4">Please review your submission details</p>
-
-                        <div className="submission-details-centered">
-                            <div className="detail-section">
-                                <h5 className="detail-section-title">
-                                    <i className="fas fa-heading"></i>
-                                    Research Information
-                                </h5>
-                                <div className="detail-content">
-                                    <h6 className="research-title">{formData.title}</h6>
-                                    <span className="category-badge">{formData.category}</span>
-                                </div>
+                        <div
+                            className="custom-modal-body"
+                            style={{
+                                padding: '2rem',
+                                fontSize: '1.08rem',
+                                color: '#334155',
+                                fontWeight: 500,
+                                borderRadius: 16,
+                                background: 'transparent',
+                                textAlign: 'center',
+                            }}
+                        >
+                            <div style={{ marginBottom: 18 }}>
+                                <span style={{ fontSize: 32, color: '#2563eb', display: 'inline-block', marginBottom: 8 }}>
+                                    <i className="fas fa-file-alt"></i>
+                                </span>
+                                <div style={{ fontWeight: 600, fontSize: 18, color: '#2563eb', marginBottom: 2 }}>Ready to Submit?</div>
+                                <div style={{ fontSize: 15, color: '#64748b', marginBottom: 10 }}>Please review your submission details below.</div>
                             </div>
-
-                            <div className="detail-section">
-                                <h5 className="detail-section-title">
-                                    <i className="fas fa-users"></i>
-                                    Team Members
-                                </h5>
-                                <div className="detail-content">
-                                    <div className="members-list-centered">
-                                        {formData.members.filter(m => m.trim()).map((member, index) => (
-                                            <span key={index} className="member-chip">
-                                                <i className="fas fa-user"></i>
-                                                {member}
-                                            </span>
-                                        ))}
+                            <div className="row g-4" style={{ textAlign: 'left', margin: '0 auto', maxWidth: 520 }}>
+                                <div className="col-md-6" style={{ marginBottom: 10 }}>
+                                    <strong>Title:</strong> <span style={{ color: '#222' }}>{formData.title}</span>
+                                </div>
+                                <div className="col-md-6" style={{ marginBottom: 10 }}>
+                                    <strong>Category:</strong> <span style={{ color: '#3730a3', background: '#e0e7ff', borderRadius: 12, padding: '2px 10px', fontWeight: 600, fontSize: 13, marginLeft: 4 }}>{formData.category}</span>
+                                </div>
+                                <div className="col-md-12" style={{ marginBottom: 10 }}>
+                                    <strong>Abstract:</strong>
+                                    <div style={{ color: '#475569', fontSize: 15, whiteSpace: 'pre-line', marginTop: 2, wordBreak: 'break-word', background: '#f8fafc', borderRadius: 6, padding: '12px 16px', lineHeight: 1.7 }}>
+                                        {formData.abstract || 'No abstract provided.'}
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="detail-section">
-                                <h5 className="detail-section-title">
-                                    <i className="fas fa-tags"></i>
-                                    Keywords
-                                </h5>
-                                <div className="detail-content">
-                                    <div className="keywords-list-centered">
-                                        {formData.keywords.filter(k => k.trim()).map((keyword, index) => (
-                                            <span key={index} className="keyword-chip">#{keyword}</span>
-                                        ))}
-                                    </div>
+                                <div className="col-md-12" style={{ marginBottom: 10 }}>
+                                    <strong>Members:</strong> {formData.members.filter(m => m.trim()).length > 0 ? formData.members.filter(m => m.trim()).map((member, i) => (
+                                        <span key={i} style={{ display: 'inline-block', marginRight: 8, color: '#475569', fontSize: 15 }}>{member}</span>
+                                    )) : <span style={{ color: '#64748b' }}>None</span>}
+                                </div>
+                                <div className="col-md-12" style={{ marginBottom: 10 }}>
+                                    <strong>Keywords:</strong> {formData.keywords.filter(k => k.trim()).length > 0 ? formData.keywords.filter(k => k.trim()).map((keyword, i) => (
+                                        <span key={i} style={{ display: 'inline-block', marginRight: 6, background: '#e2e8f0', color: '#334155', borderRadius: 8, fontWeight: 500, fontSize: 13, padding: '0.18em 0.9em' }}>#{keyword}</span>
+                                    )) : <span style={{ color: '#64748b' }}>None</span>}
+                                </div>
+                                <div className="col-md-12" style={{ marginBottom: 10 }}>
+                                    <strong>Document:</strong> {formData.docsLink ? (
+                                        <span style={{ color: '#22c55e', fontWeight: 600, marginLeft: 4 }}><i className="fas fa-check-circle"></i> Attached</span>
+                                    ) : (
+                                        <span style={{ color: '#f59e42', fontWeight: 600, marginLeft: 4 }}><i className="fas fa-exclamation-circle"></i> Not attached</span>
+                                    )}
                                 </div>
                             </div>
-
-                            <div className="detail-section">
-                                <h5 className="detail-section-title">
-                                    <i className="fas fa-file-pdf"></i>
-                                    Document Status
-                                </h5>
-                                <div className="detail-content">
-                                    <span className="document-status">
-                                        {formData.docsLink ? 
-                                            <span className="text-success">
-                                                <i className="fas fa-check-circle"></i> Document Attached
-                                            </span> : 
-                                            <span className="text-warning">
-                                                <i className="fas fa-exclamation-circle"></i> No document attached
-                                            </span>
-                                        }
-                                    </span>
-                                </div>
+                            <div style={{ marginTop: 18, fontSize: 14, color: '#64748b', background: '#f1f5f9', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
+                                You can track your submission status in your dashboard.
                             </div>
                         </div>
-
-                        <div className="confirmation-notice mt-4">
-                            <div className="alert alert-info" role="alert">
-                                <i className="fas fa-info-circle"></i>
-                                <span>You can track your submission status in your dashboard</span>
-                            </div>
+                        <div
+                            className="custom-modal-footer"
+                            style={{
+                                borderTop: 'none',
+                                padding: '1.25rem 2rem',
+                                borderBottomLeftRadius: 16,
+                                borderBottomRightRadius: 16,
+                                background: '#f8fafc',
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                gap: 12,
+                            }}
+                        >
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmModal(false)}
+                                style={{
+                                    minWidth: 110,
+                                    fontWeight: 600,
+                                    borderRadius: 8,
+                                    marginRight: 8,
+                                    background: '#e5e7eb',
+                                    color: '#334155',
+                                    border: 'none',
+                                    padding: '8px 0',
+                                    fontSize: 16,
+                                    cursor: 'pointer',
+                                    transition: 'background 0.2s',
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirmSubmit}
+                                style={{
+                                    minWidth: 110,
+                                    fontWeight: 600,
+                                    borderRadius: 8,
+                                    boxShadow: '0 2px 8px rgba(37,99,235,0.15)',
+                                    background: '#2563eb',
+                                    color: '#fff',
+                                    border: 'none',
+                                    padding: '8px 0',
+                                    fontSize: 16,
+                                    cursor: 'pointer',
+                                    transition: 'background 0.2s',
+                                }}
+                            >
+                                Confirm
+                            </button>
                         </div>
                     </div>
-                </Modal.Body>
-                <Modal.Footer className="bg-light justify-content-center">
-                    <Button variant="secondary" onClick={() => setShowConfirmModal(false)} className="px-4 me-3">
-                        <i className="fas fa-times"></i>
-                        <span className="ms-2">Cancel</span>
-                    </Button>
-                    <Button variant="primary" onClick={handleConfirmSubmit} className="px-4">
-                        <i className="fas fa-check"></i>
-                        <span className="ms-2">Confirm</span>
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                </div>
+            )}
 
             {/* Success Modal */}
             <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} centered>
