@@ -56,6 +56,9 @@ const CapstoneManagement2 = () => {
     const [detailsSubmission, setDetailsSubmission] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    // Add state for archive error toast
+    const [showArchiveErrorToast, setShowArchiveErrorToast] = useState(false);
+    const [archiveErrorMessage, setArchiveErrorMessage] = useState('');
 
     // Extract the active section from the current route
     const activeSection = location.pathname.split('/').pop();
@@ -238,6 +241,12 @@ const CapstoneManagement2 = () => {
     };
 
     const confirmArchive = (submission) => {
+        if (submission.status && submission.status.toLowerCase() === 'approved') {
+            setArchiveErrorMessage('Approved capstones cannot be archived directly.');
+            setShowArchiveErrorToast(true);
+            setTimeout(() => setShowArchiveErrorToast(false), 3000);
+            return;
+        }
         setSelectedSubmission(submission);
         setShowArchiveModal(true);
         setError(null);
@@ -1400,6 +1409,56 @@ const CapstoneManagement2 = () => {
                                         </div>
                                     )}
                                 </div>
+                            </div>
+                        </div>
+                    )}
+                    {showArchiveErrorToast && (
+                        <div
+                            style={{
+                                position: 'fixed',
+                                top: 24,
+                                right: 24,
+                                background: '#fff',
+                                color: '#ef4444',
+                                padding: '1rem 1.5rem 0.75rem 1.25rem',
+                                borderRadius: 10,
+                                boxShadow: '0 4px 24px rgba(239,68,68,0.10)',
+                                zIndex: 3000,
+                                minWidth: 240,
+                                maxWidth: '90vw',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                gap: 4,
+                                fontFamily: 'inherit',
+                            }}
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <div style={{ display: 'flex', width: '100%', alignItems: 'center', marginBottom: 2 }}>
+                                <span style={{ fontWeight: 700, color: '#ef4444', fontSize: '1rem', flex: 1 }}>
+                                    Archive Error
+                                </span>
+                                <button
+                                    onClick={() => setShowArchiveErrorToast(false)}
+                                    aria-label="Close"
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#64748b',
+                                        fontSize: 18,
+                                        marginLeft: 8,
+                                        cursor: 'pointer',
+                                        lineHeight: 1,
+                                    }}
+                                    tabIndex={0}
+                                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setShowArchiveErrorToast(false); }}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                            <div style={{ fontSize: '0.95rem', color: '#64748b', fontWeight: 500, marginTop: 2 }}>
+                                {archiveErrorMessage}
                             </div>
                         </div>
                     )}
