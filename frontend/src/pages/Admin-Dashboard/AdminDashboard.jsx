@@ -135,12 +135,7 @@ const AdminDashboard = () => {
                 <h1 className="h3">Welcome, {userInfo?.name}</h1>
                 <p className="text-muted">{userInfo?.role ? userInfo.role.charAt(0).toUpperCase() + userInfo.role.slice(1) : 'Administrator'}</p>
               </div>
-              <img
-                className="rounded-circle"
-                src={userInfo?.image}
-                alt={userInfo?.name}
-                style={{ width: '50px', height: '50px' }}
-              />
+
             </header>
 
             {/* Dashboard content */}
