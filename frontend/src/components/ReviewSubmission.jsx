@@ -532,9 +532,6 @@ const ViewSubmission = () => {
                     <div className="custom-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 820, width: '95%' }}>
                         <div className="custom-modal-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
                             <h3 className="mb-0 fw-semibold" style={{ letterSpacing: '0.5px' }}>Submission Details</h3>
-                            <button onClick={() => setSelectedSubmission(null)} className="close-button" aria-label="Close submission details modal" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelectedSubmission(null); }}>
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
                         <div className="custom-modal-body p-0">
                             {/* Submission Details Section */}
@@ -615,8 +612,45 @@ const ViewSubmission = () => {
                         </div>
                         <div className="custom-modal-footer d-flex justify-content-end">
                             <button 
-                                className="btn btn-secondary"
+                                className="btn btn-close-modal-square"
                                 onClick={() => setSelectedSubmission(null)}
+                                style={{
+                                  width: 96,
+                                  height: 48,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontWeight: 700,
+                                  borderRadius: 8,
+                                  background: '#2563eb',
+                                  color: '#fff',
+                                  border: 'none',
+                                  fontSize: 18,
+                                  cursor: 'pointer',
+                                  boxShadow: '0 2px 8px rgba(37,99,235,0.10)',
+                                  transition: 'background 0.2s, box-shadow 0.2s, transform 0.12s',
+                                  outline: 'none',
+                                  marginRight: 0
+                                }}
+                                onMouseEnter={e => {
+                                  e.currentTarget.style.background = '#174ea6';
+                                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(37,99,235,0.13)';
+                                  e.currentTarget.style.transform = 'scale(1.05)';
+                                }}
+                                onMouseLeave={e => {
+                                  e.currentTarget.style.background = '#2563eb';
+                                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(37,99,235,0.10)';
+                                  e.currentTarget.style.transform = 'none';
+                                }}
+                                onFocus={e => {
+                                  e.currentTarget.style.outline = '2px solid #174ea6';
+                                  e.currentTarget.style.background = '#174ea6';
+                                }}
+                                onBlur={e => {
+                                  e.currentTarget.style.outline = 'none';
+                                  e.currentTarget.style.background = '#2563eb';
+                                }}
+                                aria-label="Close submission details modal"
                             >
                                 Close
                             </button>
