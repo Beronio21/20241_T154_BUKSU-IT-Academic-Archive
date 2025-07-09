@@ -14,6 +14,8 @@ import { Button, Container, Row, Col, Table, Alert, Dropdown, Modal } from "reac
 import "./StudentDashboard.css";
 import axios from 'axios';
 import Dashboard from './Dashboard';
+import Select from 'react-select';
+import { FaSearch, FaChevronDown, FaRegCalendarAlt } from 'react-icons/fa';
 
 const StudentDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -35,6 +37,7 @@ const StudentDashboard = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState(['IoT', 'AI', 'ML', 'Sound', 'Camera']);
+  const [selectedYear, setSelectedYear] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -121,13 +124,24 @@ const StudentDashboard = () => {
     return matchesTitle && matchesDate && matchesCategory && matchesStatus;
   });
 
+  // Generate year options (e.g., from 2015 to current year)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 10 }, (_, i) => {
+    const year = currentYear - i;
+    return { value: year, label: year.toString() };
+  });
+  const categoryOptions = [
+    { value: '', label: 'All Categories' },
+    ...categories.map(cat => ({ value: cat, label: cat }))
+  ];
+
   // Filter capstones based on search term, date, and category
   const filteredCapstones = approvedCapstones.filter(capstone => {
     const matchesTitle = capstone.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDate = selectedDate ? new Date(capstone.createdAt).toLocaleDateString() === new Date(selectedDate).toLocaleDateString() : true;
+    const matchesYear = selectedYear ? new Date(capstone.createdAt).getFullYear() === selectedYear.value : true;
     const matchesCategory = selectedCategory ? capstone.category === selectedCategory : true;
 
-    return matchesTitle && matchesDate && matchesCategory;
+    return matchesTitle && matchesYear && matchesCategory;
   });
 
   const getStatusColor = (status) => {
@@ -195,54 +209,122 @@ const StudentDashboard = () => {
                   
                   {/* Search and Filter Section with improved styling */}
                   <div className="search-filter" style={{
-                    background: '#ffffff',
-                    padding: '20px',
+                    background: '#fff',
+                    padding: '16px 18px',
                     borderRadius: '12px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                    marginBottom: 0,
+                    width: '100%',
+                    maxWidth: 1200,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
                   }}>
-                    <div className="row g-3">
-                      <div className="col-12">
-                        <div className="input-group">
-                          <span className="input-group-text" style={{ background: '#f8f9fa' }}>
-                            <i className="fas fa-search"></i>
-                          </span>
+                    <div
+                      className="filter-row"
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 12,
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                      }}
+                    >
+                      {/* Search Bar */}
+                      <div style={{ flex: '1 1 60%', minWidth: 200, maxWidth: '60%' }}>
+                        <div style={{ position: 'relative', width: '100%' }}>
                           <input
                             type="text"
                             placeholder="Search for research papers..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="form-control"
-                            style={{ 
-                              padding: '12px',
+                            onChange={e => setSearchTerm(e.target.value)}
+                            style={{
+                              width: '100%',
+                              height: 36,
+                              padding: '0 14px 0 38px',
+                              borderRadius: 8,
+                              border: '1.2px solid #e5e7eb',
+                              boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
                               fontSize: '1rem',
-                              border: '1px solid #dee2e6'
+                              color: '#334155',
+                              background: '#f8fafc',
+                              outline: 'none',
+                              transition: 'border 0.18s',
                             }}
                           />
+                          <FaSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#64748b', fontSize: 16 }} />
                         </div>
                       </div>
-                      <div className="col-md-6">
-                        <input
-                          type="date"
-                          value={selectedDate}
-                          onChange={(e) => setSelectedDate(e.target.value)}
-                          className="form-control"
-                          style={{ padding: '12px' }}
+                      {/* Year Selector */}
+                      <div style={{ flex: '0 1 180px', minWidth: 120, maxWidth: 180 }}>
+                        <Select
+                          options={yearOptions}
+                          value={selectedYear}
+                          onChange={setSelectedYear}
+                          placeholder={<span style={{ color: '#64748b' }}><FaRegCalendarAlt style={{ marginRight: 6, marginBottom: -2 }} />Select Year</span>}
+                          isClearable
+                          styles={{
+                            control: (base, state) => ({
+                              ...base,
+                              minHeight: 36,
+                              height: 36,
+                              borderRadius: 8,
+                              borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
+                              boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
+                              background: '#f8fafc',
+                              fontSize: '1rem',
+                              paddingLeft: 2,
+                              outline: 'none',
+                              transition: 'border 0.18s',
+                            }),
+                            valueContainer: base => ({ ...base, height: 36, padding: '0 8px' }),
+                            input: base => ({ ...base, margin: 0, padding: 0 }),
+                            indicatorsContainer: base => ({ ...base, height: 36 }),
+                            placeholder: base => ({ ...base, color: '#64748b', fontWeight: 500 }),
+                            dropdownIndicator: base => ({ ...base, color: '#64748b', paddingRight: 6 }),
+                          }}
+                          components={{ DropdownIndicator: props => <FaChevronDown style={{ color: '#64748b', fontSize: 14, marginRight: 2 }} /> }}
                         />
                       </div>
-                      <div className="col-md-6">
-                        <select
-                          value={selectedCategory}
-                          onChange={(e) => setSelectedCategory(e.target.value)}
-                          className="form-control"
-                          style={{ padding: '12px' }}
-                        >
-                          <option value="">All Categories</option>
-                          {categories.map((category, index) => (
-                            <option key={index} value={category}>{category}</option>
-                          ))}
-                        </select>
+                      {/* Category Dropdown */}
+                      <div style={{ flex: '0 1 180px', minWidth: 120, maxWidth: 180 }}>
+                        <Select
+                          options={categoryOptions}
+                          value={categoryOptions.find(opt => opt.value === selectedCategory) || categoryOptions[0]}
+                          onChange={opt => setSelectedCategory(opt.value)}
+                          placeholder={<span style={{ color: '#64748b' }}><FaChevronDown style={{ marginRight: 6, marginBottom: -2 }} />All Categories</span>}
+                          isSearchable={false}
+                          styles={{
+                            control: (base, state) => ({
+                              ...base,
+                              minHeight: 36,
+                              height: 36,
+                              borderRadius: 8,
+                              borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
+                              boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
+                              background: '#f8fafc',
+                              fontSize: '1rem',
+                              paddingLeft: 2,
+                              outline: 'none',
+                              transition: 'border 0.18s',
+                            }),
+                            valueContainer: base => ({ ...base, height: 36, padding: '0 8px' }),
+                            input: base => ({ ...base, margin: 0, padding: 0 }),
+                            indicatorsContainer: base => ({ ...base, height: 36 }),
+                            placeholder: base => ({ ...base, color: '#64748b', fontWeight: 500 }),
+                            dropdownIndicator: base => ({ ...base, color: '#64748b', paddingRight: 6 }),
+                          }}
+                          components={{ DropdownIndicator: props => <FaChevronDown style={{ color: '#64748b', fontSize: 14, marginRight: 2 }} /> }}
+                        />
                       </div>
                     </div>
+                    {/* Responsive: stack on small screens */}
+                    <style>{`
+                      @media (max-width: 900px) {
+                        .filter-row { flex-direction: column !important; gap: 10px !important; align-items: stretch !important; }
+                        .filter-row > div { max-width: 100% !important; min-width: 0 !important; flex: 1 1 100% !important; }
+                      }
+                    `}</style>
                   </div>
                 </div>
 
@@ -251,18 +333,34 @@ const StudentDashboard = () => {
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
                   gap: '25px',
-                  padding: '10px'
+                  padding: '10px',
+                  minHeight: 400, // Ensures consistent height
+                  position: 'relative',
+                  background: '#fff',
                 }}>
                   {filteredCapstones.length === 0 ? (
                     <div className="no-results" style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       textAlign: 'center',
-                      padding: '40px',
+                      padding: '40px 20px',
+                      minHeight: 320,
+                      width: '100%',
                       gridColumn: '1 / -1',
+                      color: '#6c757d',
                       background: '#f8f9fa',
-                      borderRadius: '12px'
+                      borderRadius: '12px',
+                      boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
                     }}>
-                      <i className="fas fa-search" style={{ fontSize: '2rem', color: '#6c757d', marginBottom: '15px' }}></i>
-                      <p style={{ fontSize: '1.1rem', color: '#6c757d', margin: '0' }}>No research papers found</p>
+                      <i className="fas fa-search" style={{ fontSize: '2.2rem', color: '#b0b6be', marginBottom: '18px' }}></i>
+                      <div style={{ fontSize: '1.13rem', color: '#6c757d', fontWeight: 500, marginBottom: 4 }}>
+                        No research papers found.
+                      </div>
+                      <div style={{ fontSize: '1rem', color: '#8a94a6' }}>
+                        Try adjusting your filters.
+                      </div>
                     </div>
                   ) : (
                     filteredCapstones.map((capstone) => (
@@ -570,7 +668,18 @@ const StudentDashboard = () => {
                       {/* Abstract */}
                       <div style={{ marginBottom: 18 }}>
                         <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Abstract</div>
-                        <div style={{ color: '#475569', fontSize: 15, whiteSpace: 'pre-line', wordBreak: 'break-word', background: '#f8fafc', borderRadius: 8, padding: '16px 18px', lineHeight: 1.7, boxShadow: '0 2px 8px rgba(30,41,59,0.04)' }}>{selectedThesis.abstract || 'No abstract provided.'}</div>
+                        <div style={{
+                          color: '#475569',
+                          fontSize: 15,
+                          whiteSpace: 'pre-line',
+                          wordBreak: 'break-word',
+                          background: '#f8fafc',
+                          borderRadius: 8,
+                          padding: '16px 18px',
+                          lineHeight: 1.6,
+                          boxShadow: '0 2px 8px rgba(30,41,59,0.04)',
+                          textAlign: 'justify', // Justified alignment for clean edges
+                        }}>{selectedThesis.abstract || 'No abstract provided.'}</div>
                       </div>
                       {/* Members */}
                       <div style={{ marginBottom: 18 }}>
@@ -667,7 +776,8 @@ const StudentDashboard = () => {
         marginLeft: "250px", 
         marginTop: "60px",
         backgroundColor: "#ffffff",
-        overflow: "auto"
+        overflowY: "auto",
+        minHeight: 0,
       }}>
         <Routes>
           <Route path="/dashboard" element={renderContent()} />
