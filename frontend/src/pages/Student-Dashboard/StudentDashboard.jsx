@@ -206,11 +206,10 @@ const StudentDashboard = () => {
                     fontSize: '1.1rem',
                     marginBottom: '20px' 
                   }}>Explore approved research papers and capstone projects</p>
-                  
-                  {/* Search and Filter Section with improved styling */}
+                  {/* Search and Filter Bar */}
                   <div className="search-filter" style={{
                     background: '#fff',
-                    padding: '16px 18px',
+                    padding: '14px 25px',
                     borderRadius: '12px',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                     marginBottom: 0,
@@ -223,27 +222,27 @@ const StudentDashboard = () => {
                       className="filter-row"
                       style={{
                         display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 12,
+                        flexWrap: 'nowrap',
+                        gap: 14,
                         alignItems: 'center',
-                        justifyContent: 'space-between',
                         width: '100%',
+                        minWidth: 0,
                       }}
                     >
-                      {/* Search Bar */}
-                      <div style={{ flex: '1 1 60%', minWidth: 200, maxWidth: '60%' }}>
+                      {/* Search Bar - Stretches to right before dropdowns */}
+                      <div style={{ flex: '1 1 auto', minWidth: 180, maxWidth: '100%', display: 'flex', alignItems: 'center', marginRight: 0 }}>
                         <div style={{ position: 'relative', width: '100%' }}>
                           <input
                             type="text"
-                            placeholder="Search for research papers..."
+                            placeholder="Search by title or author"
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             style={{
                               width: '100%',
-                              height: 36,
+                              height: 44,
                               padding: '0 14px 0 38px',
-                              borderRadius: 8,
-                              border: '1.2px solid #e5e7eb',
+                              borderRadius: 10,
+                              border: '1.5px solid #e5e7eb',
                               boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
                               fontSize: '1rem',
                               color: '#334155',
@@ -252,114 +251,133 @@ const StudentDashboard = () => {
                               transition: 'border 0.18s',
                             }}
                           />
-                          <FaSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#64748b', fontSize: 16 }} />
+                          <FaSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#64748b', fontSize: 18 }} />
                         </div>
                       </div>
-                      {/* Year Selector */}
-                      <div style={{ flex: '0 1 180px', minWidth: 120, maxWidth: 180 }}>
-                        <Select
-                          options={yearOptions}
-                          value={selectedYear}
-                          onChange={setSelectedYear}
-                          placeholder={<span style={{ color: '#64748b' }}><FaRegCalendarAlt style={{ marginRight: 6, marginBottom: -2 }} />Select Year</span>}
-                          isClearable
-                          styles={{
-                            control: (base, state) => ({
-                              ...base,
-                              minHeight: 36,
-                              height: 36,
-                              borderRadius: 8,
-                              borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
-                              boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
-                              background: '#f8fafc',
-                              fontSize: '1rem',
-                              paddingLeft: 2,
-                              outline: 'none',
-                              transition: 'border 0.18s',
-                            }),
-                            valueContainer: base => ({ ...base, height: 36, padding: '0 8px' }),
-                            input: base => ({ ...base, margin: 0, padding: 0 }),
-                            indicatorsContainer: base => ({ ...base, height: 36 }),
-                            placeholder: base => ({ ...base, color: '#64748b', fontWeight: 500 }),
-                            dropdownIndicator: base => ({ ...base, color: '#64748b', paddingRight: 6 }),
-                          }}
-                          components={{ DropdownIndicator: props => <FaChevronDown style={{ color: '#64748b', fontSize: 14, marginRight: 2 }} /> }}
-                        />
-                      </div>
-                      {/* Category Dropdown */}
-                      <div style={{ flex: '0 1 180px', minWidth: 120, maxWidth: 180 }}>
-                        <Select
-                          options={categoryOptions}
-                          value={categoryOptions.find(opt => opt.value === selectedCategory) || categoryOptions[0]}
-                          onChange={opt => setSelectedCategory(opt.value)}
-                          placeholder={<span style={{ color: '#64748b' }}><FaChevronDown style={{ marginRight: 6, marginBottom: -2 }} />All Categories</span>}
-                          isSearchable={false}
-                          styles={{
-                            control: (base, state) => ({
-                              ...base,
-                              minHeight: 36,
-                              height: 36,
-                              borderRadius: 8,
-                              borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
-                              boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
-                              background: '#f8fafc',
-                              fontSize: '1rem',
-                              paddingLeft: 2,
-                              outline: 'none',
-                              transition: 'border 0.18s',
-                            }),
-                            valueContainer: base => ({ ...base, height: 36, padding: '0 8px' }),
-                            input: base => ({ ...base, margin: 0, padding: 0 }),
-                            indicatorsContainer: base => ({ ...base, height: 36 }),
-                            placeholder: base => ({ ...base, color: '#64748b', fontWeight: 500 }),
-                            dropdownIndicator: base => ({ ...base, color: '#64748b', paddingRight: 6 }),
-                          }}
-                          components={{ DropdownIndicator: props => <FaChevronDown style={{ color: '#64748b', fontSize: 14, marginRight: 2 }} /> }}
-                        />
+                      {/* Dropdowns - right aligned, tight spacing */}
+                      <div style={{ display: 'flex', flex: '0 0 auto', gap: 8, alignItems: 'center', minWidth: 0 }}>
+                        <div style={{ width: 160, minWidth: 120, maxWidth: 200, display: 'flex', alignItems: 'center' }}>
+                          <Select
+                            options={yearOptions}
+                            value={selectedYear}
+                            onChange={setSelectedYear}
+                            placeholder={<span style={{ color: '#64748b' }}><FaRegCalendarAlt style={{ marginRight: 6, marginBottom: -2 }} />Select Year</span>}
+                            isClearable
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                minHeight: 44,
+                                height: 44,
+                                borderRadius: 10,
+                                borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
+                                boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
+                                background: '#f8fafc',
+                                fontSize: '1rem',
+                                paddingLeft: 2,
+                                outline: 'none',
+                                transition: 'border 0.18s',
+                              }),
+                              valueContainer: base => ({ ...base, height: 44, padding: '0 8px' }),
+                              input: base => ({ ...base, margin: 0, padding: 0 }),
+                              indicatorsContainer: base => ({ ...base, height: 44 }),
+                              placeholder: base => ({ ...base, color: '#64748b', fontWeight: 500 }),
+                              dropdownIndicator: base => ({ ...base, color: '#64748b', paddingRight: 6 }),
+                            }}
+                            components={{ DropdownIndicator: props => <FaChevronDown style={{ color: '#64748b', fontSize: 16, marginRight: 2 }} /> }}
+                          />
+                        </div>
+                        <div style={{ width: 160, minWidth: 120, maxWidth: 200, display: 'flex', alignItems: 'center' }}>
+                          <Select
+                            options={categoryOptions}
+                            value={categoryOptions.find(opt => opt.value === selectedCategory) || categoryOptions[0]}
+                            onChange={opt => setSelectedCategory(opt.value)}
+                            placeholder={<span style={{ color: '#64748b' }}>All Categories <FaChevronDown style={{ marginLeft: 6, marginBottom: -2 }} /></span>}
+                            isSearchable={false}
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                minHeight: 44,
+                                height: 44,
+                                borderRadius: 10,
+                                borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
+                                boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
+                                background: '#f8fafc',
+                                fontSize: '1rem',
+                                paddingLeft: 2,
+                                outline: 'none',
+                                transition: 'border 0.18s',
+                              }),
+                              valueContainer: base => ({ ...base, height: 44, padding: '0 8px' }),
+                              input: base => ({ ...base, margin: 0, padding: 0 }),
+                              indicatorsContainer: base => ({ ...base, height: 44 }),
+                              placeholder: base => ({ ...base, color: '#64748b', fontWeight: 500 }),
+                              dropdownIndicator: base => ({ ...base, color: '#64748b', paddingRight: 6 }),
+                            }}
+                            components={{ DropdownIndicator: props => <FaChevronDown style={{ color: '#64748b', fontSize: 16, marginRight: 2 }} /> }}
+                          />
+                        </div>
                       </div>
                     </div>
                     {/* Responsive: stack on small screens */}
                     <style>{`
                       @media (max-width: 900px) {
                         .filter-row { flex-direction: column !important; gap: 10px !important; align-items: stretch !important; }
-                        .filter-row > div { max-width: 100% !important; min-width: 0 !important; flex: 1 1 100% !important; }
+                        .filter-row > div { max-width: 100% !important; min-width: 0 !important; flex: 1 1 100% !important; justify-content: flex-start !important; }
+                      }
+                      @media (max-width: 600px) {
+                        .search-filter { padding: 10px 4vw !important; }
+                        .filter-row { gap: 7px !important; }
                       }
                     `}</style>
                   </div>
                 </div>
-
-                {/* Cards Grid */}
-                <div className="card-container" style={{ 
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                  gap: '25px',
-                  padding: '10px',
-                  minHeight: 400, // Ensures consistent height
-                  position: 'relative',
-                  background: '#fff',
-                }}>
+                {/* Results Section: maintain grid height, show message if empty */}
+                <div className="results-section" style={{
+                   minHeight: '320px',
+                   width: '100%',
+                   maxWidth: 1200,
+                   margin: '0 auto',
+                   padding: '0 0 24px 0',
+                   display: 'grid',
+                   gridTemplateColumns: 'repeat(3, minmax(340px, 1fr))',
+                   gap: '32px',
+                   alignItems: 'stretch',
+                   justifyItems: 'center',
+                   position: 'relative',
+                   background: 'none',
+                   boxSizing: 'border-box',
+                 }}>
                   {filteredCapstones.length === 0 ? (
-                    <div className="no-results" style={{
+                    <div style={{
+                      gridColumn: '1 / -1',
+                      width: '100%',
                       display: 'flex',
-                      flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      textAlign: 'center',
-                      padding: '40px 20px',
-                      minHeight: 320,
-                      width: '100%',
-                      gridColumn: '1 / -1',
-                      color: '#6c757d',
-                      background: '#f8f9fa',
-                      borderRadius: '12px',
-                      boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
+                      minHeight: '220px',
+                      margin: '0',
+                      padding: '0',
+                      maxWidth: 1200,
                     }}>
-                      <i className="fas fa-search" style={{ fontSize: '2.2rem', color: '#b0b6be', marginBottom: '18px' }}></i>
-                      <div style={{ fontSize: '1.13rem', color: '#6c757d', fontWeight: 500, marginBottom: 4 }}>
-                        No research papers found.
-                      </div>
-                      <div style={{ fontSize: '1rem', color: '#8a94a6' }}>
-                        Try adjusting your filters.
+                      <div style={{
+                        background: '#f8fafc',
+                        border: '1.5px solid #e5e7eb',
+                        borderRadius: '12px',
+                        padding: '28px 24px',
+                        color: '#64748b',
+                        fontSize: '1.13rem',
+                        fontWeight: 500,
+                        boxShadow: '0 2px 8px rgba(30,41,59,0.04)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        margin: '0 auto',
+                        minWidth: 320,
+                        maxWidth: 420,
+                        textAlign: 'center',
+                      }}>
+                        <i className="fas fa-search" style={{ fontSize: 26, marginRight: 8, color: '#94a3b8' }}></i>
+                        No research papers found
                       </div>
                     </div>
                   ) : (
@@ -375,27 +393,32 @@ const StudentDashboard = () => {
                           transition: 'box-shadow 0.18s, transform 0.18s',
                           cursor: 'pointer',
                           overflow: 'hidden',
-                          minHeight: 320,
+                          minHeight: 360,
+                          maxWidth: 370,
                           width: '100%',
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'space-between',
                           padding: '28px 26px 0 26px',
                           position: 'relative',
+                          boxSizing: 'border-box',
+                          border: '1.5px solid #e5e7eb',
                         }}
                         onMouseEnter={e => {
                           e.currentTarget.style.boxShadow = '0 14px 36px rgba(30,41,59,0.16)';
                           e.currentTarget.style.transform = 'translateY(-3px) scale(1.012)';
+                          e.currentTarget.style.borderColor = '#2563eb';
                         }}
                         onMouseLeave={e => {
                           e.currentTarget.style.boxShadow = '0 6px 24px rgba(30,41,59,0.12)';
                           e.currentTarget.style.transform = 'none';
+                          e.currentTarget.style.borderColor = '#e5e7eb';
                         }}
                       >
                         {/* Title */}
                         <div style={{ marginBottom: 12 }}>
                           <span style={{ fontWeight: 700, fontSize: 15, color: '#2563eb', letterSpacing: 0.1, display: 'block', marginBottom: 2 }}>Title:</span>
-                          <div style={{ fontWeight: 800, fontSize: 20, color: '#1e293b', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.25 }}>{capstone.title}</div>
+                          <div style={{ fontWeight: 800, fontSize: 20, color: '#1e293b', wordBreak: 'break-word', lineHeight: 1.25, maxWidth: '100%' }}>{capstone.title}</div>
                         </div>
                         {/* Abstract */}
                         <div style={{ marginBottom: 14, position: 'relative' }}>
@@ -414,6 +437,7 @@ const StudentDashboard = () => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             position: 'relative',
+                            maxWidth: '100%',
                           }} title={capstone.abstract}>
                             {capstone.abstract}
                             {/* Read more icon (tooltip on hover) */}
@@ -427,7 +451,7 @@ const StudentDashboard = () => {
                         {/* Keywords */}
                         <div style={{ marginBottom: 14 }}>
                           <span style={{ fontWeight: 700, fontSize: 15, color: '#2563eb', letterSpacing: 0.1, display: 'block', marginBottom: 2 }}>Keywords:</span>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginTop: 2, alignItems: 'center' }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginTop: 2, alignItems: 'center', maxWidth: '100%' }}>
                             {(capstone.keywords.slice(0, 3)).map((keyword, index) => (
                               <span key={index} style={{
                                 backgroundColor: '#e0e7ff',
@@ -439,6 +463,10 @@ const StudentDashboard = () => {
                                 letterSpacing: 0.1,
                                 marginBottom: 2,
                                 whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: 110,
+                                display: 'inline-block',
                               }}>{keyword}</span>
                             ))}
                             {capstone.keywords.length > 3 && (
@@ -455,10 +483,61 @@ const StudentDashboard = () => {
                                   cursor: 'pointer',
                                   whiteSpace: 'nowrap',
                                   position: 'relative',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  maxWidth: 110,
+                                  display: 'inline-block',
                                 }}
                                 title={capstone.keywords.join(', ')}
                               >
                                 + {capstone.keywords.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {/* Members */}
+                        <div style={{ marginBottom: 14 }}>
+                          <span style={{ fontWeight: 700, fontSize: 15, color: '#2563eb', letterSpacing: 0.1, display: 'block', marginBottom: 2 }}>Members:</span>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginTop: 2, alignItems: 'center', maxWidth: '100%' }}>
+                            {capstone.members && capstone.members.length > 0 ? capstone.members.slice(0, 3).map((member, i) => (
+                              <span key={i} style={{
+                                backgroundColor: '#e0f2fe',
+                                color: '#0369a1',
+                                padding: '4px 12px',
+                                borderRadius: 12,
+                                fontSize: 13,
+                                fontWeight: 600,
+                                letterSpacing: 0.1,
+                                marginBottom: 2,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: 110,
+                                display: 'inline-block',
+                              }}>{member}</span>
+                            )) : <span style={{ color: '#64748b' }}>None</span>}
+                            {capstone.members && capstone.members.length > 3 && (
+                              <span
+                                style={{
+                                  backgroundColor: '#e0f2fe',
+                                  color: '#64748b',
+                                  padding: '4px 12px',
+                                  borderRadius: 12,
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  letterSpacing: 0.1,
+                                  marginBottom: 2,
+                                  cursor: 'pointer',
+                                  whiteSpace: 'nowrap',
+                                  position: 'relative',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  maxWidth: 110,
+                                  display: 'inline-block',
+                                }}
+                                title={capstone.members.join(', ')}
+                              >
+                                + {capstone.members.length - 3} more
                               </span>
                             )}
                           </div>

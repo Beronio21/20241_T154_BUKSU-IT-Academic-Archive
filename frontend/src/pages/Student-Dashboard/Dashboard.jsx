@@ -91,15 +91,69 @@ const Dashboard = () => {
     ];
 
     if (loading) {
-        return <div className="loading">Loading statistics...</div>;
+        return <div className="no-results" style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: 0,
+            margin: 0,
+            minHeight: 0,
+            height: '38px',
+            width: '100%',
+            background: 'none',
+            borderRadius: 0,
+            boxShadow: 'none',
+        }}>
+            <i className="fas fa-search" style={{ fontSize: '1.1rem', color: '#b0b6be', marginRight: '8px' }}></i>
+            <span style={{ fontSize: '1rem', color: '#6c757d', fontWeight: 500 }}>
+                Loading statistics...
+            </span>
+        </div>;
     }
 
     if (error) {
-        return <div className="error">{error}</div>;
+        return <div className="no-results" style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: 0,
+            margin: 0,
+            minHeight: 0,
+            height: '38px',
+            width: '100%',
+            background: 'none',
+            borderRadius: 0,
+            boxShadow: 'none',
+        }}>
+            <i className="fas fa-search" style={{ fontSize: '1.1rem', color: '#b0b6be', marginRight: '8px' }}></i>
+            <span style={{ fontSize: '1rem', color: '#6c757d', fontWeight: 500 }}>
+                {error}
+            </span>
+        </div>;
     }
 
     if (!statistics) {
-        return <div className="error">No statistics available</div>;
+        return <div className="no-results" style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: 0,
+            margin: 0,
+            minHeight: 0,
+            height: '38px',
+            width: '100%',
+            background: 'none',
+            borderRadius: 0,
+            boxShadow: 'none',
+        }}>
+            <i className="fas fa-search" style={{ fontSize: '1.1rem', color: '#b0b6be', marginRight: '8px' }}></i>
+            <span style={{ fontSize: '1rem', color: '#6c757d', fontWeight: 500 }}>
+                No statistics available
+            </span>
+        </div>;
     }
 
     return (
