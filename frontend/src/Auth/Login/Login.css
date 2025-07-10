@@ -708,3 +708,28 @@ body, html {
     transform: translateY(0);
   }
 }
+
+.capstone-card {
+  width: 480px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (max-width: 992px) {
+  .capstone-card {
+    width: 100%;
+    min-width: 0;
+    height: 400px;
+  }
+}
+
+@media (max-width: 600px) {
+  .capstone-card {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 320px;
+  }
+}

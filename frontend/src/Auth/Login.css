@@ -1,0 +1,46 @@
+.capstone-card {
+  width: 480px;
+  height: 400px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.capstone-card h3 {
+  font-size: 1.2rem;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  margin-bottom: 15px;
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.capstone-card p {
+  font-size: 0.95rem;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 992px) {
+  .capstone-card {
+    width: 100%;
+    min-width: 0;
+    height: 400px;
+  }
+}
+
+@media (max-width: 600px) {
+  .capstone-card {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 320px;
+  }
+} 

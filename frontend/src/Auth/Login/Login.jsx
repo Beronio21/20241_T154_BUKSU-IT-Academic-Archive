@@ -27,6 +27,7 @@ const GoogleLogin = () => {
     const [selectedThesis, setSelectedThesis] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const navigate = useNavigate();
+    const [contactSubmitted, setContactSubmitted] = useState(false);
 
     useEffect(() => {
         document.body.classList.add("login-page");
@@ -189,7 +190,7 @@ const GoogleLogin = () => {
                         <a href="#home" className="nav-link" onClick={() => setShowProjects(false)}>Home</a>
                         <a href="#browse" className="nav-link" onClick={() => setShowProjects(true)}>Browse Projects</a>
                         <a href="#about" className="nav-link" onClick={() => setShowProjects(false)}>About</a>
-                        <a href="#contact" className="nav-link" onClick={() => setShowProjects(false)}>Contact</a>
+                        <a href="#contact" className="nav-link" onClick={() => navigate('/contact')}>Contact</a>
                         <button 
                             className="nav-login-btn"
                             onClick={() => setShowLogin(!showLogin)}
@@ -212,7 +213,6 @@ const GoogleLogin = () => {
                                         <p className="hero-subtitle">
                                             Access a collection of approved and completed capstone projects from Bukidnon State University students.
                                         </p>
-                                        
                                         {/* Search Bar */}
                                         <div className="search-container">
                                             <div className="search-box">
@@ -226,7 +226,6 @@ const GoogleLogin = () => {
                                                 />
                                             </div>
                                         </div>
-                                        
                                         {/* CTA Buttons */}
                                         <div className="hero-buttons">
                                             <button 
@@ -241,84 +240,42 @@ const GoogleLogin = () => {
                                         </div>
                                     </div>
                                 </section>
-
-                                {/* About Section */}
-                                <section className="about-section">
-                                    <div className="about-container">
-                                        <h2 className="section-title">What is the Capstone Archive?</h2>
-                                        <p className="about-text">
-                                            The BukSU Capstone Archive is a digital repository of approved capstone projects from students across all programs. 
-                                            This platform serves as a reference for current students, a recognition of student work, and a valuable academic resource.
-                                        </p>
-                                    </div>
-                                </section>
-
-                                {/* Browse by Program Section */}
-                                <section className="programs-section">
-                                    <div className="programs-container">
-                                        <h2 className="section-title">Browse by Program or Department</h2>
-                                        <div className="programs-grid">
-                                            <div className="program-card">
-                                                <div className="program-icon">👨‍💻</div>
-                                                <h3>Information Technology</h3>
-                                                <p>Software development, web applications, and IT solutions</p>
-                                            </div>
-                                            <div className="program-card">
-                                                <div className="program-icon">🧪</div>
-                                                <h3>Science and Math</h3>
-                                                <p>Research studies, mathematical models, and scientific innovations</p>
-                                            </div>
-                                            <div className="program-card">
-                                                <div className="program-icon">🏫</div>
-                                                <h3>Education</h3>
-                                                <p>Teaching methodologies, educational tools, and learning systems</p>
-                                            </div>
-                                            <div className="program-card">
-                                                <div className="program-icon">📊</div>
-                                                <h3>Business Administration</h3>
-                                                <p>Business strategies, market analysis, and management systems</p>
-                                            </div>
-                                            <div className="program-card">
-                                                <div className="program-icon">🎨</div>
-                                                <h3>Arts & Humanities</h3>
-                                                <p>Creative projects, cultural studies, and artistic innovations</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
+                                {/* About and Contact sections are now only on their own pages */}
                             </>
                         ) : (
                             /* Browse Projects Section */
                             <div className="student-dashboard pt-0">
                                 {/* Dashboard Header */}
                                 <div className="dashboard-header mb-4 sticky-search-bar">
-                                    <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 6 }}>Browse Capstone Projects</h2>
-                                    <p style={{ fontSize: '1rem', color: '#718096', marginBottom: 12 }}>Discover approved research and capstone works from BukSU students</p>
+                                    <h2 style={{ fontSize: '1.08rem', fontWeight: 700, marginBottom: 3, letterSpacing: '0.01em' }}>Browse Projects</h2>
+                                    <p style={{ fontSize: '0.95rem', color: '#718096', marginBottom: 8 }}>Approved BukSU capstones</p>
                                     {/* Search and Filter Section */}
                                     <div className="search-filter sticky-search-filter">
-                                        <div className="row g-3 align-items-center">
+                                        <div className="row g-2 align-items-center">
                                             <div className="col-12 col-md-5">
                                                 <div className="input-group">
-                                                    <span className="input-group-text" style={{ background: '#f8f9fa' }}>
+                                                    <span className="input-group-text" style={{ background: '#f8f9fa', fontSize: '0.95rem' }}>
                                                         <i className="fas fa-search"></i>
                                                     </span>
                                                     <input
                                                         type="text"
-                                                        placeholder="Search..."
+                                                        placeholder="Search"
                                                         value={searchQuery}
                                                         onChange={(e) => setSearchQuery(e.target.value)}
                                                         className="form-control"
-                                                        style={{ padding: '10px', fontSize: '0.98rem', border: '1px solid #dee2e6' }}
+                                                        style={{ padding: '8px', fontSize: '0.95rem', border: '1px solid #dee2e6' }}
                                                     />
                                                 </div>
                                             </div>
                                             <div className="col-6 col-md-3">
+                                               
                                                 <input
+                                                    id="dateInput"
                                                     type="date"
                                                     value={selectedDate}
                                                     onChange={(e) => setSelectedDate(e.target.value)}
                                                     className="form-control"
-                                                    style={{ padding: '10px', fontSize: '0.98rem' }}
+                                                    style={{ padding: '8px', fontSize: '0.95rem' }}
                                                 />
                                             </div>
                                             <div className="col-6 col-md-4">
@@ -326,7 +283,7 @@ const GoogleLogin = () => {
                                                     value={selectedCategory}
                                                     onChange={(e) => setSelectedCategory(e.target.value)}
                                                     className="form-control"
-                                                    style={{ padding: '10px', fontSize: '0.98rem' }}
+                                                    style={{ padding: '8px', fontSize: '0.95rem' }}
                                                 >
                                                     <option value="">All Categories</option>
                                                     {categories.map((category, index) => (
@@ -367,16 +324,17 @@ const GoogleLogin = () => {
                                                         position: 'relative',
                                                         overflow: 'hidden'
                                                     }}>
-                                                        <div style={{
-                                                            position: 'absolute',
-                                                            top: '0',
-                                                            right: '0',
-                                                            width: '60px',
-                                                            height: '60px',
-                                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                                                            borderRadius: '0 12px 0 60px'
-                                                        }}></div>
-                                                        <h3>{capstone.title}</h3>
+                                                        <h3 style={{
+                                                            fontSize: '1.2rem',
+                                                            margin: 0,
+                                                            fontWeight: 600,
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            lineClamp: 2
+                                                        }}>{capstone.title}</h3>
                                                     </div>
 
                                                     {/* Abstract with better typography */}
@@ -385,11 +343,13 @@ const GoogleLogin = () => {
                                                             fontSize: '0.95rem',
                                                             color: '#4a5568',
                                                             lineHeight: '1.6',
-                                                            margin: '0',
+                                                            margin: 0,
                                                             display: '-webkit-box',
-                                                            WebkitLineClamp: '3',
+                                                            WebkitLineClamp: 3,
                                                             WebkitBoxOrient: 'vertical',
-                                                            overflow: 'hidden'
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            lineClamp: 3
                                                         }}>
                                                             {capstone.abstract}
                                                         </p>
@@ -416,18 +376,7 @@ const GoogleLogin = () => {
                                                                         {keyword}
                                                                     </span>
                                                                 ))
-                                                            ) : (
-                                                                <span style={{
-                                                                    backgroundColor: 'rgba(160, 174, 192, 0.1)',
-                                                                    color: '#a0aec0',
-                                                                    padding: '6px 12px',
-                                                                    borderRadius: '20px',
-                                                                    fontSize: '0.8rem',
-                                                                    fontWeight: '500'
-                                                                }}>
-                                                                    No keywords
-                                                                </span>
-                                                            )}
+                                                            ) : null}
                                                             {capstone.keywords && capstone.keywords.length > 3 && (
                                                                 <span style={{
                                                                     backgroundColor: 'rgba(160, 174, 192, 0.1)',
@@ -452,39 +401,32 @@ const GoogleLogin = () => {
                                                         paddingTop: '20px',
                                                         borderTop: '1px solid rgba(0, 0, 0, 0.05)'
                                                     }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                            <span style={{
-                                                                fontSize: '0.85rem',
-                                                                color: '#a0aec0',
-                                                                fontWeight: '500'
-                                                            }}>
-                                                                📅 {new Date(capstone.createdAt).toLocaleDateString('en-US', {
-                                                                    year: 'numeric',
-                                                                    month: 'short',
-                                                                    day: 'numeric'
-                                                                })}
-                                                            </span>
-                                                        </div>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                            <span style={{
-                                                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                                                                color: '#667eea',
-                                                                padding: '6px 12px',
-                                                                borderRadius: '20px',
-                                                                fontSize: '0.85rem',
-                                                                fontWeight: '600',
-                                                                border: '1px solid rgba(102, 126, 234, 0.2)'
-                                                            }}>
-                                                                {capstone.category || 'General'}
-                                                            </span>
-                                                        </div>
+                                                        <span style={{
+                                                            fontSize: '0.85rem',
+                                                            color: '#a0aec0',
+                                                            fontWeight: '500'
+                                                        }}>
+                                                            📅 {new Date(capstone.createdAt).toLocaleDateString('en-US', {
+                                                                year: 'numeric',
+                                                                month: 'short',
+                                                                day: 'numeric'
+                                                            })}
+                                                        </span>
+                                                        <span style={{
+                                                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                                            color: '#667eea',
+                                                            padding: '6px 12px',
+                                                            borderRadius: '20px',
+                                                            fontSize: '0.85rem',
+                                                            fontWeight: '600',
+                                                            border: '1px solid rgba(102, 126, 234, 0.2)'
+                                                        }}>
+                                                            {capstone.category || 'General'}
+                                                        </span>
                                                     </div>
 
                                                     {/* View Details Button */}
-                                                    <div style={{ 
-                                                        marginTop: '15px',
-                                                        textAlign: 'center'
-                                                    }}>
+                                                    <div style={{ marginTop: '15px', textAlign: 'center' }}>
                                                         <button 
                                                             className="btn"
                                                             style={{

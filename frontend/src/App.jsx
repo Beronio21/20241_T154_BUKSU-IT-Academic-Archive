@@ -15,6 +15,7 @@ import AdminRegister2 from './Auth/AdminRegister2';
 import StudentDashboard from './pages/Student-Dashboard/StudentDashboard';
 import TeacherDashboard from './pages/Teacher-Dashboard/TeacherDashboard';
 import AdminDashboard from './pages/Admin-Dashboard/AdminDashboard';
+import Contact from './pages/Contact';
 
 // Other Components
 import NotFound from './NotFound';
@@ -150,6 +151,7 @@ function App() {
                 />
               } 
             />
+            <Route path="/contact" element={<Contact />} />
 
             {/* Catch-all Routes - Redirect to login */}
             <Route path="*" element={<Navigate to="/" replace />} />
