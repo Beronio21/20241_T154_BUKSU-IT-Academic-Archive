@@ -247,22 +247,14 @@ const StudentDashboard = () => {
                 </div>
 
                 {/* Cards Grid */}
-                <div className="card-container" style={{ 
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                  gap: '25px',
-                  padding: '10px'
-                }}>
+                <div className="card-container">
                   {filteredCapstones.length === 0 ? (
-                    <div className="no-results" style={{
-                      textAlign: 'center',
-                      padding: '40px',
-                      gridColumn: '1 / -1',
-                      background: '#f8f9fa',
-                      borderRadius: '12px'
-                    }}>
-                      <i className="fas fa-search" style={{ fontSize: '2rem', color: '#6c757d', marginBottom: '15px' }}></i>
-                      <p style={{ fontSize: '1.1rem', color: '#6c757d', margin: '0' }}>No research papers found</p>
+                    <div className="no-results">
+                      <i className="fas fa-search"></i>
+                      <p>No research papers found matching your criteria</p>
+                      <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
+                        Try adjusting your search terms or filters
+                      </small>
                     </div>
                   ) : (
                     filteredCapstones.map((capstone) => (
@@ -270,113 +262,147 @@ const StudentDashboard = () => {
                         className="capstone-card" 
                         key={capstone._id} 
                         onClick={() => handleViewDetails(capstone)}
-                        style={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-                          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                          cursor: 'pointer',
-                          overflow: 'hidden',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          border: '1px solid rgba(0, 0, 0, 0.05)',
-                          '&:hover': {
-                            transform: 'translateY(-5px)',
-                            boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)'
-                          }
-                        }}
                       >
-                        <div style={{ padding: '20px' }}>
-                          {/* Title Container */}
+                        <div style={{ padding: '25px' }}>
+                          {/* Title Container with enhanced styling */}
                           <div style={{
                             minHeight: '80px',
-                            backgroundColor: '#f8f9fa',
-                            borderRadius: '8px',
-                            padding: '12px 15px',
-                            marginBottom: '15px',
-                            borderLeft: '4px solid #4a6bff',
+                            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                            borderRadius: '12px',
+                            padding: '15px 18px',
+                            marginBottom: '20px',
+                            borderLeft: '4px solid #667eea',
+                            position: 'relative',
+                            overflow: 'hidden'
                           }}>
-                            <h3 style={{
-                              fontSize: '1.1rem',
-                              margin: '0',
-                              color: '#2c3e50',
-                              fontWeight: '600',
-                              display: '-webkit-box',
-                              WebkitLineClamp: '3',
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              lineHeight: '1.4',
-                            }}>{capstone.title}</h3>
+                            <div style={{
+                              position: 'absolute',
+                              top: '0',
+                              right: '0',
+                              width: '60px',
+                              height: '60px',
+                              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                              borderRadius: '0 12px 0 60px'
+                            }}></div>
+                            <h3>{capstone.title}</h3>
                           </div>
 
-                          {/* Abstract */}
+                          {/* Abstract with better typography */}
                           <div style={{ marginBottom: '20px' }}>
                             <p style={{
                               fontSize: '0.95rem',
-                              color: '#555',
+                              color: '#4a5568',
+                              lineHeight: '1.6',
+                              margin: '0',
                               display: '-webkit-box',
                               WebkitLineClamp: '3',
                               WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                              lineHeight: '1.5',
-                              margin: '0'
+                              overflow: 'hidden'
                             }}>
                               {capstone.abstract}
                             </p>
                           </div>
 
-                          {/* Keywords */}
+                          {/* Keywords with enhanced styling */}
                           <div style={{ marginBottom: '20px' }}>
                             <div style={{ 
                               display: 'flex', 
                               flexWrap: 'wrap', 
                               gap: '8px' 
                             }}>
-                              {capstone.keywords.map((keyword, index) => (
-                                <span key={index} style={{
-                                  backgroundColor: '#e3f2fd',
-                                  color: '#1565c0',
-                                  padding: '4px 10px',
-                                  borderRadius: '15px',
-                                  fontSize: '0.85rem',
+                              {capstone.keywords && capstone.keywords.length > 0 ? (
+                                capstone.keywords.slice(0, 3).map((keyword, index) => (
+                                  <span key={index} style={{
+                                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                    color: '#667eea',
+                                    padding: '6px 12px',
+                                    borderRadius: '20px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: '600',
+                                    border: '1px solid rgba(102, 126, 234, 0.2)'
+                                  }}>
+                                    {keyword}
+                                  </span>
+                                ))
+                              ) : (
+                                <span style={{
+                                  backgroundColor: 'rgba(160, 174, 192, 0.1)',
+                                  color: '#a0aec0',
+                                  padding: '6px 12px',
+                                  borderRadius: '20px',
+                                  fontSize: '0.8rem',
                                   fontWeight: '500'
                                 }}>
-                                  {keyword}
+                                  No keywords
                                 </span>
-                              ))}
+                              )}
+                              {capstone.keywords && capstone.keywords.length > 3 && (
+                                <span style={{
+                                  backgroundColor: 'rgba(160, 174, 192, 0.1)',
+                                  color: '#a0aec0',
+                                  padding: '6px 12px',
+                                  borderRadius: '20px',
+                                  fontSize: '0.8rem',
+                                  fontWeight: '500'
+                                }}>
+                                  +{capstone.keywords.length - 3} more
+                                </span>
+                              )}
                             </div>
                           </div>
 
-                          {/* Footer */}
+                          {/* Enhanced Footer with better layout */}
                           <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             marginTop: 'auto',
-                            paddingTop: '15px',
+                            paddingTop: '20px',
                             borderTop: '1px solid rgba(0, 0, 0, 0.05)'
                           }}>
-                            <span style={{
-                              fontSize: '0.9rem',
-                              color: '#666'
-                            }}>
-                              {new Date(capstone.createdAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric'
-                              })}
-                            </span>
-                            <span style={{
-                              backgroundColor: '#e8f5e9',
-                              color: '#2e7d32',
-                              padding: '5px 12px',
-                              borderRadius: '15px',
-                              fontSize: '0.9rem',
-                              fontWeight: '500'
-                            }}>
-                              {capstone.category}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{
+                                fontSize: '0.85rem',
+                                color: '#a0aec0',
+                                fontWeight: '500'
+                              }}>
+                                📅 {new Date(capstone.createdAt).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric'
+                                })}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{
+                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                color: '#667eea',
+                                padding: '6px 12px',
+                                borderRadius: '20px',
+                                fontSize: '0.85rem',
+                                fontWeight: '600',
+                                border: '1px solid rgba(102, 126, 234, 0.2)'
+                              }}>
+                                {capstone.category || 'General'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* View Details Button */}
+                          <div style={{ 
+                            marginTop: '15px',
+                            textAlign: 'center'
+                          }}>
+                            <button 
+                              className="btn"
+                              style={{
+                                width: '100%',
+                                padding: '10px',
+                                fontSize: '0.9rem'
+                              }}
+                            >
+                              View Details
+                            </button>
                           </div>
                         </div>
                       </div>
