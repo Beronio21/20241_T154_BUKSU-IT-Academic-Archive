@@ -665,30 +665,44 @@ const CapstoneManagement2 = () => {
                     <div className="row h-100">
                         <div className="col-12 h-100">
                             <div className="card shadow h-100">
-                                <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
-                                    <h3 className="mb-0">Capstone Management</h3>
-                                    <div className="d-flex align-items-center">
-                                        <InputGroup style={{ width: '300px' }}>
-                                            <InputGroup.Text>
-                                                <FaSearch />
-                                            </InputGroup.Text>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Search by title or members..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                            />
-                                        </InputGroup>
-                                        <Button 
-                                            variant="light" 
-                                            className="ms-3"
-                                            onClick={() => {
-                                                resetForm();
-                                                setShowEditModal(true);
-                                            }}
-                                        >
-                                            Add New Research Paper
-                                        </Button>
+                                <div className="card-header bg-primary text-white py-3" style={{ minHeight: '70px' }}>
+                                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                        <h3 className="mb-0">Capstone Management</h3>
+                                        <div className="d-flex align-items-center justify-content-end" style={{ flex: 1, marginLeft: '24px' }}>
+                                            <div className="search-container" style={{ minWidth: '280px', maxWidth: '400px' }}>
+                                                <InputGroup style={{ height: '44px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                                                    <InputGroup.Text style={{ 
+                                                        background: '#fff', 
+                                                        border: '1px solid #e5e7eb',
+                                                        borderRight: 'none',
+                                                        borderRadius: '8px 0 0 8px',
+                                                        color: '#6b7280',
+                                                        padding: '12px 16px',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        alignItems: 'center'
+                                                    }}>
+                                                        <FaSearch size={16} />
+                                                    </InputGroup.Text>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Search capstone titles..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        style={{ 
+                                                            border: '1px solid #e5e7eb',
+                                                            borderLeft: 'none',
+                                                            borderRadius: '0 8px 8px 0',
+                                                            padding: '12px 16px',
+                                                            fontSize: '14px',
+                                                            background: '#fff',
+                                                            color: '#374151',
+                                                            height: '100%'
+                                                        }}
+                                                    />
+                                                </InputGroup>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="card-body p-3" style={{ 
@@ -741,16 +755,6 @@ const CapstoneManagement2 = () => {
                                                                 <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 140, minWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>{renderStatusBadge(submission.status)}</td>
                                                                 <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>
                                                                     <div className="d-flex align-items-center justify-content-center gap-1 flex-wrap">
-                                                                        <Button
-                                                                            variant="outline-primary"
-                                                                            size="sm"
-                                                                            className="px-2 py-1 text-sm fw-semibold"
-                                                                            onClick={() => { setDetailsSubmission(submission); setShowDetailsModal(true); }}
-                                                                            style={{ minWidth: 60 }}
-                                                                            aria-label="View capstone details"
-                                                                        >
-                                                                            View
-                                                                        </Button>
                                                                         <Button
                                                                             variant="outline-info"
                                                                             size="sm"
@@ -1040,124 +1044,260 @@ const CapstoneManagement2 = () => {
                     {/* Review Modal */}
                     {showReviewModal && (
                         <div className={`custom-modal show`} onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }}>
-                            <div className="custom-modal-content" onClick={e => e.stopPropagation()} style={{ width: '90%', maxWidth: '1000px' }}>
+                            <div className="custom-modal-content" onClick={e => e.stopPropagation()} style={{ width: '95%', maxWidth: '1000px', position: 'relative', paddingBottom: 0, height: '90vh' }}>
                                 <div className="custom-modal-header bg-gradient-primary text-white">
                                     <h3>
                                         <FaClipboardCheck className="me-2" />
                                         Review Capstone Project
                                     </h3>
-                                    <button onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }} className="close-button" disabled={loading}>&times;</button>
+                                    <button 
+                                        onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }} 
+                                        className="close-button" 
+                                        disabled={loading}
+                                        style={{ 
+                                            background: 'none', 
+                                            border: 'none', 
+                                            color: '#fff', 
+                                            fontSize: '24px', 
+                                            fontWeight: 'bold',
+                                            cursor: loading ? 'not-allowed' : 'pointer',
+                                            padding: '0',
+                                            width: '30px',
+                                            height: '30px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderRadius: '50%',
+                                            transition: 'background-color 0.2s ease'
+                                        }}
+                                        onMouseOver={e => {
+                                            if (!loading) {
+                                                e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                                            }
+                                        }}
+                                        onMouseOut={e => {
+                                            if (!loading) {
+                                                e.target.style.backgroundColor = 'transparent';
+                                            }
+                                        }}
+                                    >
+                                        &times;
+                                    </button>
                                 </div>
-                                <div className="custom-modal-body">
-                                    {selectedSubmission && (
-                                        <div className="review-content">
-                                            {/* Title Section */}
-                                            <div className="p-4 bg-light border-bottom">
-                                                <h6 className="text-primary mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.85rem' }}>
-                                                    RESEARCH PAPER UNDER REVIEW
-                                                </h6>
-                                                <h4 className="mb-0 fw-bold" style={{ color: '#2c3e50', lineHeight: '1.4' }}>
-                                                    {selectedSubmission.title}
-                                                </h4>
+                                
+                                            {/* Sticky Action Header */}
+            <div style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 200,
+                background: '#fff',
+                borderBottom: '2px solid #e5e7eb',
+                padding: '16px 24px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}>
+                <div className="text-center mb-2">
+                    <h5 className="fw-bold mb-0" style={{ color: '#1f2937', fontSize: '0.95rem' }}>Select Review Decision</h5>
                                             </div>
-                                            {/* Review Form */}
-                                            <div className="p-4">
-                                                <form onSubmit={handleReviewSubmit}>
-                                                    {/* Status Section */}
-                                                    <div className="mb-4">
-                                                        <label className="form-label fw-semibold" style={{ fontSize: '1.05em', color: '#2563eb' }}>Review Status</label>
-                                                        <div className="row g-3 mt-1">
-                                                            {[
-                                                                {
-                                                                    value: 'approved',
-                                                                    label: 'Approved',
-                                                                    icon: <FaCheckCircle size={20} />, color: '#198754', bgColor: '#19875420',
-                                                                    description: 'Research paper meets all requirements and standards'
-                                                                },
-                                                                {
-                                                                    value: 'rejected',
-                                                                    label: 'Rejected',
-                                                                    icon: <FaTimes size={20} />, color: '#dc3545', bgColor: '#dc354520',
-                                                                    description: 'Research paper does not meet the required standards'
-                                                                },
-                                                                {
-                                                                    value: 'revision',
-                                                                    label: 'Needs Revision',
-                                                                    icon: <FaExclamationCircle size={20} />, color: '#ffc107', bgColor: '#ffc10720',
-                                                                    description: 'Research paper needs modifications before approval'
-                                                                },
-                                                                {
-                                                                    value: 'pending',
-                                                                    label: 'Under Review',
-                                                                    icon: <FaClock size={20} />, color: '#0dcaf0', bgColor: '#0dcaf020',
-                                                                    description: 'Research paper is currently under review process'
-                                                                }
+                <div className="d-flex justify-content-center gap-2 flex-wrap">
+                                        {[
+                                            { value: 'approved', label: 'Approved', icon: <FaCheckCircle size={16} />, color: '#fff', bg: '#10b981', border: '#10b981', hover: '#059669' },
+                                            { value: 'rejected', label: 'Rejected', icon: <FaTimes size={16} />, color: '#fff', bg: '#ef4444', border: '#ef4444', hover: '#dc2626' },
+                                            { value: 'revision', label: 'Needs Revision', icon: <FaExclamationCircle size={16} />, color: '#fff', bg: '#f59e0b', border: '#f59e0b', hover: '#d97706' },
+                                            { value: 'pending', label: 'Under Review', icon: <FaClock size={16} />, color: '#fff', bg: '#6b7280', border: '#6b7280', hover: '#4b5563' }
                                                             ].map((status) => (
-                                                                <div key={status.value} className="col-md-6">
-                                                                    <div
-                                                                        className={`status-card rounded-3 p-3 cursor-pointer d-flex align-items-center gap-3 ${reviewData.status === status.value ? 'selected' : ''}`}
-                                                                        onClick={() => !loading && setReviewData(prev => ({ ...prev, status: status.value }))}
+                                                                    <button
+                            key={status.value}
+                            type="button"
+                            className={`d-flex align-items-center gap-2 px-3 py-1.5 fw-semibold border-0`}
                                                                         style={{
-                                                                            border: `2px solid ${reviewData.status === status.value ? status.color : '#dee2e6'}`,
-                                                                            backgroundColor: reviewData.status === status.value ? status.bgColor : 'white',
-                                                                            cursor: loading ? 'not-allowed' : 'pointer',
+                                background: reviewData.status === status.value ? status.bg : '#f8fafc',
+                                color: reviewData.status === status.value ? status.color : '#64748b',
+                                borderRadius: 20,
+                                border: `2px solid ${reviewData.status === status.value ? status.border : '#e2e8f0'}`,
+                                fontWeight: 600,
+                                fontSize: 13,
+                                minWidth: 130,
+                                boxShadow: reviewData.status === status.value ? '0 4px 12px rgba(0,0,0,0.15)' : '0 1px 3px rgba(0,0,0,0.05)',
                                                                             transition: 'all 0.2s ease',
+                                outline: 'none',
+                                cursor: loading ? 'not-allowed' : 'pointer',
                                                                             opacity: loading ? 0.7 : 1
-                                                                        }}
-                                                                    >
-                                                                        <div className="status-icon rounded-circle p-2 me-2" style={{ backgroundColor: status.bgColor, color: status.color }}>
+                            }}
+                                                onClick={() => !loading && setReviewData(prev => ({ ...prev, status: status.value }))}
+                                                disabled={loading}
+                                                onMouseOver={e => {
+                                                    if (!loading && reviewData.status !== status.value) {
+                                                        e.currentTarget.style.background = status.hover;
+                                                        e.currentTarget.style.color = status.color;
+                                                        e.currentTarget.style.borderColor = status.border;
+                                                    }
+                                                }}
+                                                onMouseOut={e => {
+                                                    if (!loading && reviewData.status !== status.value) {
+                                                        e.currentTarget.style.background = '#f8fafc';
+                                                        e.currentTarget.style.color = '#64748b';
+                                                        e.currentTarget.style.borderColor = '#e2e8f0';
+                                                    }
+                                                }}
+                                            >
                                                                             {status.icon}
-                                                                        </div>
-                                                                        <div>
-                                                                            <h6 className="mb-1 d-flex align-items-center" style={{ color: reviewData.status === status.value ? status.color : '#2c3e50', fontWeight: 600 }}>
                                                                                 {status.label}
-                                                                                {reviewData.status === status.value && <FaCheckCircle className="ms-2" size={16} style={{ color: status.color }} />}
-                                                                            </h6>
-                                                                            <small className="text-muted">{status.description}</small>
+                                                {reviewData.status === status.value && <FaCheckCircle className="ms-1" size={14} style={{ color: status.color }} />}
+                                            </button>
+                                        ))}
                                                                         </div>
                                                                     </div>
+                                
+                                <div className="custom-modal-body" style={{ background: '#f8fafc', borderRadius: '0 0 16px 16px', padding: 0, height: 'calc(90vh - 180px)', overflowY: 'auto' }}>
+                                    {selectedSubmission && (
+                                        <div className="review-content">
+                                            {/* Capstone Details Section */}
+                                            <div className="p-4">
+                                                <div style={{ background: '#fff', borderRadius: 12, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
+                                                    <h4 className="fw-bold mb-4" style={{ color: '#1f2937', lineHeight: '1.4', fontSize: '1.3rem' }}>
+                                                        {selectedSubmission.title}
+                                                    </h4>
+                                                    
+                                                    <div className="row g-4">
+                                                        <div className="col-md-6">
+                                                            <div className="mb-3">
+                                                                <label className="fw-semibold mb-2 d-block" style={{ color: '#374151', fontSize: '0.9rem' }}>Category</label>
+                                                                <span style={{ background: '#dbeafe', color: '#1e40af', borderRadius: 6, fontWeight: 600, fontSize: 13, padding: '6px 12px', display: 'inline-block' }}>
+                                                                    {selectedSubmission.category}
+                                                                </span>
                                                                 </div>
+                                                            
+                                                            <div className="mb-3">
+                                                                <label className="fw-semibold mb-2 d-block" style={{ color: '#374151', fontSize: '0.9rem' }}>Student Email</label>
+                                                                <div style={{ color: '#4b5563', fontSize: 14, padding: '8px 0' }}>{selectedSubmission.email}</div>
+                                                            </div>
+                                                            
+                                                            <div className="mb-3">
+                                                                <label className="fw-semibold mb-2 d-block" style={{ color: '#374151', fontSize: '0.9rem' }}>Team Members</label>
+                                                                <div style={{ color: '#4b5563', fontSize: 14, lineHeight: '1.5' }}>
+                                                                    {selectedSubmission.members?.map((member, index) => (
+                                                                        <span key={index} style={{ 
+                                                                            display: 'inline-block', 
+                                                                            background: '#f3f4f6', 
+                                                                            padding: '4px 10px', 
+                                                                            borderRadius: 4, 
+                                                                            margin: '2px 4px 2px 0',
+                                                                            fontSize: 13
+                                                                        }}>
+                                                                            {member}
+                                                                        </span>
                                                             ))}
                                                         </div>
                                                     </div>
-                                                    {/* Comments Section */}
+                                                        </div>
+                                                        
+                                                        <div className="col-md-6">
+                                                            <div className="mb-3">
+                                                                <label className="fw-semibold mb-2 d-block" style={{ color: '#374151', fontSize: '0.9rem' }}>Abstract</label>
+                                                                <div style={{ 
+                                                                    color: '#4b5563', 
+                                                                    fontSize: 14, 
+                                                                    textAlign: 'justify', 
+                                                                    lineHeight: '1.6', 
+                                                                    maxHeight: 250, 
+                                                                    minHeight: 120,
+                                                                    overflowY: 'auto',
+                                                                    padding: '16px',
+                                                                    background: '#f9fafb',
+                                                                    borderRadius: 6,
+                                                                    border: '1px solid #e5e7eb'
+                                                                }}>
+                                                                    {selectedSubmission.abstract}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Document Preview & Feedback Section */}
+                                            <div className="px-4 pb-4">
+                                                <div style={{ background: '#fff', borderRadius: 12, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                                                    <h5 className="fw-bold mb-4" style={{ color: '#1f2937', fontSize: '1.1rem' }}>Document & Feedback</h5>
+                                                    
+                                                    {/* Document Section */}
                                                     <div className="mb-4">
-                                                        <label className="form-label fw-semibold" htmlFor="reviewComments">Review Comments</label>
+                                                        <label className="fw-semibold mb-2 d-block" style={{ color: '#374151', fontSize: '0.9rem' }}>Attached Document</label>
+                                                        <div className="d-flex align-items-center gap-3 p-3" style={{ background: '#f8fafc', borderRadius: 8, border: '1px solid #e5e7eb' }}>
+                                                            {selectedSubmission.docsLink ? (
+                                                                <>
+                                                                    <div style={{ flex: 1 }}>
+                                                                        <div style={{ color: '#1e40af', fontWeight: 600, fontSize: 14, marginBottom: '4px' }}>
+                                                                            Capstone Document
+                                                                        </div>
+                                                                        <span className="badge" style={{ 
+                                                                            background: '#dbeafe', 
+                                                                            color: '#1e40af', 
+                                                                            fontSize: 11, 
+                                                                            borderRadius: 4, 
+                                                                            padding: '3px 8px',
+                                                                            fontWeight: 500
+                                                                        }}>
+                                                                            {selectedSubmission.docsLink.endsWith('.pdf') ? 'PDF Document' : 'External Link'}
+                                                                        </span>
+                                                                    </div>
+                                                                    <Button
+                                                                        variant="primary"
+                                                                        size="sm"
+                                                                        style={{ 
+                                                                            fontWeight: 600, 
+                                                                            borderRadius: 6, 
+                                                                            background: '#2563eb',
+                                                                            border: 'none',
+                                                                            padding: '8px 16px',
+                                                                            fontSize: 13
+                                                                        }}
+                                                                        onClick={() => window.open(selectedSubmission.docsLink, '_blank', 'noopener,noreferrer')}
+                                                                    >
+                                                                        <FaFileAlt className="me-1" />
+                                                                        View File
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <div className="d-flex align-items-center gap-2" style={{ color: '#6b7280', fontSize: 14 }}>
+                                                                    <FaInfoCircle size={16} />
+                                                                    <span>No document attached</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {/* Comments Section */}
+                                                    <form onSubmit={handleReviewSubmit}>
+                                                    <div className="mb-4">
+                                                            <label className="fw-semibold mb-2 d-block" htmlFor="reviewComments" style={{ color: '#374151', fontSize: '0.9rem' }}>
+                                                                Review Comments (Optional)
+                                                            </label>
                                                         <textarea
                                                             id="reviewComments"
                                                             className={`form-control ${reviewErrors.comments ? 'is-invalid' : ''}`}
-                                                            rows="6"
-                                                            placeholder="Provide detailed feedback and suggestions for improvement..."
+                                                                rows="4"
+                                                                placeholder="Provide feedback, suggestions, or additional comments..."
                                                             value={reviewData.comments}
                                                             onChange={e => handleReviewInputChange('comments', e.target.value)}
-                                                            style={{ resize: 'none' }}
+                                                                style={{ 
+                                                                    resize: 'none', 
+                                                                    borderRadius: 6, 
+                                                                    background: '#fff', 
+                                                                    fontSize: 14, 
+                                                                    border: '1px solid #e5e7eb',
+                                                                    padding: '12px',
+                                                                    lineHeight: '1.5'
+                                                                }}
                                                             disabled={loading}
                                                         />
                                                     </div>
-                                                    {/* Action Buttons */}
-                                                    <div className="d-flex justify-content-end gap-3">
-                                                        <Button
-                                                            variant="primary"
-                                                            type="submit"
-                                                            disabled={loading || !reviewData.status}
-                                                            style={{ minWidth: 140, fontWeight: 600, borderRadius: 8, boxShadow: '0 2px 8px rgba(37,99,235,0.15)', background: '#2563eb', border: 'none' }}
-                                                        >
-                                                            {loading ? 'Submitting...' : 'Submit Review'}
-                                                        </Button>
-                                                        <Button
-                                                            variant="outline-secondary"
-                                                            type="button"
-                                                            onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }}
-                                                            disabled={loading}
-                                                            style={{ minWidth: 120, fontWeight: 600, borderRadius: 8 }}
-                                                        >
-                                                            Cancel
-                                                        </Button>
-                                                    </div>
                                                 </form>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
+                                    
                                     {/* Success Modal */}
                                     {showSuccessModal && (
                                         <div style={{
@@ -1189,6 +1329,62 @@ const CapstoneManagement2 = () => {
                                             </div>
                                         </div>
                                     )}
+                                </div>
+                                
+                                {/* Sticky Footer with Submit Button */}
+                                <div style={{
+                                    position: 'sticky',
+                                    bottom: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    background: '#fff',
+                                    borderTop: '1px solid #e5e7eb',
+                                    padding: '16px 24px',
+                                    boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
+                                    zIndex: 100
+                                }}>
+                                    <div className="d-flex justify-content-end gap-3">
+                                        <Button
+                                            variant="outline-secondary"
+                                            size="sm"
+                                            onClick={() => { if (!loading) { setShowReviewModal(false); setReviewErrors({}); setError(null); } }}
+                                            disabled={loading}
+                                            style={{ 
+                                                fontWeight: 600, 
+                                                borderRadius: 6,
+                                                padding: '8px 16px',
+                                                fontSize: 13
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
+                                            onClick={handleReviewSubmit}
+                                            disabled={loading || !reviewData.status}
+                                            style={{ 
+                                                fontWeight: 600, 
+                                                borderRadius: 6, 
+                                                background: '#2563eb', 
+                                                border: 'none',
+                                                padding: '8px 20px',
+                                                fontSize: 13
+                                            }}
+                                        >
+                                            {loading ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                    Submitting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <FaCheckCircle className="me-1" />
+                                                    Submit Review
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

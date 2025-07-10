@@ -161,20 +161,44 @@ const TeacherRecords2 = () => {
                     <div className="row h-100">
                         <div className="col-12 h-100">
                             <div className="card shadow h-100">
-                                <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
-                                    <h3 className="mb-0">Teacher Records</h3>
-                                    <div className="d-flex align-items-center">
-                                        <InputGroup style={{ width: '300px' }}>
-                                            <InputGroup.Text>
-                                                <FaSearch />
-                                            </InputGroup.Text>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Search by name or ID..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                            />
-                                        </InputGroup>
+                                <div className="card-header bg-primary text-white py-3" style={{ minHeight: '70px' }}>
+                                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                        <h3 className="mb-0">Teacher Records</h3>
+                                        <div className="d-flex align-items-center justify-content-end" style={{ flex: 1, marginLeft: '24px' }}>
+                                            <div className="search-container" style={{ minWidth: '280px', maxWidth: '400px' }}>
+                                                <InputGroup style={{ height: '44px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                                                    <InputGroup.Text style={{ 
+                                                        background: '#fff', 
+                                                        border: '1px solid #e5e7eb',
+                                                        borderRight: 'none',
+                                                        borderRadius: '8px 0 0 8px',
+                                                        color: '#6b7280',
+                                                        padding: '12px 16px',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        alignItems: 'center'
+                                                    }}>
+                                                        <FaSearch size={16} />
+                                                    </InputGroup.Text>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Search by name or ID..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        style={{ 
+                                                            border: '1px solid #e5e7eb',
+                                                            borderLeft: 'none',
+                                                            borderRadius: '0 8px 8px 0',
+                                                            padding: '12px 16px',
+                                                            fontSize: '14px',
+                                                            background: '#fff',
+                                                            color: '#374151',
+                                                            height: '100%'
+                                                        }}
+                                                    />
+                                                </InputGroup>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="card-body p-3" style={{ 
@@ -253,7 +277,32 @@ const TeacherRecords2 = () => {
                         <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="custom-modal-header bg-primary text-white">
                                 <h3>Teacher Details</h3>
-                                <button onClick={() => setSelectedTeacher(null)} className="close-button">
+                                <button 
+                                    onClick={() => setSelectedTeacher(null)} 
+                                    className="close-button"
+                                    style={{ 
+                                        background: 'none', 
+                                        border: 'none', 
+                                        color: '#fff', 
+                                        fontSize: '24px', 
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        padding: '0',
+                                        width: '30px',
+                                        height: '30px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: '50%',
+                                        transition: 'background-color 0.2s ease'
+                                    }}
+                                    onMouseOver={e => {
+                                        e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                                    }}
+                                    onMouseOut={e => {
+                                        e.target.style.backgroundColor = 'transparent';
+                                    }}
+                                >
                                     &times;
                                 </button>
                             </div>
@@ -314,7 +363,32 @@ const TeacherRecords2 = () => {
                         <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="custom-modal-header bg-danger text-white">
                                 <h3>Confirm Delete</h3>
-                                <button onClick={() => setShowDeleteModal(false)} className="close-button">
+                                <button 
+                                    onClick={() => setShowDeleteModal(false)} 
+                                    className="close-button"
+                                    style={{ 
+                                        background: 'none', 
+                                        border: 'none', 
+                                        color: '#fff', 
+                                        fontSize: '24px', 
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        padding: '0',
+                                        width: '30px',
+                                        height: '30px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: '50%',
+                                        transition: 'background-color 0.2s ease'
+                                    }}
+                                    onMouseOver={e => {
+                                        e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                                    }}
+                                    onMouseOut={e => {
+                                        e.target.style.backgroundColor = 'transparent';
+                                    }}
+                                >
                                     &times;
                                 </button>
                             </div>
