@@ -144,8 +144,8 @@ const AdminDashboard = () => {
               <div className="col-md-4">
                 <div className="card shadow-sm">
                   <div className="card-body">
-                    <h5 className="card-title">Total Students</h5>
-                    <h2 className="mb-0">{stats.totalStudents}</h2>
+                    <h5 className="card-title">Admin Users</h5>
+                    <h2 className="mb-0">{stats.totalAdmins}</h2>
                   </div>
                 </div>
               </div>
