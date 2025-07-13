@@ -59,25 +59,19 @@ function App() {
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <BrowserRouter>
           <Routes>
-            {/* Login is the default route */}
-            <Route path="/" element={<GoogleLogin />} />
-            
-            {/* Registration Routes */}
+            {/* Public Guest Area: Capstone Archive */}
+            <Route path="/" element={<Navigate to="/student-dashboard/dashboard" replace />} />
+            <Route path="/student-dashboard" element={<Navigate to="/student-dashboard/dashboard" replace />} />
+            <Route path="/student-dashboard/dashboard" element={<StudentDashboard />} />
+
+            {/* Authenticated Areas: Admin/Teacher Only */}
+            <Route path="/login" element={<GoogleLogin />} />
             <Route path="/student-register" element={<StudentRegister />} />
             <Route path="/teacher-register" element={<TeacherRegister />} />
             <Route path="/admin-register" element={<AdminRegister />} />
             <Route path="/admin-register-2" element={<AdminRegister2 />} />
 
-            {/* Protected Dashboard Routes */}
-            <Route 
-              path="/student-dashboard/*" 
-              element={
-                <ProtectedRoute 
-                  element={<StudentDashboard />} 
-                  allowedRole="student"
-                />
-              } 
-            />
+            {/* Protected Teacher Dashboard */}
             <Route 
               path="/teacher-dashboard/*" 
               element={
@@ -87,6 +81,8 @@ function App() {
                 />
               } 
             />
+
+            {/* Protected Admin Dashboard and Admin-only routes */}
             <Route 
               path="/admin-dashboard/*" 
               element={
@@ -151,8 +147,8 @@ function App() {
               } 
             />
 
-            {/* Catch-all Routes - Redirect to login */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Catch-all: Redirect to public archive */}
+            <Route path="*" element={<Navigate to="/student-dashboard/dashboard" replace />} />
           </Routes>
         </BrowserRouter>
       </GoogleOAuthProvider>

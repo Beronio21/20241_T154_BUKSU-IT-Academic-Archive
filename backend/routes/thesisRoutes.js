@@ -369,6 +369,24 @@ router.get('/approved', async (req, res) => {
     }
 });
 
+// Add a public-safe endpoint for fetching approved capstone submissions
+router.get('/public/approved', async (req, res) => {
+    try {
+        const submissions = await Thesis.find({ status: 'approved' }).sort({ createdAt: -1 });
+        res.json({
+            status: 'success',
+            data: submissions
+        });
+    } catch (error) {
+        console.error('Error fetching public approved submissions:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch approved submissions',
+            error: error.message
+        });
+    }
+});
+
 // Get capstone statistics
 router.get('/statistics', async (req, res) => {
     try {
@@ -500,7 +518,6 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
         default:
             notificationMessage += ` Status: ${status.toUpperCase()}`;
     }
-
     try {
         await Promise.all([
             new Notification({

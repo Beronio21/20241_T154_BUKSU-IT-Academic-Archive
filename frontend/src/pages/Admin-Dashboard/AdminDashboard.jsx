@@ -170,7 +170,7 @@ const AdminDashboard = () => {
               <div className="col-12">
                 <div className="card shadow-sm">
                   <div className="card-body">
-                    <h5 className="card-title mb-4">Recent Accounts</h5>
+                    <h5 className="card-title mb-4">Accounts</h5>
                     <div className="table-responsive">
                       <Table hover className="align-middle">
                         <thead>
@@ -182,12 +182,14 @@ const AdminDashboard = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {recentAccounts.map((account, index) => (
+                          {recentAccounts
+                            .filter(account => account.type !== 'student')
+                            .map((account, index) => (
                             <tr key={index}>
                               <td>{account.name}</td>
                               <td>{account.email}</td>
                               <td>
-                                <span className={`badge ${account.type === 'student' ? 'bg-info' : account.type === 'teacher' ? 'bg-success' : 'bg-primary'}`}>
+                                <span className={`badge ${account.type === 'teacher' ? 'bg-success' : 'bg-primary'}`}>
                                   {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
                                 </span>
                               </td>

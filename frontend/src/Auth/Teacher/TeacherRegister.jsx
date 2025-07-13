@@ -47,6 +47,9 @@ const TeacherRegister = () => {
     confirmPassword: "",
     teacher_id: "",
     department: "",
+    contact_number: "",
+    location: "",
+    birthday: "",
     gender: "",
     role: "teacher",
   });
@@ -158,13 +161,15 @@ const TeacherRegister = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        teacher_id: formData.teacher_id,
         department: formData.department,
+        contact_number: formData.contact_number,
+        location: formData.location,
+        birthday: formData.birthday,
         gender: formData.gender.toLowerCase(),
         role: "teacher"
       };
 
-      const response = await axios.post("http://localhost:8080/api/register", registrationData, {
+      const response = await axios.post("http://localhost:8080/api/teachers", registrationData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -327,6 +332,9 @@ const TeacherRegister = () => {
                   { id: "email", type: "email", placeholder: "BUKSU Faculty Email", required: true },
                   { id: "name", type: "text", placeholder: "Full Name", required: true },
                   { id: "department", type: "text", placeholder: "Department", required: false },
+                  { id: "contact_number", type: "text", placeholder: "Contact Number", required: true },
+                  { id: "location", type: "text", placeholder: "Location", required: true },
+                  { id: "birthday", type: "date", placeholder: "Birthday", required: true },
                 ].map((input, index) => (
                   <div className="std-reg__input-group" key={index}>
                     <input

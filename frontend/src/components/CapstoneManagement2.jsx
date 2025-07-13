@@ -4,6 +4,7 @@ import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge, Alert 
 import { FaSearch, FaEdit, FaTrash, FaPlus, FaExclamationTriangle, FaFileAlt, FaUser, FaKey, FaEnvelope, FaLink, FaInfoCircle, FaTimes, FaFolder, FaUserTie, FaCheckCircle, FaClipboardCheck, FaExclamationCircle, FaClock, FaSave, FaCheck, FaHistory } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
+import AdminTopbar from '../Topbar/Admin-Topbar/AdminTopbar';
 
 const CapstoneManagement2 = () => {
     const [submissions, setSubmissions] = useState([]);

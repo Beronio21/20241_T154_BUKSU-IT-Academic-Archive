@@ -110,9 +110,12 @@
 }
 
 .statistics-container {
-    padding: 2rem;
+    padding: 0;
     width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .statistics-header {
@@ -137,11 +140,12 @@
     flex-direction: row;
     gap: 1.5rem;
     margin-bottom: 3rem;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
-    padding: 1rem 0;
+    padding: 0;
     scrollbar-width: thin;
     width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
 }
 

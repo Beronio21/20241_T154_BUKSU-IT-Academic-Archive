@@ -1,21 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/auth'); // REMOVE auth middleware for public access
 
-// Create a new student
-router.post('/', auth, async (req, res) => {
-    try {
-        const student = new User({ ...req.body, role: 'student' });
-        await student.save();
-        res.status(201).json(student);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
+// Create a new student (admin/teacher only, so remove from public API)
+// router.post('/', auth, async (req, res) => { ... });
 
-// Get all students
-router.get('/', auth, async (req, res) => {
+// Get all students (public, no auth)
+router.get('/', async (req, res) => {
     try {
         const students = await User.find({ role: 'student' });
         res.json(students);
@@ -24,24 +16,10 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-// Update a student
-router.put('/:id', auth, async (req, res) => {
-    try {
-        const student = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.json(student);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
+// Update a student (admin/teacher only, so remove from public API)
+// router.put('/:id', auth, async (req, res) => { ... });
 
-// Delete a student
-router.delete('/:id', auth, async (req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Student deleted' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+// Delete a student (admin/teacher only, so remove from public API)
+// router.delete('/:id', auth, async (req, res) => { ... });
 
 module.exports = router;

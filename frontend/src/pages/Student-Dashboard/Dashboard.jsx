@@ -157,12 +157,43 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="statistics-container">
+        <div className="statistics-container" style={{
+            width: '100%',
+            maxWidth: '100vw',
+            boxSizing: 'border-box',
+            padding: '0 4vw',
+        }}>
             {/* Charts Row at the Top */}
-            <div className="charts-flex" style={{ display: 'flex', gap: '2.5rem', alignItems: 'stretch', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+            <div className="charts-flex" style={{
+                display: 'flex',
+                gap: '2.5rem',
+                alignItems: 'stretch',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                marginBottom: '2.5rem',
+                width: '100%',
+                maxWidth: '100vw',
+                boxSizing: 'border-box',
+            }}>
                 {/* Line Chart - Left (Wider) */}
-                <div style={{ flex: 2, minWidth: 350, maxWidth: 700, background: 'white', borderRadius: 16, boxShadow: '0 4px 16px rgba(26,117,255,0.08)', padding: '2rem 2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', height: 320, minHeight: 320 }}>
-                    <h4 style={{ marginBottom: 24, color: '#1a75ff', fontWeight: 700, fontSize: '1.25rem' }}>Capstone Projects Per Year</h4>
+                <div style={{
+                    flex: 2,
+                    minWidth: 260,
+                    maxWidth: 700,
+                    width: '100%',
+                    background: 'white',
+                    borderRadius: 16,
+                    boxShadow: '0 4px 16px rgba(26,117,255,0.08)',
+                    padding: '2rem 2.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    justifyContent: 'center',
+                    height: 320,
+                    minHeight: 320,
+                    boxSizing: 'border-box',
+                }}>
+                    <h4 style={{ marginBottom: 24, color: '#1a75ff', fontWeight: 700, fontSize: '1.25rem', textAlign: 'left', width: '100%', wordBreak: 'break-word' }}>Capstone Projects Per Year</h4>
                     <Line
                         data={{
                             labels: Object.keys(statistics.yearlyApprovals).sort(),
@@ -216,8 +247,24 @@ const Dashboard = () => {
                     />
                 </div>
                 {/* Doughnut Chart - Right (Compact, Same Height) */}
-                <div style={{ flex: 1, minWidth: 200, maxWidth: 320, background: 'white', borderRadius: 16, boxShadow: '0 4px 16px rgba(26,117,255,0.08)', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 320, minHeight: 320 }}>
-                    <h4 style={{ marginBottom: 18, color: '#1a75ff', fontWeight: 700, fontSize: '1.1rem', textAlign: 'center' }}>Capstone Project Categories</h4>
+                <div style={{
+                    flex: 1,
+                    minWidth: 180,
+                    maxWidth: 320,
+                    width: '100%',
+                    background: 'white',
+                    borderRadius: 16,
+                    boxShadow: '0 4px 16px rgba(26,117,255,0.08)',
+                    padding: '2rem 1.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 320,
+                    minHeight: 320,
+                    boxSizing: 'border-box',
+                }}>
+                    <h4 style={{ marginBottom: 18, color: '#1a75ff', fontWeight: 700, fontSize: '1.1rem', textAlign: 'center', width: '100%', wordBreak: 'break-word' }}>Capstone Project Categories</h4>
                     <Doughnut
                         data={{
                             labels: Object.keys(statistics.categoryCounts),
@@ -256,10 +303,10 @@ const Dashboard = () => {
                 </div>
             </div>
             {/* Summary/Stat Cards at the Bottom */}
-            <div className="statistics-header">
-                <h3>Summary</h3>
+            <div className="statistics-header" style={{ width: '100%', textAlign: 'left', marginBottom: 12 }}>
+                <h3 style={{ margin: 0, fontWeight: 700, fontSize: '1.2rem', color: '#1a75ff', wordBreak: 'break-word' }}>Summary</h3>
             </div>
-            <div className="statistics-grid-wrapper" style={{ position: 'relative' }}>
+            <div className="statistics-grid-wrapper" style={{ position: 'relative', width: '100%', maxWidth: '100vw', boxSizing: 'border-box' }}>
                 {/* Single right scroll arrow at top-right */}
                 {canScrollRight && (
                     <div className="scroll-arrow right" style={{ top: 0, right: 0, left: 'unset', transform: 'translateY(0)', position: 'absolute' }} onClick={() => scrollGrid('right')}>
@@ -299,4 +346,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard; 
+export default Dashboard;   

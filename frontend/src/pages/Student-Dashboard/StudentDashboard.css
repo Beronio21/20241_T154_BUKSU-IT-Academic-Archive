@@ -1,10 +1,17 @@
-body {
-    background-color: #ffffff; /* White background for the entire page */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .student-dashboard {
-    padding: 20px;
+    padding: 0;
     min-height: 100vh; /* Ensure full height */
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .search-input {
@@ -65,42 +72,67 @@ body {
 .card-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 14px;
     justify-content: center; /* Center cards */
-    padding: 20px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .capstone-card {
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(30,41,59,0.10);
+    transition: box-shadow 0.16s, transform 0.16s;
+    /* Remove default margin and padding */
+    margin: 0;
+    padding: 12px 10px 0 10px;
+    min-width: 0;
+    min-height: 220px;
+    max-width: 295px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    cursor: pointer;
+    overflow: hidden;
 }
 
 .capstone-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px) scale(1.008);
+    box-shadow: 0 8px 24px rgba(30,41,59,0.13);
+    border-color: #2563eb;
 }
 
 .capstone-card h3 {
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     color: #333;
-    font-size: 1.1rem;
-    line-height: 1.3;
+    font-size: 1rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .capstone-card p {
-    margin: 5px 0;
+    margin: 4px 0;
     color: #666;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .category-tag {
     background-color: #e8f4ff;
     color: #0066cc;
-    padding: 4px 8px;
+    padding: 2px 8px;
     border-radius: 4px;
     font-weight: 500;
     font-size: 0.8rem;
@@ -254,4 +286,49 @@ body {
 .modal-close-btn:active {
   background: #e6f0ff;
   color: #174ea6;
+}
+
+@media (min-width: 900px) {
+  .results-section {
+    grid-template-columns: repeat(3, minmax(270px, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+@media (min-width: 1200px) {
+  .results-section {
+    grid-template-columns: repeat(4, minmax(250px, 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+@media (max-width: 900px) {
+  .results-section {
+    grid-template-columns: repeat(2, minmax(180px, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
+@media (max-width: 600px) {
+  .results-section {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+/* Modern thin scrollbar for dashboard and main containers */
+html, body, .student-dashboard, .results-section {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 rgba(0,0,0,0.01);
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar, .student-dashboard::-webkit-scrollbar, .results-section::-webkit-scrollbar {
+  width: 5px;
+  background: rgba(0,0,0,0.01);
+}
+
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, .student-dashboard::-webkit-scrollbar-thumb, .results-section::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track, .student-dashboard::-webkit-scrollbar-track, .results-section::-webkit-scrollbar-track {
+  background: transparent;
 }

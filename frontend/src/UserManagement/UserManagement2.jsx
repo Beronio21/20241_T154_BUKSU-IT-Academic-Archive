@@ -280,7 +280,7 @@ const UserManagement2 = () => {
                                                     }}
                                                     style={{ minWidth: '100px' }}
                                                 >
-                                                    Students
+
                                                 </button>
                                                 <button
                                                     className={`btn ${activeTab === 'teachers' ? 'btn-light' : 'btn-outline-light'}`}
@@ -290,7 +290,7 @@ const UserManagement2 = () => {
                                                     }}
                                                     style={{ minWidth: '100px' }}
                                                 >
-                                                    Teachers
+                                                  
                                                 </button>
                                             </div>
                                             <div className="search-container" style={{ minWidth: '280px', maxWidth: '400px' }}>

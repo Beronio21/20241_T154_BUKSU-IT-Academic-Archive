@@ -119,6 +119,26 @@
     border: 2px solid #fff;
 }
 
+.sign-in-link {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0 0 0 16px;
+  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: color 0.18s, text-decoration 0.18s;
+  display: inline-block;
+  line-height: 1.5;
+}
+.sign-in-link:hover, .sign-in-link:focus {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .navbar {

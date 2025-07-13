@@ -44,17 +44,15 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo: userInfoP
 
     // Navigation items configuration based on user type
     const mainNavItems = [
-        { name: 'Dashboard', section: 'statistics', icon: 'fas fa-tachometer-alt' },
+        { name: 'Data Overview', section: 'statistics', icon: 'fas fa-tachometer-alt' },
         { name: 'Capstone Archives', section: 'dashboard', icon: 'fas fa-book' },
     ];
 
-    // Add additional navigation items based on user type
-    const additionalNavItems = userInfo?.role === 'admin' ? [
-        { name: 'Manage Users', section: 'manage-users', icon: 'fas fa-users-cog' },
-        { name: 'Reports', section: 'reports', icon: 'fas fa-chart-line' },
-    ] : userInfo?.role === 'teacher' ? [
-        { name: 'Manage Submissions', section: 'manage-submissions', icon: 'fas fa-tasks' },
-    ] : [];
+    // Remove all additional nav items for guests/students
+    const additionalNavItems = [];
+
+    // Remove thesis management dropdown for guests
+    // const renderThesisManagementDropdown = () => null;
 
     const renderNavItem = (item) => (
         <li className="nav-item" key={item.section}>
@@ -106,15 +104,14 @@ const StudentNavbar = ({ activeSection, handleSectionChange, userInfo: userInfoP
                             marginRight: '8px' // Reduced margin
                         }} 
                     />
-                    <h5 className="text-black fw-bold mb-0" style={{ fontSize: '16px' }}>Student Portal</h5> {/* Adjusted font size */}
+                    <h5 className="text-black fw-bold mb-0" style={{ fontSize: '16px' }}>Dashboard</h5> {/* Adjusted font size */}
                 </div>
 
                 {/* Navigation Items */}
                 <div className="px-2"> {/* Reduced padding */}
                     <ul className="nav flex-column gap-1">
                         {mainNavItems.map(renderNavItem)}
-                        {renderThesisManagementDropdown()}
-                        {additionalNavItems.map(renderNavItem)}
+                        {/* No thesis management dropdown or additional nav items for guests */}
                     </ul>
                 </div>
                       

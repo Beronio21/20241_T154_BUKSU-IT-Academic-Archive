@@ -6,19 +6,16 @@ const User = require('../models/userModel');
 const Teacher = require('../models/Teacher');
 const bcrypt = require('bcryptjs');
 
-
-// Google OAuth login
+// Google OAuth login (teachers/admin only)
 router.post('/google', async (req, res) => {
     try {
         const { access_token } = req.body;
-        
         if (!access_token) {
             return res.status(400).json({
                 status: 'error',
                 message: 'Access token is required'
             });
         }
-
         // Get user info from Google
         const googleUserInfo = await axios.get(
             'https://www.googleapis.com/oauth2/v3/userinfo',
@@ -31,13 +28,23 @@ router.post('/google', async (req, res) => {
             console.error('Google API error:', error.response?.data || error.message);
             throw new Error('Failed to verify Google token');
         });
-
         const { email, name, picture } = googleUserInfo.data;
-        console.log('Google user info:', { email, name, picture });
-
-        // First try to find a teacher
+        // Check teacher first
         let teacher = await Teacher.findOne({ email });
-        
+        if (!teacher) {
+            // Create new teacher with Google info and a random password
+            const randomPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = await require('bcryptjs').hash(randomPassword, 10);
+            teacher = new Teacher({
+                name,
+                email,
+                password: hashedPassword,
+                image: picture,
+                role: 'teacher',
+                isProfileComplete: false
+            });
+            await teacher.save();
+        }
         if (teacher) {
             const token = jwt.sign(
                 { 
@@ -48,15 +55,13 @@ router.post('/google', async (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
-
             teacher.lastLogin = new Date();
             await teacher.save();
-
             return res.json({
                 status: 'success',
                 data: {
                     user: {
-                        id: teacher._id,
+                        _id: teacher._id,
                         name: teacher.name,
                         email: teacher.email,
                         role: 'teacher',
@@ -66,78 +71,38 @@ router.post('/google', async (req, res) => {
                 }
             });
         }
-
-        // If no teacher found, try student
-        const student = await User.findOne({ email });
-        if (!student) {
-            // Create new student if email ends with @student.buksu.edu.ph
-            if (email.endsWith('@student.buksu.edu.ph')) {
-                const newStudent = new User({
-                    name,
-                    email,
-                    image: picture,
-                    role: 'student',
-                    isProfileComplete: false,
-                    isOAuth: true
-                });
-                await newStudent.save();
-
-                const token = jwt.sign(
-                    { 
-                        userId: newStudent._id,
-                        email: newStudent.email,
-                        role: 'student'
+        // Check admin in User model
+        let admin = await User.findOne({ email, role: 'admin' });
+        if (admin) {
+            const token = jwt.sign(
+                {
+                    userId: admin._id,
+                    email: admin.email,
+                    role: 'admin'
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+            admin.lastLogin = new Date();
+            await admin.save();
+            return res.json({
+                status: 'success',
+                data: {
+                    user: {
+                        _id: admin._id,
+                        name: admin.name,
+                        email: admin.email,
+                        role: 'admin',
+                        image: admin.image
                     },
-                    process.env.JWT_SECRET,
-                    { expiresIn: '24h' }
-                );
-
-                return res.json({
-                    status: 'success',
-                    data: {
-                        user: {
-                            id: newStudent._id,
-                            name: newStudent.name,
-                            email: newStudent.email,
-                            role: 'student',
-                            image: newStudent.image
-                        },
-                        token
-                    }
-                });
-            }
-
-            return res.status(401).json({
-                status: 'error',
-                message: 'Only BUKSU faculty emails (@buksu.edu.ph) or @gmail.com are allowed for teacher registration'
+                    token
+                }
             });
         }
-
-        // Handle student login
-        const token = jwt.sign(
-            { 
-                userId: student._id,
-                email: student.email,
-                role: student.role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
-
-        res.json({
-            status: 'success',
-            data: {
-                user: {
-                    id: student._id,
-                    name: student.name,
-                    email: student.email,
-                    role: student.role,
-                    image: student.image
-                },
-                token
-            }
+        return res.status(401).json({
+            status: 'error',
+            message: 'Only BUKSU faculty emails (@buksu.edu.ph) or @gmail.com are allowed for teacher/admin login'
         });
-
     } catch (error) {
         console.error('Auth error:', error);
         res.status(500).json({
@@ -147,26 +112,20 @@ router.post('/google', async (req, res) => {
     }
 });
 
-// Email/Password login
+// Email/Password login (teachers/admin only)
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log('Login attempt for:', email);
-
-        // First try to find a teacher
+        // Check teacher first
         let teacher = await Teacher.findOne({ email });
-        
         if (teacher) {
-            // Check teacher password
             const isMatch = await bcrypt.compare(password, teacher.password);
             if (!isMatch) {
-                console.log('Teacher password mismatch');
                 return res.status(401).json({
                     status: 'error',
                     message: 'Invalid email or password'
                 });
             }
-
             const token = jwt.sign(
                 { 
                     userId: teacher._id,
@@ -176,12 +135,11 @@ router.post('/login', async (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
-
             return res.json({
                 status: 'success',
                 data: {
                     user: {
-                        id: teacher._id,
+                        _id: teacher._id,
                         name: teacher.name,
                         email: teacher.email,
                         role: 'teacher',
@@ -191,51 +149,43 @@ router.post('/login', async (req, res) => {
                 }
             });
         }
-
-        // If no teacher found, try student
-        const student = await User.findOne({ email });
-        if (!student) {
-            console.log('No user found with email:', email);
-            return res.status(401).json({
-                status: 'error',
-                message: 'Invalid email or password'
-            });
-        }
-
-        // Check student password
-        const isMatch = await bcrypt.compare(password, student.password);
-        if (!isMatch) {
-            console.log('Student password mismatch');
-            return res.status(401).json({
-                status: 'error',
-                message: 'Invalid email or password'
-            });
-        }
-
-        const token = jwt.sign(
-            { 
-                userId: student._id,
-                email: student.email,
-                role: student.role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
-
-        res.json({
-            status: 'success',
-            data: {
-                user: {
-                    id: student._id,
-                    name: student.name,
-                    email: student.email,
-                    role: student.role,
-                    image: student.image
-                },
-                token
+        // Check admin in User model
+        let admin = await User.findOne({ email, role: 'admin' });
+        if (admin) {
+            const isMatch = await bcrypt.compare(password, admin.password);
+            if (!isMatch) {
+                return res.status(401).json({
+                    status: 'error',
+                    message: 'Invalid email or password'
+                });
             }
+            const token = jwt.sign(
+                {
+                    userId: admin._id,
+                    email: admin.email,
+                    role: 'admin'
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+            return res.json({
+                status: 'success',
+                data: {
+                    user: {
+                        _id: admin._id,
+                        name: admin.name,
+                        email: admin.email,
+                        role: 'admin',
+                        image: admin.image
+                    },
+                    token
+                }
+            });
+        }
+        return res.status(401).json({
+            status: 'error',
+            message: 'Invalid email or password'
         });
-
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({
@@ -246,46 +196,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Verify token
-router.post('/verify-token', async (req, res) => {
-    try {
-        const { token } = req.body;
-        if (!token) {
-            return res.status(400).json({
-                status: 'error',
-                message: 'Token is required'
-            });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.userId);
-
-        if (!user) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'User not found'
-            });
-        }
-
-        res.json({
-            status: 'success',
-            data: {
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                    isProfileComplete: user.isProfileComplete
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Token verification error:', error);
-        res.status(401).json({
-            status: 'error',
-            message: 'Invalid token'
-        });
-    }
-});
+// Remove student token verification
+// Only keep teacher/admin token verification if needed
 
 module.exports = router;
