@@ -10,6 +10,7 @@ import StudentRegister from './Auth/Student/StudentRegister';
 import TeacherRegister from './Auth/Teacher/TeacherRegister';
 import AdminRegister from './Auth/AdminRegister';
 import AdminRegister2 from './Auth/AdminRegister2';
+import WelcomePage from '../home/WelcomePage'; // Add this import
 
 // Dashboard Components
 import StudentDashboard from './pages/Student-Dashboard/StudentDashboard';
@@ -59,14 +60,18 @@ function App() {
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <BrowserRouter>
           <Routes>
-            {/* Login is the default route */}
-            <Route path="/" element={<GoogleLogin />} />
+            {/* WelcomePage is now the default route */}
+            <Route path="/" element={<WelcomePage />} />
+            
+            {/* Login Route */}
+            <Route path="/login" element={<GoogleLogin />} />
             
             {/* Registration Routes */}
             <Route path="/student-register" element={<StudentRegister />} />
             <Route path="/teacher-register" element={<TeacherRegister />} />
             <Route path="/admin-register" element={<AdminRegister />} />
             <Route path="/admin-register-2" element={<AdminRegister2 />} />
+            <Route path="/register" element={<Navigate to="/student-register" replace />} />
 
             {/* Protected Dashboard Routes */}
             <Route 
@@ -151,7 +156,7 @@ function App() {
               } 
             />
 
-            {/* Catch-all Routes - Redirect to login */}
+            {/* Catch-all Routes - Redirect to welcome page */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
