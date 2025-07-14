@@ -2,7 +2,7 @@ import React from 'react';
 import logobuksu from '../../Images/logobuksu.jpg'; // Import the logo
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 import CapstoneManagement from '../../components/CapstoneManagement';
-
+import { NavLink } from 'react-router-dom';
 const AdminNavbar = ({ activeSection, handleSectionChange }) => {
   // Style related functions
   const getNavButtonStyle = (isActive) => ({
