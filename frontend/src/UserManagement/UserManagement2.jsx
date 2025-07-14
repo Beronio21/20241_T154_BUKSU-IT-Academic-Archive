@@ -7,7 +7,6 @@ import SuccessModal from '../components/SuccessModal';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
 
 const UserManagement2 = () => {
-    const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
     const [editingUser, setEditingUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -18,7 +17,6 @@ const UserManagement2 = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
-    const [activeTab, setActiveTab] = useState('students');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
@@ -38,10 +36,10 @@ const UserManagement2 = () => {
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem('user-info'));
         setCurrentUser(userInfo);
-        fetchData();
+        fetchTeachers();
     }, []);
 
-    const fetchData = async () => {
+    const fetchTeachers = async () => {
         try {
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
             const config = {
@@ -50,57 +48,28 @@ const UserManagement2 = () => {
                     'Content-Type': 'application/json'
                 }
             };
-
-            const studentRes = await axios.get('http://localhost:8080/api/students', config);
             const teacherRes = await axios.get('http://localhost:8080/api/teachers', config);
-
-            if (Array.isArray(studentRes.data)) {
-                const sortedStudents = studentRes.data.sort((a, b) => 
-                    new Date(b.createdAt) - new Date(a.createdAt)
-                );
-                setStudents(sortedStudents);
-            } else {
-                setStudents([]);
-            }
-
-            if (Array.isArray(teacherRes.data)) {
-                const sortedTeachers = teacherRes.data.sort((a, b) => 
-                    new Date(b.createdAt) - new Date(a.createdAt)
-                );
-                setTeachers(sortedTeachers);
-            } else {
-                setTeachers([]);
-            }
-
+            // Only keep users with role 'Teacher' or 'Admin'
+            const filtered = Array.isArray(teacherRes.data)
+                ? teacherRes.data.filter(t => t.role === 'Teacher' || t.role === 'teacher' || t.role === 'Admin' || t.role === 'admin')
+                : [];
+            setTeachers(filtered);
             setError(null);
         } catch (error) {
-            console.error('Error fetching data:', error);
-            setError('Failed to fetch users. Please try again later.');
-            setStudents([]);
+            setError('Failed to fetch teachers. Please try again later.');
             setTeachers([]);
         }
     };
 
-    const filteredUsers = (users, type) => {
-        return users.filter(user => 
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (user[`${type}_id`] && user[`${type}_id`].toString().toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-    };
+    const filteredTeachers = teachers.filter(teacher =>
+        teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (teacher.teacher_id && teacher.teacher_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
-    const currentItems = activeTab === 'students' 
-        ? filteredUsers(students, 'student').slice(indexOfFirstItem, indexOfLastItem)
-        : filteredUsers(teachers, 'teacher').slice(indexOfFirstItem, indexOfLastItem);
+    const currentTeachers = filteredTeachers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredTeachers.length / itemsPerPage);
 
-    const totalItems = activeTab === 'students' 
-        ? filteredUsers(students, 'student').length 
-        : filteredUsers(teachers, 'teacher').length;
-
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
     const renderPagination = () => {
         let items = [];
@@ -115,11 +84,10 @@ const UserManagement2 = () => {
                 </Pagination.Item>
             );
         }
-
         return (
             <div className="d-flex justify-content-between align-items-center mt-3">
                 <div>
-                    <span>Total Items: {totalItems}</span>
+                    <span>Total Items: {filteredTeachers.length}</span>
                 </div>
                 <Pagination className="mb-0">
                     <Pagination.Prev
@@ -136,42 +104,34 @@ const UserManagement2 = () => {
         );
     };
 
-    const renderTable = (users, type) => (
+    const renderTable = () => (
         <div className="table-responsive">
             <Table striped bordered hover className="mt-3">
                 <thead>
                     <tr>
-                        <th>{type === 'student' ? 'Student ID' : 'Teacher ID'}</th>
+                        <th>Teacher</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>{type === 'student' ? 'Course' : 'Department'}</th>
-                        {type === 'student' && <th>Year</th>}
-                        <th>Status</th>
+                        <th>Department</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map(user => (
-                        <tr key={user._id}>
-                            <td>{user[`${type}_id`] || 'Not set'}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user[type === 'student' ? 'course' : 'department'] || 'Not set'}</td>
-                            {type === 'student' && <td>{user.year || 'Not set'}</td>}
-                            <td>
-                                <span className={`badge ${user.isProfileComplete ? 'bg-success' : 'bg-danger'}`}>
-                                    {user.isProfileComplete ? 'Complete' : 'Incomplete'}
-                                </span>
-                            </td>
+                    {currentTeachers.map(teacher => (
+                        <tr key={teacher._id}>
+                            <td>{teacher.teacher_id || teacher.admin_id || 'Not set'}</td>
+                            <td>{teacher.name}</td>
+                            <td>{teacher.email}</td>
+                            <td>{teacher.department || 'Not set'}</td>
                             <td>
                                 <div className="d-flex gap-2">
-                                    <Button variant="info" size="sm" onClick={() => handleView(user)}>
+                                    <Button variant="info" size="sm" onClick={() => handleView(teacher)}>
                                         View
                                     </Button>
-                                    <Button variant="warning" size="sm" onClick={() => handleEdit(user, type)}>
+                                    <Button variant="warning" size="sm" onClick={() => handleEdit(teacher)}>
                                         Edit
                                     </Button>
-                                    <Button variant="danger" size="sm" onClick={() => handleDelete(user._id, type)}>
+                                    <Button variant="danger" size="sm" onClick={() => handleDelete(teacher._id)}>
                                         Delete
                                     </Button>
                                 </div>
@@ -188,8 +148,8 @@ const UserManagement2 = () => {
         setIsViewing(true);
     };
 
-    const handleEdit = async (user, type) => {
-        setEditingUser({ ...user, type });
+    const handleEdit = async (user) => {
+        setEditingUser({ ...user, type: user.role });
         setIsEditing(true);
     };
 
@@ -208,7 +168,7 @@ const UserManagement2 = () => {
                 : `http://localhost:8080/api/teachers/${userId}`;
 
             await axios.put(endpoint, updatedData, config);
-            fetchData();
+            fetchTeachers();
             setIsEditing(false);
             setEditingUser(null);
             alert('User updated successfully');
@@ -218,8 +178,8 @@ const UserManagement2 = () => {
         }
     };
 
-    const handleDelete = async (userId, type) => {
-        setUserToDelete({ id: userId, type });
+    const handleDelete = async (userId) => {
+        setUserToDelete({ id: userId, type: 'teacher' });
         setShowDeleteModal(true);
     };
 
@@ -240,7 +200,7 @@ const UserManagement2 = () => {
                 : `http://localhost:8080/api/teachers/${userToDelete.id}`;
 
             await axios.delete(endpoint, config);
-            fetchData();
+            fetchTeachers();
             setShowDeleteModal(false);
             setUserToDelete(null);
             setShowSuccessModal(true);
@@ -271,28 +231,6 @@ const UserManagement2 = () => {
                                     <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
                                         <h3 className="mb-0">User Management</h3>
                                         <div className="d-flex align-items-center justify-content-end" style={{ flex: 1, marginLeft: '24px' }}>
-                                            <div className="btn-group me-3">
-                                                <button
-                                                    className={`btn ${activeTab === 'students' ? 'btn-light' : 'btn-outline-light'}`}
-                                                    onClick={() => {
-                                                        setActiveTab('students');
-                                                        setCurrentPage(1);
-                                                    }}
-                                                    style={{ minWidth: '100px' }}
-                                                >
-
-                                                </button>
-                                                <button
-                                                    className={`btn ${activeTab === 'teachers' ? 'btn-light' : 'btn-outline-light'}`}
-                                                    onClick={() => {
-                                                        setActiveTab('teachers');
-                                                        setCurrentPage(1);
-                                                    }}
-                                                    style={{ minWidth: '100px' }}
-                                                >
-                                                  
-                                                </button>
-                                            </div>
                                             <div className="search-container" style={{ minWidth: '280px', maxWidth: '400px' }}>
                                                 <InputGroup style={{ height: '44px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                                                     <InputGroup.Text style={{ 
@@ -346,96 +284,35 @@ const UserManagement2 = () => {
                                                 <Table hover className="mb-0">
                                                     <thead className="table-dark position-sticky top-0" style={{ zIndex: 1 }}>
                                                         <tr>
-                                                            <th style={{ width: '15%', minWidth: '120px' }}>
-                                                                {activeTab === 'students' ? 'Student ID' : 'Teacher ID'}
-                                                            </th>
+                                                            <th style={{ width: '15%', minWidth: '120px' }}>Teacher</th>
                                                             <th style={{ width: '20%', minWidth: '180px' }}>Name</th>
                                                             <th style={{ width: '25%', minWidth: '200px' }}>Email</th>
-                                                            <th style={{ width: '15%', minWidth: '150px' }}>
-                                                                {activeTab === 'students' ? 'Course' : 'Department'}
-                                                            </th>
-                                                            {activeTab === 'students' && (
-                                                                <th style={{ width: '10%', minWidth: '80px' }}>Year</th>
-                                                            )}
-                                                            <th style={{ width: '10%', minWidth: '100px' }}>Status</th>
+                                                            <th style={{ width: '15%', minWidth: '150px' }}>Department</th>
                                                             <th style={{ width: '15%', minWidth: '150px' }}>Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {currentItems.map(user => (
-                                                            <tr key={user._id}>
-                                                                <td>{user[`${activeTab.slice(0, -1)}_id`] || 'Not set'}</td>
+                                                        {currentTeachers.map(teacher => (
+                                                            <tr key={teacher._id}>
+                                                                <td>{teacher.teacher_id || teacher.admin_id || 'Not set'}</td>
                                                                 <td>
-                                                                    <div className="text-truncate" style={{ maxWidth: '180px' }}>
-                                                                        {user.name}
-                                                                    </div>
+                                                                    <div className="text-truncate" style={{ maxWidth: '180px' }}>{teacher.name}</div>
                                                                 </td>
                                                                 <td>
-                                                                    <div className="text-truncate" style={{ maxWidth: '200px' }}>
-                                                                        {user.email}
-                                                                    </div>
+                                                                    <div className="text-truncate" style={{ maxWidth: '200px' }}>{teacher.email}</div>
                                                                 </td>
                                                                 <td>
-                                                                    <div className="text-truncate" style={{ maxWidth: '150px' }}>
-                                                                        {user[activeTab === 'students' ? 'course' : 'department'] || 'Not set'}
-                                                                    </div>
-                                                                </td>
-                                                                {activeTab === 'students' && (
-                                                                    <td>{user.year || 'Not set'}</td>
-                                                                )}
-                                                                <td>
-                                                                    <Badge 
-                                                                        bg={user.isProfileComplete ? 'success' : 'warning'}
-                                                                        className="px-2 py-1"
-                                                                    >
-                                                                        {user.isProfileComplete ? 'Complete' : 'Incomplete'}
-                                                                    </Badge>
+                                                                    <div className="text-truncate" style={{ maxWidth: '150px' }}>{teacher.department || 'Not set'}</div>
                                                                 </td>
                                                                 <td>
                                                                     <div className="d-flex gap-2">
-                                                                        <Button
-                                                                            variant="outline-primary"
-                                                                            size="sm"
-                                                                            className="d-inline-flex align-items-center justify-content-center"
-                                                                            onClick={() => handleView(user)}
-                                                                            style={{
-                                                                                width: '32px',
-                                                                                height: '32px',
-                                                                                padding: 0,
-                                                                                borderRadius: '4px'
-                                                                            }}
-                                                                            title="View Details"
-                                                                        >
+                                                                        <Button variant="outline-primary" size="sm" className="d-inline-flex align-items-center justify-content-center" onClick={() => handleView(teacher)} style={{ width: '32px', height: '32px', padding: 0, borderRadius: '4px' }} title="View Details">
                                                                             <FaEye size={14} />
                                                                         </Button>
-                                                                        <Button
-                                                                            variant="outline-warning"
-                                                                            size="sm"
-                                                                            className="d-inline-flex align-items-center justify-content-center"
-                                                                            onClick={() => handleEdit(user, activeTab.slice(0, -1))}
-                                                                            style={{
-                                                                                width: '32px',
-                                                                                height: '32px',
-                                                                                padding: 0,
-                                                                                borderRadius: '4px'
-                                                                            }}
-                                                                            title="Edit User"
-                                                                        >
+                                                                        <Button variant="outline-warning" size="sm" className="d-inline-flex align-items-center justify-content-center" onClick={() => handleEdit(teacher)} style={{ width: '32px', height: '32px', padding: 0, borderRadius: '4px' }} title="Edit User">
                                                                             <FaEdit size={14} />
                                                                         </Button>
-                                                                        <Button
-                                                                            variant="outline-danger"
-                                                                            size="sm"
-                                                                            className="d-inline-flex align-items-center justify-content-center"
-                                                                            onClick={() => handleDelete(user._id, activeTab.slice(0, -1))}
-                                                                            style={{
-                                                                                width: '32px',
-                                                                                height: '32px',
-                                                                                padding: 0,
-                                                                                borderRadius: '4px'
-                                                                            }}
-                                                                            title="Delete User"
-                                                                        >
+                                                                        <Button variant="outline-danger" size="sm" className="d-inline-flex align-items-center justify-content-center" onClick={() => handleDelete(teacher._id)} style={{ width: '32px', height: '32px', padding: 0, borderRadius: '4px' }} title="Delete User">
                                                                             <FaTrash size={14} />
                                                                         </Button>
                                                                     </div>
@@ -444,7 +321,7 @@ const UserManagement2 = () => {
                                                         ))}
                                                     </tbody>
                                                 </Table>
-                                                {currentItems.length === 0 && (
+                                                {currentTeachers.length === 0 && (
                                                     <div className="text-center py-5">
                                                         <p className="text-muted mb-0">No users found</p>
                                                     </div>
