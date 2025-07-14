@@ -16,6 +16,14 @@ exports.googleAuth = async (req, res, next) => {
         // console.log(userRes);
         let user = await User.findOne({ email });
 
+        // Block all roles except teacher and admin from Google login
+        if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+            return res.status(403).json({
+                status: 'error',
+                message: 'Students are not allowed to log in'
+            });
+        }
+
         if (!user) {
             user = await User.create({
                 name,

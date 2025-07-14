@@ -66,7 +66,7 @@ function App() {
 
             {/* Authenticated Areas: Admin/Teacher Only */}
             <Route path="/login" element={<GoogleLogin />} />
-            <Route path="/student-register" element={<StudentRegister />} />
+            {/* <Route path="/student-register" element={<StudentRegister />} /> */}
             <Route path="/teacher-register" element={<TeacherRegister />} />
             <Route path="/admin-register" element={<AdminRegister />} />
             <Route path="/admin-register-2" element={<AdminRegister2 />} />

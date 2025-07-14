@@ -116,6 +116,14 @@ router.post('/google', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        // Check if user is a student
+        let student = await User.findOne({ email, role: 'student' });
+        if (student) {
+            return res.status(403).json({
+                status: 'error',
+                message: 'Student users do not need to log in. Please access the public dashboard.'
+            });
+        }
         // Check teacher first
         let teacher = await Teacher.findOne({ email });
         if (teacher) {

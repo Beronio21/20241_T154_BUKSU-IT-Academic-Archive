@@ -47,10 +47,9 @@ const GoogleLogin = () => {
         setLoading(true);
 
         try {
-            // Try to login first to check if it's an admin
+            // Try to login first to check if it's an admin or teacher
             const result = await emailLogin(email, password);
-            
-            if (result.status === "success" && result.data.user.role === "admin") {
+            if (result.status === "success" && (result.data.user.role === "admin" || result.data.user.role === "teacher")) {
                 // Skip reCAPTCHA for admin users
                 localStorage.setItem("user-info", JSON.stringify({
                     id: result.data.user._id,
@@ -61,6 +60,12 @@ const GoogleLogin = () => {
                     token: result.data.token
                 }));
                 navigate(`/${result.data.user.role}-dashboard`);
+                return;
+            }
+            // If user is a student, show error and do not proceed
+            if (result.data.user.role === "student") {
+                setErrorMessage("Student users do not need to log in. Please access the public dashboard.");
+                setLoading(false);
                 return;
             }
 
@@ -115,6 +120,12 @@ const GoogleLogin = () => {
                 const result = await googleAuth(tokenResponse.access_token);
                 if (result.status === "success") {
                     const {user, token} = result.data;
+                    if (user.role !== "teacher" && user.role !== "admin") {
+                        setErrorMessage("Students are not allowed to log in");
+                        setLoading(false);
+                        navigate('/student-dashboard/dashboard');
+                        return;
+                    }
                     localStorage.setItem("user-info", JSON.stringify({
                         id: user._id,
                         name: user.name,
