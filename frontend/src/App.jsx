@@ -23,6 +23,7 @@ import UserManagement2 from './UserManagement/UserManagement2';
 import StudentRecords2 from './Records/StudentRecords2';
 import TeacherRecords2 from './Records/TeacherRecords2';
 import ArchivedCapstones from './components/ArchivedCapstones';
+import TeacherManagement2 from './components/TeacherManagement2';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -142,6 +143,15 @@ function App() {
               element={
                 <ProtectedRoute 
                   element={<AdminRegister2 />} 
+                  allowedRole="admin"
+                />
+              } 
+            />
+            <Route 
+              path="/admin-dashboard/teacher-management-2" 
+              element={
+                <ProtectedRoute 
+                  element={<TeacherManagement2 />} 
                   allowedRole="admin"
                 />
               } 
