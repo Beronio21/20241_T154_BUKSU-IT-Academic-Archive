@@ -1,0 +1,182 @@
+.table-section-label {
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.section-label-text {
+  font-size: 1.18rem;
+  font-weight: 500;
+  color: #1e293b;
+  letter-spacing: 0.01em;
+  background: transparent;
+  display: inline-block;
+  margin-bottom: 0.2rem;
+}
+@media (max-width: 900px) {
+  .section-label-text {
+    font-size: 1.05rem;
+  }
+}
+.teacher-tabs-nav {
+  border-bottom: 1.5px solid #e5e7eb;
+  background: transparent;
+  margin-bottom: 0.5rem;
+  min-height: 38px;
+}
+.teacher-tab {
+  font-size: 1.13rem;
+  font-weight: 500;
+  color: #fff;
+  text-transform: capitalize;
+  padding: 0 0 8px 0;
+  margin-right: 0.5rem;
+  background: none;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  transition: color 0.18s, border-bottom 0.18s;
+  border-bottom: 2.5px solid transparent;
+  position: relative;
+  letter-spacing: 0.01em;
+  display: inline-block;
+}
+.teacher-tab.active {
+  color: #fff;
+  font-weight: 700;
+  border-bottom: 2.5px solid #2563eb;
+  background: none;
+}
+.teacher-tab:hover:not(.active) {
+  color: #60a5fa;
+  border-bottom: 2.5px solid #a5b4fc;
+  background: none;
+}
+@media (max-width: 900px) {
+  .teacher-tabs-nav {
+    gap: 1.2rem !important;
+  }
+  .teacher-tab {
+    font-size: 1.01rem;
+    padding-bottom: 6px;
+  }
+}
+.teacher-management-toolbar {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+.search-dropdown-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 220px;
+  max-width: 500px;
+}
+.custom-status-dropdown {
+  min-width: 0;
+  text-align: right;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+  position: relative;
+}
+.dropdown-toggle-text {
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  padding: 0 10px;
+  height: 44px;
+  line-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: none;
+  vertical-align: middle;
+  transition: color 0.18s, text-decoration 0.18s;
+}
+.dropdown-toggle-text span {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  transition: color 0.18s;
+}
+.dropdown-toggle-text.open,
+.dropdown-toggle-text:active {
+  color: #e0e7ef;
+}
+.dropdown-toggle-text.open span,
+.dropdown-toggle-text:active span {
+  color: #e0e7ef;
+}
+.dropdown-toggle-text:hover {
+  color: #e0e7ef;
+  text-decoration: underline;
+}
+.dropdown-toggle-text:hover span {
+  color: #e0e7ef;
+}
+.dropdown-menu-status {
+  min-width: 180px;
+  width: 180px;
+  z-index: 20;
+  background: #222;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(30,41,59,0.10);
+  border: none;
+  padding: 0.25rem 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.dropdown-item-status {
+  font-weight: 500;
+  font-size: 1.04rem;
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s, color 0.15s, text-decoration 0.15s;
+  border-radius: 0;
+  margin: 0;
+  outline: none;
+  letter-spacing: 0.01em;
+}
+.dropdown-item-status.active,
+.dropdown-item-status:active {
+  color: #60a5fa;
+  background: #1e293b;
+  text-decoration: underline;
+}
+.dropdown-item-status:hover {
+  color: #60a5fa;
+  background: #1e293b;
+  text-decoration: underline;
+}
+@media (max-width: 700px) {
+  .search-dropdown-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .custom-status-dropdown {
+    text-align: left;
+    min-width: 0;
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+} 

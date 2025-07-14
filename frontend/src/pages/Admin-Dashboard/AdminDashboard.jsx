@@ -10,7 +10,7 @@ import AdminRegister from '../../Auth/AdminRegister';
 import ReviewSubmission from '../../components/ReviewSubmission';
 import CapstoneManagement from '../../components/CapstoneManagement';
 import ArchivedCapstones from '../../components/ArchivedCapstones';
-import TeacherApproval from '../../components/TeacherApproval';
+import TeacherManagement from '../../components/TeacherManagement';
 import { Table } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -115,8 +115,8 @@ const AdminDashboard = () => {
         return <StudentRecords />;
       case 'teacher-records':
         return <TeacherRecords />;
-      case 'teacher-approval':
-        return <TeacherApproval />;
+      case 'teacher-management':
+        return <TeacherManagement />;
       case 'review-submissions':
         return <ReviewSubmission />;
       case 'capstone-management':
