@@ -513,3 +513,269 @@ select:focus {
 .modal-content-wide .keywords-list {
   gap: 0.8rem; /* More space between tags */
 }
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  min-width: 160px;
+  margin-left: 10px;
+}
+
+.custom-dropdown select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 12px 36px 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-dropdown select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* Hover state */
+.custom-dropdown:hover select {
+  border-color: #9ca3af;
+}
+
+.custom-dropdown:hover .dropdown-arrow {
+  color: #3b82f6;
+}
+
+/* Active state */
+.custom-dropdown select:active {
+  background-color: #f3f4f6;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .custom-dropdown select {
+    background-color: #1f2937;
+    border-color: #4b5563;
+    color: #f3f4f6;
+  }
+  
+  .dropdown-arrow {
+    color: #9ca3af;
+  }
+}
+
+/* Wider Search and Filter Container */
+.search-filter-wide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Wider Search Box */
+.search-box-wide {
+  position: relative;
+  width: 100%;
+}
+
+.search-box-wide input {
+  width: 100%;
+  padding: 14px 20px 14px 48px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.search-box-wide input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 18px;
+}
+
+/* Wider Dropdowns Container */
+.dropdowns-container {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Wider Custom Dropdown */
+.custom-dropdown-wide {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.custom-dropdown-wide select {
+  appearance: none;
+  width: 100%;
+  padding: 14px 48px 14px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #f9fafb;
+  color: #374151;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-dropdown-wide select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+/* Hover Effects */
+.search-box-wide:hover input {
+  border-color: #9ca3af;
+}
+
+.search-box-wide:hover .search-icon {
+  color: #3b82f6;
+}
+
+.custom-dropdown-wide:hover select {
+  border-color: #9ca3af;
+}
+
+.custom-dropdown-wide:hover .dropdown-arrow {
+  color: #3b82f6;
+}
+
+/* Dropdown Fix - Remove Duplicate Arrow */
+.dropdown-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none; /* Remove any default background */
+  padding-right: 40px; /* Make space for our custom arrow */
+}
+
+.custom-dropdown-wide {
+  position: relative;
+}
+
+.custom-dropdown-wide::after {
+  content: "▼";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 12px;
+  transition: color 0.3s ease;
+}
+
+.custom-dropdown-wide:hover::after {
+  color: #3b82f6;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dropdowns-container {
+    flex-direction: column;
+  }
+  
+  .search-box-wide input,
+  .custom-dropdown-wide select {
+    padding: 12px 42px 12px 16px;
+    font-size: 15px;
+  }
+  
+  .search-icon {
+    left: 14px;
+    font-size: 16px;
+  }
+}
+
+/* Adjusted Search Container */
+.search-filter-adjusted {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 800px; /* Reduced from 1200px */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Narrower Search Box with Black Text */
+.search-box-adjusted {
+  position: relative;
+  width: 50%; /* Half width */
+  min-width: 300px; /* Minimum width for usability */
+}
+
+.search-box-adjusted input {
+  width: 100%;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9fafb;
+  color: #000; /* Black text */
+  transition: all 0.3s ease;
+}
+
+.search-box-adjusted input::placeholder {
+  color: #9ca3af; /* Lighter placeholder text */
+}
+
+.search-box-adjusted input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  color: #000; /* Ensure black text when focused */
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 16px;
+}

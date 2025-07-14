@@ -88,34 +88,46 @@ const WelcomePage = () => {
             <p>Explore approved research papers and capstone projects</p>
           </div>
 
-          {/* Search and Filter */}
-          <div className="search-filter">
-            <div className="search-box">
+          {/* Search and Filter - Adjusted Width */}
+          <div className="search-filter-adjusted">
+            {/* Narrower Search Box with Black Text */}
+            <div className="search-box-adjusted">
               <input
                 type="text"
-                placeholder="Search by title or author"
+                placeholder="Search by title, author, or keywords..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <span className="search-icon">🔍</span>
             </div>
-            <select 
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-            >
-              <option value="">Select Year</option>
-              {yearOptions.map(year => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
+
+            {/* Dropdowns */}
+            <div className="dropdowns-container">
+              <div className="custom-dropdown-wide">
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  className="dropdown-select"
+                >
+                  <option value="">All Years</option>
+                  {yearOptions.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="custom-dropdown-wide">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="dropdown-select"
+                >
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
 
           {/* Research Items */}
@@ -233,7 +245,7 @@ const WelcomePage = () => {
               <button 
                 className="btn-close-modal"
                 onClick={() => setShowDetailsModal(false)}
-              >
+            >
                 Close
               </button>
             </div>
