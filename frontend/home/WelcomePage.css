@@ -54,9 +54,9 @@ body {
   color: var(--primary-color);
 }
 
+/* Update the nav-actions to remove gap since there's only one button now */
 .nav-actions {
   display: flex;
-  gap: 1rem;
 }
 
 /* Buttons */

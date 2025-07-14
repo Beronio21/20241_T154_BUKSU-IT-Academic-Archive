@@ -62,11 +62,11 @@ const WelcomePage = () => {
         <div className="nav-container">
           <h1 className="nav-brand">BUKSU IT Archive</h1>
           <div className="nav-actions">
-            <button className="btn-outline" onClick={() => navigate("/login")}>
-              Login
-            </button>
-            <button className="btn-primary" onClick={() => navigate("/register")}>
-              Sign Up
+            <button 
+              className="btn-outline" 
+              onClick={() => navigate("/login")}
+            >
+              Login/Signup
             </button>
           </div>
         </div>
