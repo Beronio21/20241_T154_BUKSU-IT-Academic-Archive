@@ -66,9 +66,9 @@ const StudentDashboard = () => {
   }, []);
 
   const fetchSubmissions = async () => {
-    setLoading(true);
-    setError(null);
-    try {
+      setLoading(true);
+      setError(null);
+      try {
       const userInfo = JSON.parse(localStorage.getItem("user-info"));
       if (!userInfo || !userInfo.email) {
         throw new Error("User  info not found");
@@ -79,10 +79,10 @@ const StudentDashboard = () => {
     } catch (error) {
       console.error("Error fetching submissions:", error);
       setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      } finally {
+        setLoading(false);
+      }
+    };
 
   // Fetch approved capstones
   useEffect(() => {
@@ -178,7 +178,7 @@ const StudentDashboard = () => {
         return <Dashboard />;
       case "dashboard":
       default:
-        return (
+    return (
           <div className="student-dashboard pt-0">
             {loading ? (
               <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
@@ -678,144 +678,144 @@ const StudentDashboard = () => {
               </Modal.Footer>
             </Modal>
 
-            <div className={`custom-modal ${showDetailsModal ? 'show' : ''}`} onClick={() => setShowDetailsModal(false)}>
-              <div 
-                className="custom-modal-content" 
-                onClick={e => e.stopPropagation()}
-                style={{ 
-                  width: '95%',
-                  maxWidth: 1000,
-                  minWidth: 320,
-                  boxShadow: '0 8px 32px rgba(30,41,59,0.18)',
-                  borderRadius: 18,
-                  padding: 0,
-                  background: '#fff',
-                  margin: '0 auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <div
-                  className="custom-modal-header"
-                  style={{
-                    borderTopLeftRadius: 18,
-                    borderTopRightRadius: 18,
-                    padding: '1.5rem 2.5rem 1.1rem 2.5rem',
-                    background: 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)',
-                    color: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderBottom: 'none',
-                  }}
-                >
-                  <h3 style={{ fontWeight: 800, fontSize: '1.45rem', letterSpacing: 0.5, margin: 0, flex: 1, textAlign: 'center', textShadow: '0 2px 8px rgba(30,41,59,0.10)' }}>
-                    Capstone Details
-                  </h3>
+      <div className={`custom-modal ${showDetailsModal ? 'show' : ''}`} onClick={() => setShowDetailsModal(false)}>
+        <div 
+          className="custom-modal-content" 
+          onClick={e => e.stopPropagation()}
+          style={{ 
+            width: '95%',
+            maxWidth: 1000,
+            minWidth: 320,
+            boxShadow: '0 8px 32px rgba(30,41,59,0.18)',
+            borderRadius: 18,
+            padding: 0,
+            background: '#fff',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div
+            className="custom-modal-header"
+            style={{
+              borderTopLeftRadius: 18,
+              borderTopRightRadius: 18,
+              padding: '1.5rem 2.5rem 1.1rem 2.5rem',
+              background: 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderBottom: 'none',
+            }}
+          >
+            <h3 style={{ fontWeight: 800, fontSize: '1.45rem', letterSpacing: 0.5, margin: 0, flex: 1, textAlign: 'center', textShadow: '0 2px 8px rgba(30,41,59,0.10)' }}>
+              Capstone Details
+            </h3>
+          </div>
+          <div
+            className="custom-modal-body"
+            style={{
+              padding: '2.2rem 3.5rem 2.2rem 3.5rem',
+              fontSize: '1.08rem',
+              color: '#334155',
+              fontWeight: 500,
+              borderRadius: 18,
+              background: 'transparent',
+              textAlign: 'left',
+            }}
+          >
+            {selectedThesis && (
+              <div className="thesis-details" style={{ width: '100%' }}>
+                {/* Title */}
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontWeight: 700, fontSize: 22, color: '#1e293b', marginBottom: 2, lineHeight: 1.3 }}>{selectedThesis.title}</div>
                 </div>
-                <div
-                  className="custom-modal-body"
-                  style={{
-                    padding: '2.2rem 3.5rem 2.2rem 3.5rem',
-                    fontSize: '1.08rem',
-                    color: '#334155',
-                    fontWeight: 500,
-                    borderRadius: 18,
-                    background: 'transparent',
-                    textAlign: 'left',
-                  }}
-                >
-                  {selectedThesis && (
-                    <div className="thesis-details" style={{ width: '100%' }}>
-                      {/* Title */}
-                      <div style={{ marginBottom: 18 }}>
-                        <div style={{ fontWeight: 700, fontSize: 22, color: '#1e293b', marginBottom: 2, lineHeight: 1.3 }}>{selectedThesis.title}</div>
-                      </div>
-                      {/* Category & Date Row */}
-                      <div style={{ display: 'flex', gap: 18, marginBottom: 18, flexWrap: 'wrap' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontWeight: 600, color: '#64748b', fontSize: 15 }}>Category:</span>
-                          <span style={{ color: '#3730a3', background: '#e0e7ff', borderRadius: 12, padding: '2px 12px', fontWeight: 700, fontSize: 14, letterSpacing: 0.2 }}>{selectedThesis.category}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontWeight: 600, color: '#64748b', fontSize: 15 }}>Date:</span>
-                          <span style={{ color: '#334155', fontWeight: 600, fontSize: 14 }}>{selectedThesis.createdAt ? new Date(selectedThesis.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}</span>
-                        </div>
-                      </div>
-                      {/* Divider */}
-                      <div style={{ borderBottom: '1.5px solid #e5e7eb', margin: '18px 0' }} />
-                      {/* Abstract */}
-                      <div style={{ marginBottom: 18 }}>
-                        <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Abstract</div>
-                        <div style={{
-                          color: '#475569',
-                          fontSize: 15,
-                          whiteSpace: 'pre-line',
-                          wordBreak: 'break-word',
-                          background: '#f8fafc',
-                          borderRadius: 8,
-                          padding: '16px 18px',
-                          lineHeight: 1.6,
-                          boxShadow: '0 2px 8px rgba(30,41,59,0.04)',
-                          textAlign: 'justify', // Justified alignment for clean edges
-                        }}>{selectedThesis.abstract || 'No abstract provided.'}</div>
-                      </div>
-                      {/* Members */}
-                      <div style={{ marginBottom: 18 }}>
-                        <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Members</div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                          {selectedThesis.members && selectedThesis.members.length > 0 ? selectedThesis.members.map((member, i) => (
-                            <span key={i} style={{ display: 'inline-block', background: '#e0f2fe', color: '#0369a1', borderRadius: 16, fontWeight: 600, fontSize: 14, padding: '6px 16px', marginBottom: 2 }}>{member}</span>
-                          )) : <span style={{ color: '#64748b' }}>None</span>}
-                        </div>
-                            </div>
-                      {/* Keywords */}
-                      <div style={{ marginBottom: 0 }}>
-                        <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Keywords</div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                          {selectedThesis.keywords && selectedThesis.keywords.length > 0 ? selectedThesis.keywords.map((keyword, i) => (
-                            <span key={i} style={{ display: 'inline-block', background: '#e2e8f0', color: '#334155', borderRadius: 16, fontWeight: 600, fontSize: 14, padding: '6px 16px', marginBottom: 2 }}>#{keyword}</span>
-                          )) : <span style={{ color: '#64748b' }}>None</span>}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                {/* Category & Date Row */}
+                <div style={{ display: 'flex', gap: 18, marginBottom: 18, flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontWeight: 600, color: '#64748b', fontSize: 15 }}>Category:</span>
+                    <span style={{ color: '#3730a3', background: '#e0e7ff', borderRadius: 12, padding: '2px 12px', fontWeight: 700, fontSize: 14, letterSpacing: 0.2 }}>{selectedThesis.category}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontWeight: 600, color: '#64748b', fontSize: 15 }}>Date:</span>
+                    <span style={{ color: '#334155', fontWeight: 600, fontSize: 14 }}>{selectedThesis.createdAt ? new Date(selectedThesis.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}</span>
+                  </div>
                 </div>
-                <div
-                  className="custom-modal-footer"
-                  style={{
-                    borderTop: 'none',
-                    padding: '1.25rem 2.5rem',
-                    borderBottomLeftRadius: 18,
-                    borderBottomRightRadius: 18,
+                {/* Divider */}
+                <div style={{ borderBottom: '1.5px solid #e5e7eb', margin: '18px 0' }} />
+                {/* Abstract */}
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Abstract</div>
+                  <div style={{
+                    color: '#475569',
+                    fontSize: 15,
+                    whiteSpace: 'pre-line',
+                    wordBreak: 'break-word',
                     background: '#f8fafc',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    gap: 12,
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setShowDetailsModal(false)}
-                    style={{
-                      minWidth: 120,
-                      fontWeight: 700,
-                      borderRadius: 8,
-                      background: '#2563eb',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '12px 0',
-                      fontSize: 17,
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(37,99,235,0.10)',
-                      transition: 'background 0.2s',
-                    }}
-                  >
-                    Close
-                  </button>
+                    borderRadius: 8,
+                    padding: '16px 18px',
+                    lineHeight: 1.6,
+                    boxShadow: '0 2px 8px rgba(30,41,59,0.04)',
+                          textAlign: 'justify', // Justified alignment for clean edges
+                  }}>{selectedThesis.abstract || 'No abstract provided.'}</div>
+                </div>
+                {/* Members */}
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Members</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {selectedThesis.members && selectedThesis.members.length > 0 ? selectedThesis.members.map((member, i) => (
+                      <span key={i} style={{ display: 'inline-block', background: '#e0f2fe', color: '#0369a1', borderRadius: 16, fontWeight: 600, fontSize: 14, padding: '6px 16px', marginBottom: 2 }}>{member}</span>
+                    )) : <span style={{ color: '#64748b' }}>None</span>}
+                  </div>
+                </div>
+                {/* Keywords */}
+                <div style={{ marginBottom: 0 }}>
+                  <div style={{ fontWeight: 600, color: '#2563eb', fontSize: 16, marginBottom: 6 }}>Keywords</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {selectedThesis.keywords && selectedThesis.keywords.length > 0 ? selectedThesis.keywords.map((keyword, i) => (
+                      <span key={i} style={{ display: 'inline-block', background: '#e2e8f0', color: '#334155', borderRadius: 16, fontWeight: 600, fontSize: 14, padding: '6px 16px', marginBottom: 2 }}>#{keyword}</span>
+                    )) : <span style={{ color: '#64748b' }}>None</span>}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+          </div>
+          <div
+            className="custom-modal-footer"
+            style={{
+              borderTop: 'none',
+              padding: '1.25rem 2.5rem',
+              borderBottomLeftRadius: 18,
+              borderBottomRightRadius: 18,
+              background: '#f8fafc',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 12,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setShowDetailsModal(false)}
+              style={{
+                minWidth: 120,
+                fontWeight: 700,
+                borderRadius: 8,
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                padding: '12px 0',
+                fontSize: 17,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(37,99,235,0.10)',
+                transition: 'background 0.2s',
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
           </div>
         );
     }

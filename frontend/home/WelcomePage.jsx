@@ -11,6 +11,8 @@ const WelcomePage = () => {
   const [approvedCapstones, setApprovedCapstones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCapstone, setSelectedCapstone] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   // Fetch approved capstones
   useEffect(() => {
@@ -54,6 +56,12 @@ const WelcomePage = () => {
   const categories = ["All", ...new Set(
     approvedCapstones.map(capstone => capstone.category).filter(Boolean)
   )];
+
+  // Add this function to handle viewing details
+  const handleViewDetails = (capstone) => {
+    setSelectedCapstone(capstone);
+    setShowDetailsModal(true);
+  };
 
   return (
     <div className="welcome-page">
@@ -151,7 +159,7 @@ const WelcomePage = () => {
                   <div className="card-footer">
                     <button 
                       className="card-button"
-                      onClick={() => navigate(`/research/${capstone._id}`)}
+                      onClick={() => handleViewDetails(capstone)}
                     >
                       View Details
                     </button>
@@ -162,6 +170,76 @@ const WelcomePage = () => {
           )}
         </div>
       </main>
+
+      {/* Details Modal */}
+      {showDetailsModal && (
+        <div className="modal-overlay" onClick={() => setShowDetailsModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Research Details</h3>
+              <button 
+                className="modal-close-btn"
+                onClick={() => setShowDetailsModal(false)}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="modal-body">
+              {selectedCapstone && (
+                <div className="capstone-details">
+                  <h3>{selectedCapstone.title}</h3>
+                  <div className="detail-row">
+                    <span className="detail-label">Category:</span>
+                    <span className="detail-value">{selectedCapstone.category}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Year:</span>
+                    <span className="detail-value">
+                      {new Date(selectedCapstone.createdAt).getFullYear()}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Abstract:</span>
+                    <p className="detail-value">{selectedCapstone.abstract}</p>
+                  </div>
+                  {selectedCapstone.members?.length > 0 && (
+                    <div className="detail-row">
+                      <span className="detail-label">Members:</span>
+                      <div className="members-list">
+                        {selectedCapstone.members.map((member, index) => (
+                          <span key={index} className="member-tag">
+                            {member}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {selectedCapstone.keywords?.length > 0 && (
+                    <div className="detail-row">
+                      <span className="detail-label">Keywords:</span>
+                      <div className="keywords-list">
+                        {selectedCapstone.keywords.map((keyword, index) => (
+                          <span key={index} className="keyword-tag">
+                            #{keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button 
+                className="btn-close-modal"
+                onClick={() => setShowDetailsModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="welcome-footer">
