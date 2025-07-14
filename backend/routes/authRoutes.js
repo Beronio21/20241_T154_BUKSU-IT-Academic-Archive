@@ -46,6 +46,12 @@ router.post('/google', async (req, res) => {
             await teacher.save();
         }
         if (teacher) {
+            if (teacher.status !== 'Approved') {
+                return res.status(403).json({
+                    status: 'error',
+                    message: 'Your account is pending approval by an admin.'
+                });
+            }
             const token = jwt.sign(
                 { 
                     userId: teacher._id,
@@ -127,6 +133,12 @@ router.post('/login', async (req, res) => {
         // Check teacher first
         let teacher = await Teacher.findOne({ email });
         if (teacher) {
+            if (teacher.status !== 'Approved') {
+                return res.status(403).json({
+                    status: 'error',
+                    message: 'Your account is pending approval by an admin.'
+                });
+            }
             const isMatch = await bcrypt.compare(password, teacher.password);
             if (!isMatch) {
                 return res.status(401).json({

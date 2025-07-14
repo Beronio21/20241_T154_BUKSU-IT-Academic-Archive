@@ -31,7 +31,8 @@ router.post('/', async (req, res) => {
             birthday,
             gender,
             role: 'teacher',
-            isProfileComplete: false
+            isProfileComplete: false,
+            status: 'Pending'
         });
         await teacher.save();
         res.status(201).json({ message: 'Teacher registered successfully.' });

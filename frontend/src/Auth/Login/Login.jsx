@@ -121,9 +121,8 @@ const GoogleLogin = () => {
                 if (result.status === "success") {
                     const {user, token} = result.data;
                     if (user.role !== "teacher" && user.role !== "admin") {
-                        setErrorMessage("Students are not allowed to log in");
+                        setErrorMessage("Error login for students");
                         setLoading(false);
-                        navigate('/student-dashboard/dashboard');
                         return;
                     }
                     localStorage.setItem("user-info", JSON.stringify({
@@ -136,6 +135,10 @@ const GoogleLogin = () => {
                         googleDriveToken: tokenResponse.access_token,
                     }));
                     navigate(`/${user.role}-dashboard`);
+                } else if (result.status === "error" && result.message === "Error: Login for students is not allowed") {
+                    setErrorMessage("Error login for students");
+                    setLoading(false);
+                    return;
                 } else {
                     setErrorMessage(result.message || "Google login failed");
                 }

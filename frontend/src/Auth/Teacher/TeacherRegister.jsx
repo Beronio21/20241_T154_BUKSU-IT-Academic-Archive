@@ -176,9 +176,9 @@ const TeacherRegister = () => {
       });
 
       if (response.status === 201) {
-        setShowSuccessModal(false);
-        setShowGoogleLinkModal(true);
-        localStorage.setItem('pendingGoogleLinking', 'true'); // Store state
+        setShowSuccessModal(true);
+        setShowGoogleLinkModal(false);
+        localStorage.removeItem('pendingGoogleLinking');
       } else {
         setError(response.data.message || "Registration failed. Please try again.");
         setShowErrorModal(true);
@@ -254,13 +254,14 @@ const TeacherRegister = () => {
         onClose={() => setShowEmailModal(false)} 
       />
 
-      {/* Success Modal */}
+      {/* Success Modal for Pending Approval */}
       {showSuccessModal && (
         <div className="success-modal">
           <div className="success-modal__content">
             <div className="success-modal__icon">✓</div>
-            <h3 className="success-modal__title">Success!</h3>
-            <p className="success-modal__message">Registration successful! Redirecting to login...</p>
+            <h3 className="success-modal__title">Registration Submitted!</h3>
+            <p className="success-modal__message">Your account is pending admin approval. You will be able to log in once approved.</p>
+            <button className="modal-button" onClick={() => setShowSuccessModal(false)}>OK</button>
           </div>
         </div>
       )}

@@ -55,6 +55,11 @@ const teacherSchema = new mongoose.Schema({
     isProfileComplete: {
         type: Boolean,
         default: false
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Rejected'],
+        default: 'Pending'
     }
 }, {
     timestamps: true
