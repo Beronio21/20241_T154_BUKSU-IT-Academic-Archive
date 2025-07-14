@@ -477,3 +477,39 @@ select:focus {
 .btn-close-modal:hover {
   background: #1d4ed8;
 }
+
+/* Wider Modal Styles */
+.modal-content-wide {
+  background-color: white;
+  border-radius: 12px;
+  width: 95%; /* Increased from 90% */
+  max-width: 1000px; /* Increased from 800px */
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Adjust content spacing for wider modal */
+.modal-content-wide .capstone-details {
+  padding: 0 2rem; /* More horizontal padding */
+}
+
+.modal-content-wide .detail-row {
+  margin-bottom: 1.5rem; /* More space between rows */
+}
+
+.modal-content-wide .detail-value {
+  font-size: 1.1rem; /* Slightly larger text */
+}
+
+/* Make abstract text area wider */
+.modal-content-wide .detail-row:nth-child(4) .detail-value {
+  max-width: 100%;
+  line-height: 1.8; /* More readable line spacing */
+}
+
+/* Adjust member and keyword tags layout */
+.modal-content-wide .members-list,
+.modal-content-wide .keywords-list {
+  gap: 0.8rem; /* More space between tags */
+}

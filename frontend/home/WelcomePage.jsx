@@ -171,10 +171,10 @@ const WelcomePage = () => {
         </div>
       </main>
 
-      {/* Details Modal */}
+      {/* Wider Details Modal */}
       {showDetailsModal && (
         <div className="modal-overlay" onClick={() => setShowDetailsModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content-wide" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Research Details</h3>
               <button 
