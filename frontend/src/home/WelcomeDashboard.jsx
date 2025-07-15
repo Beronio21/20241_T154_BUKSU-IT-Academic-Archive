@@ -155,9 +155,11 @@ const WelcomeDashboard = () => {
           <div className="stat-number">{statistics.totalCapstones}</div>
         </div>
         <div className="stat-card">
-          <h3>Approved Capstones</h3>
+          <h3>Latest Year</h3>
           <div className="stat-number">
-            {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
+            {Object.keys(statistics.yearlyApprovals).length > 0 
+              ? Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))
+              : 'N/A'}
           </div>
         </div>
         <div className="stat-card">
