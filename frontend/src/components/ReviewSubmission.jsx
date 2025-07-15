@@ -228,7 +228,7 @@ const ViewSubmission = () => {
                 <div className="col-12 h-100">
                     <div className="card shadow h-100">
                         <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2" style={{ minHeight: '60px' }}>
-                            <h3 className="mb-0">View Capstone Research Paper Submissions</h3>
+                            <h3 className="mb-0">View Capstone Project Submissions</h3>  
                         </div>
                         <div className="card-body p-3" style={{ 
                             height: 'calc(100% - 60px)',

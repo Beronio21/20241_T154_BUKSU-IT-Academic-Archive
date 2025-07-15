@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Modal from 'react-bootstrap/Modal';
+import SuccessModal from '../components/SuccessModal';
+import TeacherProfileForm from '../components/TeacherProfileForm';
+import { io } from 'socket.io-client';
 
 const departments = [
   'Computer Science',
@@ -24,7 +27,8 @@ const TeacherProfile = () => {
     department: '',
     image: 'https://via.placeholder.com/150',
     role: 'teacher',
-    subject: ''
+    subject: '',
+    status: 'Active'
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -52,7 +56,9 @@ const TeacherProfile = () => {
         department: userInfo.department || '',
         gender: userInfo.gender || '',
         birthday: userInfo.birthday || '',
-        image: userInfo.image || 'https://via.placeholder.com/150'
+        image: userInfo.image || 'https://via.placeholder.com/150',
+       
+        status: userInfo.status || 'Active'
       };
       
       setFormData(profileData);
@@ -64,20 +70,29 @@ const TeacherProfile = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateProfile(formData)) {
       alert('Please fill all required fields!');
       return;
     }
-    
     try {
-      const updatedInfo = {
-        ...JSON.parse(localStorage.getItem('user-info')),
-        ...formData
-      };
-      
-      localStorage.setItem('user-info', JSON.stringify(updatedInfo));
+      const userInfo = JSON.parse(localStorage.getItem('user-info'));
+      const response = await fetch('http://localhost:8080/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${userInfo.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update profile');
+      }
+      const data = await response.json();
+      // Update localStorage for session consistency
+      localStorage.setItem('user-info', JSON.stringify({ ...userInfo, ...data.data }));
       setShowModal(false);
       alert('Profile updated successfully!');
       fetchProfile(); // Refresh data
@@ -86,7 +101,20 @@ const TeacherProfile = () => {
     }
   };
 
-  useEffect(() => { fetchProfile(); }, []);
+  useEffect(() => {
+    fetchProfile();
+    // Socket.IO real-time updates
+    const userInfo = JSON.parse(localStorage.getItem('user-info'));
+    const socket = io('http://localhost:8080');
+    socket.on('teacherUpdated', (payload) => {
+      if (payload.teacherId === userInfo?.id || payload.teacherId === userInfo?._id) {
+        fetchProfile();
+      }
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -174,7 +202,7 @@ const TeacherProfile = () => {
                   <div className="row">
                     <DetailItem icon="bi-person-badge" label="Teacher ID" value={formData.teacher_id} required missing={missingFields.includes('teacher_id')} />
                     <DetailItem icon="bi-building" label="Department" value={formData.department} required missing={missingFields.includes('department')} />
-                    <DetailItem icon="bi-book" label="Subject" value={formData.subject} />
+                  
                   </div>
                 </div>
               </div>
@@ -191,56 +219,15 @@ const TeacherProfile = () => {
                   </h3>
                 </div>
                 <div className="custom-modal-body" style={{ padding: '2.2rem 2.5rem 2.2rem 2.5rem', fontSize: '1.08rem', color: '#334155', fontWeight: 500, borderRadius: 18, background: 'transparent', textAlign: 'left' }}>
-                  <form onSubmit={handleSubmit}>
-                    <div className="row g-3">
-                      <FormField name="name" label="Full Name" value={formData.name} onChange={handleChange} required missing={missingFields.includes('name')} />
-                      <FormField name="email" label="Email" type="email" value={formData.email} disabled />
-                      <FormField name="teacher_id" label="Teacher ID" value={formData.teacher_id} onChange={handleChange} required missing={missingFields.includes('teacher_id')} />
-                      <FormField name="contact_number" label="Contact Number" value={formData.contact_number} onChange={handleChange} required missing={missingFields.includes('contact_number')} />
-                      <div className="col-md-6">
-                        <label className="form-label">Department <span className="text-danger">*</span></label>
-                        <select
-                          name="department"
-                          className={`form-select ${missingFields.includes('department') ? 'is-invalid' : ''}`}
-                          value={formData.department}
-                          onChange={handleChange}
-                          required
-                        >
-                          <option value="">Select Department</option>
-                          {departments.map(dept => (
-                            <option key={dept} value={dept}>{dept}</option>
-                          ))}
-                        </select>
-                        {missingFields.includes('department') && <div className="invalid-feedback">Department is required</div>}
-                      </div>
-                      <FormField name="birthday" label="Birthday" type="date" value={formData.birthday} onChange={handleChange} required missing={missingFields.includes('birthday')} />
-                      <div className="col-md-6">
-                        <label className="form-label">Gender <span className="text-danger">*</span></label>
-                        <select
-                          name="gender"
-                          className={`form-select ${missingFields.includes('gender') ? 'is-invalid' : ''}`}
-                          value={formData.gender}
-                          onChange={handleChange}
-                          required
-                        >
-                          <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
-                        </select>
-                        {missingFields.includes('gender') && <div className="invalid-feedback">Gender is required</div>}
-                      </div>
-                      <FormField name="subject" label="Subject Teaching" value={formData.subject} onChange={handleChange} />
-                    </div>
-                    <div className="d-flex justify-content-end gap-3 mt-4">
-                      <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                        Cancel
-                      </button>
-                      <button type="submit" className="btn btn-primary">
-                        Save Changes
-                      </button>
-                    </div>
-                  </form>
+                  <TeacherProfileForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    onSubmit={handleSubmit}
+                    onCancel={() => setShowModal(false)}
+                    missingFields={missingFields}
+                    isEdit={true}
+                    disabledFields={['email', 'status']}
+                  />
                 </div>
               </div>
             </div>

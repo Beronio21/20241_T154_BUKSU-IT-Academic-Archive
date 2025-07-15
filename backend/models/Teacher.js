@@ -48,6 +48,10 @@ const teacherSchema = new mongoose.Schema({
         enum: ['male', 'female', 'other', ''],
         default: ''
     },
+    subject: {
+        type: String,
+        default: ''
+    },
     role: {
         type: String,
         default: 'teacher'
@@ -58,7 +62,7 @@ const teacherSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
+        enum: ['Active', 'Inactive', 'Pending', 'Approved', 'Rejected'],
         default: 'Pending'
     }
 }, {

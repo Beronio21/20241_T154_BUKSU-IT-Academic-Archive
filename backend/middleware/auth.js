@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const Teacher = require('../models/Teacher');
 
 const auth = async (req, res, next) => {
     try {
@@ -20,9 +21,10 @@ const auth = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             console.log('Decoded token:', decoded);
             
-            const user = await User.findById(decoded.userId);
-            console.log('Found user:', user);
-            
+            let user = await User.findById(decoded.userId);
+            if (!user) {
+                user = await Teacher.findById(decoded.userId);
+            }
             if (!user) {
                 throw new Error('User not found');
             }
@@ -35,7 +37,7 @@ const auth = async (req, res, next) => {
             console.error('Token verification error:', error);
             return res.status(401).json({
                 status: 'error',
-                message: 'Invalid token'
+                message: 'Token verification error: ' + error.message
             });
         }
     } catch (error) {

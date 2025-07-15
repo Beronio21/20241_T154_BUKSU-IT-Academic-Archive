@@ -51,10 +51,29 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
+// Get a single teacher by ID
+router.get('/:id', auth, async (req, res) => {
+    try {
+        const teacher = await Teacher.findById(req.params.id);
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+        res.json(teacher);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Update a teacher
 router.put('/:id', auth, async (req, res) => {
     try {
         const teacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+        // Emit real-time update event
+        const io = req.app.get('io');
+        io.emit('teacherUpdated', { teacherId: teacher._id, data: teacher });
         res.json(teacher);
     } catch (error) {
         res.status(400).json({ message: error.message });

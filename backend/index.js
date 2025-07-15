@@ -13,6 +13,8 @@ const recaptchaRoutes = require('./routes/recaptchaRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const { google } = require('googleapis');
 const calendarRoutes = require('./routes/calendarRoutes');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
 
@@ -122,11 +124,22 @@ app.use((req, res) => {
     });
 });
 
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  },
+});
+
+// Make io accessible in routes
+app.set('io', io);
+
 const PORT = process.env.PORT || 8080;
 
 // Start server only after DB connection
 mongoose.connection.once('open', () => {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`MongoDB connected: ${mongoose.connection.host}`);
     });

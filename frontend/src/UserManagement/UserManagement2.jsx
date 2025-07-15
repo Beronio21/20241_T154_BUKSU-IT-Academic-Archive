@@ -5,6 +5,8 @@ import { FaSearch, FaEye, FaEdit, FaTrash, FaUserPlus, FaExclamationTriangle } f
 import { useNavigate, useLocation } from 'react-router-dom';
 import SuccessModal from '../components/SuccessModal';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
+import TeacherProfileForm from '../components/TeacherProfileForm';
+import { io } from 'socket.io-client';
 
 const UserManagement2 = () => {
     const [teachers, setTeachers] = useState([]);
@@ -38,6 +40,17 @@ const UserManagement2 = () => {
         setCurrentUser(userInfo);
         fetchTeachers();
     }, []);
+
+    useEffect(() => {
+        // Socket.IO real-time updates
+        const socket = io('http://localhost:8080');
+        socket.on('teacherUpdated', (payload) => {
+            fetchTeachers();
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, []); // Only run once on mount
 
     const fetchTeachers = async () => {
         try {
@@ -143,14 +156,40 @@ const UserManagement2 = () => {
         </div>
     );
 
-    const handleView = (user) => {
-        setSelectedUser(user);
-        setIsViewing(true);
+    const handleView = async (user) => {
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${userInfo?.token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            // Fetch latest teacher data from backend
+            const res = await axios.get(`http://localhost:8080/api/teachers/${user._id}`, config);
+            setSelectedUser(res.data);
+            setIsViewing(true);
+        } catch (error) {
+            alert('Failed to fetch latest teacher data.');
+        }
     };
 
     const handleEdit = async (user) => {
-        setEditingUser({ ...user, type: user.role });
-        setIsEditing(true);
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${userInfo?.token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            // Fetch latest teacher data from backend
+            const res = await axios.get(`http://localhost:8080/api/teachers/${user._id}`, config);
+            setEditingUser({ ...res.data, type: res.data.role });
+            setIsEditing(true);
+        } catch (error) {
+            alert('Failed to fetch latest teacher data.');
+        }
     };
 
     const handleUpdate = async (userId, type, updatedData) => {
@@ -434,38 +473,64 @@ const UserManagement2 = () => {
                                 {selectedUser && (
                                     <div className="row g-4">
                                         <div className="col-md-6">
-                                            <div className="mb-3">
-                                                <label className="text-muted small mb-1">ID</label>
-                                                <p className="mb-0 fw-bold">{selectedUser[`${selectedUser.type}_id`]}</p>
+                                            <div className="mb-3 text-center">
+                                                <img src={selectedUser.image || 'https://via.placeholder.com/150'} alt="Profile" style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '2px solid #e5e7eb' }} />
                                             </div>
                                             <div className="mb-3">
-                                                <label className="text-muted small mb-1">Name</label>
+                                                <label className="text-muted small mb-1">Full Name</label>
                                                 <p className="mb-0 fw-bold">{selectedUser.name}</p>
                                             </div>
                                             <div className="mb-3">
                                                 <label className="text-muted small mb-1">Email</label>
                                                 <p className="mb-0 fw-bold">{selectedUser.email}</p>
                                             </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Teacher ID</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.teacher_id}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Department</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.department}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Contact Number</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.contact_number}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Location</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.location || 'Not set'}</p>
+                                            </div>
+                                          
                                         </div>
                                         <div className="col-md-6">
                                             <div className="mb-3">
-                                                <label className="text-muted small mb-1">Role</label>
-                                                <p className="mb-0 text-capitalize fw-bold">{selectedUser.type}</p>
+                                                <label className="text-muted small mb-1">Birthday</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.birthday ? new Date(selectedUser.birthday).toLocaleDateString() : 'Not set'}</p>
                                             </div>
                                             <div className="mb-3">
-                                                <label className="text-muted small mb-1">
-                                                    {selectedUser.type === 'student' ? 'Course' : 'Department'}
-                                                </label>
-                                                <p className="mb-0 fw-bold">
-                                                    {selectedUser[selectedUser.type === 'student' ? 'course' : 'department']}
-                                                </p>
+                                                <label className="text-muted small mb-1">Gender</label>
+                                                <p className="mb-0 fw-bold text-capitalize">{selectedUser.gender || 'Not set'}</p>
                                             </div>
-                                            {selectedUser.type === 'student' && (
-                                                <div className="mb-3">
-                                                    <label className="text-muted small mb-1">Year</label>
-                                                    <p className="mb-0 fw-bold">{selectedUser.year}</p>
-                                                </div>
-                                            )}
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Status</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.status || 'Not set'}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Profile Complete</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.isProfileComplete ? 'Yes' : 'No'}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Role</label>
+                                                <p className="mb-0 fw-bold text-capitalize">{selectedUser.role || 'teacher'}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Created At</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleString() : 'Not set'}</p>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="text-muted small mb-1">Last Updated</label>
+                                                <p className="mb-0 fw-bold">{selectedUser.updatedAt ? new Date(selectedUser.updatedAt).toLocaleString() : 'Not set'}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -515,118 +580,18 @@ const UserManagement2 = () => {
                             </div>
                             <div className="custom-modal-body">
                                 {editingUser && (
-                                    <Form onSubmit={(e) => {
-                                        e.preventDefault();
-                                        handleUpdate(editingUser._id, editingUser.type, editingUser);
-                                    }}>
-                                        <div className="row g-3">
-                                            <div className="col-md-6">
-                                                <Form.Group>
-                                                    <Form.Label className="small">Name</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        value={editingUser.name || ''}
-                                                        onChange={(e) => setEditingUser({
-                                                            ...editingUser,
-                                                            name: e.target.value
-                                                        })}
-                                                    />
-                                                </Form.Group>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <Form.Group>
-                                                    <Form.Label className="small">Email</Form.Label>
-                                                    <Form.Control
-                                                        type="email"
-                                                        value={editingUser.email || ''}
-                                                        onChange={(e) => setEditingUser({
-                                                            ...editingUser,
-                                                            email: e.target.value
-                                                        })}
-                                                    />
-                                                </Form.Group>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <Form.Group>
-                                                    <Form.Label className="small">
-                                                        {editingUser.type === 'student' ? 'Student ID' : 'Teacher ID'}
-                                                    </Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        value={editingUser[`${editingUser.type}_id`] || ''}
-                                                        onChange={(e) => setEditingUser({
-                                                            ...editingUser,
-                                                            [`${editingUser.type}_id`]: e.target.value
-                                                        })}
-                                                    />
-                                                </Form.Group>
-                                            </div>
-                                            {editingUser.type === 'student' ? (
-                                                <>
-                                                    <div className="col-md-6">
-                                                        <Form.Group>
-                                                            <Form.Label className="small">Course</Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                value={editingUser.course || ''}
-                                                                onChange={(e) => setEditingUser({
-                                                                    ...editingUser,
-                                                                    course: e.target.value
-                                                                })}
-                                                            />
-                                                        </Form.Group>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <Form.Group>
-                                                            <Form.Label className="small">Year</Form.Label>
-                                                            <Form.Control
-                                                                type="number"
-                                                                value={editingUser.year || ''}
-                                                                onChange={(e) => setEditingUser({
-                                                                    ...editingUser,
-                                                                    year: e.target.value
-                                                                })}
-                                                            />
-                                                        </Form.Group>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <div className="col-md-6">
-                                                    <Form.Group>
-                                                        <Form.Label className="small">Department</Form.Label>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={editingUser.department || ''}
-                                                            onChange={(e) => setEditingUser({
-                                                                ...editingUser,
-                                                                department: e.target.value
-                                                            })}
-                                                        />
-                                                    </Form.Group>
-                                                </div>
-                                            )}
-                                            <div className="col-12">
-                                                <Form.Group>
-                                                    <Form.Label className="small">New Password (leave blank to keep current)</Form.Label>
-                                                    <Form.Control
-                                                        type="password"
-                                                        onChange={(e) => setEditingUser({
-                                                            ...editingUser,
-                                                            password: e.target.value
-                                                        })}
-                                                    />
-                                                </Form.Group>
-                                            </div>
-                                        </div>
-                                        <div className="d-flex justify-content-end gap-2 mt-4">
-                                            <Button variant="secondary" onClick={() => setIsEditing(false)}>
-                                                Cancel
-                                            </Button>
-                                            <Button variant="primary" type="submit">
-                                                Save Changes
-                                            </Button>
-                                        </div>
-                                    </Form>
+                                    <TeacherProfileForm
+                                        formData={editingUser}
+                                        setFormData={setEditingUser}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleUpdate(editingUser._id, editingUser.type, editingUser);
+                                        }}
+                                        onCancel={() => setIsEditing(false)}
+                                        missingFields={[]}
+                                        isEdit={true}
+                                        disabledFields={['email', 'status']}
+                                    />
                                 )}
                             </div>
                         </div>

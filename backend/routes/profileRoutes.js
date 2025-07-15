@@ -91,6 +91,9 @@ router.put('/', auth, async (req, res) => {
                     message: 'Teacher not found'
                 });
             }
+            // Emit real-time update event
+            const io = req.app.get('io');
+            io.emit('teacherUpdated', { teacherId: updatedProfile._id, data: updatedProfile });
             return res.json({
                 status: 'success',
                 data: {
