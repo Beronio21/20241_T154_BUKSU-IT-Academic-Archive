@@ -652,3 +652,34 @@
     background: #e8eaed;
     color: #202124;
 } 
+
+.submit-thesis-form .category-select {
+  background-color: #f4f4f4;
+  color: #333;
+  border: 1.5px solid #dadce0;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+  padding: 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.submit-thesis-form .category-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 1px 2px 0 rgba(37,99,235,0.10);
+  outline: none;
+  background-color: #fff;
+}
+
+.submit-thesis-form .category-select option,
+.category-option {
+  background-color: #fff;
+  color: #333;
+}
+
+.submit-thesis-form .category-select option:checked,
+.submit-thesis-form .category-select option:hover,
+.category-option:checked,
+.category-option:hover {
+  background-color: #e0e7ff;
+  color: #1a237e;
+} 

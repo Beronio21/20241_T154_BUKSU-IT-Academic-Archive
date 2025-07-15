@@ -300,14 +300,14 @@ const SubmitThesis = () => {
                         <select
                             id="category"
                             name="category"
-                            className="form-control"
+                            className="form-control category-select"
                             value={formData.category}
                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                             required
                         >
-                            <option value="">Select a category</option>
+                            <option value="" className="category-option">Select a category</option>
                             {categories.map((cat) => (
-                                <option key={cat} value={cat}>{cat}</option>
+                                <option key={cat} value={cat} className="category-option">{cat}</option>
                             ))}
                         </select>
                     </div>
