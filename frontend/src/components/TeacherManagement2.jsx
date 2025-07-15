@@ -278,7 +278,15 @@ const TeacherManagement2 = () => {
                                                                     <td style={{ verticalAlign: 'middle', whiteSpace: 'normal', wordBreak: 'break-word', padding: '8px 12px' }}>{teacher.name}</td>
                                                                     <td style={{ verticalAlign: 'middle', padding: '8px 12px' }}>{teacher.email}</td>
                                                                     <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '8px 12px' }}>
-                                                                        <span className={`badge ${teacher.status === 'Approved' ? 'bg-success' : 'bg-warning'}`}>
+                                                                        <span className={`badge status-badge ${
+  teacher.status === 'Approved'
+    ? 'bg-success text-white'
+    : teacher.status === 'Active'
+    ? 'bg-primary text-white'
+    : teacher.status === 'Pending'
+    ? 'bg-warning text-dark'
+    : 'bg-danger text-white'
+}`}>
                                                                             {teacher.status}
                                                                         </span>
                                                                     </td>
