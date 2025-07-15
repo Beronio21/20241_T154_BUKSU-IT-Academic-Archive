@@ -236,56 +236,22 @@ const ViewSubmission = () => {
                             flexDirection: 'column'
                         }}>
                             {/* Filter Section - Unified Search, Modern, Responsive, with Status Dropdown */}
-                            <div className="search-filter" style={{
-                                background: '#fff',
-                                padding: '16px 18px',
-                                borderRadius: '12px',
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                                marginBottom: 0,
-                                width: '100%',
-                                maxWidth: 1200,
-                                marginLeft: 'auto',
-                                marginRight: 'auto',
-                                zIndex: 2,
-                            }}>
-                                <div
-                                    className="filter-row"
-                                    style={{
-                                        display: 'flex',
-                                        flexWrap: 'nowrap',
-                                        gap: 16,
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        width: '100%',
-                                    }}
-                                >
+                            <div className="search-filter">
+                                <div className="filter-row">
                                     {/* Unified Search Bar */}
-                                    <div style={{ flex: 2, minWidth: 0, maxWidth: '50%', position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                        <FaSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#64748b', fontSize: 18, pointerEvents: 'none' }} />
+                                    <div style={{ position: 'relative' }}>
+                                        <FaSearch className="search-icon" />
                                         <input
                                             type="text"
                                             placeholder="Search by Title or Member Name"
                                             value={searchTerm}
                                             onChange={e => setSearchTerm(e.target.value)}
                                             className="filter-input"
-                                            style={{
-                                                paddingLeft: 40,
-                                                width: '100%',
-                                                height: 40,
-                                                borderRadius: 10,
-                                                border: '1.2px solid #e5e7eb',
-                                                boxShadow: '0 1px 4px rgba(30,41,59,0.04)',
-                                                fontSize: '1rem',
-                                                color: '#334155',
-                                                background: '#f8fafc',
-                                                outline: 'none',
-                                                transition: 'border 0.18s, box-shadow 0.18s',
-                                            }}
                                             aria-label="Search by Title or Member Name"
                                         />
                                     </div>
                                     {/* Select Year */}
-                                    <div style={{ flex: 1, minWidth: 0, maxWidth: '25%', zIndex: 3 }}>
+                                    <div>
                                         <Select
                                             options={yearOptions}
                                             value={selectedYear}
@@ -294,13 +260,11 @@ const ViewSubmission = () => {
                                             isClearable
                                             classNamePrefix="filter-select"
                                             menuPortalTarget={document.body}
-                                            styles={{
-                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                            }}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                         />
                                     </div>
                                     {/* Category Dropdown */}
-                                    <div style={{ flex: 1, minWidth: 0, maxWidth: '25%', zIndex: 3 }}>
+                                    <div>
                                         <Select
                                             options={categoryOptions}
                                             value={categoryOptions.find(opt => opt.value === categorySearch) || categoryOptions[0]}
@@ -309,13 +273,11 @@ const ViewSubmission = () => {
                                             isSearchable={false}
                                             classNamePrefix="filter-select"
                                             menuPortalTarget={document.body}
-                                            styles={{
-                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                            }}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                         />
                                     </div>
                                     {/* Status Dropdown */}
-                                    <div style={{ flex: 1, minWidth: 0, maxWidth: '25%', zIndex: 3 }}>
+                                    <div>
                                         <Select
                                             options={[
                                                 { value: '', label: 'All Status' },
@@ -339,74 +301,10 @@ const ViewSubmission = () => {
                                             isSearchable={false}
                                             classNamePrefix="filter-select"
                                             menuPortalTarget={document.body}
-                                            styles={{
-                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                            }}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                         />
                                     </div>
                                 </div>
-                                {/* Responsive: stack on small screens */}
-                                <style>{`
-                                    .filter-input {
-                                        width: 100%;
-                                        height: 40px;
-                                        padding: 0 14px 0 40px;
-                                        border-radius: 10px;
-                                        border: 1.2px solid #e5e7eb;
-                                        box-shadow: 0 1px 4px rgba(30,41,59,0.04);
-                                        font-size: 1rem;
-                                        color: #334155;
-                                        background: #f8fafc;
-                                        outline: none;
-                                        transition: border 0.18s, box-shadow 0.18s;
-                                    }
-                                    .filter-input:focus, .filter-input:hover {
-                                        border-color: #2563eb;
-                                        box-shadow: 0 2px 8px rgba(37,99,235,0.10);
-                                    }
-                                    .filter-select__control {
-                                        min-height: 40px !important;
-                                        height: 40px !important;
-                                        border-radius: 10px !important;
-                                        border-color: #e5e7eb !important;
-                                        box-shadow: 0 1px 4px rgba(30,41,59,0.04) !important;
-                                        background: #f8fafc !important;
-                                        font-size: 1rem !important;
-                                        outline: none !important;
-                                        transition: border 0.18s !important;
-                                    }
-                                    .filter-select__control--is-focused, .filter-select__control:hover {
-                                        border-color: #2563eb !important;
-                                        box-shadow: 0 2px 8px rgba(37,99,235,0.10) !important;
-                                    }
-                                    .filter-select__value-container {
-                                        height: 40px !important;
-                                        padding: 0 8px !important;
-                                    }
-                                    .filter-select__input {
-                                        margin: 0 !important;
-                                        padding: 0 !important;
-                                    }
-                                    .filter-select__indicators {
-                                        height: 40px !important;
-                                    }
-                                    .filter-select__placeholder {
-                                        color: #64748b !important;
-                                        font-weight: 500 !important;
-                                    }
-                                    .filter-select__dropdown-indicator {
-                                        color: #64748b !important;
-                                        padding-right: 6px !important;
-                                    }
-                                    @media (max-width: 900px) {
-                                        .filter-row { flex-wrap: wrap !important; flex-direction: row !important; gap: 10px !important; }
-                                        .filter-row > div { flex: 1 1 48% !important; max-width: 48% !important; min-width: 0 !important; }
-                                    }
-                                    @media (max-width: 600px) {
-                                        .filter-row { flex-direction: column !important; gap: 10px !important; align-items: stretch !important; }
-                                        .filter-row > div { max-width: 100% !important; min-width: 0 !important; flex: 1 1 100% !important; }
-                                    }
-                                `}</style>
                             </div>
 
                             {loading ? (
