@@ -1,0 +1,65 @@
+.welcome-dashboard {
+  width: 95vw; /* Use viewport width for maximum width */
+  max-width: none; /* Remove max-width constraint */
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.charts-container {
+  display: flex;
+  gap: 3rem; /* Increased gap */
+  margin-bottom: 2rem;
+}
+
+.line-chart, .doughnut-chart {
+  flex: 1;
+  min-width: 45vw; /* Use viewport width units */
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  height: 500px; /* Taller charts */
+}
+
+/* Increase font sizes to match larger container */
+.line-chart h3, .doughnut-chart h3 {
+  margin-bottom: 1rem;
+  color: #1a75ff;
+  font-weight: 700;
+  font-size: 1.5rem; /* Larger title */
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Wider cards */
+  gap: 1.5rem; /* More space between cards */
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin-bottom: 0.75rem;
+  color: #4a5568;
+  font-size: 1.25rem; /* Larger heading */
+}
+
+.stat-number {
+  font-size: 2rem; /* Bigger numbers */
+  font-weight: 700;
+  color: #1a75ff;
+}
+
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 1rem; /* Reduced padding */
+  color: #4a5568;
+}

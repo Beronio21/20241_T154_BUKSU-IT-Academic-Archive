@@ -24,6 +24,7 @@ import StudentRecords2 from './Records/StudentRecords2';
 import TeacherRecords2 from './Records/TeacherRecords2';
 import ArchivedCapstones from './components/ArchivedCapstones';
 import TeacherManagement2 from './components/TeacherManagement2';
+import WelcomePage from './home/WelcomePage';
 
 // Protected Route Component
 const ProtectedRoute = ({ element: Element, allowedRole }) => {
@@ -61,7 +62,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* Public Guest Area: Capstone Archive */}
-            <Route path="/" element={<Navigate to="/student-dashboard/dashboard" replace />} />
+            <Route path="/" element={<WelcomePage />} />
             <Route path="/student-dashboard" element={<Navigate to="/student-dashboard/dashboard" replace />} />
             <Route path="/student-dashboard/dashboard" element={<StudentDashboard />} />
 
