@@ -249,7 +249,11 @@ const StudentDashboard = () => {
             background: 'linear-gradient(135deg, #f5f7ff 0%, #ffffff 100%)',
             borderRadius: '15px',
             padding: '25px',
-            boxShadow: '0 2px 15px rgba(0, 0, 0, 0.05)'
+            boxShadow: '0 2px 15px rgba(0, 0, 0, 0.05)',
+            marginLeft: '32px', // Subtle right shift for alignment
+            maxWidth: 1200,
+            width: 'calc(100% - 32px)',
+            transition: 'margin-left 0.2s',
           }}>
             <h2 style={{ fontSize: '1.75rem', color: '#2c3e50', marginBottom: '15px', fontWeight: '600' }}>Research Archive</h2>
             <p style={{ color: '#666', fontSize: '1.1rem', marginBottom: '20px' }}>Explore approved research papers and capstone projects</p>
@@ -262,7 +266,7 @@ const StudentDashboard = () => {
               marginBottom: 0,
               width: '100%',
               maxWidth: 1200,
-              marginLeft: 'auto',
+              marginLeft: '0', // Align with header's margin
               marginRight: 'auto',
             }}>
               <div className="filter-row" style={{ display: 'flex', flexWrap: 'nowrap', gap: 14, alignItems: 'center', width: '100%', minWidth: 0 }}>
@@ -338,10 +342,51 @@ const StudentDashboard = () => {
             </div>
           </div>
           {/* Results Section: maintain grid height, show message if empty */}
-          <div className="results-section" style={{ minHeight: '320px', width: '100%', maxWidth: 1200, margin: '0 auto', padding: '0 0 24px 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '36px', alignItems: 'stretch', justifyItems: 'center', position: 'relative', background: 'none', boxSizing: 'border-box' }}>
+          <div className="results-section" style={{
+            minHeight: '320px',
+            width: 'calc(100% - 32px)',
+            maxWidth: 1200,
+            marginLeft: '50px',
+            marginRight: 'auto',
+            padding: '0 0 24px 0',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gap: '38px',
+            alignItems: 'stretch',
+            justifyItems: 'center',
+            position: 'relative',
+            background: 'none',
+            boxSizing: 'border-box',
+          }}>
             {filteredCapstones.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '220px', margin: '0', padding: '0', maxWidth: 1200 }}>
-                <div style={{ background: '#f8fafc', border: '1.5px solid #e5e7eb', borderRadius: '12px', padding: '28px 24px', color: '#64748b', fontSize: '1.13rem', fontWeight: 500, boxShadow: '0 2px 8px rgba(30,41,59,0.04)', display: 'flex', alignItems: 'center', gap: 12, margin: '0 auto', minWidth: 320, maxWidth: 420, textAlign: 'center' }}>
+              <div style={{
+                gridColumn: '1 / -1',
+                width: '100%',
+                minHeight: '320px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 0,
+                margin: 0,
+                boxSizing: 'border-box',
+              }}>
+                <div style={{
+                  background: '#f8fafc',
+                  border: '1.5px solid #e5e7eb',
+                  borderRadius: '12px',
+                  padding: '28px 25px',
+                  color: '#64748b',
+                  fontSize: '1.13rem',
+                  fontWeight: 500,
+                  boxShadow: '0 2px 8px rgba(30,41,59,0.04)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  minWidth: 320,
+                  maxWidth: 420,
+                  textAlign: 'center',
+                  margin: '0 auto',
+                }}>
                   <i className="fas fa-search" style={{ fontSize: 26, marginRight: 8, color: '#94a3b8' }}></i>
                   No research papers found
                 </div>
