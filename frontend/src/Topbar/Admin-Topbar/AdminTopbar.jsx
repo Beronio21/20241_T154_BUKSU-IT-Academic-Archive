@@ -131,25 +131,24 @@ const AdminTopbar = ({ userInfo }) => {
                         )}
                     </div>
 
-                    <div className="dropdown">
+                    <div className="profile-dropdown">
                         <button 
-                            className="p-0 dropdown-toggle d-flex align-items-center"
+                            className="profile-button dropdown-toggle d-flex align-items-center"
                             type="button"
                             id="userDropdown"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
-                            style={{ background: 'none', border: 'none', color: 'inherit' }}
                         >
                             <img
                                 src={userInfo?.image || 'https://via.placeholder.com/32'}
                                 alt="Profile"
-                                className="rounded-circle me-2"
+                                className="profile-image me-2"
                                 width="32"
                                 height="32"
                             />
-                            <span>{userInfo?.name || 'Admin'}</span>
+                            <span className="profile-name">{userInfo?.name || 'Admin'}</span>
                         </button>
-                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <ul className="dropdown-menu dropdown-menu-end profile-menu" aria-labelledby="userDropdown">
                             <li>
                                 <button 
                                     className="dropdown-item" 
@@ -162,8 +161,9 @@ const AdminTopbar = ({ userInfo }) => {
                             <li><hr className="dropdown-divider" /></li>
                             <li>
                                 <button 
-                                    className="dropdown-item text-danger" 
+                                    className="logout-btn dropdown-item text-danger"
                                     onClick={() => setShowLogoutModal(true)}
+                                    aria-label="Logout"
                                 >
                                     <i className="bi bi-box-arrow-right me-2"></i>
                                     Logout

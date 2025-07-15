@@ -95,6 +95,55 @@
     box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
 }
 
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  color: #1e293b;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.06);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  cursor: pointer;
+  margin-left: 16px;
+}
+.logout-btn:hover, .logout-btn:focus {
+  background: #e0e7ef;
+  color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  outline: none;
+}
+
+.logout-modal-btn {
+  min-width: 120px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 0;
+  margin: 0 8px;
+  transition: background 0.18s, color 0.18s;
+}
+.logout-modal-btn.logout {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+}
+.logout-modal-btn.logout:hover {
+  background: #174ea6;
+}
+.logout-modal-btn.cancel {
+  background: #e5e7eb;
+  color: #334155;
+  border: none;
+}
+.logout-modal-btn.cancel:hover {
+  background: #cbd5e1;
+}
+
 /* Animation */
 .modal.fade .modal-dialog {
     transition: transform 0.2s ease-out !important;
