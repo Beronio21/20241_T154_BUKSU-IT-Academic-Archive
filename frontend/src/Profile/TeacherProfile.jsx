@@ -138,10 +138,14 @@ const TeacherProfile = () => {
         <>
           {/* Warning Alert for Missing Fields */}
           {missingFields.length > 0 && (
-            <div className="alert alert-warning mb-4">
-              <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              <strong>Profile Incomplete!</strong> Missing: {missingFields.join(', ')}. 
-              Please <a href="#" onClick={() => setShowModal(true)} className="alert-link">update your profile</a>.
+            <div className="alert alert-warning mb-4 d-flex align-items-center" style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(251,191,36,0.08)', background: '#fffbe6', border: '1.5px solid #facc15' }}>
+              <i className="bi bi-emoji-smile text-warning me-3" style={{ fontSize: 32 }}></i>
+              <div>
+                <strong className="d-block" style={{ fontSize: '1.1rem', color: '#b45309' }}>Let's Complete Your Profile!</strong>
+                <span style={{ color: '#a16207', fontSize: '1rem' }}>
+                  To get the best experience, please provide all required information in your profile.
+                </span>
+              </div>
             </div>
           )}
 
