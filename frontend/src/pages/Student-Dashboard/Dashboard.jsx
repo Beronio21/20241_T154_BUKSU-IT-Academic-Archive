@@ -161,14 +161,14 @@ const Dashboard = () => {
             width: '100%',
             maxWidth: '100vw',
             boxSizing: 'border-box',
-            padding: '0 4vw',
+            padding: '0 1.5vw 0 0.5vw',
         }}>
             {/* Charts Row at the Top */}
             <div className="charts-flex" style={{
                 display: 'flex',
                 gap: '2.5rem',
                 alignItems: 'stretch',
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 flexWrap: 'wrap',
                 marginBottom: '2.5rem',
                 width: '100%',
@@ -177,9 +177,9 @@ const Dashboard = () => {
             }}>
                 {/* Line Chart - Left (Wider) */}
                 <div style={{
-                    flex: 2,
-                    minWidth: 260,
-                    maxWidth: 700,
+                    flex: 3,
+                    minWidth: 340,
+                    maxWidth: 950,
                     width: '100%',
                     background: 'white',
                     borderRadius: 16,
@@ -314,24 +314,24 @@ const Dashboard = () => {
                     </div>
                 )}
                 <div className="statistics-grid" ref={statisticsGridRef} style={{ flexDirection: 'row', gap: '1.5rem', marginBottom: 0 }}>
-                    <div className="stat-card">
+                    <div className="stat-card" style={{ minWidth: 220, maxWidth: 320, flex: 1 }}>
                         <h3>Total Capstones</h3>
                         <div className="stat-number">{statistics.totalCapstones}</div>
                         <div className="stat-label">Total submissions</div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card" style={{ minWidth: 220, maxWidth: 320, flex: 1 }}>
                         <h3>Approved Capstones</h3>
                         <div className="stat-number">
                             {Object.values(statistics.yearlyApprovals).reduce((a, b) => a + b, 0)}
                         </div>
                         <div className="stat-label">Total approved submissions</div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card" style={{ minWidth: 220, maxWidth: 320, flex: 1 }}>
                         <h3>Categories</h3>
                         <div className="stat-number">{Object.keys(statistics.categoryCounts).length}</div>
                         <div className="stat-label">Different categories</div>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card" style={{ minWidth: 220, maxWidth: 320, flex: 1 }}>
                         <h3>Latest Year</h3>
                         <div className="stat-number">
                             {Object.keys(statistics.yearlyApprovals).length > 0 
