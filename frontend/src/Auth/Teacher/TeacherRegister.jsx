@@ -4,6 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import "./TeacherRegister.css"; // Ensure you have the appropriate styles
 import axios from "axios";
 import { googleAuth } from "../../api";
+import GoogleLogo from '../../Images/GoogleLogo.png';
 
 const EmailRequirementsModal = ({ show, onClose }) => {
   if (!show) return null;
@@ -60,9 +61,6 @@ const TeacherRegister = () => {
   const [loading, setLoading] = useState(false);
   const [showGoogleLinkModal, setShowGoogleLinkModal] = useState(false);
   const navigate = useNavigate();
-
-  // Replace the local Google logo with an online version
-  const googleLogoUrl = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
 
   const validateEmail = (email) => {
     const buksuEmailRegex = /^[a-zA-Z0-9._-]+@(buksu\.edu\.ph|gmail\.com)$/;
@@ -282,7 +280,7 @@ const TeacherRegister = () => {
             >
               <span>{loading ? "Signing in..." : "Link Google Account"}</span>
               <img
-                src={googleLogoUrl}
+                src={GoogleLogo}
                 alt="Google logo"
                 className="std-reg__google-icon"
                 style={{ marginLeft: "10px" }}
@@ -404,17 +402,17 @@ const TeacherRegister = () => {
 
               <button
                 type="button"
-                className="std-reg__google-btn"
+                className="btn btn-light border w-100 d-flex align-items-center justify-content-center gap-0 shadow-sm"
                 onClick={googleLogin}
                 disabled={loading}
+                style={{background: "none", borderColor: "#ccc", marginTop: '0.5rem'}}
               >
-                <span>{loading ? "Signing in..." : "Register with Google"}</span>
                 <img
-                  src={googleLogoUrl}
+                  src={GoogleLogo}
                   alt="Google logo"
-                  className="std-reg__google-icon"
-                  style={{ marginLeft: "10px" }}
+                  style={{ width: "37px", height: "19px", marginRight: "0px" }}
                 />
+                <span className="fw-bold text-muted small-text">{loading ? "Signing in..." : "Register with Google"}</span>
               </button>
             </form>
           </div>
