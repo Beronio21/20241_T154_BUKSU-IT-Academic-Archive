@@ -105,7 +105,7 @@ const WelcomePage = () => {
                 onClick={() => navigate("/login")}
                 tabIndex={0}
               >
-                SignIn
+                Sign In
               </button>
             </div>
           </div>

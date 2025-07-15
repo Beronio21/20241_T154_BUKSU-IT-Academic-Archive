@@ -46,7 +46,7 @@ router.post('/google', async (req, res) => {
             await teacher.save();
         }
         if (teacher) {
-            if (teacher.status !== 'Approved') {
+            if (teacher.status !== 'Approved' && teacher.status !== 'Active') {
                 return res.status(403).json({
                     status: 'error',
                     message: 'Your account is pending approval by an admin.'
@@ -133,7 +133,7 @@ router.post('/login', async (req, res) => {
         // Check teacher first
         let teacher = await Teacher.findOne({ email });
         if (teacher) {
-            if (teacher.status !== 'Approved') {
+            if (teacher.status !== 'Approved' && teacher.status !== 'Active') {
                 return res.status(403).json({
                     status: 'error',
                     message: 'Your account is pending approval by an admin.'
