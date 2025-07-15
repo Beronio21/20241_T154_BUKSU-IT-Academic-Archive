@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table, Form, InputGroup, Pagination, Badge, Alert } from 'react-bootstrap';
-import { FaSearch, FaEye, FaEdit, FaTrash, FaUserPlus, FaExclamationTriangle } from 'react-icons/fa';
+import { FaSearch, FaEye, FaEdit, FaTrash, FaUserPlus, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SuccessModal from '../components/SuccessModal';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
@@ -22,6 +22,9 @@ const UserManagement2 = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
+    const [showEditSuccessModal, setShowEditSuccessModal] = useState(false);
+    const [editSuccessTitle, setEditSuccessTitle] = useState('');
+    const [editSuccessMessage, setEditSuccessMessage] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -210,7 +213,10 @@ const UserManagement2 = () => {
             fetchTeachers();
             setIsEditing(false);
             setEditingUser(null);
-            alert('User updated successfully');
+            setEditSuccessTitle('Changes Saved');
+            setEditSuccessMessage('The teacher profile has been updated successfully.');
+            setShowEditSuccessModal(true);
+            setTimeout(() => setShowEditSuccessModal(false), 2500);
         } catch (error) {
             console.error('Error updating user:', error);
             alert('Failed to update user');
@@ -248,6 +254,52 @@ const UserManagement2 = () => {
             alert('Failed to delete user');
         }
     };
+
+    // Replace old delete modal with a modern Modal
+    const renderDeleteModal = () => (
+        <Modal
+            show={showDeleteModal}
+            onHide={() => setShowDeleteModal(false)}
+            centered
+            aria-labelledby="delete-modal-title"
+            backdropClassName="custom-modal-backdrop"
+            dialogClassName="custom-archive-modal-dialog"
+        >
+            <div style={{ position: 'relative' }}>
+                <Modal.Header
+                    closeButton={false}
+                    style={{ borderBottom: 'none', borderTopLeftRadius: 16, borderTopRightRadius: 16, background: '#ef4444', color: '#fff', padding: '1.5rem 2rem' }}
+                >
+                    <Modal.Title id="delete-modal-title" style={{ fontWeight: 700, fontSize: '1.5rem', letterSpacing: 0.5 }}>
+                        <FaTrash className="me-2" /> Delete User
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ padding: '2rem', fontSize: '1.1rem', borderRadius: 16, background: 'transparent', color: '#334155', fontWeight: 500 }}>
+                    <Alert variant="warning" className="mb-4 d-flex align-items-center" style={{ fontSize: '1rem' }}>
+                        <FaExclamationTriangle className="me-2" size={22} />
+                        Are you sure you want to delete this user? This action cannot be undone.
+                    </Alert>
+                </Modal.Body>
+                <Modal.Footer style={{ borderTop: 'none', padding: '1.5rem 2rem', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, background: '#f8fafc' }}>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowDeleteModal(false)}
+                        style={{ minWidth: 110, fontWeight: 600, borderRadius: 8, marginRight: 8 }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={confirmDelete}
+                        style={{ minWidth: 110, fontWeight: 600, borderRadius: 8, boxShadow: '0 2px 8px rgba(239,68,68,0.15)', background: '#ef4444', border: 'none' }}
+                        aria-label="Confirm delete"
+                    >
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </div>
+        </Modal>
+    );
 
     return (
         <div className="d-flex">
@@ -377,60 +429,7 @@ const UserManagement2 = () => {
                     </div>
 
                     {/* Delete Modal */}
-                    <div className={`custom-modal ${showDeleteModal ? 'show' : ''}`} onClick={() => setShowDeleteModal(false)}>
-                        <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
-                            <div className="custom-modal-header bg-danger text-white">
-                                <h3>
-                                    <FaTrash className="me-2" />
-                                    Confirm Delete User
-                                </h3>
-                                <button 
-                                    onClick={() => setShowDeleteModal(false)} 
-                                    className="close-button"
-                                    style={{ 
-                                        background: 'none', 
-                                        border: 'none', 
-                                        color: '#fff', 
-                                        fontSize: '24px', 
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
-                                        padding: '0',
-                                        width: '30px',
-                                        height: '30px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: '50%',
-                                        transition: 'background-color 0.2s ease'
-                                    }}
-                                    onMouseOver={e => {
-                                        e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                                    }}
-                                    onMouseOut={e => {
-                                        e.target.style.backgroundColor = 'transparent';
-                                    }}
-                                >
-                                    &times;
-                                </button>
-                            </div>
-                            <div className="custom-modal-body">
-                                <div className="delete-confirmation-content">
-                                    <Alert variant="warning" className="mb-4">
-                                        <FaExclamationTriangle className="me-2" />
-                                        Are you sure you want to delete this user? This action cannot be undone.
-                                    </Alert>
-                                </div>
-                            </div>
-                            <div className="custom-modal-footer">
-                                <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                                    Cancel
-                                </Button>
-                                <Button variant="danger" onClick={confirmDelete}>
-                                    Delete
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
+                    {renderDeleteModal()}
 
                     {/* View Modal */}
                     <div className={`custom-modal ${isViewing ? 'show' : ''}`} onClick={() => setIsViewing(false)}>
@@ -604,6 +603,38 @@ const UserManagement2 = () => {
                         title="User Deleted Successfully"
                         message="The user has been successfully removed from the system."
                     />
+
+                    {/* Edit Success Modal */}
+                    {showEditSuccessModal && (
+                        <div style={{
+                            position: 'fixed',
+                            top: 0, left: 0, right: 0, bottom: 0,
+                            zIndex: 3000,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'rgba(0,0,0,0.08)'
+                        }}>
+                            <div style={{
+                                background: '#e6f9ed',
+                                border: '1.5px solid #22c55e',
+                                borderRadius: 14,
+                                boxShadow: '0 4px 24px rgba(34,197,94,0.10)',
+                                padding: '2rem 2.5rem',
+                                minWidth: 320,
+                                maxWidth: '90vw',
+                                textAlign: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: 12
+                            }}>
+                                <FaCheckCircle className="text-success" size={48} />
+                                <div style={{ fontWeight: 700, fontSize: 18, color: '#15803d', marginBottom: 4 }}>{editSuccessTitle}</div>
+                                <div style={{ fontSize: 16, color: '#166534' }}>{editSuccessMessage}</div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
