@@ -153,6 +153,7 @@ const WelcomeDashboard = () => {
         <div className="stat-card">
           <h3>Total Capstones</h3>
           <div className="stat-number">{statistics.totalCapstones}</div>
+          <div className="stat-detail">Total submissions</div>
         </div>
         <div className="stat-card">
           <h3>Latest Year</h3>
@@ -161,10 +162,12 @@ const WelcomeDashboard = () => {
               ? Math.max(...Object.keys(statistics.yearlyApprovals).map(Number))
               : 'N/A'}
           </div>
+          <div className="stat-detail">Most recent submissions</div>
         </div>
         <div className="stat-card">
           <h3>Categories</h3>
           <div className="stat-number">{Object.keys(statistics.categoryCounts).length}</div>
+          <div className="stat-detail">Different categories</div>
         </div>
       </div>
     </div>

@@ -44,6 +44,10 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px; /* Added to ensure consistent card height */
 }
 
 .stat-card h3 {
@@ -62,4 +66,11 @@
   text-align: center;
   padding: 1rem; /* Reduced padding */
   color: #4a5568;
+}
+
+.stat-detail {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  font-weight: 500;
 }
