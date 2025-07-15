@@ -301,6 +301,14 @@ const UserManagement2 = () => {
         </Modal>
     );
 
+    // Helper to format birthday
+    const formatBirthday = (dateStr) => {
+      if (!dateStr) return 'Not set';
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    };
+
     return (
         <div className="d-flex">
             <AdminNavbar 
@@ -504,7 +512,7 @@ const UserManagement2 = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label className="text-muted small mb-1">Birthday</label>
-                                                <p className="mb-0 fw-bold">{selectedUser.birthday ? new Date(selectedUser.birthday).toLocaleDateString() : 'Not set'}</p>
+                                                <p className="mb-0 fw-bold">{selectedUser.birthday ? formatBirthday(selectedUser.birthday) : 'Not set'}</p>
                                             </div>
                                             <div className="mb-3">
                                                 <label className="text-muted small mb-1">Gender</label>

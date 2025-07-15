@@ -14,6 +14,8 @@ const TeacherProfileForm = ({ formData, setFormData, onSubmit, onCancel, missing
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <form onSubmit={onSubmit}>
       <div className="row g-3">
@@ -38,7 +40,7 @@ const TeacherProfileForm = ({ formData, setFormData, onSubmit, onCancel, missing
           </select>
           {missingFields.includes('department') && <div className="invalid-feedback">Department is required</div>}
         </div>
-        <FormField name="birthday" label="Birthday" type="date" value={formData.birthday} onChange={handleChange} required missing={missingFields.includes('birthday')} disabled={disabledFields.includes('birthday')} />
+        <FormField name="birthday" label="Birthday" type="date" value={formData.birthday} onChange={handleChange} required missing={missingFields.includes('birthday')} disabled={disabledFields.includes('birthday')} min="1900-01-01" max={`${currentYear}-12-31`} />
         <div className="col-md-6">
           <label className="form-label">Gender <span className="text-danger">*</span></label>
           <select
@@ -97,7 +99,7 @@ const TeacherProfileForm = ({ formData, setFormData, onSubmit, onCancel, missing
   );
 };
 
-const FormField = ({ name, label, type = 'text', value, onChange, disabled = false, required = false, missing = false }) => (
+const FormField = ({ name, label, type = 'text', value, onChange, disabled = false, required = false, missing = false, min, max }) => (
   <div className="col-md-6">
     <label htmlFor={name} className="form-label">{label}</label>
     <input
@@ -111,6 +113,8 @@ const FormField = ({ name, label, type = 'text', value, onChange, disabled = fal
       required={required}
       pattern={name === 'contact_number' ? '[0-9]{11,}' : undefined}
       maxLength={name === 'contact_number' ? 15 : undefined}
+      min={min}
+      max={max}
     />
     {missing && <div className="invalid-feedback">{label} is required</div>}
   </div>

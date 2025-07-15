@@ -36,6 +36,7 @@ const TeacherProfile = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Check for missing required fields
   const validateProfile = (data) => {
@@ -94,8 +95,9 @@ const TeacherProfile = () => {
       // Update localStorage for session consistency
       localStorage.setItem('user-info', JSON.stringify({ ...userInfo, ...data.data }));
       setShowModal(false);
-      alert('Profile updated successfully!');
+      setShowSuccessModal(true);
       fetchProfile(); // Refresh data
+      setTimeout(() => setShowSuccessModal(false), 2000);
     } catch (err) {
       alert('Failed to save profile');
     }
@@ -119,6 +121,14 @@ const TeacherProfile = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Helper to format birthday
+  const formatBirthday = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr; // fallback to raw if invalid
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   return (
@@ -189,7 +199,7 @@ const TeacherProfile = () => {
                     <DetailItem icon="bi-envelope" label="Email" value={formData.email} required />
                     <DetailItem icon="bi-telephone" label="Contact" value={formData.contact_number} required missing={missingFields.includes('contact_number')} />
                     <DetailItem icon="bi-geo-alt" label="Location" value={formData.location} />
-                    <DetailItem icon="bi-calendar" label="Birthday" value={formData.birthday} required missing={missingFields.includes('birthday')} />
+                    <DetailItem icon="bi-calendar" label="Birthday" value={formatBirthday(formData.birthday)} required missing={missingFields.includes('birthday')} />
                     <DetailItem icon="bi-gender-ambiguous" label="Gender" value={formData.gender} required missing={missingFields.includes('gender')} />
                   </div>
                 </div>
@@ -236,6 +246,14 @@ const TeacherProfile = () => {
               </div>
             </div>
           )}
+
+          {/* Success Modal */}
+          <SuccessModal
+            show={showSuccessModal}
+            onHide={() => setShowSuccessModal(false)}
+            title="Profile updated successfully!"
+            message="Your changes have been saved."
+          />
         </>
       )}
     </div>

@@ -134,6 +134,14 @@ const TeacherRecords = () => {
         setSelectedTeacher(null);
     };
 
+    // Helper to format birthday
+    const formatBirthday = (dateStr) => {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    };
+
     return (
         <div className="container-fluid" style={{ 
             minWidth: '1200px',
@@ -259,6 +267,10 @@ const TeacherRecords = () => {
                                     <div className="mb-3">
                                         <h6 className="text-muted">Department</h6>
                                         <p className="mb-0">{selectedTeacher.department}</p>
+                                    </div>
+                                    <div className="mb-3">
+                                        <h6 className="text-muted">Birthday</h6>
+                                        <p className="mb-0">{formatBirthday(selectedTeacher.birthday)}</p>
                                     </div>
                                 </div>
                                 <div className="col-md-6">
