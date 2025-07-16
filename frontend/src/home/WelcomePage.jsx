@@ -320,14 +320,35 @@ const WelcomePage = () => {
       {showDetailsModal && (
         <div className="modal-overlay" onClick={() => setShowDetailsModal(false)}>
           <div className="modal-content-wide" onClick={(e) => e.stopPropagation()} style={{ width: '95%', maxWidth: 1000, minWidth: 320, borderRadius: 18, padding: 0, background: '#fff', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
-            <div className="modal-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: '1.5rem 2.5rem 1.1rem 2.5rem', background: 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)', color: '#fff', borderBottom: 'none' }}>
+            <div className="modal-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: '1.5rem 2.5rem 1.1rem 2.5rem', background: 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)', color: '#fff', borderBottom: 'none', position: 'relative' }}>
               <h3 style={{ fontWeight: 800, fontSize: '1.45rem', letterSpacing: 0.5, margin: 0, flex: 1, textAlign: 'left', textShadow: '0 2px 8px rgba(30,41,59,0.10)' }}>
                 Capstone Details
               </h3>
               <button 
-                className="modal-close-btn" 
+                className="modal-close-btn"
                 onClick={() => setShowDetailsModal(false)}
-                style={{ background: 'none', border: 'none', color: '#fff', fontSize: 28, fontWeight: 'bold', cursor: 'pointer', padding: 0, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}
+                aria-label="Close"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: 28,
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  padding: 0,
+                  width: 36,
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  position: 'absolute',
+                  top: '1.1rem',
+                  right: '1.2rem', // changed from 2.5rem to 1.2rem to move it further right
+                  transition: 'background 0.18s, color 0.18s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = '#e0e7ff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#fff'; }}
               >
                 &times;
               </button>
