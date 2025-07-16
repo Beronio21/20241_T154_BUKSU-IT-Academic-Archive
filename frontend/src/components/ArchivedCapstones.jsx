@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+    import React, { useEffect, useState } from 'react';
 import { Table, Button, Alert, Badge, Modal, Card, Form, InputGroup } from 'react-bootstrap';
 import { FaTrash, FaUndo, FaExclamationTriangle, FaSearch } from 'react-icons/fa';
 import axios from 'axios';
@@ -140,16 +140,19 @@ const ArchivedCapstones = () => {
                 padding: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                overflowX: 'hidden',
+                position: 'relative',
+                maxHeight: 'none', // remove any height restriction
             }}>
-                <Modal.Header style={{ borderBottom: 'none', padding: '1.2rem 1.2rem 0.5rem 1.2rem', background: 'transparent', borderTopLeftRadius: 16, borderTopRightRadius: 16, justifyContent: 'center' }}>
-                    <Modal.Title style={{ fontWeight: 700, fontSize: '1.2rem', color: '#1e293b', letterSpacing: 0.1, textAlign: 'center', width: '100%', wordBreak: 'break-word' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTopLeftRadius: 16, borderTopRightRadius: 16, background: '#ef4444', color: '#fff', padding: '1.5rem 2rem', position: 'relative' }}>
+                    <h3 style={{ fontWeight: 800, fontSize: '1.35rem', letterSpacing: 0.5, margin: 0, flex: 1, textAlign: 'left' }}>
+                        <FaTrash className="me-2" />
                         Confirm permanent deletion
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body style={{ padding: '1rem 1.2rem 0.5rem 1.2rem', color: '#334155', fontSize: 16, borderBottomLeftRadius: 16, borderBottomRightRadius: 16, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                    </h3>
+                    {/* Removed the close 'X' button */}
+                </div>
+                <div style={{ padding: '2.2rem 2.5rem', color: '#334155', fontSize: 16, borderRadius: '0 0 16px 16px', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                     <div style={{ color: '#64748b', fontSize: 15, marginBottom: 16, textAlign: 'center', maxWidth: 340, wordBreak: 'break-word' }}>
-                        To proceed, type "DELETE" in the box below. This action is irreversible.
+                        To proceed, type <b>DELETE</b> in the box below. This action is <span style={{ color: '#ef4444', fontWeight: 700 }}>irreversible</span>.
                     </div>
                     <input
                         type="text"
@@ -166,17 +169,18 @@ const ArchivedCapstones = () => {
                             marginBottom: 24,
                             outline: 'none',
                             color: '#1e293b',
-                            background: '#f8fafc',
+                            background: '#fff',
                             boxSizing: 'border-box',
                             wordBreak: 'break-word',
                         }}
                     />
-                </Modal.Body>
-                <Modal.Footer style={{ borderTop: 'none', padding: '1rem 1.2rem 1.2rem 1.2rem', background: '#f8fafc', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, display: 'flex', justifyContent: 'flex-end', gap: 12, width: '100%' }}>
+                </div>
+                <div style={{ borderTop: 'none', padding: '1.25rem 2.5rem', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, background: '#f8fafc', display: 'flex', justifyContent: 'flex-end', gap: 12, width: '100%' }}>
                     <Button
                         variant="outline-secondary"
                         className="capstone-action-btn capstone-action-btn--sm"
                         onClick={() => setDeletePermanentModal(false)}
+                        style={{ minWidth: 110, fontWeight: 600, borderRadius: 8 }}
                     >
                         Cancel
                     </Button>
@@ -185,11 +189,13 @@ const ArchivedCapstones = () => {
                         className="capstone-action-btn capstone-action-btn--sm"
                         onClick={() => handlePermanentDelete(selectedPermanentDeleteId)}
                         disabled={deleteConfirmationText !== 'DELETE'}
+                        style={{ minWidth: 110, fontWeight: 600, borderRadius: 8, boxShadow: '0 2px 8px rgba(239,68,68,0.15)', background: '#ef4444', border: 'none' }}
+                        aria-label="Confirm delete"
                     >
                         <FaTrash className="me-1" size={14} />
                         Delete Permanently
                     </Button>
-                </Modal.Footer>
+                </div>
             </div>
         </Modal>
     );
