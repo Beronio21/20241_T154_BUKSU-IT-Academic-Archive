@@ -74,32 +74,126 @@ const validateReview = (req, res, next) => {
 
 // Submit thesis
 router.post('/submit', validateThesis, asyncHandler(async (req, res) => {
+    // Use logged-in teacher info if available
+    let adviserEmail = req.body.adviserEmail;
+    let teacherId = req.body.teacher_id || req.body.teacherId;
+    if (req.user && req.user.role === 'teacher') {
+        adviserEmail = req.user.email;
+        teacherId = req.user.teacher_id; // Always use teacher_id, not _id
+    }
+    // If teacherId is still undefined, try to fetch from Teacher model
+    if (!teacherId && adviserEmail) {
+        const Teacher = require('../models/Teacher');
+        const teacherDoc = await Teacher.findOne({ email: adviserEmail });
+        if (teacherDoc && teacherDoc.teacher_id) {
+            teacherId = teacherDoc.teacher_id;
+        }
+    }
     const thesis = new Thesis({
         ...req.body,
-        adviserEmail: 'admin@buksu.edu.ph', // Default admin email
-        objective: req.body.abstract // Optional: Use abstract as objective if needed
+        adviserEmail: adviserEmail || 'admin@buksu.edu.ph',
+        objective: req.body.abstract
     });
     const savedThesis = await thesis.save();
 
-    // Create notifications in parallel
-    await Promise.all([
-        new Notification({
-            recipientEmail: 'admin@buksu.edu.ph',
-            studentEmail: req.body.email,
-            title: 'New Thesis Submission',
-            message: `A new thesis "${req.body.title}" has been submitted by ${req.body.email}`,
+    // Create admin notification for all admins (unchanged)
+    const Notification = require('../models/notification');
+    const io = req.app.get('io');
+    const now = new Date();
+    const adminNotif = await Notification.findOneAndUpdate(
+        {
+            forAdmins: true,
+            thesisId: savedThesis._id,
             type: 'submission',
-            thesisId: savedThesis._id
-        }).save(),
-        new Notification({
+            status: 'pending'
+        },
+        {
+            $set: {
+                forAdmins: true,
+                title: 'New Capstone Thesis Submitted',
+                message: `A new thesis "${savedThesis.title}" has been submitted by ${savedThesis.email} on ${now.toLocaleString()}`,
+                type: 'submission',
+                thesisId: savedThesis._id,
+                status: 'pending',
+                thesisTitle: savedThesis.title,
+                createdAt: now,
+                updatedAt: now
+            }
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    if (io && adminNotif) {
+        io.to('admins').emit('admin_notification', adminNotif);
+        io.to('admins').emit('admin_notification', {
+            _id: `toast-${savedThesis._id}`,
+            title: '📘 New Capstone Submission Received',
+            message: 'A teacher has submitted a new capstone project. Check the dashboard for review.',
+            type: 'toast',
+            createdAt: now,
+            updatedAt: now
+        });
+    }
+    // --- Teacher notification: pending review ---
+    // Always set all relevant fields for teacher notifications
+    let finalTeacherId = teacherId;
+    if (!finalTeacherId && adviserEmail) {
+        const Teacher = require('../models/Teacher');
+        const teacherDoc = await Teacher.findOne({ email: adviserEmail });
+        if (teacherDoc && teacherDoc.teacher_id) {
+            finalTeacherId = teacherDoc.teacher_id;
+        }
+    }
+    if (adviserEmail && adviserEmail !== 'admin@buksu.edu.ph') {
+        const teacherNotif = await Notification.findOneAndUpdate(
+            {
+                recipientEmail: adviserEmail,
+                teacherId: finalTeacherId,
+                thesisId: savedThesis._id,
+                status: 'pending',
+                type: 'submission'
+            },
+            {
+                $set: {
+                    title: 'Capstone Submission Pending Review',
+                    message: `Capstone titled "${savedThesis.title}" has been submitted and is pending admin review.`,
+                    thesisTitle: savedThesis.title,
+                    status: 'pending',
+                    reviewerComments: '',
+                    teacherId: finalTeacherId,
+                    recipientEmail: adviserEmail,
+                    read: false,
+                    createdAt: now,
+                    updatedAt: now
+                }
+            },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+        if (io && teacherNotif) {
+            io.to(adviserEmail).emit('teacher_notification', teacherNotif);
+        }
+    }
+    // --- End teacher notification ---
+
+    // Student notification (unchanged)
+    await Notification.findOneAndUpdate(
+        {
             recipientEmail: req.body.email,
-            studentEmail: req.body.email,
-            title: 'Thesis Submitted Successfully',
-            message: `Your thesis "${req.body.title}" has been submitted and is pending review`,
-            type: 'submission',
-            thesisId: savedThesis._id
-        }).save()
-    ]);
+            thesisId: savedThesis._id,
+            status: 'pending',
+            type: 'submission'
+        },
+        {
+            $set: {
+                title: 'Thesis Submitted Successfully',
+                message: `Your thesis "${req.body.title}" has been submitted and is pending review`,
+                thesisTitle: savedThesis.title,
+                read: false,
+                createdAt: now,
+                updatedAt: now
+            }
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     res.status(201).json({
         status: 'success',
@@ -153,8 +247,7 @@ router.get('/submissions/adviser', asyncHandler(async (req, res) => {
 router.post('/feedback/:thesisId', async (req, res) => {
     try {
         const { thesisId } = req.params;
-        const { comment, status, teacherName, teacherEmail } = req.body;
-
+        const { comment, status, teacherName, teacherEmail, teacherId } = req.body;
         // Find the thesis first
         const thesis = await Thesis.findById(thesisId);
         if (!thesis) {
@@ -163,7 +256,6 @@ router.post('/feedback/:thesisId', async (req, res) => {
                 message: 'Thesis not found'
             });
         }
-
         // Add feedback to the thesis
         thesis.feedback.push({
             comment,
@@ -172,13 +264,10 @@ router.post('/feedback/:thesisId', async (req, res) => {
             teacherEmail,
             dateSubmitted: new Date()
         });
-
         // Update thesis status
         thesis.status = status;
-
         // Save the update without validating the entire document
         await thesis.save({ validateModifiedOnly: true });
-
         // Create notification for the student
         const notification = new Notification({
             recipientEmail: thesis.email, // Student's email
@@ -187,15 +276,43 @@ router.post('/feedback/:thesisId', async (req, res) => {
             type: 'feedback',
             thesisId: thesis._id
         });
-
         await notification.save();
-
+        // --- Teacher notification for feedback ---
+        if (teacherEmail && teacherId) {
+            const teacherNotif = await Notification.findOneAndUpdate(
+                {
+                    recipientEmail: teacherEmail,
+                    teacherId: teacherId,
+                    thesisId: thesis._id,
+                    status: status,
+                    type: 'feedback'
+                },
+                {
+                    $set: {
+                        title: 'Feedback Submitted',
+                        message: `You submitted feedback for thesis "${thesis.title}".`,
+                        thesisTitle: thesis.title,
+                        status: status,
+                        reviewerComments: '',
+                        teacherId: teacherId,
+                        recipientEmail: teacherEmail,
+                        read: false,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    }
+                },
+                { upsert: true, new: true, setDefaultsOnInsert: true }
+            );
+            if (req.app.get('io') && teacherNotif) {
+                req.app.get('io').to(teacherEmail).emit('teacher_notification', teacherNotif);
+            }
+        }
+        // --- End teacher notification for feedback ---
         res.json({
             status: 'success',
             message: 'Feedback submitted successfully',
             data: thesis
         });
-
     } catch (error) {
         console.error('Error submitting feedback:', error);
         res.status(500).json({
@@ -320,36 +437,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Admin approves a thesis submission
-router.put('/approve/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body; // Expecting status to be 'approved' or 'rejected'
-
-        const thesis = await Thesis.findByIdAndUpdate(id, { status }, { new: true });
-        
-        if (!thesis) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Thesis not found'
-            });
-        }
-
-        res.json({
-            status: 'success',
-            message: `Thesis ${status} successfully`,
-            data: thesis
-        });
-    } catch (error) {
-        console.error('Error approving thesis:', error);
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to approve thesis',
-            error: error.message
-        });
-    }
-});
-
 // Get all approved submissions (for students)
 router.get('/approved', async (req, res) => {
     try {
@@ -437,7 +524,7 @@ router.get('/statistics', async (req, res) => {
 // Update thesis review status
 router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, reviewerComments } = req.body;
 
     // Validate status input
     const validStatuses = ['pending', 'approved', 'rejected', 'revision'];
@@ -465,19 +552,19 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
         });
     }
 
+    // Detect resubmission after revision (status changes from 'revision' to 'pending')
+    const wasRevision = thesis.status === 'revision';
+    const isResubmitted = wasRevision && status === 'pending';
+
     // Special handling for 'pending' (Under Review) status
     if (status === 'pending') {
-        if (
-            thesis.status === 'pending'
-        ) {
+        if (thesis.status === 'pending') {
             return res.status(409).json({
                 status: 'error',
                 message: 'Capstone is already under review. No changes detected.'
             });
         }
-        // Allow update if comments or reviewer are different
     } else {
-        // For other statuses, block if no changes
         if (thesis.status === status) {
             return res.status(400).json({
                 status: 'error',
@@ -487,9 +574,7 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
     }
 
     // Update thesis with review information
-    const now = new Date();
     thesis.status = status;
-
     try {
         await thesis.save();
     } catch (err) {
@@ -500,43 +585,122 @@ router.put('/submissions/:id/status', validateReview, asyncHandler(async (req, r
     }
 
     // Prepare notification message based on status
-    let notificationMessage = `Your thesis "${thesis.title}" has been reviewed.`;
-    let notificationTitle = 'Thesis Review Update';
-    switch (status) {
-        case 'approved':
-            notificationMessage += ' Congratulations! Your thesis has been APPROVED.';
-            notificationTitle = 'Thesis Approved';
-            break;
-        case 'rejected':
-            notificationMessage += ' Unfortunately, your thesis has been REJECTED.';
-            notificationTitle = 'Thesis Rejected';
-            break;
-        case 'revision':
-            notificationMessage += ' Your thesis needs REVISION.';
-            notificationTitle = 'Thesis Needs Revision';
-            break;
-        default:
-            notificationMessage += ` Status: ${status.toUpperCase()}`;
+    let notificationMessage = `Capstone titled "${thesis.title}" has been ${status.toUpperCase()} by Admin.`;
+    let notificationTitle = `Capstone ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+    if (reviewerComments && reviewerComments.trim()) {
+        notificationMessage += ` Remarks: ${reviewerComments}`;
     }
+
     try {
-        await Promise.all([
-            new Notification({
-                recipientEmail: thesis.email,
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'status_update',
+        const Notification = require('../models/notification');
+        const io = req.app.get('io');
+        let teacherEmail = thesis.adviserEmail;
+        let teacherId = thesis.teacherId || thesis.adviserId || thesis.adviser_id || (thesis.adviser && thesis.adviser._id) || null;
+        // Defensive: Try to resolve missing teacherEmail or teacherId
+        if (!teacherEmail || teacherEmail === 'admin@buksu.edu.ph') {
+            if (thesis.adviser && thesis.adviser.email) teacherEmail = thesis.adviser.email;
+            if (!teacherEmail && thesis.adviserId) {
+                const Teacher = require('../models/Teacher');
+                const teacherDoc = await Teacher.findOne({ _id: thesis.adviserId });
+                if (teacherDoc) teacherEmail = teacherDoc.email;
+            }
+        }
+        if (!teacherId && teacherEmail) {
+            const Teacher = require('../models/Teacher');
+            const teacherDoc = await Teacher.findOne({ email: teacherEmail });
+            if (teacherDoc && teacherDoc.teacher_id) {
+                teacherId = teacherDoc.teacher_id;
+            }
+        }
+        // Log all relevant values
+        if (!teacherEmail || !teacherId) {
+            console.warn('[WARN] Missing teacherEmail or teacherId for status update notification:', { teacherEmail, teacherId, thesisId: thesis._id });
+        } else {
+            console.log('[DEBUG] teacherEmail:', teacherEmail, 'teacherId:', teacherId);
+        }
+        // When creating teacher notification for status update:
+        const statusMap = {
+          approved: {
+            title: 'Capstone Approved',
+            message: `Your capstone "${thesis.title}" has been APPROVED by Admin.`
+          },
+          rejected: {
+            title: 'Capstone Rejected',
+            message: `Your capstone "${thesis.title}" has been REJECTED by Admin.`
+          },
+          revision: {
+            title: 'Capstone Revision Required',
+            message: `Your capstone "${thesis.title}" requires REVISION as per Admin.`
+          },
+          pending: {
+            title: 'Capstone Pending',
+            message: `Your capstone "${thesis.title}" is PENDING review by Admin.`
+          }
+        };
+        const notifContent = statusMap[status] || statusMap['pending'];
+        if (teacherEmail && teacherId) {
+            const teacherNotif = await Notification.create({
+              recipientEmail: teacherEmail,
+              teacherId: teacherId,
+              thesisId: thesis._id,
+              status: status,
+              type: 'status_update',
+              title: notifContent.title,
+              message: notifContent.message,
+              reviewerComments: reviewerComments || '',
+              thesisTitle: thesis.title,
+              read: false,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            });
+            // After creating teacherNotif, add debug log
+            console.log('[DEBUG] Created teacher notification:', teacherNotif);
+            // Emit real-time notification to teacher
+            if (io && teacherNotif) {
+                console.log('[DEBUG] Emitting teacher_notification to', teacherEmail);
+                io.to(teacherEmail).emit('teacher_notification', teacherNotif);
+            }
+        } else {
+            console.warn('[WARN] Skipping teacher notification emit due to missing teacherEmail or teacherId:', { teacherEmail, teacherId, thesisId: thesis._id });
+        }
+        // --- Always create a new admin notification for each status change ---
+        const adminNotif = await Notification.create({
+            forAdmins: true,
+            thesisId: thesis._id,
+            status: status,
+            type: 'status_update',
+            title: notificationTitle,
+            message: notificationMessage + ` (Teacher: ${teacherEmail})`,
+            reviewerComments: reviewerComments || '',
+            thesisTitle: thesis.title,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+        if (io && adminNotif) {
+            io.to('admins').emit('admin_notification', adminNotif);
+        }
+        // If resubmitted after revision, notify admin (as before)
+        if (isResubmitted) {
+            const adminEmail = 'admin@buksu.edu.ph';
+            const existing = await Notification.findOne({
+                recipientEmail: adminEmail,
                 thesisId: thesis._id,
-                priority: status === 'revision' ? 'high' : 'normal'
-            }).save(),
-            new Notification({
-                recipientEmail: thesis.adviserEmail,
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'status_update',
-                thesisId: thesis._id,
-                priority: status === 'revision' ? 'high' : 'normal'
-            }).save()
-        ]);
+                type: 'admin_event',
+                status: 'resubmitted'
+            });
+            if (!existing) {
+                await Notification.create({
+                    recipientEmail: adminEmail,
+                    title: 'Thesis Resubmitted After Revision',
+                    message: `The thesis "${thesis.title}" has been resubmitted after revision by ${thesis.email}.`,
+                    type: 'admin_event',
+                    thesisId: thesis._id,
+                    status: 'resubmitted',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+            }
+        }
     } catch (err) {
         // Notifications are not critical, so log but do not fail the review update
         console.error('Notification error:', err);

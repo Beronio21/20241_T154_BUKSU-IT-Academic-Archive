@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import SuccessModal from '../components/SuccessModal';
 import TeacherProfileForm from '../components/TeacherProfileForm';
 import { io } from 'socket.io-client';
+import { useToast } from '../components/NotificationToast';
 
 const departments = [
   'Computer Science',
@@ -37,6 +38,8 @@ const TeacherProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { showToast } = useToast();
+  const [saveLoading, setSaveLoading] = useState(false);
 
   // Check for missing required fields
   const validateProfile = (data) => {
@@ -45,25 +48,23 @@ const TeacherProfile = () => {
     return missing.length === 0;
   };
 
-  const fetchProfile = () => {
+  // Fetch profile from backend
+  const fetchProfile = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const userInfo = JSON.parse(localStorage.getItem('user-info')) || {};
-      const profileData = {
-        ...initialFormState,
-        email: userInfo.email || '',
-        name: userInfo.name || '',
-        teacher_id: userInfo.teacher_id || '',
-        contact_number: userInfo.contact_number || '',
-        department: userInfo.department || '',
-        gender: userInfo.gender || '',
-        birthday: userInfo.birthday || '',
-        image: userInfo.image || 'https://via.placeholder.com/150',
-       
-        status: userInfo.status || 'Active'
-      };
-      
-      setFormData(profileData);
-      validateProfile(profileData);
+      const response = await fetch('http://localhost:8080/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${userInfo.token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch profile');
+      const data = await response.json();
+      setFormData({ ...initialFormState, ...data.data });
+      validateProfile(data.data);
+      // Sync localStorage
+      localStorage.setItem('user-info', JSON.stringify({ ...userInfo, ...data.data }));
       setLoading(false);
     } catch (err) {
       setError('Failed to load profile data');
@@ -73,33 +74,53 @@ const TeacherProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (saveLoading) return;
     if (!validateProfile(formData)) {
       alert('Please fill all required fields!');
       return;
     }
+    setSaveLoading(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('user-info'));
+      const payload = {
+        name: formData.name,
+        teacher_id: formData.teacher_id,
+        contact_number: formData.contact_number,
+        department: formData.department,
+        gender: formData.gender,
+        birthday: formData.birthday,
+        location: formData.location,
+        ...(formData.status && ['Active','Inactive','Pending','Approved','Rejected'].includes(formData.status) ? { status: formData.status } : {}),
+        ...(formData.password ? { password: formData.password } : {})
+      };
       const response = await fetch('http://localhost:8080/api/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${userInfo.token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update profile');
+        setError(errorData.message || 'Failed to update profile');
+        alert(errorData.message || 'Failed to save profile');
+        setSaveLoading(false);
+        return;
       }
       const data = await response.json();
-      // Update localStorage for session consistency
+      // Sync localStorage
       localStorage.setItem('user-info', JSON.stringify({ ...userInfo, ...data.data }));
       setShowModal(false);
       setShowSuccessModal(true);
-      fetchProfile(); // Refresh data
+      showToast('Profile updated successfully!');
+      await fetchProfile();
       setTimeout(() => setShowSuccessModal(false), 2000);
     } catch (err) {
-      alert('Failed to save profile');
+      setError(err.message || 'Failed to save profile');
+      alert(err.message || 'Failed to save profile');
+    } finally {
+      setSaveLoading(false);
     }
   };
 
@@ -177,6 +198,7 @@ const TeacherProfile = () => {
                   <button 
                     className="btn btn-primary w-100"
                     onClick={() => setShowModal(true)}
+                    disabled={saveLoading}
                   >
                     <i className="bi bi-pencil-square me-2"></i>
                     {missingFields.length ? 'Complete Profile' : 'Edit Profile'}

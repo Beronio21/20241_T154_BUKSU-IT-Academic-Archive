@@ -23,9 +23,12 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173',
+        'http://192.168.1.135:5173'
+    ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
@@ -56,7 +59,6 @@ app.use('/api', userRoutes);
 app.use('/api', recaptchaRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/calendar', calendarRoutes);
-app.use(cors({ origin: "http://192.168.1.135:5173" }));
 
 
 const oauth2Client = new google.auth.OAuth2(
@@ -128,12 +130,23 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   },
 });
 
 // Make io accessible in routes
 app.set('io', io);
+
+// Socket.IO: allow teachers to join their own room for notifications
+io.on('connection', (socket) => {
+  socket.on('join', (email, role) => {
+    if (role === 'admin') {
+      socket.join('admins');
+    } else if (email) {
+      socket.join(email);
+    }
+  });
+});
 
 const PORT = process.env.PORT || 8080;
 

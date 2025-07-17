@@ -80,6 +80,11 @@ router.put('/', auth, async (req, res) => {
         }
         let updatedProfile;
         if (req.user.role === 'teacher') {
+            const io = req.app.get('io');
+            // Fetch the old profile for comparison
+            const Teacher = require('../models/Teacher');
+            const Notification = require('../models/notification');
+            const oldProfile = await Teacher.findById(req.user._id);
             updatedProfile = await Teacher.findByIdAndUpdate(
                 req.user._id,
                 { $set: updates },
@@ -92,8 +97,69 @@ router.put('/', auth, async (req, res) => {
                 });
             }
             // Emit real-time update event
-            const io = req.app.get('io');
             io.emit('teacherUpdated', { teacherId: updatedProfile._id, data: updatedProfile });
+
+            // --- Admin notification for teacher profile update ---
+            // Only notify if relevant fields changed or first-time completion
+            const fieldsToCheck = ['name', 'email', 'contact_number', 'department', 'gender', 'birthday'];
+            const changedFields = fieldsToCheck.filter(field => {
+                // Compare as string for date
+                if (field === 'birthday') {
+                    return oldProfile[field]?.toISOString().slice(0,10) !== (updates[field] ? new Date(updates[field]).toISOString().slice(0,10) : oldProfile[field]?.toISOString().slice(0,10));
+                }
+                return updates[field] !== undefined && oldProfile[field] !== updates[field];
+            });
+
+            // Check for first-time profile completion
+            const wasProfileComplete = oldProfile.isProfileComplete;
+            // Use the checkProfileComplete method from the model
+            const willBeProfileComplete = updatedProfile.checkProfileComplete();
+
+            if (!wasProfileComplete && willBeProfileComplete) {
+                // First-time completion
+                updatedProfile.isProfileComplete = true;
+                await updatedProfile.save();
+                const notifMsg = `Teacher ${oldProfile.name} (${oldProfile.email}) completed their profile for the first time.`;
+                const adminNotif = await Notification.create({
+                    forAdmins: true,
+                    recipientEmail: 'admin', // Set a placeholder to satisfy schema
+                    title: 'Teacher Profile Completed',
+                    message: notifMsg,
+                    type: 'admin_event',
+                    status: 'pending', // Use a valid enum value
+                    thesisId: null,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    readBy: [],
+                    deletedBy: []
+                });
+                if (io && adminNotif) {
+                    io.to('admins').emit('admin_notification', adminNotif);
+                }
+            } else if (changedFields.length > 0) {
+                // Subsequent edits
+                const teacherName = oldProfile.name;
+                const teacherEmail = oldProfile.email;
+                const now = new Date();
+                const notifMsg = `Teacher ${teacherName} (${teacherEmail}) has updated their profile.`;
+                const adminNotif = await Notification.create({
+                    forAdmins: true,
+                    recipientEmail: 'admin', // Set a placeholder to satisfy schema
+                    title: 'Teacher Profile Updated',
+                    message: notifMsg,
+                    type: 'admin_event',
+                    status: 'pending', // Use a valid enum value
+                    thesisId: null,
+                    createdAt: now,
+                    updatedAt: now,
+                    readBy: [],
+                    deletedBy: []
+                });
+                if (io && adminNotif) {
+                    io.to('admins').emit('admin_notification', adminNotif);
+                }
+            }
+            // --- End admin notification logic ---
             return res.json({
                 status: 'success',
                 data: {

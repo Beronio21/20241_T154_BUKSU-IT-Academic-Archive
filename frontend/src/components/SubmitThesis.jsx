@@ -94,6 +94,12 @@ const SubmitThesis = () => {
                     'Authorization': `Bearer ${googleDriveToken}`
                 }
             });
+            if (response.status === 401 || response.status === 403) {
+                alert('Your Google Drive session has expired. Please sign in with Google again.');
+                localStorage.removeItem('user-info');
+                window.location.href = '/teacher-dashboard/profile'; // or your Google login route
+                return null;
+            }
             const data = await response.json();
 
             if (data.files && data.files.length > 0) {
@@ -111,6 +117,12 @@ const SubmitThesis = () => {
                     },
                     body: JSON.stringify(folderMetadata)
                 });
+                if (createResponse.status === 401 || createResponse.status === 403) {
+                    alert('Your Google Drive session has expired. Please sign in with Google again.');
+                    localStorage.removeItem('user-info');
+                    window.location.href = '/teacher-dashboard/profile';
+                    return null;
+                }
                 const folder = await createResponse.json();
                 return folder.id; // Return new folder ID
             }
@@ -118,6 +130,7 @@ const SubmitThesis = () => {
 
         // Open the picker and upload the document to the folder
         const openPickerAndUpload = async (folderId) => {
+            if (!folderId) return; // If folderId is null due to expired token, stop
             openPicker({
                 clientId: "736065879191-hhi3tmfi3ftr54m6r37ilftckkbcojsb.apps.googleusercontent.com",
                 developerKey: "AIzaSyBefZhoxSibx9ORWrmhrH3I8L_Cz1OB33E",
@@ -138,6 +151,12 @@ const SubmitThesis = () => {
                                 'Content-Type': 'application/json'
                             }
                         });
+                        if (updateResponse.status === 401 || updateResponse.status === 403) {
+                            alert('Your Google Drive session has expired. Please sign in with Google again.');
+                            localStorage.removeItem('user-info');
+                            window.location.href = '/teacher-dashboard/profile';
+                            return;
+                        }
                         const updatedDoc = await updateResponse.json();
                         setFormData(prev => ({
                             ...prev,
@@ -189,6 +208,11 @@ const SubmitThesis = () => {
 
         try {
             const userInfo = JSON.parse(localStorage.getItem('user-info'));
+            if (!userInfo || !userInfo.email || !userInfo.token) {
+                setError('You must be logged in with Google to submit a capstone. Please log in again.');
+                setLoading(false);
+                return;
+            }
 
             const submissionData = {
                 title: formData.title,
@@ -379,7 +403,7 @@ const SubmitThesis = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>Document Link</label>
+                        <label htmlFor="docsLink">Document Link</label>
                         <div className="document-link-container">
                             <span>{formData.docsLink || 'No document selected'}</span>
                             <button

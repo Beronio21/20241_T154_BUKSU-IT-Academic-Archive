@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import TeacherProfile from '../../Profile/TeacherProfile';
 import SubmitThesis from '../../components/SubmitThesis';
@@ -37,6 +37,7 @@ const TeacherDashboard = () => {
     const [categorySearch, setCategorySearch] = useState('');
     
     const categories = ['IoT', 'AI', 'ML', 'Sound', 'Camera']; // Define your categories
+    const fetchSubmissionsRef = useRef();
 
     useEffect(() => {
         const storedUserInfo = localStorage.getItem('user-info');
@@ -73,6 +74,11 @@ const TeacherDashboard = () => {
             setLoading(false);
         }
     };
+
+    // Expose fetchSubmissions to other components
+    useEffect(() => {
+        fetchSubmissionsRef.current = fetchSubmissions;
+    }, [userInfo]);
 
     const handleLogout = () => {
         if (window.confirm('Are you sure you want to logout?')) {
@@ -149,7 +155,7 @@ const TeacherDashboard = () => {
 
     return (
         <div className="d-flex">
-            <TeacherTopbar userInfo={userInfo} handleLogout={handleLogout} />
+            <TeacherTopbar userInfo={userInfo} handleLogout={handleLogout} fetchSubmissions={fetchSubmissions} />
             <TeacherNavbar activeSection={activeSection} handleSectionChange={handleSectionChange} />
             <div className="flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '60px' }}>
                 <Routes>

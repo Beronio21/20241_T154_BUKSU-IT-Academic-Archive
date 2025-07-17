@@ -35,6 +35,26 @@ router.post('/', async (req, res) => {
             status: 'Pending'
         });
         await teacher.save();
+        // Admin notification for new teacher registration
+        const Notification = require('../models/notification');
+        const adminEmail = 'admin@buksu.edu.ph';
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const existingNotification = await Notification.findOne({
+            recipientEmail: adminEmail,
+            type: 'admin_event',
+            title: 'New Teacher Registered',
+            message: `A new teacher account has been registered: ${teacher.email}`,
+            createdAt: { $gte: oneHourAgo }
+        });
+        if (!existingNotification) {
+            await Notification.create({
+                recipientEmail: adminEmail,
+                title: 'New Teacher Registered',
+                message: `A new teacher account has been registered: ${teacher.email}`,
+                type: 'admin_event',
+                read: false
+            });
+        }
         res.status(201).json({ message: 'Teacher registered successfully.' });
     } catch (error) {
         res.status(400).json({ message: error.message });

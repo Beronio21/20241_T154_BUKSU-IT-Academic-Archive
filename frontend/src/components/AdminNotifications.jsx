@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fa';
 import axios from 'axios';
 import './AdminNotifications.css';
+import { io } from 'socket.io-client';
 
 const AdminNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -27,7 +28,17 @@ const AdminNotifications = () => {
         fetchNotifications();
         // Set up polling for new notifications every 30 seconds
         const interval = setInterval(fetchNotifications, 30000);
-        return () => clearInterval(interval);
+        // --- Add Socket.IO for real-time updates ---
+        const socket = io('http://localhost:8080');
+        socket.on('admin_notification', (notif) => {
+            setNotifications(prev => [notif, ...prev]);
+            setUnreadCount(prev => prev + 1);
+        });
+        // ------------------------------------------
+        return () => {
+            clearInterval(interval);
+            socket.disconnect();
+        };
     }, []);
 
     const fetchNotifications = async () => {
@@ -131,6 +142,11 @@ const AdminNotifications = () => {
         <Tooltip>{text}</Tooltip>
     );
 
+    const adminRelevantTypes = ['submission', 'admin_event'];
+    const filteredNotifications = notifications.filter(
+      notif => adminRelevantTypes.includes(notif.type)
+    );
+
     return (
         <Dropdown align="end" className="notification-dropdown">
             <OverlayTrigger
@@ -210,9 +226,9 @@ const AdminNotifications = () => {
                                 <span className="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                    ) : notifications.length > 0 ? (
+                    ) : filteredNotifications.length > 0 ? (
                         <ListGroup variant="flush">
-                            {notifications.map((notification) => (
+                            {filteredNotifications.map((notification) => (
                                 <ListGroup.Item 
                                     key={notification._id}
                                     className={`notification-item ${!notification.read ? 'unread' : ''}`}
@@ -225,24 +241,37 @@ const AdminNotifications = () => {
                                             className="notification-content" 
                                             onClick={() => !notification.read && markAsRead(notification._id)}
                                         >
-                                            <p className="notification-text">{notification.message}</p>
-                                            <div className="notification-meta">
-                                                <small className="text-muted">
-                                                    <FaClock className="me-1" />
-                                                    {getTimeAgo(notification.createdAt)}
-                                                </small>
-                                                {notification.read ? (
-                                                    <small className="text-success">
-                                                        <FaCheck className="me-1" />
-                                                        Read
-                                                    </small>
-                                                ) : (
-                                                    <small className="text-primary">
-                                                        <FaRegBell className="me-1" />
-                                                        New
-                                                    </small>
+                                            <>
+                                                <p className="notification-text">{notification.message}</p>
+                                                {notification.thesisTitle && (
+                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Capstone:</strong> {notification.thesisTitle}</div>
                                                 )}
-                                            </div>
+                                                {notification.status ? (
+                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Status:</strong> {notification.status}</div>
+                                                ) : (
+                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Status:</strong> Pending</div>
+                                                )}
+                                                {notification.reviewerComments && notification.reviewerComments.trim() && (
+                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Reviewer Comments:</strong> {notification.reviewerComments}</div>
+                                                )}
+                                                <div className="notification-meta">
+                                                    <small className="text-muted">
+                                                        <FaClock className="me-1" />
+                                                        {getTimeAgo(notification.createdAt)}
+                                                    </small>
+                                                    {notification.read ? (
+                                                        <small className="text-success">
+                                                            <FaCheck className="me-1" />
+                                                            Read
+                                                        </small>
+                                                    ) : (
+                                                        <small className="text-primary">
+                                                            <FaRegBell className="me-1" />
+                                                            New
+                                                        </small>
+                                                    )}
+                                                </div>
+                                            </>
                                         </div>
                                         <Dropdown className="ms-2">
                                             <OverlayTrigger
