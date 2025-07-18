@@ -64,9 +64,12 @@ const AdminTopbar = () => {
     };
 
     // Only show admin-relevant notifications
-    const adminRelevantTypes = ['submission', 'admin_event'];
+    const adminRelevantTypes = ['submission', 'admin_event', 'status_update'];
+    // Exclude notifications that are 'approved' by admin (status_update type, status 'approved', and message contains 'by Admin')
     const filteredNotifications = notifications.filter(
-      notif => adminRelevantTypes.includes(notif.type) && (!notif.forAdmins || !(notif.deletedBy || []).includes(userInfo.email))
+      notif => adminRelevantTypes.includes(notif.type)
+        && (!notif.forAdmins || !(notif.deletedBy || []).includes(userInfo.email))
+        && !(notif.type === 'status_update' && notif.status === 'approved' && notif.message && notif.message.toLowerCase().includes('by admin'))
     );
 
     // Unread count: admin notifications not in readBy, regular notifications not read

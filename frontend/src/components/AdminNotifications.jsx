@@ -133,6 +133,8 @@ const AdminNotifications = () => {
                 return <FaUserGraduate className="notification-type-icon registration" />;
             case 'update':
                 return <FaEnvelope className="notification-type-icon update" />;
+            case 'status_update':
+                return <FaCheckDouble className="notification-type-icon update" />;
             default:
                 return <FaExclamationCircle className="notification-type-icon default" />;
         }
@@ -142,7 +144,8 @@ const AdminNotifications = () => {
         <Tooltip>{text}</Tooltip>
     );
 
-    const adminRelevantTypes = ['submission', 'admin_event'];
+    // Show admin-relevant notifications, now including status_update
+    const adminRelevantTypes = ['submission', 'admin_event', 'status_update'];
     const filteredNotifications = notifications.filter(
       notif => adminRelevantTypes.includes(notif.type)
     );
@@ -232,76 +235,70 @@ const AdminNotifications = () => {
                                 <ListGroup.Item 
                                     key={notification._id}
                                     className={`notification-item ${!notification.read ? 'unread' : ''}`}
+                                    style={{
+                                        background: '#f8fbff',
+                                        borderRadius: 12,
+                                        marginBottom: 12,
+                                        boxShadow: '0 1px 6px rgba(60,72,88,0.07)',
+                                        border: 'none',
+                                        padding: 18,
+                                        display: 'flex',
+                                        alignItems: 'flex-start',
+                                    }}
                                 >
-                                    <div className="d-flex align-items-start">
-                                        <div className="notification-icon">
-                                            {getNotificationIcon(notification.type)}
-                                        </div>
-                                        <div 
-                                            className="notification-content" 
-                                            onClick={() => !notification.read && markAsRead(notification._id)}
-                                        >
-                                            <>
-                                                <p className="notification-text">{notification.message}</p>
-                                                {notification.thesisTitle && (
-                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Capstone:</strong> {notification.thesisTitle}</div>
-                                                )}
-                                                {notification.status ? (
-                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Status:</strong> {notification.status}</div>
-                                                ) : (
-                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Status:</strong> Pending</div>
-                                                )}
-                                                {notification.reviewerComments && notification.reviewerComments.trim() && (
-                                                    <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Reviewer Comments:</strong> {notification.reviewerComments}</div>
-                                                )}
-                                                <div className="notification-meta">
-                                                    <small className="text-muted">
-                                                        <FaClock className="me-1" />
-                                                        {getTimeAgo(notification.createdAt)}
-                                                    </small>
-                                                    {notification.read ? (
-                                                        <small className="text-success">
-                                                            <FaCheck className="me-1" />
-                                                            Read
-                                                        </small>
-                                                    ) : (
-                                                        <small className="text-primary">
-                                                            <FaRegBell className="me-1" />
-                                                            New
-                                                        </small>
-                                                    )}
-                                                </div>
-                                            </>
-                                        </div>
-                                        <Dropdown className="ms-2">
-                                            <OverlayTrigger
-                                                placement="left"
-                                                overlay={renderTooltip('Actions')}
-                                            >
-                                                <Dropdown.Toggle variant="link" className="notification-action-toggle p-0">
-                                                    <FaEllipsisV size={14} className="text-muted" />
-                                                </Dropdown.Toggle>
-                                            </OverlayTrigger>
-                                            <Dropdown.Menu align="end" className="notification-actions-menu">
-                                                {!notification.read && (
-                                                    <Dropdown.Item 
-                                                        onClick={() => markAsRead(notification._id)}
-                                                        className="text-primary"
-                                                    >
-                                                        <FaCheck className="me-2" />
-                                                        Mark as read
-                                                    </Dropdown.Item>
-                                                )}
-                                                <Dropdown.Item 
-                                                    className="text-danger"
-                                                    onClick={() => removeNotification(notification._id)}
-                                                >
-                                                    <FaTrash className="me-2" />
-                                                    Remove
-                                                </Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
+                                    <div className="notification-icon" style={{marginRight: 16, marginTop: 2}}>
+                                        {getNotificationIcon(notification.type)}
                                     </div>
+                                    <div 
+                                        className="notification-content" 
+                                        onClick={() => !notification.read && markAsRead(notification._id)}
+                                        style={{flex: 1, cursor: !notification.read ? 'pointer' : 'default'}}
+                                    >
+                                        <div style={{ fontWeight: 600, color: '#222', marginBottom: 2, fontSize: 16 }}>{notification.title || 'Notification'}</div>
+                                        <div style={{ color: '#475569', fontSize: 15, marginBottom: 2 }}>{notification.message}</div>
+                                        {notification.thesisTitle && (
+                                            <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Capstone:</strong> {notification.thesisTitle}</div>
+                                        )}
+                                        {notification.status ? (
+                                            <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Status:</strong> {notification.status}</div>
+                                        ) : (
+                                            <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Status:</strong> Pending</div>
+                                        )}
+                                        {notification.reviewerComments && notification.reviewerComments.trim() && (
+                                            <div style={{ fontSize: 14, color: '#2c3e50', marginBottom: 2 }}><strong>Reviewer Comments:</strong> {notification.reviewerComments}</div>
+                                        )}
+                                        <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>
+                                            {getTimeAgo(notification.createdAt)}
+                                        </div>
+                                    </div>
+                                    <Dropdown className="ms-2">
+                                        <OverlayTrigger
+                                            placement="left"
+                                            overlay={renderTooltip('Actions')}
+                                        >
+                                            <Dropdown.Toggle variant="link" className="notification-action-toggle p-0">
+                                                <FaEllipsisV size={14} className="text-muted" />
+                                            </Dropdown.Toggle>
+                                        </OverlayTrigger>
+                                        <Dropdown.Menu align="end" className="notification-actions-menu">
+                                            {!notification.read && (
+                                                <Dropdown.Item 
+                                                    onClick={() => markAsRead(notification._id)}
+                                                    className="text-primary"
+                                                >
+                                                    <FaCheck className="me-2" />
+                                                    Mark as read
+                                                </Dropdown.Item>
+                                            )}
+                                            <Dropdown.Item 
+                                                className="text-danger"
+                                                onClick={() => removeNotification(notification._id)}
+                                            >
+                                                <FaTrash className="me-2" />
+                                                Remove
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </ListGroup.Item>
                             ))}
                         </ListGroup>

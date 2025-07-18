@@ -223,49 +223,7 @@ const TeacherTopbar = ({ userInfo, handleLogout, fetchSubmissions }) => {
         }}>
             <div className="container-fluid">
                 <div className="d-flex align-items-center ms-auto">
-                    <div className="notification-wrapper me-3">
-                        <button 
-                            className="notification-button"
-                            onClick={() => setShowNotifications(!showNotifications)}
-                        >
-                            <FaBell size={20} />
-                            {notificationCount > 0 && (
-                                <span className="notification-badge">
-                                    {notificationCount}
-                                </span>
-                            )}
-                        </button>
-                        
-                        {showNotifications && (
-                            <div className="notification-dropdown">
-                                <div className="notification-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>Notifications</span>
-                                    <button className="mark-all-read-btn" onClick={e => { e.stopPropagation(); markAllAsRead(); }} title="Mark all as read" style={{ background: 'none', border: 'none', color: '#0d6efd', fontWeight: 400, fontSize: '0.85rem', cursor: markAllLoading || notificationCount === 0 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem', padding: '2px 6px', opacity: markAllLoading || notificationCount === 0 ? 0.5 : 0.85 }} disabled={markAllLoading || notificationCount === 0}>
-                                        <svg width="14" height="14" fill="currentColor" style={{ marginRight: 2 }} viewBox="0 0 16 16"><path d="M15.854 5.646a.5.5 0 0 0-.708-.708l-7.646 7.647-3.646-3.647a.5.5 0 1 0-.708.708l4 4a.5.5 0 0 0 .708 0l8-8z"/></svg>
-                                        Mark all as read
-                                    </button>
-                                </div>
-                                <div className="notification-list">
-                                    {notifications.length === 0 ? (
-                                        <div className="no-notifications">
-                                            <p>No notifications</p>
-                                        </div>
-                                    ) : (
-                                        notifications.map(notification => (
-                                            <NotificationCard
-                                                key={notification._id}
-                                                notification={notification}
-                                                onMarkAsRead={() => markAsRead(notification._id)}
-                                                onDelete={() => handleDelete(notification._id)}
-                                                onViewMore={() => handleViewMore(notification)}
-                                                fadeAll={fadeAll}
-                                            />
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    {/* Removed notification icon and dropdown for teachers */}
                     <div className="profile-dropdown">
                         <button 
                             className="profile-button dropdown-toggle d-flex align-items-center"
