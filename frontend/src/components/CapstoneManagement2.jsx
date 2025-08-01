@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge, Alert } from 'react-bootstrap';
+import { Modal, Button, Table, InputGroup, Form, Pagination, Card, Badge, Alert, Nav } from 'react-bootstrap';
 import { FaSearch, FaEdit, FaTrash, FaPlus, FaExclamationTriangle, FaFileAlt, FaUser, FaKey, FaEnvelope, FaLink, FaInfoCircle, FaTimes, FaFolder, FaUserTie, FaCheckCircle, FaClipboardCheck, FaExclamationCircle, FaClock, FaSave, FaCheck, FaHistory } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AdminNavbar from '../Navbar/Admin-Navbar/AdminNavbar';
@@ -60,6 +60,11 @@ const CapstoneManagement2 = () => {
     // Add state for archive error toast
     const [showArchiveErrorToast, setShowArchiveErrorToast] = useState(false);
     const [archiveErrorMessage, setArchiveErrorMessage] = useState('');
+    // Change default activeTab from 'all' to 'pending'
+    const [activeTab, setActiveTab] = useState('pending');
+    const [pendingPage, setPendingPage] = useState(1);
+    const [approvedPage, setApprovedPage] = useState(1);
+    const [rejectedPage, setRejectedPage] = useState(1);
 
     // Extract the active section from the current route
     const activeSection = location.pathname.split('/').pop();
@@ -268,14 +273,63 @@ const CapstoneManagement2 = () => {
     };
 
     // Filter and pagination logic
-    const filteredSubmissions = submissions.filter(submission =>
-        submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (Array.isArray(submission.members) && submission.members.some(member => 
-            member.toLowerCase().includes(searchTerm.toLowerCase())
-        ))
-    );
-
-    const indexOfLastItem = currentPage * itemsPerPage;
+    const getFilteredSubmissions = () => {
+        const filtered = submissions.filter(submission => {
+            const matchesSearch = submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (Array.isArray(submission.members) && submission.members.some(member => 
+                    member.toLowerCase().includes(searchTerm.toLowerCase())
+                ));
+            if (!matchesSearch) return false;
+            switch (activeTab) {
+                case 'pending':
+                    return !submission.status || submission.status.toLowerCase() === 'pending';
+                case 'revision':
+                    return submission.status && submission.status.toLowerCase() === 'revision';
+                case 'approved':
+                    return submission.status && submission.status.toLowerCase() === 'approved';
+                case 'rejected':
+                    return submission.status && submission.status.toLowerCase() === 'rejected';
+                default:
+                    return true;
+            }
+        });
+        return filtered;
+    };
+    const filteredSubmissions = getFilteredSubmissions();
+    const getCurrentPage = () => {
+        switch (activeTab) {
+            case 'pending':
+                return pendingPage;
+            case 'revision':
+                return pendingPage; // Use same pagination for revision
+            case 'approved':
+                return approvedPage;
+            case 'rejected':
+                return rejectedPage;
+            default:
+                return currentPage;
+        }
+    };
+    const setCurrentPageForTab = (page) => {
+        switch (activeTab) {
+            case 'pending':
+                setPendingPage(page);
+                break;
+            case 'revision':
+                setPendingPage(page); // Use same pagination for revision
+                break;
+            case 'approved':
+                setApprovedPage(page);
+                break;
+            case 'rejected':
+                setRejectedPage(page);
+                break;
+            default:
+                setCurrentPage(page);
+                break;
+        }
+    };
+    const indexOfLastItem = getCurrentPage() * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentSubmissions = filteredSubmissions.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -285,13 +339,13 @@ const CapstoneManagement2 = () => {
     }, [filteredSubmissions, itemsPerPage]);
 
     const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+        setCurrentPageForTab(pageNumber);
     };
 
     const renderPagination = () => {
         let items = [];
         const maxVisiblePages = 5;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let startPage = Math.max(1, getCurrentPage() - Math.floor(maxVisiblePages / 2));
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
         if (endPage - startPage + 1 < maxVisiblePages) {
@@ -313,7 +367,7 @@ const CapstoneManagement2 = () => {
             items.push(
                 <Pagination.Item
                     key={number}
-                    active={number === currentPage}
+                    active={number === getCurrentPage()}
                     onClick={() => handlePageChange(number)}
                 >
                     {number}
@@ -335,19 +389,19 @@ const CapstoneManagement2 = () => {
         return (
             <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="d-flex align-items-center">
-                    <span className="me-2">Page {currentPage} of {totalPages}</span>
+                    <span className="me-2">Page {getCurrentPage()} of {totalPages}</span>
                     <span className="me-2">|</span>
                     <span>Total Items: {filteredSubmissions.length}</span>
                 </div>
                 <Pagination className="mb-0">
                     <Pagination.Prev
-                        disabled={currentPage === 1}
-                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={getCurrentPage() === 1}
+                        onClick={() => handlePageChange(getCurrentPage() - 1)}
                     />
                     {items}
                     <Pagination.Next
-                        disabled={currentPage === totalPages}
-                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={getCurrentPage() === totalPages}
+                        onClick={() => handlePageChange(getCurrentPage() + 1)}
                     />
                 </Pagination>
             </div>
@@ -479,6 +533,16 @@ const CapstoneManagement2 = () => {
         // Only require status
         if (!reviewData.status) {
             setError('Please select a review status.');
+            return;
+        }
+        if (selectedSubmission.status && selectedSubmission.status.toLowerCase() === 'approved' && 
+            reviewData.status && reviewData.status.toLowerCase() === 'rejected') {
+            setError('Approved submissions cannot be rejected. Please choose a different status.');
+            return;
+        }
+        if (selectedSubmission.status && selectedSubmission.status.toLowerCase() === 'rejected' && 
+            reviewData.status && reviewData.status.toLowerCase() !== 'rejected') {
+            setError('Rejected submissions cannot be changed to other statuses. Please keep it as rejected.');
             return;
         }
         try {
@@ -711,6 +775,76 @@ const CapstoneManagement2 = () => {
                                     display: 'flex',
                                     flexDirection: 'column'
                                 }}>
+                                    <Nav variant="tabs" activeKey={activeTab} onSelect={setActiveTab} className="mb-3" style={{ borderBottom: '2px solid #e5e7eb' }}>
+    <Nav.Item>
+        <Nav.Link 
+            eventKey="pending" 
+            style={{ 
+                color: activeTab === 'pending' ? '#fff' : '#f59e0b',
+                backgroundColor: activeTab === 'pending' ? '#f59e0b' : 'transparent',
+                border: '1px solid #e5e7eb',
+                borderBottom: activeTab === 'pending' ? '2px solid #f59e0b' : '1px solid #e5e7eb',
+                fontWeight: activeTab === 'pending' ? '600' : '500',
+                borderRadius: '8px 8px 0 0',
+                marginRight: '4px',
+                padding: '12px 20px'
+            }}
+        >
+            Pending
+        </Nav.Link>
+    </Nav.Item>
+    <Nav.Item>
+        <Nav.Link 
+            eventKey="revision" 
+            style={{ 
+                color: activeTab === 'revision' ? '#fff' : '#fb923c',
+                backgroundColor: activeTab === 'revision' ? '#fb923c' : 'transparent',
+                border: '1px solid #e5e7eb',
+                borderBottom: activeTab === 'revision' ? '2px solid #fb923c' : '1px solid #e5e7eb',
+                fontWeight: activeTab === 'revision' ? '600' : '500',
+                borderRadius: '8px 8px 0 0',
+                marginRight: '4px',
+                padding: '12px 20px'
+            }}
+        >
+            Revision
+        </Nav.Link>
+    </Nav.Item>
+    <Nav.Item>
+        <Nav.Link 
+            eventKey="approved" 
+            style={{ 
+                color: activeTab === 'approved' ? '#fff' : '#10b981',
+                backgroundColor: activeTab === 'approved' ? '#10b981' : 'transparent',
+                border: '1px solid #e5e7eb',
+                borderBottom: activeTab === 'approved' ? '2px solid #10b981' : '1px solid #e5e7eb',
+                fontWeight: activeTab === 'approved' ? '600' : '500',
+                borderRadius: '8px 8px 0 0',
+                marginRight: '4px',
+                padding: '12px 20px'
+            }}
+        >
+            Approved
+        </Nav.Link>
+    </Nav.Item>
+    <Nav.Item>
+        <Nav.Link 
+            eventKey="rejected" 
+            style={{ 
+                color: activeTab === 'rejected' ? '#fff' : '#ef4444',
+                backgroundColor: activeTab === 'rejected' ? '#ef4444' : 'transparent',
+                border: '1px solid #e5e7eb',
+                borderBottom: activeTab === 'rejected' ? '2px solid #ef4444' : '1px solid #e5e7eb',
+                fontWeight: activeTab === 'rejected' ? '600' : '500',
+                borderRadius: '8px 8px 0 0',
+                marginRight: '4px',
+                padding: '12px 20px'
+            }}
+        >
+            Rejected
+        </Nav.Link>
+    </Nav.Item>
+</Nav>
                                     {loading ? (
                                         <div className="loading">Loading submissions...</div>
                                     ) : (
@@ -753,29 +887,50 @@ const CapstoneManagement2 = () => {
                                                                     }}>{submission.category || 'N/A'}</span>
                                                                 </td>
                                                                 <td style={{ verticalAlign: 'middle', maxWidth: 140, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>{submission.email}</td>
-                                                                <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 140, minWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>{renderStatusBadge(submission.status)}</td>
+                                                                <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 140, minWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>
+                                                                    {renderStatusBadge(submission.status)}
+                                                                </td>
                                                                 <td style={{ verticalAlign: 'middle', textAlign: 'center', maxWidth: 120, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '8px 12px' }}>
                                                                     <div className="d-flex align-items-center justify-content-center gap-1 flex-wrap">
-                                                                        <Button
-                                                                            variant="outline-info"
-                                                                            size="sm"
-                                                                            className="px-2 py-1 text-sm fw-semibold"
-                                                                            onClick={() => handleReview(submission)}
-                                                                            style={{ minWidth: 60 }}
-                                                                            title="Review Research Paper"
-                                                                        >
-                                                                            Review
-                                                                        </Button>
-                                                                        <Button
-                                                                            variant="outline-warning"
-                                                                            size="sm"
-                                                                            className="px-2 py-1 text-sm fw-semibold"
-                                                                            onClick={() => confirmArchive(submission)}
-                                                                            style={{ minWidth: 60 }}
-                                                                            title="Archive Research Paper"
-                                                                        >
-                                                                            Archive
-                                                                        </Button>
+                                                                        {activeTab === 'approved' && (
+                                                                            <Button
+                                                                                variant="outline-info"
+                                                                                size="sm"
+                                                                                className="px-2 py-1 text-sm fw-semibold"
+                                                                                onClick={() => {
+                                                                                    setDetailsSubmission(submission);
+                                                                                    setShowDetailsModal(true);
+                                                                                }}
+                                                                                style={{ minWidth: 60 }}
+                                                                                title="View Research Paper Details"
+                                                                            >
+                                                                                View
+                                                                            </Button>
+                                                                        )}
+                                                                        {activeTab !== 'approved' && (
+                                                                            <>
+                                                                                <Button
+                                                                                    variant="outline-info"
+                                                                                    size="sm"
+                                                                                    className="px-2 py-1 text-sm fw-semibold"
+                                                                                    onClick={() => handleReview(submission)}
+                                                                                    style={{ minWidth: 60 }}
+                                                                                    title="Review Research Paper"
+                                                                                >
+                                                                                    Review
+                                                                                </Button>
+                                                                                <Button
+                                                                                    variant="outline-warning"
+                                                                                    size="sm"
+                                                                                    className="px-2 py-1 text-sm fw-semibold"
+                                                                                    onClick={() => confirmArchive(submission)}
+                                                                                    style={{ minWidth: 60 }}
+                                                                                    title="Archive Research Paper"
+                                                                                >
+                                                                                    Archive
+                                                                                </Button>
+                                                                            </>
+                                                                        )}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -1101,10 +1256,14 @@ const CapstoneManagement2 = () => {
                                             </div>
                 <div className="d-flex justify-content-center gap-2 flex-wrap">
                                         {[
-                                            { value: 'approved', label: 'Approved', icon: <FaCheckCircle size={16} />, color: '#fff', bg: '#10b981', border: '#10b981', hover: '#059669' },
-                                            { value: 'rejected', label: 'Rejected', icon: <FaTimes size={16} />, color: '#fff', bg: '#ef4444', border: '#ef4444', hover: '#dc2626' },
-                                            { value: 'revision', label: 'Needs Revision', icon: <FaExclamationCircle size={16} />, color: '#fff', bg: '#f59e0b', border: '#f59e0b', hover: '#d97706' },
-                                            { value: 'pending', label: 'Under Review', icon: <FaClock size={16} />, color: '#fff', bg: '#6b7280', border: '#6b7280', hover: '#4b5563' }
+                                            { value: 'approved', label: 'Approved', icon: <FaCheckCircle size={16} />, color: '#fff', bg: '#10b981', border: '#10b981', hover: '#059669',
+                                              disabled: selectedSubmission && selectedSubmission.status && (selectedSubmission.status.toLowerCase() === 'approved' || selectedSubmission.status.toLowerCase() === 'rejected') },
+                                            { value: 'rejected', label: 'Rejected', icon: <FaTimes size={16} />, color: '#fff', bg: '#ef4444', border: '#ef4444', hover: '#dc2626',
+                                              disabled: selectedSubmission && selectedSubmission.status && selectedSubmission.status.toLowerCase() === 'approved' },
+                                            { value: 'revision', label: 'Needs Revision', icon: <FaExclamationCircle size={16} />, color: '#fff', bg: '#f59e0b', border: '#f59e0b', hover: '#d97706',
+                                              disabled: selectedSubmission && selectedSubmission.status && (selectedSubmission.status.toLowerCase() === 'approved' || selectedSubmission.status.toLowerCase() === 'rejected') },
+                                            { value: 'pending', label: 'Under Review', icon: <FaClock size={16} />, color: '#fff', bg: '#6b7280', border: '#6b7280', hover: '#4b5563',
+                                              disabled: selectedSubmission && selectedSubmission.status && (selectedSubmission.status.toLowerCase() === 'approved' || selectedSubmission.status.toLowerCase() === 'rejected') }
                                                             ].map((status) => (
                                                                     <button
                             key={status.value}
@@ -1121,20 +1280,20 @@ const CapstoneManagement2 = () => {
                                 boxShadow: reviewData.status === status.value ? '0 4px 12px rgba(0,0,0,0.15)' : '0 1px 3px rgba(0,0,0,0.05)',
                                                                             transition: 'all 0.2s ease',
                                 outline: 'none',
-                                cursor: loading ? 'not-allowed' : 'pointer',
-                                                                            opacity: loading ? 0.7 : 1
+                                cursor: loading || status.disabled ? 'not-allowed' : 'pointer',
+                                                                            opacity: loading || status.disabled ? 0.7 : 1
                             }}
-                                                onClick={() => !loading && setReviewData(prev => ({ ...prev, status: status.value }))}
-                                                disabled={loading}
+                                                onClick={() => !loading && !status.disabled && setReviewData(prev => ({ ...prev, status: status.value }))}
+                                                disabled={loading || status.disabled}
                                                 onMouseOver={e => {
-                                                    if (!loading && reviewData.status !== status.value) {
+                                                    if (!loading && !status.disabled && reviewData.status !== status.value) {
                                                         e.currentTarget.style.background = status.hover;
                                                         e.currentTarget.style.color = status.color;
                                                         e.currentTarget.style.borderColor = status.border;
                                                     }
                                                 }}
                                                 onMouseOut={e => {
-                                                    if (!loading && reviewData.status !== status.value) {
+                                                    if (!loading && !status.disabled && reviewData.status !== status.value) {
                                                         e.currentTarget.style.background = '#f8fafc';
                                                         e.currentTarget.style.color = '#64748b';
                                                         e.currentTarget.style.borderColor = '#e2e8f0';
